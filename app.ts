@@ -1,4 +1,3 @@
-import 'dotenv/config'
 import { Hono } from 'hono'
 import { etag } from 'hono/etag'
 import { logger } from 'hono/logger'
@@ -11,7 +10,7 @@ app.use('/', cors({
     origin: "*",
 }))
 app.use('*', etag(), logger())
-app.get('/', (c) => c.text('Hono!'))
+app.get('/', (c) => c.text('Hello Gemini-OpenAI-Proxy!'))
 
 app.post("/v1/chat/completions", ChatProxyHandler)
 

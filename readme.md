@@ -18,7 +18,6 @@ complex development work.
 ## Usage
 
 ```shell
-export GEMINI_API_KEY=`your api key`
 deno task dev
 ```
 
@@ -26,6 +25,7 @@ then you got a openai server at `http://localhost:8000`
 
 ```shell
 curl http://localhost:8000/v1/chat/completions \
+    -H "Authorization: Bearer $YOUR_GEMINI_API_KEY" \
     -H "Content-Type: application/json" \
     -d '{
     "model": "gpt-3.5-turbo",

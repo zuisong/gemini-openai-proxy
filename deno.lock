@@ -3,7 +3,6 @@
   "packages": {
     "specifiers": {
       "npm:@google/generative-ai@^0.1.3": "npm:@google/generative-ai@0.1.3",
-      "npm:dotenv@^16.3.1": "npm:dotenv@16.3.1",
       "npm:hono@^3.11.12": "npm:hono@3.11.12",
       "npm:openai@^4.24.1": "npm:openai@4.24.1"
     },
@@ -73,10 +72,6 @@
           "base-64": "base-64@0.1.0",
           "md5": "md5@2.3.0"
         }
-      },
-      "dotenv@16.3.1": {
-        "integrity": "sha512-IPzF4w4/Rd94bA9imS68tZBaYyBWSCE47V1RGuMrB94iyTOIEwRmVL2x/4An+6mETpLrKJ5hQkB8W4kFAadeIQ==",
-        "dependencies": {}
       },
       "event-target-shim@5.0.1": {
         "integrity": "sha512-i/2XbnSz/uxRCU6+NdVJgKWDTM427+MqYbkQzD321DuCQJUqOuJKIA0IM2+W2xtYHdKOmZ4dR6fExsd4SXL+WQ==",
