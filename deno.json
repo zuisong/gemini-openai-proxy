@@ -1,10 +1,11 @@
 {
   "nodeModulesDir": false,
-  "import": {
-    "@google/generative-ai": "npm:@google/generative-ai",
-    "@hono/node-server": "npm:@hono/node-server",
-    "hono": "npm:hono",
-    "openai": "npm:openai"
+  "imports": {
+    "@google/generative-ai": "https://esm.sh/@google/generative-ai",
+    "@hono/node-server": "https://esm.sh/@hono/node-server",
+    "hono": "https://esm.sh/hono",
+    "hono/": "https://esm.sh/hono/",
+    "openai": "https://esm.sh/openai"
   },
   "lock": false
 }
