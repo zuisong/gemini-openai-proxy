@@ -1,6 +1,4 @@
 {
   "nodeModulesDir": false,
-  "tasks": {
-    "dev": "deno run --watch -A main_deno.ts"
-  }
+  "lock": false
 }
