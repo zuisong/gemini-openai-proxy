@@ -1,7 +1,7 @@
 import { Handler } from "hono";
 import { OpenAI } from "openai";
 import { Content, GoogleGenerativeAI } from "@google/generative-ai";
-import { getToken } from "./utils.ts";
+import { getToken } from "../utils.ts";
 
 export const ChatProxyHandler: Handler = async (c) => {
   const req = await c.req.json<OpenAI.Chat.ChatCompletionCreateParams>();
@@ -48,6 +48,6 @@ export const ChatProxyHandler: Handler = async (c) => {
       },
     ],
   };
-
+  console.log(resp);
   return c.json(resp);
 };

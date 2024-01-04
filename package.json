@@ -5,7 +5,9 @@
   "type": "module",
   "scripts": {
     "deno:start": "deno run -A main_deno.ts",
-    "node:start": "node --import tsx/esm main_node.ts"
+    "node:start": "node --import tsx/esm main_node.ts",
+    "deno:test": "deno test",
+    "node:test": " node --import tsx/esm --no-warnings --test ./test/**"
   },
   "dependencies": {
     "@google/generative-ai": "^0.1.3",

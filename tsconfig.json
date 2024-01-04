@@ -2,6 +2,7 @@
   "compilerOptions": {
     "allowImportingTsExtensions": true,
     "esModuleInterop": true,
+    "useUnknownInCatchVariables": false,
     "moduleResolution": "Node16"
   }
 }

@@ -1,4 +1,10 @@
 {
   "nodeModulesDir": false,
+  "import": {
+    "@google/generative-ai": "npm:@google/generative-ai",
+    "@hono/node-server": "npm:@hono/node-server",
+    "hono": "npm:hono",
+    "openai": "npm:openai"
+  },
   "lock": false
 }

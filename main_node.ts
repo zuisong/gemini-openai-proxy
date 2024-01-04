@@ -1,4 +1,4 @@
-import app from "./app.ts";
+import { app } from "./src/app.ts";
 import { serve } from "@hono/node-server";
 
 serve({
