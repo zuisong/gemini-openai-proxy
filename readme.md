@@ -43,3 +43,10 @@ curl http://localhost:8000/v1/chat/completions \
 ```
 
 ![demo](./assets/demo.png)
+
+### Deploy to [Deno Deploy](https://deno.com/deploy)
+
+1. fork this project, and then deploy to [Deno Deploy](https://deno.com/deploy). **It is free!!! 😍**
+   ![deno_deploy](./assets/deno-deploy.png)
+
+2. then you got a openai server at `https://<your_site>.deno.dev`

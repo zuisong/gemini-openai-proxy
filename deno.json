@@ -1,4 +1,5 @@
 {
+  "$schema": "https://deno.land/x/deno/cli/schemas/config-file.v1.json",
   "nodeModulesDir": false,
   "imports": {
     "@google/generative-ai": "https://esm.sh/@google/generative-ai",
