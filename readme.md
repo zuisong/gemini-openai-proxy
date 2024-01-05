@@ -20,13 +20,13 @@ complex development work.
 ### deno
 
 ```shell
-deno task deno:start
+deno task start:deno
 ```
 
 ### node
 
 ```shell
-pnpm install && pnpm run node:start
+pnpm install && pnpm run start:node
 ```
 
 then you got a openai server at `http://localhost:8000`

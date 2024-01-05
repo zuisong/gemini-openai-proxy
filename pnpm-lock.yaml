@@ -12,13 +12,19 @@ dependencies:
     specifier: ^1.4.0
     version: 1.4.0
   hono:
-    specifier: ^3.11.12
-    version: 3.11.12
+    specifier: ^3.12.0
+    version: 3.12.0
+  loglevel:
+    specifier: ^1.8.1
+    version: 1.8.1
   openai:
     specifier: ^4.24.1
     version: 4.24.1
 
 devDependencies:
+  '@types/bun':
+    specifier: ^1.0.0
+    version: 1.0.0
   '@types/node':
     specifier: ^20.10.6
     version: 20.10.6
@@ -245,6 +251,12 @@ packages:
     engines: {node: '>=18.14.1'}
     dev: false
 
+  /@types/bun@1.0.0:
+    resolution: {integrity: sha512-TPI/aImv/fSo0SWlt29wq0tWRqQOWsC4FOXYeUK0Ni6tAS+FqJZ2p7QCGY4hmHaHQeE2KhKJ6Qn9k3kvFfXD3Q==}
+    dependencies:
+      bun-types: 1.0.18
+    dev: true
+
   /@types/node-fetch@2.6.10:
     resolution: {integrity: sha512-PPpPK6F9ALFTn59Ka3BaL+qGuipRfxNE8qVgkp0bVixeiR2c2/L+IVOiBdu9JhhT22sWnQEp6YyHGI2b2+CMcA==}
     dependencies:
@@ -284,6 +296,10 @@ packages:
   /base-64@0.1.0:
     resolution: {integrity: sha512-Y5gU45svrR5tI2Vt/X9GPd3L0HNIKzGu202EjxrXMpuc2V2CiKgemAbUUsqYmZJvPtCXoUKjNZwBJzsNScUbXA==}
     dev: false
+
+  /bun-types@1.0.18:
+    resolution: {integrity: sha512-1XZ7AxOF8oO8FZtw1xj006JAKxEjulK3dUhsktZVN95vXBlsf4NIjQxfistVdpt24v3H2I9BwHp+UU+gXSSpAw==}
+    dev: true
 
   /charenc@0.0.2:
     resolution: {integrity: sha512-yrLQ/yVUFXkzg7EDQsPieE/53+0RlaWTs+wBrvW36cyilJ2SaDWfl4Yj7MtLTXleV9uEKefbAGUPv2/iWSooRA==}
@@ -383,8 +399,8 @@ packages:
       resolve-pkg-maps: 1.0.0
     dev: true
 
-  /hono@3.11.12:
-    resolution: {integrity: sha512-TrxH75bc0m2UbvrhaXkoo32A9OhkJtvICAYgYWtxqLDOxBjRqSikyp4K7HTbnWkPeg9Z+2Q3nv0dN4o8kL6yLg==}
+  /hono@3.12.0:
+    resolution: {integrity: sha512-UPEtZuLY7Wo7g0mqKWSOjLFdT8t7wJ60IYEcxKl3AQNU4u+R2QqU2fJMPmSu24C+/ag20Z8mOTQOErZzK4DMvA==}
     engines: {node: '>=16.0.0'}
     dev: false
 
@@ -396,6 +412,11 @@ packages:
 
   /is-buffer@1.1.6:
     resolution: {integrity: sha512-NcdALwpXkTm5Zvvbk7owOUSvVvBKDgKP5/ewfXEznmQFfs4ZRmanOeKBTjRVjka3QFoN6XJ+9F3USqfHqTaU5w==}
+    dev: false
+
+  /loglevel@1.8.1:
+    resolution: {integrity: sha512-tCRIJM51SHjAayKwC+QAg8hT8vg6z7GSgLJKGvzuPb1Wc+hLzqtuVLxp6/HzSPOozuK+8ErAhy7U/sVzw8Dgfg==}
+    engines: {node: '>= 0.6.0'}
     dev: false
 
   /md5@2.3.0:

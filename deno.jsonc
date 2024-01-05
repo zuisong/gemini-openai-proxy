@@ -3,9 +3,9 @@
   "nodeModulesDir": false,
   "imports": {
     "@google/generative-ai": "https://esm.sh/@google/generative-ai",
-    "@hono/node-server": "https://esm.sh/@hono/node-server",
     "hono": "https://esm.sh/hono",
     "hono/": "https://esm.sh/hono/",
+    "loglevel": "https://esm.sh/loglevel",
     "openai": "https://esm.sh/openai"
   },
   "lock": false

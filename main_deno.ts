@@ -1,4 +1,4 @@
-import { app } from "./src/app.ts";
+import { app } from "./src/app.ts"
 
 // @ts-ignore supress idea warning
-Deno.serve(app.fetch);
+Deno.serve(app.fetch)
