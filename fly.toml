@@ -1,0 +1,22 @@
+app = "gemini-openai-proxy"
+primary_region = "lax"
+
+[build]
+
+[env]
+PORT = "8000"
+
+[processes]
+
+[http_service]
+internal_port = 8000
+force_https = true
+auto_stop_machines = true
+auto_start_machines = true
+min_machines_running = 0
+processes = ["app"]
+
+[[vm]]
+cpu_kind = "shared"
+cpus = 1
+memory_mb = 1024
