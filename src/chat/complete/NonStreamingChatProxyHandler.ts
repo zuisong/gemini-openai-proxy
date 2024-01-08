@@ -2,6 +2,7 @@ import { Content, GoogleGenerativeAI } from "@google/generative-ai"
 import { Context } from "hono/"
 import { OpenAI } from "openai"
 import log from "loglevel"
+import { hasImageMesasge, openAIMessageToGeminiMessage } from "../../utils.ts"
 
 export const NonStreamingChatProxyHandler = async (
   c: Context,
@@ -9,7 +10,7 @@ export const NonStreamingChatProxyHandler = async (
   genAI: GoogleGenerativeAI,
 ) => {
   const model = genAI.getGenerativeModel({
-    model: "gemini-pro",
+    model: hasImageMesasge(req.messages) ? "gemini-pro-vision" : "gemini-pro",
     generationConfig: {
       maxOutputTokens: req.max_tokens ?? undefined,
       temperature: req.temperature ?? undefined,
@@ -17,19 +18,7 @@ export const NonStreamingChatProxyHandler = async (
   })
   const geminiResp: string = await model
     .generateContent({
-      contents: req.messages
-        .map((msg) => {
-          return {
-            role: ["user", "system"].includes(msg.role) ? "user" : "model",
-            parts: [{ text: msg.content?.toString() ?? "" }],
-          } satisfies Content
-        })
-        .flatMap((it, idx, arr) =>
-          // 连续出现两个user消息 是不允许的
-          it.role === arr.at(idx + 1)?.role
-            ? [it, { role: "model", parts: [{ text: "" }] }]
-            : [it],
-        ),
+      contents: openAIMessageToGeminiMessage(req.messages),
     })
     .then((it) => it.response.text())
     .catch((err) => err?.message ?? err.toString())
