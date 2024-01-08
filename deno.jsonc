@@ -2,11 +2,10 @@
   "$schema": "https://deno.land/x/deno/cli/schemas/config-file.v1.json",
   "nodeModulesDir": false,
   "imports": {
-    "@google/generative-ai": "https://esm.sh/@google/generative-ai",
-    "hono": "https://esm.sh/hono",
-    "hono/": "https://esm.sh/hono/",
-    "loglevel": "https://esm.sh/loglevel",
-    "openai": "https://esm.sh/openai"
+    "@google/generative-ai": "npm:/@google/generative-ai",
+    "hono/": "npm:/hono/",
+    "loglevel": "npm:/loglevel",
+    "openai": "npm:/openai"
   },
   "lock": false
 }
