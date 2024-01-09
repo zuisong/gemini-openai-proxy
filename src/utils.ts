@@ -1,6 +1,5 @@
-import { OpenAI } from "openai"
-import { Content, Part } from "@google/generative-ai"
-
+import type { OpenAI } from "openai"
+import type { Content, Part } from "@google/generative-ai"
 export function getToken(headers: Record<string, string>): string | null {
   for (const [k, v] of Object.entries(headers)) {
     if (k.toLowerCase() === "authorization") {
@@ -11,18 +10,17 @@ export function getToken(headers: Record<string, string>): string | null {
 }
 
 function parseBase64(base64: string): Part {
-  const arr = base64.split(",");
-  const match = arr[0].match(/:(.*?);/);
-  if (match) {
-    const mimeType = match[1];
-    return {
-      inlineData: {
-        mimeType,
-        data: arr[1],
-      }
-    }
+  if (!base64.startsWith("data:")) {
+    return { text: "" }
   }
-  return { text: "" }
+  const [m, data, ..._arr] = base64.split(",")
+  const mimeType = m.match(/:(?<mime>.*?);/)?.groups?.mime ?? "img/png"
+  return {
+    inlineData: {
+      mimeType: mimeType,
+      data,
+    },
+  }
 }
 
 export function openAIMessageToGeminiMessage(

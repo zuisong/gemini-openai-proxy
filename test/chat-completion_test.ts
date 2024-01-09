@@ -1,7 +1,7 @@
 import assert from "node:assert/strict"
 import * as process from "node:process"
 import { test } from "node:test"
-import { OpenAI } from "openai"
+import type { OpenAI } from "openai"
 import { app } from "../src/app.ts"
 
 test("test", async () => {

@@ -1,6 +1,6 @@
-import { Content, GoogleGenerativeAI } from "@google/generative-ai"
-import { Context } from "hono/"
-import { OpenAI } from "openai"
+import type { GoogleGenerativeAI } from "@google/generative-ai"
+import type { Context } from "hono/"
+import type { OpenAI } from "openai"
 import { streamSSE } from "hono/streaming"
 import log from "loglevel"
 import { hasImageMesasge, openAIMessageToGeminiMessage } from "../../utils.ts"
@@ -8,10 +8,10 @@ import { hasImageMesasge, openAIMessageToGeminiMessage } from "../../utils.ts"
 export const StreamingChatProxyHandler = async (
   c: Context,
   req: OpenAI.Chat.ChatCompletionCreateParamsStreaming,
-  genAI: GoogleGenerativeAI,
+  genAi: GoogleGenerativeAI,
 ) => {
-  const model = genAI.getGenerativeModel({
-    model: hasImageMesasge(req.messages) ?"gemini-pro-vision" : "gemini-pro",
+  const model = genAi.getGenerativeModel({
+    model: hasImageMesasge(req.messages) ? "gemini-pro-vision" : "gemini-pro",
     generationConfig: {
       maxOutputTokens: req.max_tokens ?? undefined,
       temperature: req.temperature ?? undefined,
