@@ -14,13 +14,6 @@ env:
   IMAGE_NAME: ghcr.io/${{ github.repository }}
 
 jobs:
-  create-release:
-    runs-on: ubuntu-latest
-    steps:
-      - uses: actions/checkout@v4
-      - uses: taiki-e/create-gh-release-action@v1
-        with:
-          token: ${{ secrets.GITHUB_TOKEN }}
   build-image:
     strategy:
       fail-fast: false
