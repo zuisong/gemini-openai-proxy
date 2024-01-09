@@ -26,7 +26,23 @@ deno task start:deno
 ### node
 
 ```shell
-pnpm install && pnpm run start:node
+npm install && npm run start:node
+```
+
+### bun
+
+```shell
+bun run start:bun
+```
+
+### docker
+
+```shell
+docker run -d -p 8000:8000 ghcr.io/zuisong/gemini-openai-proxy:deno
+## or
+docker run -d -p 8000:8000 ghcr.io/zuisong/gemini-openai-proxy:bun
+## or
+docker run -d -p 8000:8000 ghcr.io/zuisong/gemini-openai-proxy:node
 ```
 
 then you got a openai server at `http://localhost:8000`

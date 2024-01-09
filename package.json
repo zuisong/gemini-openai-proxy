@@ -1,6 +1,6 @@
 {
   "name": "gemini-openai-proxy",
-  "version": "0.0.1",
+  "version": "0.1.0",
   "author": "zuisong",
   "type": "module",
   "license": "MIT",

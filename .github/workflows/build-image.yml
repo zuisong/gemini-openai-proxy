@@ -51,4 +51,6 @@ jobs:
           file: Dockerfile_${{ matrix.runtime }}
           platforms: linux/amd64,linux/arm64
           push: true
-          tags: ${{ env.IMAGE_NAME }}:${{ env.IMAGE_TAG }}_${{ matrix.runtime }}
+          tags: |
+            ${{ env.IMAGE_NAME }}:${{ env.IMAGE_TAG }}_${{ matrix.runtime }}
+            ${{ env.IMAGE_NAME }}:${{ matrix.runtime }}
