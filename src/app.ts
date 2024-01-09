@@ -1,4 +1,4 @@
-import { Hono } from "hono/"
+import { Hono } from "hono"
 import { cors } from "hono/cors"
 import { getRuntimeKey } from "hono/adapter"
 import { logger } from "hono/logger"

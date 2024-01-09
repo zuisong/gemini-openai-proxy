@@ -4,6 +4,7 @@
   "imports": {
     "@google/generative-ai": "npm:/@google/generative-ai",
     "hono/": "npm:/hono/",
+    "hono": "npm:/hono",
     "loglevel": "npm:/loglevel",
     "openai": "npm:/openai"
   },
