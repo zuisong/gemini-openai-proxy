@@ -26,13 +26,25 @@ function parseBase64(base64: string): Part {
 export function openAIMessageToGeminiMessage(
   messages: Array<OpenAI.Chat.ChatCompletionMessageParam>,
 ): Array<Content> {
-  const systemMessage: Part[] = messages
+  const systemMessage = messages
     .filter((msg) => msg.role === "system")
     .map((msg) => {
       const { content } = msg as OpenAI.ChatCompletionSystemMessageParam
       return {
         text: content,
-      }
+      } satisfies Part
+    })
+    .flatMap((sysMessage) => {
+      return [
+        {
+          role: "user",
+          parts: [sysMessage],
+        },
+        {
+          role: "model",
+          parts: [{ text: "" }],
+        },
+      ]
     })
 
   const result = messages
@@ -54,11 +66,11 @@ export function openAIMessageToGeminiMessage(
 
       return {
         role: "user" === role ? "user" : "model",
-        parts: [...systemMessage, ...parts],
+        parts: parts,
       } satisfies Content
     })
 
-  return result
+  return [...systemMessage, ...result]
 }
 
 export function hasImageMessage(
