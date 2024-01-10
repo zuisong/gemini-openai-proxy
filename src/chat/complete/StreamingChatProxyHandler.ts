@@ -1,15 +1,16 @@
-import type { GoogleGenerativeAI } from "@google/generative-ai"
-import type { Context } from "hono/"
 import type { OpenAI } from "openai"
 import { streamSSE } from "hono/streaming"
-import log from "loglevel"
 import { hasImageMesasge, openAIMessageToGeminiMessage } from "../../utils.ts"
+import { ChatProxyHandlerType } from "./ChatProxyHandler.ts"
+import { Logger } from "../../log.ts"
 
-export const StreamingChatProxyHandler = async (
-  c: Context,
-  req: OpenAI.Chat.ChatCompletionCreateParamsStreaming,
-  genAi: GoogleGenerativeAI,
+export const streamingChatProxyHandler: ChatProxyHandlerType = async (
+  c,
+  req,
+  genAi,
 ) => {
+  const log = c.get("log") as Logger
+
   const model = genAi.getGenerativeModel({
     model: hasImageMesasge(req.messages) ? "gemini-pro-vision" : "gemini-pro",
     generationConfig: {
@@ -17,16 +18,10 @@ export const StreamingChatProxyHandler = async (
       temperature: req.temperature ?? undefined,
     },
   })
-  const geminiResp: string = await model
-    .generateContent({
-      contents: openAIMessageToGeminiMessage(req.messages),
-    })
-    .then((it) => it.response.text())
-    .catch((err) => err?.message ?? err.toString())
 
-  log.debug(JSON.stringify(geminiResp))
-
-  const resp: OpenAI.Chat.ChatCompletionChunk = {
+  const resp: (geminiResp: string) => OpenAI.Chat.ChatCompletionChunk = (
+    geminiResp: string,
+  ) => ({
     id: "chatcmpl-abc123",
     object: "chat.completion.chunk",
     created: Date.now(),
@@ -42,11 +37,26 @@ export const StreamingChatProxyHandler = async (
         index: 0,
       },
     ],
-  }
+  })
 
-  return streamSSE(c, async (stream) => {
-    await stream.writeSSE({ data: JSON.stringify(resp) })
-    await stream.writeSSE({ data: "[DONE]" })
-    await stream.close()
+  return streamSSE(c, async (sseStream) => {
+    await model
+      .generateContentStream({
+        contents: openAIMessageToGeminiMessage(req.messages),
+      })
+      .then(async ({ stream }) => {
+        let geminiResult = ""
+        for await (const { text } of stream) {
+          geminiResult += text()
+          log.info(JSON.stringify(geminiResult))
+          await sseStream.writeSSE({ data: JSON.stringify(resp(geminiResult)) })
+        }
+      })
+      .catch(async (e) => {
+        await sseStream.writeSSE({ data: JSON.stringify(resp(e.toString())) })
+      })
+
+    await sseStream.writeSSE({ data: "[DONE]" })
+    await sseStream.close()
   })
 }

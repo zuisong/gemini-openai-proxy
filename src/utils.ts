@@ -33,13 +33,12 @@ export function openAIMessageToGeminiMessage(
       if (typeof content === "string") {
         parts = [{ text: content?.toString() ?? "" }]
       } else {
-        parts =
-          content?.map((item) => {
-            if (item.type === "image_url") {
-              return parseBase64(item.image_url.url)
-            }
-            return { text: item.text }
-          }) ?? []
+        parts = (content ?? []).map((item) => {
+          if (item.type === "image_url") {
+            return parseBase64(item.image_url.url)
+          }
+          return { text: item.text }
+        })
       }
 
       return {

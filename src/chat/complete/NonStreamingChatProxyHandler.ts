@@ -1,14 +1,15 @@
-import type { GoogleGenerativeAI } from "@google/generative-ai"
-import type { Context } from "hono/"
 import type { OpenAI } from "openai"
-import log from "loglevel"
 import { hasImageMesasge, openAIMessageToGeminiMessage } from "../../utils.ts"
+import { ChatProxyHandlerType } from "./ChatProxyHandler.ts"
+import { Logger } from "../../log.ts"
 
-export const NonStreamingChatProxyHandler = async (
-  c: Context,
-  req: OpenAI.Chat.ChatCompletionCreateParamsNonStreaming,
-  genAi: GoogleGenerativeAI,
+export const nonStreamingChatProxyHandler: ChatProxyHandlerType = async (
+  c,
+  req,
+  genAi,
 ) => {
+  const log = c.get("log") as Logger
+
   const model = genAi.getGenerativeModel({
     model: hasImageMesasge(req.messages) ? "gemini-pro-vision" : "gemini-pro",
     generationConfig: {

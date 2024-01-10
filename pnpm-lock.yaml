@@ -14,9 +14,6 @@ dependencies:
   hono:
     specifier: ^3.12.0
     version: 3.12.0
-  loglevel:
-    specifier: ^1.8.1
-    version: 1.8.1
   openai:
     specifier: ^4.24.1
     version: 4.24.1
@@ -412,11 +409,6 @@ packages:
 
   /is-buffer@1.1.6:
     resolution: {integrity: sha512-NcdALwpXkTm5Zvvbk7owOUSvVvBKDgKP5/ewfXEznmQFfs4ZRmanOeKBTjRVjka3QFoN6XJ+9F3USqfHqTaU5w==}
-    dev: false
-
-  /loglevel@1.8.1:
-    resolution: {integrity: sha512-tCRIJM51SHjAayKwC+QAg8hT8vg6z7GSgLJKGvzuPb1Wc+hLzqtuVLxp6/HzSPOozuK+8ErAhy7U/sVzw8Dgfg==}
-    engines: {node: '>= 0.6.0'}
     dev: false
 
   /md5@2.3.0:

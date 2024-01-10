@@ -1,11 +1,15 @@
 import { GoogleGenerativeAI } from "@google/generative-ai"
-import type { Handler } from "hono/"
+import type { Handler } from "hono"
 import type { OpenAI } from "openai"
-import log from "loglevel"
 import { getToken } from "../../utils.ts"
-import { NonStreamingChatProxyHandler } from "./NonStreamingChatProxyHandler.ts"
-import { StreamingChatProxyHandler } from "./StreamingChatProxyHandler.ts"
-export const ChatProxyHandler: Handler = async (c) => {
+import { nonStreamingChatProxyHandler } from "./NonStreamingChatProxyHandler.ts"
+import { streamingChatProxyHandler } from "./StreamingChatProxyHandler.ts"
+import { Context } from "hono"
+import { Logger } from "../../log.ts"
+
+export const chatProxyHandler: Handler = async (c) => {
+  const log = c.get("log") as Logger
+
   const req = await c.req.json<OpenAI.Chat.ChatCompletionCreateParams>()
   log.debug(JSON.stringify(req))
   const headers = c.req.header()
@@ -16,7 +20,15 @@ export const ChatProxyHandler: Handler = async (c) => {
   const genAi = new GoogleGenerativeAI(apiKey)
 
   if (req.stream === true) {
-    return StreamingChatProxyHandler(c, req, genAi)
+    return streamingChatProxyHandler(c, req, genAi)
   }
-  return NonStreamingChatProxyHandler(c, req, genAi)
+  return nonStreamingChatProxyHandler(c, req, genAi)
+}
+
+export interface ChatProxyHandlerType {
+  (
+    c: Context,
+    req: OpenAI.Chat.ChatCompletionCreateParams,
+    genAi: GoogleGenerativeAI,
+  ): ReturnType<Handler>
 }
