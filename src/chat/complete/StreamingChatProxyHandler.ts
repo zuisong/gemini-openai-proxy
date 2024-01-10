@@ -44,16 +44,15 @@ export const streamingChatProxyHandler: ChatProxyHandlerType = async (
         contents: openAIMessageToGeminiMessage(req.messages),
       })
       .then(async ({ stream, response }) => {
-        let geminiResult = ""
         for await (const { text } of stream) {
-          geminiResult += text()
           await sseStream.writeSSE({
-            data: JSON.stringify(genOpenAIResp(geminiResult, false)),
+            data: JSON.stringify(genOpenAIResp(text(), false)),
           })
         }
         await sseStream.writeSSE({
-          data: JSON.stringify(genOpenAIResp((await response).text(), true)),
+          data: JSON.stringify(genOpenAIResp("", true)),
         })
+        let geminiResult = (await response).text();
         log.info(geminiResult)
       })
       .catch(async (e) => {

@@ -7,12 +7,23 @@ import { chatProxyHandler } from "./chat/complete/ChatProxyHandler.ts"
 import { Logger, gen_logger } from "./log.ts"
 
 export const app = new Hono({ strict: true })
-  .use("*", cors({ origin: (it) => it }), timing(), logger())
+  .use(
+    "*",
+    cors({
+      origin: (it) => it,
+      allowMethods: ["POST", "GET", "OPTIONS"],
+    }),
+    timing(),
+    logger(),
+  )
   .use("*", async (c, next) => {
     const logger = gen_logger(`${Date.now()}_${Math.random()}`)
     c.set("log", logger)
     await next()
     c.set("log", null)
+  })
+  .options("*", (c) => {
+    return c.text("", 204)
   })
   .get("/", (c) => {
     const log = c.get("log") as Logger
