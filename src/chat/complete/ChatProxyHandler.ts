@@ -7,7 +7,9 @@ import { streamingChatProxyHandler } from "./StreamingChatProxyHandler.ts"
 import { Context } from "hono"
 import { Logger } from "../../log.ts"
 
-export const chatProxyHandler: Handler = async (c) => {
+export const chatProxyHandler: Handler<{ Variables: { log: Logger } }> = async (
+  c,
+) => {
   const log = c.get("log") as Logger
 
   const req = await c.req.json<OpenAI.Chat.ChatCompletionCreateParams>()

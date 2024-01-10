@@ -39,8 +39,9 @@ export function openAIMessageToGeminiMessage(
     .filter((msg) => msg.role !== "system")
     .map(({ role, content }) => {
       let parts: Part[]
-
-      if (typeof content === "string") {
+      if (content == null) {
+        parts = [{ text: "" }]
+      } else if (typeof content === "string") {
         parts = [{ text: content }]
       } else {
         parts = content.map((item) => {

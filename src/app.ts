@@ -1,4 +1,4 @@
-import { Hono } from "hono"
+import { Context, Hono } from "hono"
 import { cors } from "hono/cors"
 import { getRuntimeKey } from "hono/adapter"
 import { logger } from "hono/logger"
@@ -16,18 +16,17 @@ export const app = new Hono({ strict: true })
     timing(),
     logger(),
   )
-  .use("*", async (c, next) => {
+  .use("*", async (c: Context<{ Variables: { log: Logger } }>, next) => {
     const logger = gen_logger(`${Date.now()}_${Math.random()}`)
     c.set("log", logger)
     await next()
-    c.set("log", null)
   })
   .options("*", (c) => {
     return c.text("", 204)
   })
-  .get("/", (c) => {
+  .get("/", (c: Context<{ Variables: { log: Logger } }>) => {
     const log = c.get("log") as Logger
-    console.log(log)
+    log.info(`Hello Gemini-OpenAI-Proxy from ${getRuntimeKey()}!`)
     return c.text(`Hello Gemini-OpenAI-Proxy from ${getRuntimeKey()}!`)
   })
   .post("/v1/chat/completions", chatProxyHandler)
