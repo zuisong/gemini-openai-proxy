@@ -10,7 +10,7 @@ import { Logger } from "../../log.ts"
 export const chatProxyHandler: Handler<{ Variables: { log: Logger } }> = async (
   c,
 ) => {
-  const log = c.get("log") as Logger
+  const log = c.get("log")
 
   const req = await c.req.json<OpenAI.Chat.ChatCompletionCreateParams>()
   log.debug(JSON.stringify(req))
@@ -29,7 +29,7 @@ export const chatProxyHandler: Handler<{ Variables: { log: Logger } }> = async (
 
 export interface ChatProxyHandlerType {
   (
-    c: Context,
+    c: Context<{ Variables: { log: Logger } }>,
     req: OpenAI.Chat.ChatCompletionCreateParams,
     genAi: GoogleGenerativeAI,
   ): ReturnType<Handler>

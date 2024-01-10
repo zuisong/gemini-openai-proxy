@@ -1,6 +1,6 @@
 import type { OpenAI } from "openai"
 import { streamSSE } from "hono/streaming"
-import { hasImageMessage, openAIMessageToGeminiMessage } from "../../utils.ts"
+import { genModel, openAIMessageToGeminiMessage } from "../../utils.ts"
 import { ChatProxyHandlerType } from "./ChatProxyHandler.ts"
 import { Logger } from "../../log.ts"
 
@@ -9,17 +9,10 @@ export const streamingChatProxyHandler: ChatProxyHandlerType = async (
   req,
   genAi,
 ) => {
-  const log = c.get("log") as Logger
+  const log = c.get("log")
+  const model = genModel(genAi, req)
 
-  const model = genAi.getGenerativeModel({
-    model: hasImageMessage(req.messages) ? "gemini-pro-vision" : "gemini-pro",
-    generationConfig: {
-      maxOutputTokens: req.max_tokens ?? undefined,
-      temperature: req.temperature ?? undefined,
-    },
-  })
-
-  const genOpenAIResp = (content: string, stoped: boolean) =>
+  const genOpenAIResp = (content: string, stop: boolean) =>
     ({
       id: "chatcmpl-abc123",
       object: "chat.completion.chunk",
@@ -27,12 +20,8 @@ export const streamingChatProxyHandler: ChatProxyHandlerType = async (
       model: req.model,
       choices: [
         {
-          delta: {
-            role: "assistant",
-            content: content,
-          },
-          logprobs: null,
-          finish_reason: stoped ? "stop" : null,
+          delta: { role: "assistant", content: content },
+          finish_reason: stop ? "stop" : null,
           index: 0,
         },
       ],
@@ -53,7 +42,7 @@ export const streamingChatProxyHandler: ChatProxyHandlerType = async (
           data: JSON.stringify(genOpenAIResp("", true)),
         })
         const geminiResult = (await response).text()
-        log.info(geminiResult)
+        log.info(JSON.stringify(geminiResult))
       })
       .catch(async (e) => {
         await sseStream.writeSSE({

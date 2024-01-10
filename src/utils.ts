@@ -1,5 +1,6 @@
 import type { OpenAI } from "openai"
-import type { Content, Part } from "@google/generative-ai"
+import type { Content, GoogleGenerativeAI, Part } from "@google/generative-ai"
+
 export function getToken(headers: Record<string, string>): string | null {
   for (const [k, v] of Object.entries(headers)) {
     if (k.toLowerCase() === "authorization") {
@@ -26,51 +27,27 @@ function parseBase64(base64: string): Part {
 export function openAIMessageToGeminiMessage(
   messages: Array<OpenAI.Chat.ChatCompletionMessageParam>,
 ): Array<Content> {
-  const systemMessage = messages
-    .filter((msg) => msg.role === "system")
-    .map((msg) => {
-      const { content } = msg as OpenAI.ChatCompletionSystemMessageParam
-      return {
-        text: content,
-      } satisfies Part
-    })
-    .flatMap((sysMessage) => {
+  const result: Content[] = messages.flatMap(({ role, content }) => {
+    if (role === "system") {
       return [
-        {
-          role: "user",
-          parts: [sysMessage],
-        },
-        {
-          role: "model",
-          parts: [{ text: "" }],
-        },
+        { role: "user", parts: [{ text: content }] },
+        { role: "model", parts: [{ text: "" }] },
       ]
-    })
+    }
 
-  const result = messages
-    .filter((msg) => msg.role !== "system")
-    .map(({ role, content }) => {
-      let parts: Part[]
-      if (content == null) {
-        parts = [{ text: "" }]
-      } else if (typeof content === "string") {
-        parts = [{ text: content }]
-      } else {
-        parts = content.map((item) => {
-          if (item.type === "image_url") {
-            return parseBase64(item.image_url.url)
-          }
-          return { text: item.text }
-        })
-      }
+    const parts: Part[] =
+      content == null || typeof content === "string"
+        ? [{ text: content?.toString() ?? "" }]
+        : content.map((item) =>
+            item.type === "text"
+              ? { text: item.text }
+              : parseBase64(item.image_url.url),
+          )
 
-      return {
-        role: "user" === role ? "user" : "model",
-        parts: parts,
-      } satisfies Content
-    })
+    return [{ role: "user" === role ? "user" : "model", parts: parts }]
+  })
 
-  return [...systemMessage, ...result]
+  return result
 }
 
 export function hasImageMessage(
@@ -82,4 +59,21 @@ export function hasImageMessage(
     if (typeof content === "string") return false
     return content.some((it) => it.type === "image_url")
   })
+}
+
+export function genModel(
+  genAi: GoogleGenerativeAI,
+  req:
+    | OpenAI.ChatCompletionCreateParamsNonStreaming
+    | OpenAI.ChatCompletionCreateParamsStreaming,
+) {
+  const model = genAi.getGenerativeModel({
+    model: hasImageMessage(req.messages) ? "gemini-pro-vision" : "gemini-pro",
+    generationConfig: {
+      maxOutputTokens: req.max_tokens ?? undefined,
+      temperature: req.temperature ?? undefined,
+      topP: req.top_p ?? undefined,
+    },
+  })
+  return model
 }
