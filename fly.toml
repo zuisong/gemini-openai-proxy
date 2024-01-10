@@ -2,9 +2,9 @@ app = "gemini-openai-proxy"
 primary_region = "lax"
 
 [build]
+dockerfile = "docker/Dockerfile_deno"
 
 [env]
-PORT = "8000"
 
 [processes]
 
@@ -19,4 +19,11 @@ processes = ["app"]
 [[vm]]
 cpu_kind = "shared"
 cpus = 1
-memory_mb = 1024
+memory = "512MB"
+
+[[services.http_checks]]
+interval = "1m"
+method = "get"
+path = "/"
+protocol = "https"
+timeout = "5s"
