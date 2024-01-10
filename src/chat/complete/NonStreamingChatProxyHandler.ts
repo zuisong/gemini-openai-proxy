@@ -1,5 +1,5 @@
 import type { OpenAI } from "openai"
-import { hasImageMesasge, openAIMessageToGeminiMessage } from "../../utils.ts"
+import { hasImageMessage, openAIMessageToGeminiMessage } from "../../utils.ts"
 import { ChatProxyHandlerType } from "./ChatProxyHandler.ts"
 import { Logger } from "../../log.ts"
 
@@ -11,7 +11,7 @@ export const nonStreamingChatProxyHandler: ChatProxyHandlerType = async (
   const log = c.get("log") as Logger
 
   const model = genAi.getGenerativeModel({
-    model: hasImageMesasge(req.messages) ? "gemini-pro-vision" : "gemini-pro",
+    model: hasImageMessage(req.messages) ? "gemini-pro-vision" : "gemini-pro",
     generationConfig: {
       maxOutputTokens: req.max_tokens ?? undefined,
       temperature: req.temperature ?? undefined,

@@ -26,14 +26,24 @@ function parseBase64(base64: string): Part {
 export function openAIMessageToGeminiMessage(
   messages: Array<OpenAI.Chat.ChatCompletionMessageParam>,
 ): Array<Content> {
+  const systemMessage: Part[] = messages
+    .filter((msg) => msg.role === "system")
+    .map((msg) => {
+      const { content } = msg as OpenAI.ChatCompletionSystemMessageParam
+      return {
+        text: content,
+      }
+    })
+
   const result = messages
+    .filter((msg) => msg.role !== "system")
     .map(({ role, content }) => {
       let parts: Part[]
 
       if (typeof content === "string") {
-        parts = [{ text: content?.toString() ?? "" }]
+        parts = [{ text: content }]
       } else {
-        parts = (content ?? []).map((item) => {
+        parts = content.map((item) => {
           if (item.type === "image_url") {
             return parseBase64(item.image_url.url)
           }
@@ -42,21 +52,15 @@ export function openAIMessageToGeminiMessage(
       }
 
       return {
-        role: ["user", "system"].includes(role) ? "user" : "model",
-        parts,
+        role: "user" === role ? "user" : "model",
+        parts: [...systemMessage, ...parts],
       } satisfies Content
     })
-    .flatMap((it, idx, arr) =>
-      // 连续出现两个user消息 是不允许的
-      it.role === arr.at(idx + 1)?.role
-        ? [it, { role: "model", parts: [{ text: "" }] }]
-        : [it],
-    )
 
   return result
 }
 
-export function hasImageMesasge(
+export function hasImageMessage(
   messages: Array<OpenAI.Chat.ChatCompletionMessageParam>,
 ): boolean {
   return messages.some((msg) => {

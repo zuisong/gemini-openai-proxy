@@ -1,6 +1,6 @@
 import type { OpenAI } from "openai"
 import { streamSSE } from "hono/streaming"
-import { hasImageMesasge, openAIMessageToGeminiMessage } from "../../utils.ts"
+import { hasImageMessage, openAIMessageToGeminiMessage } from "../../utils.ts"
 import { ChatProxyHandlerType } from "./ChatProxyHandler.ts"
 import { Logger } from "../../log.ts"
 
@@ -12,48 +12,55 @@ export const streamingChatProxyHandler: ChatProxyHandlerType = async (
   const log = c.get("log") as Logger
 
   const model = genAi.getGenerativeModel({
-    model: hasImageMesasge(req.messages) ? "gemini-pro-vision" : "gemini-pro",
+    model: hasImageMessage(req.messages) ? "gemini-pro-vision" : "gemini-pro",
     generationConfig: {
       maxOutputTokens: req.max_tokens ?? undefined,
       temperature: req.temperature ?? undefined,
     },
   })
 
-  const resp: (geminiResp: string) => OpenAI.Chat.ChatCompletionChunk = (
-    geminiResp: string,
-  ) => ({
-    id: "chatcmpl-abc123",
-    object: "chat.completion.chunk",
-    created: Date.now(),
-    model: req.model,
-    choices: [
-      {
-        delta: {
-          role: "assistant",
-          content: geminiResp,
+  const genOpenAIResp = (content: string, stoped: boolean) =>
+    ({
+      id: "chatcmpl-abc123",
+      object: "chat.completion.chunk",
+      created: Date.now(),
+      model: req.model,
+      choices: [
+        {
+          delta: {
+            role: "assistant",
+            content: content,
+          },
+          logprobs: null,
+          finish_reason: stoped ? "stop" : null,
+          index: 0,
         },
-        logprobs: null,
-        finish_reason: "stop",
-        index: 0,
-      },
-    ],
-  })
+      ],
+    }) satisfies OpenAI.Chat.ChatCompletionChunk
 
   return streamSSE(c, async (sseStream) => {
     await model
       .generateContentStream({
         contents: openAIMessageToGeminiMessage(req.messages),
       })
-      .then(async ({ stream }) => {
+      .then(async ({ stream, response }) => {
         let geminiResult = ""
         for await (const { text } of stream) {
           geminiResult += text()
-          log.info(JSON.stringify(geminiResult))
-          await sseStream.writeSSE({ data: JSON.stringify(resp(geminiResult)) })
+          await sseStream.writeSSE({
+            data: JSON.stringify(genOpenAIResp(geminiResult, false)),
+          })
         }
+        await sseStream.writeSSE({
+          data: JSON.stringify(genOpenAIResp((await response).text(), true)),
+        })
+        log.info(geminiResult)
       })
       .catch(async (e) => {
-        await sseStream.writeSSE({ data: JSON.stringify(resp(e.toString())) })
+        await sseStream.writeSSE({
+          data: JSON.stringify(genOpenAIResp(e.toString(), true)),
+        })
+        log.info(e)
       })
 
     await sseStream.writeSSE({ data: "[DONE]" })
