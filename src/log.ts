@@ -1,24 +1,22 @@
-const LogLevel = {
-  error: 3,
-  warn: 4,
-  info: 5,
-  debug: 7,
-} as const
-type Any = Parameters<typeof console.log>[0]
-
-export type Logger = {
-  [K in keyof typeof LogLevel]: (msg: Any) => void
+enum LogLevel {
+  error = 3,
+  warn = 4,
+  info = 5,
+  debug = 7,
 }
+type Any = Parameters<typeof console.log>[0]
 
 const currentlevel = LogLevel.debug
 
-export function gen_logger(id: string): Logger {
+export function gen_logger(id: string) {
   return mapValues(LogLevel, (value, name) => {
     return (msg: Any) => {
       out_func(name, value, `${id} ${msg}`)
     }
   })
 }
+
+export type Logger = ReturnType<typeof gen_logger>
 
 function out_func(levelName: string, levelValue: number, msg: string) {
   if (levelValue > currentlevel) {
