@@ -5,6 +5,7 @@
     "@google/generative-ai": "npm:/@google/generative-ai",
     "hono/": "npm:/hono/",
     "hono": "npm:/hono",
+    "dotenv": "npm:/dotenv",
     "openai": "npm:/openai"
   },
   "lock": false,

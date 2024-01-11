@@ -4,12 +4,9 @@ import type { OpenAI } from "openai"
 import { getToken } from "../../utils.ts"
 import { nonStreamingChatProxyHandler } from "./NonStreamingChatProxyHandler.ts"
 import { streamingChatProxyHandler } from "./StreamingChatProxyHandler.ts"
-import { Context } from "hono"
-import { Logger } from "../../log.ts"
+import { ContextWithLogger } from "../../app.ts"
 
-export const chatProxyHandler: Handler<{ Variables: { log: Logger } }> = async (
-  c,
-) => {
+export const chatProxyHandler: Handler = async (c: ContextWithLogger) => {
   const log = c.get("log")
 
   const req = await c.req.json<OpenAI.Chat.ChatCompletionCreateParams>()
@@ -29,7 +26,7 @@ export const chatProxyHandler: Handler<{ Variables: { log: Logger } }> = async (
 
 export interface ChatProxyHandlerType {
   (
-    c: Context<{ Variables: { log: Logger } }>,
+    c: ContextWithLogger,
     req: OpenAI.Chat.ChatCompletionCreateParams,
     genAi: GoogleGenerativeAI,
   ): ReturnType<Handler>

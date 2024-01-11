@@ -16,17 +16,20 @@ export const app = new Hono({ strict: true })
     timing(),
     logger(),
   )
-  .use("*", async (c: Context<{ Variables: { log: Logger } }>, next) => {
-    const logger = gen_logger(`${Date.now()}_${Math.random()}`)
+  .use("*", async (c: ContextWithLogger, next) => {
+    const logger = gen_logger(crypto.randomUUID())
     c.set("log", logger)
     await next()
   })
   .options("*", (c) => {
     return c.text("", 204)
   })
-  .get("/", (c: Context<{ Variables: { log: Logger } }>) => {
+  .get("/", (c: ContextWithLogger) => {
     const log = c.get("log") as Logger
-    log.info(`Hello Gemini-OpenAI-Proxy from ${getRuntimeKey()}!`)
-    return c.text(`Hello Gemini-OpenAI-Proxy from ${getRuntimeKey()}!`)
+    const text = `Hello Gemini-OpenAI-Proxy from ${getRuntimeKey()}!`
+    log.info(text)
+    return c.text(text)
   })
   .post("/v1/chat/completions", chatProxyHandler)
+
+export type ContextWithLogger = Context<{ Variables: { log: Logger } }>

@@ -50,7 +50,7 @@ export function openAIMessageToGeminiMessage(
   return result
 }
 
-export function hasImageMessage(
+function hasImageMessage(
   messages: Array<OpenAI.Chat.ChatCompletionMessageParam>,
 ): boolean {
   return messages.some((msg) => {
@@ -68,7 +68,9 @@ export function genModel(
     | OpenAI.ChatCompletionCreateParamsStreaming,
 ) {
   const model = genAi.getGenerativeModel({
-    model: hasImageMessage(req.messages) ? "gemini-pro-vision" : "gemini-pro",
+    model: hasImageMessage(req.messages)
+      ? GeminiModel.GEMINI_PRO_VISION
+      : GeminiModel.GEMINI_PRO,
     generationConfig: {
       maxOutputTokens: req.max_tokens ?? undefined,
       temperature: req.temperature ?? undefined,
@@ -76,4 +78,8 @@ export function genModel(
     },
   })
   return model
+}
+enum GeminiModel {
+  GEMINI_PRO = "gemini-pro",
+  GEMINI_PRO_VISION = "gemini-pro-vision",
 }

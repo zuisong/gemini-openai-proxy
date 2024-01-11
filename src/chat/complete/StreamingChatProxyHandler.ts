@@ -2,7 +2,6 @@ import type { OpenAI } from "openai"
 import { streamSSE } from "hono/streaming"
 import { genModel, openAIMessageToGeminiMessage } from "../../utils.ts"
 import { ChatProxyHandlerType } from "./ChatProxyHandler.ts"
-import { Logger } from "../../log.ts"
 
 export const streamingChatProxyHandler: ChatProxyHandlerType = async (
   c,

@@ -3,11 +3,12 @@ import * as process from "node:process"
 import { test } from "node:test"
 import type { OpenAI } from "openai"
 import { app } from "../src/app.ts"
+import "dotenv/config"
 
 test("test", async () => {
   const res = await app.request("/v1/chat/completions", {
     headers: {
-      authorization: process.env.GEMINI_API_KEY ?? "",
+      authorization: `Bearer ${process.env.GEMINI_API_KEY ?? ""}`,
     },
     method: "post",
     body: JSON.stringify({
