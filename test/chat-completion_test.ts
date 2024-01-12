@@ -27,5 +27,7 @@ test("test", async () => {
 })
 
 test("open ai client test", () => {
-  if (typeof globalThis.Deno === "undefined") return
+  if (typeof globalThis.Deno === "undefined") {
+    return
+  }
 })

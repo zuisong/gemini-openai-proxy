@@ -11,14 +11,14 @@ const currentlevel = LogLevel.debug
 export function gen_logger(id: string) {
   return mapValues(LogLevel, (value, name) => {
     return (msg: Any) => {
-      out_func(name, value, `${id} ${msg}`)
+      outFunc(name, value, `${id} ${msg}`)
     }
   })
 }
 
 export type Logger = ReturnType<typeof gen_logger>
 
-function out_func(levelName: string, levelValue: number, msg: string) {
+function outFunc(levelName: string, levelValue: number, msg: string) {
   if (levelValue > currentlevel) {
     return
   }

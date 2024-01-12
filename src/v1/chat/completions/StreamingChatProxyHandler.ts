@@ -1,6 +1,6 @@
 import type { OpenAI } from "openai"
 import { streamSSE } from "hono/streaming"
-import { genModel, openAIMessageToGeminiMessage } from "../../utils.ts"
+import { genModel, openAiMessageToGeminiMessage } from "../../../utils.ts"
 import { ChatProxyHandlerType } from "./ChatProxyHandler.ts"
 
 export const streamingChatProxyHandler: ChatProxyHandlerType = async (
@@ -8,10 +8,10 @@ export const streamingChatProxyHandler: ChatProxyHandlerType = async (
   req,
   genAi,
 ) => {
-  const log = c.get("log")
+  const log = c.var.log
   const model = genModel(genAi, req)
 
-  const genOpenAIResp = (content: string, stop: boolean) =>
+  const genOpenAiResp = (content: string, stop: boolean) =>
     ({
       id: "chatcmpl-abc123",
       object: "chat.completion.chunk",
@@ -29,23 +29,23 @@ export const streamingChatProxyHandler: ChatProxyHandlerType = async (
   return streamSSE(c, async (sseStream) => {
     await model
       .generateContentStream({
-        contents: openAIMessageToGeminiMessage(req.messages),
+        contents: openAiMessageToGeminiMessage(req.messages),
       })
       .then(async ({ stream, response }) => {
         for await (const { text } of stream) {
           await sseStream.writeSSE({
-            data: JSON.stringify(genOpenAIResp(text(), false)),
+            data: JSON.stringify(genOpenAiResp(text(), false)),
           })
         }
         await sseStream.writeSSE({
-          data: JSON.stringify(genOpenAIResp("", true)),
+          data: JSON.stringify(genOpenAiResp("", true)),
         })
         const geminiResult = (await response).text()
         log.info(JSON.stringify(geminiResult))
       })
       .catch(async (e) => {
         await sseStream.writeSSE({
-          data: JSON.stringify(genOpenAIResp(e.toString(), true)),
+          data: JSON.stringify(genOpenAiResp(e.toString(), true)),
         })
         log.info(e)
       })

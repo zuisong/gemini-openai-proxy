@@ -1,13 +1,13 @@
 import { GoogleGenerativeAI } from "@google/generative-ai"
 import type { Handler } from "hono"
 import type { OpenAI } from "openai"
-import { getToken } from "../../utils.ts"
+import { getToken } from "../../../utils.ts"
 import { nonStreamingChatProxyHandler } from "./NonStreamingChatProxyHandler.ts"
 import { streamingChatProxyHandler } from "./StreamingChatProxyHandler.ts"
-import { ContextWithLogger } from "../../app.ts"
+import { ContextWithLogger } from "../../../app.ts"
 
 export const chatProxyHandler: Handler = async (c: ContextWithLogger) => {
-  const log = c.get("log")
+  const log = c.var.log
 
   const req = await c.req.json<OpenAI.Chat.ChatCompletionCreateParams>()
   log.debug(JSON.stringify(req))

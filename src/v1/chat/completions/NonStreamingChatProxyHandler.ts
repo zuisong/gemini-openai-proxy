@@ -1,5 +1,5 @@
 import type { OpenAI } from "openai"
-import { genModel, openAIMessageToGeminiMessage } from "../../utils.ts"
+import { genModel, openAiMessageToGeminiMessage } from "../../../utils.ts"
 import { ChatProxyHandlerType } from "./ChatProxyHandler.ts"
 
 export const nonStreamingChatProxyHandler: ChatProxyHandlerType = async (
@@ -7,11 +7,11 @@ export const nonStreamingChatProxyHandler: ChatProxyHandlerType = async (
   req,
   genAi,
 ) => {
-  const log = c.get("log")
+  const log = c.var.log
   const model = genModel(genAi, req)
   const geminiResp: string = await model
     .generateContent({
-      contents: openAIMessageToGeminiMessage(req.messages),
+      contents: openAiMessageToGeminiMessage(req.messages),
     })
     .then((it) => it.response.text())
     .catch((err) => err?.message ?? err.toString())

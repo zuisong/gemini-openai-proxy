@@ -24,9 +24,9 @@ function parseBase64(base64: string): Part {
   }
 }
 
-export function openAIMessageToGeminiMessage(
-  messages: Array<OpenAI.Chat.ChatCompletionMessageParam>,
-): Array<Content> {
+export function openAiMessageToGeminiMessage(
+  messages: OpenAI.Chat.ChatCompletionMessageParam[],
+): Content[] {
   const result: Content[] = messages.flatMap(({ role, content }) => {
     if (role === "system") {
       return [
@@ -51,12 +51,16 @@ export function openAIMessageToGeminiMessage(
 }
 
 function hasImageMessage(
-  messages: Array<OpenAI.Chat.ChatCompletionMessageParam>,
+  messages: OpenAI.Chat.ChatCompletionMessageParam[],
 ): boolean {
   return messages.some((msg) => {
     const content = msg.content
-    if (content == null) return false
-    if (typeof content === "string") return false
+    if (content == null) {
+      return false
+    }
+    if (typeof content === "string") {
+      return false
+    }
     return content.some((it) => it.type === "image_url")
   })
 }
