@@ -12,10 +12,31 @@ export const app = new Hono({ strict: true })
     const logger = gen_logger(crypto.randomUUID())
     c.set("log", logger)
     await next()
-    c.set("log", undefined)
+    c.set("log", undefined as unknown as Logger)
   })
   .options("*", (c) => c.text("", 204))
-  .get("/", (c) => c.text(`Hello Gemini-OpenAI-Proxy from ${getRuntimeKey()}!`))
+  .get("/", (c) => {
+    const origin = new URL(c.req.url).origin
+    return c.html(
+      `<pre>
+
+Hello Gemini-OpenAI-Proxy from ${getRuntimeKey()}! 
+
+You can try it with:
+
+curl ${origin}/v1/chat/completions \\
+-H "Authorization: Bearer $YOUR_GEMINI_API_KEY" \\
+-H "Content-Type: application/json" \\
+-d '{
+"model": "gpt-3.5-turbo",
+"messages": [{"role": "user", "content": "Hello"}],
+"temperature": 0.7
+}'
+
+
+</pre>`,
+    )
+  })
   .post("/v1/chat/completions", chatProxyHandler)
 
 export type ContextWithLogger = Context<{ Variables: { log: Logger } }>
