@@ -1,4 +1,4 @@
-ARG DENO_VERSION=1.39.2
+ARG DENO_VERSION=1
 FROM lukechannings/deno:v${DENO_VERSION} as builder
 WORKDIR /data
 COPY . .
