@@ -1,5 +1,5 @@
-ARG DENO_VERSION=1
-FROM lukechannings/deno:v${DENO_VERSION} as builder
+ARG DENO_VERSION=latest
+FROM lukechannings/deno:${DENO_VERSION} as builder
 WORKDIR /data
 COPY . .
 RUN deno cache main_deno.ts
