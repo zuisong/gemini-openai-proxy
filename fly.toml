@@ -2,7 +2,7 @@ app = "gemini-openai-proxy"
 primary_region = "lax"
 
 [build]
-dockerfile = "docker/Dockerfile_deno"
+dockerfile = "docker/deno.Dockerfile"
 
 [env]
 
@@ -15,15 +15,12 @@ auto_stop_machines = true
 auto_start_machines = true
 min_machines_running = 0
 processes = ["app"]
+[http_service.concurrency]
+type = "requests"
+soft_limit = 200
+hard_limit = 250
 
 [[vm]]
 cpu_kind = "shared"
 cpus = 1
 memory = "512MB"
-
-[[services.http_checks]]
-interval = "1m"
-method = "get"
-path = "/"
-protocol = "https"
-timeout = "5s"
