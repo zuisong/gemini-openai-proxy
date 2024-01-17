@@ -22,7 +22,7 @@
   },
   "devDependencies": {
     "@types/bun": "^1.0.2",
-    "@types/node": "^20.11.4",
+    "@types/node": "^20.11.5",
     "dotenv": "^16.3.1",
     "tsx": "^4.7.0"
   }

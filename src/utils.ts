@@ -27,25 +27,32 @@ function parseBase64(base64: string): Part {
 export function openAiMessageToGeminiMessage(
   messages: OpenAI.Chat.ChatCompletionMessageParam[],
 ): Content[] {
-  const result: Content[] = messages.flatMap(({ role, content }) => {
-    if (role === "system") {
-      return [
-        { role: "user", parts: [{ text: content }] },
-        { role: "model", parts: [{ text: "" }] },
-      ]
-    }
+  const result: Content[] = messages
+    .flatMap(({ role, content }) => {
+      if (role === "system") {
+        return [
+          { role: "user", parts: [{ text: content }] },
+          { role: "model", parts: [{ text: "" }] },
+        ]
+      }
 
-    const parts: Part[] =
-      content == null || typeof content === "string"
-        ? [{ text: content?.toString() ?? "" }]
-        : content.map((item) =>
-            item.type === "text"
-              ? { text: item.text }
-              : parseBase64(item.image_url.url),
-          )
+      const parts: Part[] =
+        content == null || typeof content === "string"
+          ? [{ text: content?.toString() ?? "" }]
+          : content.map((item) =>
+              item.type === "text"
+                ? { text: item.text }
+                : parseBase64(item.image_url.url),
+            )
 
-    return [{ role: "user" === role ? "user" : "model", parts: parts }]
-  })
+      return [{ role: "user" === role ? "user" : "model", parts: parts }]
+    })
+    .flatMap((item, idx, arr) => {
+      if (item.role === arr.at(idx + 1)?.role && item.role === "user") {
+        return [item, { role: "model", parts: [{ text: "" }] }]
+      }
+      return [item]
+    })
 
   return result
 }
