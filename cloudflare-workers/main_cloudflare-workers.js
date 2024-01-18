@@ -3223,19 +3223,11 @@ var LogLevel;
     LogLevel[LogLevel["info"] = 5] = "info";
     LogLevel[LogLevel["debug"] = 7] = "debug";
 })(LogLevel || (LogLevel = {}));
-const currentlevel = 7;
 function gen_logger(id) {
     return mapValues(LogLevel, (value, name)=>{
         return (msg)=>{
-            outFunc(name, value, `${id} ${msg}`);
         };
     });
-}
-function outFunc(levelName, levelValue, msg) {
-    if (levelValue > currentlevel) {
-        return;
-    }
-    console.log(`${Date.now().toLocaleString()} ${levelName} ${msg}`);
 }
 function mapValues(obj, fn) {
     return Object.fromEntries(Object.entries(obj).map((param)=>{

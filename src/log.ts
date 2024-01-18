@@ -22,7 +22,7 @@ function outFunc(levelName: string, levelValue: number, msg: string) {
   if (levelValue > currentlevel) {
     return
   }
-  console.log(`${Date.now().toLocaleString()} ${levelName} ${msg}`)
+  // console.log(`${Date.now().toLocaleString()} ${levelName} ${msg}`)
 }
 
 function mapValues<
