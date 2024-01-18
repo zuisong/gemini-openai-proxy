@@ -21,5 +21,8 @@
     "formatter": {
       "semicolons": "asNeeded"
     }
+  },
+  "files": {
+    "ignore": ["cloudflare-workers", "node_modules", "dist"]
   }
 }
