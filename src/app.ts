@@ -1,10 +1,11 @@
-import { Context, Hono } from "hono"
+import { Hono } from "hono/tiny"
 import { cors } from "hono/cors"
 import { getRuntimeKey } from "hono/adapter"
 import { logger } from "hono/logger"
 import { timing } from "hono/timing"
 import { chatProxyHandler } from "./v1/chat/completions/ChatProxyHandler.ts"
 import { Logger, gen_logger } from "./log.ts"
+import type { Context } from "hono"
 
 export const app = new Hono({ strict: true })
   .use("*", cors(), timing(), logger())

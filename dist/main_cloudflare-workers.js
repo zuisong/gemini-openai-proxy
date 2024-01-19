@@ -1,60 +1,5 @@
 (() => {
   // node_modules/.pnpm/hono@3.12.6/node_modules/hono/dist/utils/url.js
-  var splitPath = (path) => {
-    const paths = path.split("/");
-    if (paths[0] === "") {
-      paths.shift();
-    }
-    return paths;
-  };
-  var splitRoutingPath = (path) => {
-    const groups = [];
-    for (let i = 0; ; ) {
-      let replaced = false;
-      path = path.replace(/\{[^}]+\}/g, (m) => {
-        const mark = `@\\${i}`;
-        groups[i] = [mark, m];
-        i++;
-        replaced = true;
-        return mark;
-      });
-      if (!replaced) {
-        break;
-      }
-    }
-    const paths = path.split("/");
-    if (paths[0] === "") {
-      paths.shift();
-    }
-    for (let i = groups.length - 1; i >= 0; i--) {
-      const [mark] = groups[i];
-      for (let j = paths.length - 1; j >= 0; j--) {
-        if (paths[j].indexOf(mark) !== -1) {
-          paths[j] = paths[j].replace(mark, groups[i][1]);
-          break;
-        }
-      }
-    }
-    return paths;
-  };
-  var patternCache = {};
-  var getPattern = (label) => {
-    if (label === "*") {
-      return "*";
-    }
-    const match = label.match(/^\:([^\{\}]+)(?:\{(.+)\})?$/);
-    if (match) {
-      if (!patternCache[label]) {
-        if (match[2]) {
-          patternCache[label] = [label, match[1], new RegExp("^" + match[2] + "$")];
-        } else {
-          patternCache[label] = [label, match[1], true];
-        }
-      }
-      return patternCache[label];
-    }
-    return null;
-  };
   var getPath = (request) => {
     const match = request.url.match(/^https?:\/\/[^/]+(\/[^?]*)/);
     return match ? match[1] : "";
@@ -88,32 +33,6 @@
       }
     }
     return p;
-  };
-  var checkOptionalParameter = (path) => {
-    if (!path.match(/\:.+\?$/))
-      return null;
-    const segments = path.split("/");
-    const results = [];
-    let basePath = "";
-    segments.forEach((segment) => {
-      if (segment !== "" && !/\:/.test(segment)) {
-        basePath += "/" + segment;
-      } else if (/\:/.test(segment)) {
-        if (/\?/.test(segment)) {
-          if (results.length === 0 && basePath === "") {
-            results.push("/");
-          } else {
-            results.push(basePath);
-          }
-          const optionalSegment = segment.replace("?", "");
-          basePath += "/" + optionalSegment;
-          results.push(basePath);
-        } else {
-          basePath += "/" + segment;
-        }
-      }
-    });
-    return results.filter((v, i, a) => a.indexOf(v) === i);
   };
   var _decodeURI = (value) => {
     if (!/[%+]/.test(value)) {
@@ -884,7 +803,6 @@
   var METHOD_NAME_ALL = "ALL";
   var METHOD_NAME_ALL_LOWERCASE = "all";
   var METHODS = ["get", "post", "put", "delete", "options", "patch"];
-  var MESSAGE_MATCHER_IS_ALREADY_BUILT = "Can not add a route since the matcher is already built.";
   var UnsupportedPathError = class extends Error {
   };
 
@@ -1151,594 +1069,57 @@
   var Hono = _Hono;
   _path = /* @__PURE__ */ new WeakMap();
 
-  // node_modules/.pnpm/hono@3.12.6/node_modules/hono/dist/router/reg-exp-router/node.js
-  var LABEL_REG_EXP_STR = "[^/]+";
-  var ONLY_WILDCARD_REG_EXP_STR = ".*";
-  var TAIL_WILDCARD_REG_EXP_STR = "(?:|/.*)";
-  var PATH_ERROR = Symbol();
-  function compareKey(a, b) {
-    if (a.length === 1) {
-      return b.length === 1 ? a < b ? -1 : 1 : -1;
-    }
-    if (b.length === 1) {
-      return 1;
-    }
-    if (a === ONLY_WILDCARD_REG_EXP_STR || a === TAIL_WILDCARD_REG_EXP_STR) {
-      return 1;
-    } else if (b === ONLY_WILDCARD_REG_EXP_STR || b === TAIL_WILDCARD_REG_EXP_STR) {
-      return -1;
-    }
-    if (a === LABEL_REG_EXP_STR) {
-      return 1;
-    } else if (b === LABEL_REG_EXP_STR) {
-      return -1;
-    }
-    return a.length === b.length ? a < b ? -1 : 1 : b.length - a.length;
-  }
-  var Node = class {
+  // node_modules/.pnpm/hono@3.12.6/node_modules/hono/dist/router/pattern-router/router.js
+  var PatternRouter = class {
     constructor() {
-      this.children = {};
-    }
-    insert(tokens, index, paramMap, context, pathErrorCheckOnly) {
-      if (tokens.length === 0) {
-        if (this.index !== void 0) {
-          throw PATH_ERROR;
-        }
-        if (pathErrorCheckOnly) {
-          return;
-        }
-        this.index = index;
-        return;
-      }
-      const [token, ...restTokens] = tokens;
-      const pattern = token === "*" ? restTokens.length === 0 ? ["", "", ONLY_WILDCARD_REG_EXP_STR] : ["", "", LABEL_REG_EXP_STR] : token === "/*" ? ["", "", TAIL_WILDCARD_REG_EXP_STR] : token.match(/^\:([^\{\}]+)(?:\{(.+)\})?$/);
-      let node;
-      if (pattern) {
-        const name = pattern[1];
-        let regexpStr = pattern[2] || LABEL_REG_EXP_STR;
-        if (name && pattern[2]) {
-          regexpStr = regexpStr.replace(/^\((?!\?:)(?=[^)]+\)$)/, "(?:");
-          if (/\((?!\?:)/.test(regexpStr)) {
-            throw PATH_ERROR;
-          }
-        }
-        node = this.children[regexpStr];
-        if (!node) {
-          if (Object.keys(this.children).some(
-            (k) => k !== ONLY_WILDCARD_REG_EXP_STR && k !== TAIL_WILDCARD_REG_EXP_STR
-          )) {
-            throw PATH_ERROR;
-          }
-          if (pathErrorCheckOnly) {
-            return;
-          }
-          node = this.children[regexpStr] = new Node();
-          if (name !== "") {
-            node.varIndex = context.varIndex++;
-          }
-        }
-        if (!pathErrorCheckOnly && name !== "") {
-          paramMap.push([name, node.varIndex]);
-        }
-      } else {
-        node = this.children[token];
-        if (!node) {
-          if (Object.keys(this.children).some(
-            (k) => k.length > 1 && k !== ONLY_WILDCARD_REG_EXP_STR && k !== TAIL_WILDCARD_REG_EXP_STR
-          )) {
-            throw PATH_ERROR;
-          }
-          if (pathErrorCheckOnly) {
-            return;
-          }
-          node = this.children[token] = new Node();
-        }
-      }
-      node.insert(restTokens, index, paramMap, context, pathErrorCheckOnly);
-    }
-    buildRegExpStr() {
-      const childKeys = Object.keys(this.children).sort(compareKey);
-      const strList = childKeys.map((k) => {
-        const c = this.children[k];
-        return (typeof c.varIndex === "number" ? `(${k})@${c.varIndex}` : k) + c.buildRegExpStr();
-      });
-      if (typeof this.index === "number") {
-        strList.unshift(`#${this.index}`);
-      }
-      if (strList.length === 0) {
-        return "";
-      }
-      if (strList.length === 1) {
-        return strList[0];
-      }
-      return "(?:" + strList.join("|") + ")";
-    }
-  };
-
-  // node_modules/.pnpm/hono@3.12.6/node_modules/hono/dist/router/reg-exp-router/trie.js
-  var Trie = class {
-    constructor() {
-      this.context = { varIndex: 0 };
-      this.root = new Node();
-    }
-    insert(path, index, pathErrorCheckOnly) {
-      const paramAssoc = [];
-      const groups = [];
-      for (let i = 0; ; ) {
-        let replaced = false;
-        path = path.replace(/\{[^}]+\}/g, (m) => {
-          const mark = `@\\${i}`;
-          groups[i] = [mark, m];
-          i++;
-          replaced = true;
-          return mark;
-        });
-        if (!replaced) {
-          break;
-        }
-      }
-      const tokens = path.match(/(?::[^\/]+)|(?:\/\*$)|./g) || [];
-      for (let i = groups.length - 1; i >= 0; i--) {
-        const [mark] = groups[i];
-        for (let j = tokens.length - 1; j >= 0; j--) {
-          if (tokens[j].indexOf(mark) !== -1) {
-            tokens[j] = tokens[j].replace(mark, groups[i][1]);
-            break;
-          }
-        }
-      }
-      this.root.insert(tokens, index, paramAssoc, this.context, pathErrorCheckOnly);
-      return paramAssoc;
-    }
-    buildRegExp() {
-      let regexp = this.root.buildRegExpStr();
-      if (regexp === "") {
-        return [/^$/, [], []];
-      }
-      let captureIndex = 0;
-      const indexReplacementMap = [];
-      const paramReplacementMap = [];
-      regexp = regexp.replace(/#(\d+)|@(\d+)|\.\*\$/g, (_, handlerIndex, paramIndex) => {
-        if (typeof handlerIndex !== "undefined") {
-          indexReplacementMap[++captureIndex] = Number(handlerIndex);
-          return "$()";
-        }
-        if (typeof paramIndex !== "undefined") {
-          paramReplacementMap[Number(paramIndex)] = ++captureIndex;
-          return "";
-        }
-        return "";
-      });
-      return [new RegExp(`^${regexp}`), indexReplacementMap, paramReplacementMap];
-    }
-  };
-
-  // node_modules/.pnpm/hono@3.12.6/node_modules/hono/dist/router/reg-exp-router/router.js
-  var methodNames = [METHOD_NAME_ALL, ...METHODS].map((method) => method.toUpperCase());
-  var emptyParam = [];
-  var nullMatcher = [/^$/, [], {}];
-  var wildcardRegExpCache = {};
-  function buildWildcardRegExp(path) {
-    var _a;
-    return (_a = wildcardRegExpCache[path]) != null ? _a : wildcardRegExpCache[path] = new RegExp(
-      path === "*" ? "" : `^${path.replace(/\/\*/, "(?:|/.*)")}$`
-    );
-  }
-  function clearWildcardRegExpCache() {
-    wildcardRegExpCache = {};
-  }
-  function buildMatcherFromPreprocessedRoutes(routes) {
-    var _a;
-    const trie = new Trie();
-    const handlerData = [];
-    if (routes.length === 0) {
-      return nullMatcher;
-    }
-    const routesWithStaticPathFlag = routes.map(
-      (route) => [!/\*|\/:/.test(route[0]), ...route]
-    ).sort(
-      ([isStaticA, pathA], [isStaticB, pathB]) => isStaticA ? 1 : isStaticB ? -1 : pathA.length - pathB.length
-    );
-    const staticMap = {};
-    for (let i = 0, j = -1, len = routesWithStaticPathFlag.length; i < len; i++) {
-      const [pathErrorCheckOnly, path, handlers] = routesWithStaticPathFlag[i];
-      if (pathErrorCheckOnly) {
-        staticMap[path] = [handlers.map(([h]) => [h, {}]), emptyParam];
-      } else {
-        j++;
-      }
-      let paramAssoc;
-      try {
-        paramAssoc = trie.insert(path, j, pathErrorCheckOnly);
-      } catch (e) {
-        throw e === PATH_ERROR ? new UnsupportedPathError(path) : e;
-      }
-      if (pathErrorCheckOnly) {
-        continue;
-      }
-      handlerData[j] = handlers.map(([h, paramCount]) => {
-        const paramIndexMap = {};
-        paramCount -= 1;
-        for (; paramCount >= 0; paramCount--) {
-          const [key, value] = paramAssoc[paramCount];
-          paramIndexMap[key] = value;
-        }
-        return [h, paramIndexMap];
-      });
-    }
-    const [regexp, indexReplacementMap, paramReplacementMap] = trie.buildRegExp();
-    for (let i = 0, len = handlerData.length; i < len; i++) {
-      for (let j = 0, len2 = handlerData[i].length; j < len2; j++) {
-        const map = (_a = handlerData[i][j]) == null ? void 0 : _a[1];
-        if (!map) {
-          continue;
-        }
-        const keys = Object.keys(map);
-        for (let k = 0, len3 = keys.length; k < len3; k++) {
-          map[keys[k]] = paramReplacementMap[map[keys[k]]];
-        }
-      }
-    }
-    const handlerMap = [];
-    for (const i in indexReplacementMap) {
-      handlerMap[i] = handlerData[indexReplacementMap[i]];
-    }
-    return [regexp, handlerMap, staticMap];
-  }
-  function findMiddleware(middleware, path) {
-    if (!middleware) {
-      return void 0;
-    }
-    for (const k of Object.keys(middleware).sort((a, b) => b.length - a.length)) {
-      if (buildWildcardRegExp(k).test(path)) {
-        return [...middleware[k]];
-      }
-    }
-    return void 0;
-  }
-  var RegExpRouter = class {
-    constructor() {
-      this.name = "RegExpRouter";
-      this.middleware = { [METHOD_NAME_ALL]: {} };
-      this.routes = { [METHOD_NAME_ALL]: {} };
-    }
-    add(method, path, handler) {
-      var _a;
-      const { middleware, routes } = this;
-      if (!middleware || !routes) {
-        throw new Error(MESSAGE_MATCHER_IS_ALREADY_BUILT);
-      }
-      if (methodNames.indexOf(method) === -1)
-        methodNames.push(method);
-      if (!middleware[method]) {
-        ;
-        [middleware, routes].forEach((handlerMap) => {
-          handlerMap[method] = {};
-          Object.keys(handlerMap[METHOD_NAME_ALL]).forEach((p) => {
-            handlerMap[method][p] = [...handlerMap[METHOD_NAME_ALL][p]];
-          });
-        });
-      }
-      if (path === "/*") {
-        path = "*";
-      }
-      const paramCount = (path.match(/\/:/g) || []).length;
-      if (/\*$/.test(path)) {
-        const re = buildWildcardRegExp(path);
-        if (method === METHOD_NAME_ALL) {
-          Object.keys(middleware).forEach((m) => {
-            var _a2;
-            (_a2 = middleware[m])[path] || (_a2[path] = findMiddleware(middleware[m], path) || findMiddleware(middleware[METHOD_NAME_ALL], path) || []);
-          });
-        } else {
-          (_a = middleware[method])[path] || (_a[path] = findMiddleware(middleware[method], path) || findMiddleware(middleware[METHOD_NAME_ALL], path) || []);
-        }
-        Object.keys(middleware).forEach((m) => {
-          if (method === METHOD_NAME_ALL || method === m) {
-            Object.keys(middleware[m]).forEach((p) => {
-              re.test(p) && middleware[m][p].push([handler, paramCount]);
-            });
-          }
-        });
-        Object.keys(routes).forEach((m) => {
-          if (method === METHOD_NAME_ALL || method === m) {
-            Object.keys(routes[m]).forEach(
-              (p) => re.test(p) && routes[m][p].push([handler, paramCount])
-            );
-          }
-        });
-        return;
-      }
-      const paths = checkOptionalParameter(path) || [path];
-      for (let i = 0, len = paths.length; i < len; i++) {
-        const path2 = paths[i];
-        Object.keys(routes).forEach((m) => {
-          var _a2;
-          if (method === METHOD_NAME_ALL || method === m) {
-            (_a2 = routes[m])[path2] || (_a2[path2] = [
-              ...findMiddleware(middleware[m], path2) || findMiddleware(middleware[METHOD_NAME_ALL], path2) || []
-            ]);
-            routes[m][path2].push([handler, paramCount - len + i + 1]);
-          }
-        });
-      }
-    }
-    match(method, path) {
-      clearWildcardRegExpCache();
-      const matchers = this.buildAllMatchers();
-      this.match = (method2, path2) => {
-        const matcher = matchers[method2];
-        const staticMatch = matcher[2][path2];
-        if (staticMatch) {
-          return staticMatch;
-        }
-        const match = path2.match(matcher[0]);
-        if (!match) {
-          return [[], emptyParam];
-        }
-        const index = match.indexOf("", 1);
-        return [matcher[1][index], match];
-      };
-      return this.match(method, path);
-    }
-    buildAllMatchers() {
-      const matchers = {};
-      methodNames.forEach((method) => {
-        matchers[method] = this.buildMatcher(method) || matchers[METHOD_NAME_ALL];
-      });
-      this.middleware = this.routes = void 0;
-      return matchers;
-    }
-    buildMatcher(method) {
-      const routes = [];
-      let hasOwnRoute = method === METHOD_NAME_ALL;
-      [this.middleware, this.routes].forEach((r) => {
-        const ownRoute = r[method] ? Object.keys(r[method]).map((path) => [path, r[method][path]]) : [];
-        if (ownRoute.length !== 0) {
-          hasOwnRoute || (hasOwnRoute = true);
-          routes.push(...ownRoute);
-        } else if (method !== METHOD_NAME_ALL) {
-          routes.push(
-            ...Object.keys(r[METHOD_NAME_ALL]).map((path) => [path, r[METHOD_NAME_ALL][path]])
-          );
-        }
-      });
-      if (!hasOwnRoute) {
-        return null;
-      } else {
-        return buildMatcherFromPreprocessedRoutes(routes);
-      }
-    }
-  };
-
-  // node_modules/.pnpm/hono@3.12.6/node_modules/hono/dist/router/smart-router/router.js
-  var SmartRouter = class {
-    constructor(init) {
-      this.name = "SmartRouter";
-      this.routers = [];
+      this.name = "PatternRouter";
       this.routes = [];
-      Object.assign(this, init);
     }
     add(method, path, handler) {
-      if (!this.routes) {
-        throw new Error(MESSAGE_MATCHER_IS_ALREADY_BUILT);
+      const endsWithWildcard = path[path.length - 1] === "*";
+      if (endsWithWildcard) {
+        path = path.slice(0, -2);
       }
-      this.routes.push([method, path, handler]);
+      const parts = path.match(/\/?(:\w+(?:{[^}]+})?)|\/?[^\/\?]+|(\?)/g) || [];
+      if (parts[parts.length - 1] === "?") {
+        this.add(method, parts.slice(0, parts.length - 2).join(""), handler);
+        parts.pop();
+      }
+      for (let i = 0, len = parts.length; i < len; i++) {
+        const match = parts[i].match(/^\/:([^{]+)(?:{(.*)})?/);
+        if (match) {
+          parts[i] = `/(?<${match[1]}>${match[2] || "[^/]+"})`;
+        } else if (parts[i] === "/*") {
+          parts[i] = "/[^/]+";
+        }
+      }
+      let re;
+      try {
+        re = new RegExp(`^${parts.join("")}${endsWithWildcard ? "" : "/?$"}`);
+      } catch (e) {
+        throw new UnsupportedPathError();
+      }
+      this.routes.push([re, method, handler]);
     }
     match(method, path) {
-      if (!this.routes) {
-        throw new Error("Fatal error");
-      }
-      const { routers, routes } = this;
-      const len = routers.length;
-      let i = 0;
-      let res;
-      for (; i < len; i++) {
-        const router = routers[i];
-        try {
-          routes.forEach((args) => {
-            router.add(...args);
-          });
-          res = router.match(method, path);
-        } catch (e) {
-          if (e instanceof UnsupportedPathError) {
-            continue;
+      const handlers = [];
+      for (const [pattern, routeMethod, handler] of this.routes) {
+        if (routeMethod === METHOD_NAME_ALL || routeMethod === method) {
+          const match = pattern.exec(path);
+          if (match) {
+            handlers.push([handler, match.groups || {}]);
           }
-          throw e;
         }
-        this.match = router.match.bind(router);
-        this.routers = [router];
-        this.routes = void 0;
-        break;
       }
-      if (i === len) {
-        throw new Error("Fatal error");
-      }
-      this.name = `SmartRouter + ${this.activeRouter.name}`;
-      return res;
-    }
-    get activeRouter() {
-      if (this.routes || this.routers.length !== 1) {
-        throw new Error("No active router has been determined yet.");
-      }
-      return this.routers[0];
+      return [handlers];
     }
   };
 
-  // node_modules/.pnpm/hono@3.12.6/node_modules/hono/dist/router/trie-router/node.js
-  var Node2 = class {
-    constructor(method, handler, children) {
-      this.order = 0;
-      this.params = {};
-      this.children = children || {};
-      this.methods = [];
-      this.name = "";
-      if (method && handler) {
-        const m = {};
-        m[method] = { handler, possibleKeys: [], score: 0, name: this.name };
-        this.methods = [m];
-      }
-      this.patterns = [];
-    }
-    insert(method, path, handler) {
-      this.name = `${method} ${path}`;
-      this.order = ++this.order;
-      let curNode = this;
-      const parts = splitRoutingPath(path);
-      const possibleKeys = [];
-      const parentPatterns = [];
-      for (let i = 0, len = parts.length; i < len; i++) {
-        const p = parts[i];
-        if (Object.keys(curNode.children).includes(p)) {
-          parentPatterns.push(...curNode.patterns);
-          curNode = curNode.children[p];
-          const pattern2 = getPattern(p);
-          if (pattern2)
-            possibleKeys.push(pattern2[1]);
-          continue;
-        }
-        curNode.children[p] = new Node2();
-        const pattern = getPattern(p);
-        if (pattern) {
-          curNode.patterns.push(pattern);
-          parentPatterns.push(...curNode.patterns);
-          possibleKeys.push(pattern[1]);
-        }
-        parentPatterns.push(...curNode.patterns);
-        curNode = curNode.children[p];
-      }
-      if (!curNode.methods.length) {
-        curNode.methods = [];
-      }
-      const m = {};
-      const handlerSet = {
-        handler,
-        possibleKeys: possibleKeys.filter((v, i, a) => a.indexOf(v) === i),
-        name: this.name,
-        score: this.order
-      };
-      m[method] = handlerSet;
-      curNode.methods.push(m);
-      return curNode;
-    }
-    gHSets(node, method, nodeParams, params) {
-      const handlerSets = [];
-      for (let i = 0, len = node.methods.length; i < len; i++) {
-        const m = node.methods[i];
-        const handlerSet = m[method] || m[METHOD_NAME_ALL];
-        const processedSet = {};
-        if (handlerSet !== void 0) {
-          handlerSet.params = {};
-          handlerSet.possibleKeys.forEach((key) => {
-            var _a;
-            const processed = processedSet[handlerSet.name];
-            handlerSet.params[key] = params[key] && !processed ? params[key] : (_a = nodeParams[key]) != null ? _a : params[key];
-            processedSet[handlerSet.name] = true;
-          });
-          handlerSets.push(handlerSet);
-        }
-      }
-      return handlerSets;
-    }
-    search(method, path) {
-      const handlerSets = [];
-      this.params = {};
-      const params = {};
-      const curNode = this;
-      let curNodes = [curNode];
-      const parts = splitPath(path);
-      for (let i = 0, len = parts.length; i < len; i++) {
-        const part = parts[i];
-        const isLast = i === len - 1;
-        const tempNodes = [];
-        for (let j = 0, len2 = curNodes.length; j < len2; j++) {
-          const node = curNodes[j];
-          const nextNode = node.children[part];
-          if (nextNode) {
-            nextNode.params = node.params;
-            if (isLast === true) {
-              if (nextNode.children["*"]) {
-                handlerSets.push(...this.gHSets(nextNode.children["*"], method, node.params, {}));
-              }
-              handlerSets.push(...this.gHSets(nextNode, method, node.params, {}));
-            } else {
-              tempNodes.push(nextNode);
-            }
-          }
-          for (let k = 0, len3 = node.patterns.length; k < len3; k++) {
-            const pattern = node.patterns[k];
-            if (pattern === "*") {
-              const astNode = node.children["*"];
-              if (astNode) {
-                handlerSets.push(...this.gHSets(astNode, method, node.params, {}));
-                tempNodes.push(astNode);
-              }
-              continue;
-            }
-            if (part === "")
-              continue;
-            const [key, name, matcher] = pattern;
-            const child = node.children[key];
-            const restPathString = parts.slice(i).join("/");
-            if (matcher instanceof RegExp && matcher.test(restPathString)) {
-              params[name] = restPathString;
-              handlerSets.push(...this.gHSets(child, method, node.params, params));
-              continue;
-            }
-            if (matcher === true || matcher instanceof RegExp && matcher.test(part)) {
-              if (typeof key === "string") {
-                params[name] = part;
-                if (isLast === true) {
-                  handlerSets.push(...this.gHSets(child, method, params, node.params));
-                  if (child.children["*"]) {
-                    handlerSets.push(...this.gHSets(child.children["*"], method, node.params, params));
-                  }
-                } else {
-                  child.params = { ...params };
-                  tempNodes.push(child);
-                }
-              }
-            }
-          }
-        }
-        curNodes = tempNodes;
-      }
-      const results = handlerSets.sort((a, b) => {
-        return a.score - b.score;
-      });
-      return [results.map(({ handler, params: params2 }) => [handler, params2])];
-    }
-  };
-
-  // node_modules/.pnpm/hono@3.12.6/node_modules/hono/dist/router/trie-router/router.js
-  var TrieRouter = class {
-    constructor() {
-      this.name = "TrieRouter";
-      this.node = new Node2();
-    }
-    add(method, path, handler) {
-      const results = checkOptionalParameter(path);
-      if (results) {
-        for (const p of results) {
-          this.node.insert(method, p, handler);
-        }
-        return;
-      }
-      this.node.insert(method, path, handler);
-    }
-    match(method, path) {
-      return this.node.search(method, path);
-    }
-  };
-
-  // node_modules/.pnpm/hono@3.12.6/node_modules/hono/dist/hono.js
+  // node_modules/.pnpm/hono@3.12.6/node_modules/hono/dist/preset/tiny.js
   var Hono2 = class extends Hono {
     constructor(options = {}) {
-      var _a;
       super(options);
-      this.router = (_a = options.router) != null ? _a : new SmartRouter({
-        routers: [new RegExpRouter(), new TrieRouter()]
-      });
+      this.router = new PatternRouter();
     }
   };
 
@@ -2767,41 +2148,3 @@ curl ${origin}/v1/chat/completions \\
   // main_cloudflare-workers.ts
   app.fire();
 })();
-/*! Bundled license information:
-
-@google/generative-ai/dist/index.mjs:
-  (**
-   * @license
-   * Copyright 2023 Google LLC
-   *
-   * Licensed under the Apache License, Version 2.0 (the "License");
-   * you may not use this file except in compliance with the License.
-   * You may obtain a copy of the License at
-   *
-   *   http://www.apache.org/licenses/LICENSE-2.0
-   *
-   * Unless required by applicable law or agreed to in writing, software
-   * distributed under the License is distributed on an "AS IS" BASIS,
-   * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
-   * See the License for the specific language governing permissions and
-   * limitations under the License.
-   *)
-
-@google/generative-ai/dist/index.mjs:
-  (**
-   * @license
-   * Copyright 2023 Google LLC
-   *
-   * Licensed under the Apache License, Version 2.0 (the "License");
-   * you may not use this file except in compliance with the License.
-   * You may obtain a copy of the License at
-   *
-   *   http://www.apache.org/licenses/LICENSE-2.0
-   *
-   * Unless required by applicable law or agreed to in writing, software
-   * distributed under the License is distributed on an "AS IS" BASIS,
-   * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
-   * See the License for the specific language governing permissions and
-   * limitations under the License.
-   *)
-*/
