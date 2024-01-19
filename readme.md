@@ -11,7 +11,11 @@ complex development work.
 
 ## Demo
 
+> Get api key from <https://makersuite.google.com/app/apikey>
+
 ```shell
+export YOUR_GEMINI_API_KEY="your api key"
+
 curl -s http://localhost:8000/v1/chat/completions \
   -H "Authorization: Bearer $YOUR_GEMINI_API_KEY" \
   -H "Content-Type: application/json" \
@@ -21,6 +25,7 @@ curl -s http://localhost:8000/v1/chat/completions \
       "temperature": 0.7
       }'
 ```
+
 ![demo](./assets/demo.png)
 
 ## Plan
