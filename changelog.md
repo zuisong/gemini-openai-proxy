@@ -1,5 +1,13 @@
 # changelog
 
+## 0.5.0(2024-01-19)
+
+### main changes
+
+- Add cloudflare workers support
+- Reduce docker image size
+- Imporve document
+
 ## 0.4.0(2024-01-17)
 
 ### main changes
