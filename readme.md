@@ -61,7 +61,8 @@ docker run -d -p 8000:8000 ghcr.io/zuisong/gemini-openai-proxy:node
 ```
 
 ### Cloudflare Workers
-> build from source? run `bun install && bun run rollup.config.cloudflare-workers.ts`
+>
+> Want build from source?  
+  run  `npm run build:cf_worker`
 
 Copy [main_cloudflare-workers.js](./cloudflare-workers/main_cloudflare-workers.js) to [cloudflare-workers](https://workers.cloudflare.com)
-
