@@ -18,7 +18,7 @@
     "test:deno": "deno test",
     "test:node": " node --import tsx/esm --no-warnings --test ./test/**/*",
     "check": "deno run -A npm:@biomejs/biome check --apply .",
-    "_esbuild_": "esbuild --bundle --outdir=dist --target=es2018 --legal-comments=none --tree-shaking=true --format=esm --platform=node --out-extension:.js=.mjs"
+    "_esbuild_": "esbuild --bundle --outdir=dist --target=node18,chrome100 --legal-comments=none --tree-shaking=true --format=esm --platform=node --out-extension:.js=.mjs"
   },
   "dependencies": {
     "@google/generative-ai": "^0.1.3",
