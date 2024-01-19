@@ -3,8 +3,8 @@
   "nodeModulesDir": false,
   "imports": {
     "@google/generative-ai": "npm:/@google/generative-ai",
-    "hono/": "npm:/hono/",
-    "hono": "npm:/hono",
+    "hono/": "npm:/hono@3.12.6/",
+    "hono": "npm:/hono@3.12.6",
     "dotenv": "npm:/dotenv",
     "openai": "npm:/openai"
   },
