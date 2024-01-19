@@ -10,10 +10,13 @@
     "start:deno": "deno run -A main_deno.ts",
     "start:bun": "bun main_bun.ts",
     "start:node": "node --import tsx/esm main_node.ts",
-    "build:cf_worker": "esbuild --bundle main_cloudflare-workers.ts --outfile=cloudflare-workers/main_cloudflare-workers.js",
+    "build": "npm run build:cf_worker && npm run build:deno_deploy",
+    "build:cf_worker": "npm run _esbuild_ main_cloudflare-workers.ts",
+    "build:deno_deploy": "npm run _esbuild_ main_deno.ts ",
     "test:deno": "deno test",
     "test:node": " node --import tsx/esm --no-warnings --test ./test/**/*",
-    "check": "deno run -A npm:@biomejs/biome check --apply ."
+    "check": "deno run -A npm:@biomejs/biome check --apply .",
+    "_esbuild_": "esbuild --bundle --outdir=dist --target=es2018"
   },
   "dependencies": {
     "@google/generative-ai": "^0.1.3",

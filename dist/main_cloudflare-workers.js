@@ -125,6 +125,7 @@
     return /%/.test(value) ? decodeURIComponent_(value) : value;
   };
   var _getQueryParam = (url, key, multiple) => {
+    var _a;
     let encoded;
     if (!multiple && key && !/[%+]/.test(key)) {
       let keyIndex2 = url.indexOf(`?${key}`, 8);
@@ -148,7 +149,7 @@
       }
     }
     const results = {};
-    encoded ?? (encoded = /[%+]/.test(url));
+    encoded != null ? encoded : encoded = /[%+]/.test(url);
     let keyIndex = url.indexOf("?", 8);
     while (keyIndex !== -1) {
       const nextKeyIndex = url.indexOf("&", keyIndex + 1);
@@ -183,7 +184,7 @@
         ;
         results[name].push(value);
       } else {
-        results[name] ?? (results[name] = value);
+        (_a = results[name]) != null ? _a : results[name] = value;
       }
     }
     return key ? results[key] : results;
@@ -264,7 +265,7 @@
   };
   var resolveCallback = async (str, phase, preserveCallbacks, context, buffer) => {
     const callbacks = str.callbacks;
-    if (!callbacks?.length) {
+    if (!(callbacks == null ? void 0 : callbacks.length)) {
       return Promise.resolve(str);
     }
     if (buffer) {
@@ -388,6 +389,7 @@
         this.renderer = renderer;
       };
       this.header = (name, value, options2) => {
+        var _a;
         if (value === void 0) {
           if (__privateGet(this, _headers)) {
             __privateGet(this, _headers).delete(name);
@@ -399,7 +401,7 @@
           }
           return;
         }
-        if (options2?.append) {
+        if (options2 == null ? void 0 : options2.append) {
           if (!__privateGet(this, _headers)) {
             __privateSet(this, _isFresh, false);
             __privateSet(this, _headers, new Headers(__privateGet(this, _preparedHeaders)));
@@ -410,12 +412,12 @@
           if (__privateGet(this, _headers)) {
             __privateGet(this, _headers).set(name, value);
           } else {
-            __privateGet(this, _preparedHeaders) ?? __privateSet(this, _preparedHeaders, {});
+            (_a = __privateGet(this, _preparedHeaders)) != null ? _a : __privateSet(this, _preparedHeaders, {});
             __privateGet(this, _preparedHeaders)[name.toLowerCase()] = value;
           }
         }
         if (this.finalized) {
-          if (options2?.append) {
+          if (options2 == null ? void 0 : options2.append) {
             this.res.headers.append(name, value);
           } else {
             this.res.headers.set(name, value);
@@ -427,13 +429,15 @@
         __privateSet(this, _status, status);
       };
       this.set = (key, value) => {
-        this._var ?? (this._var = {});
+        var _a;
+        (_a = this._var) != null ? _a : this._var = {};
         this._var[key] = value;
       };
       this.get = (key) => {
         return this._var ? this._var[key] : void 0;
       };
       this.newResponse = (data, arg, headers) => {
+        var _a, _b;
         if (__privateGet(this, _isFresh) && !headers && !arg && __privateGet(this, _status) === 200) {
           return new Response(data, {
             headers: __privateGet(this, _preparedHeaders)
@@ -447,16 +451,17 @@
           });
         }
         const status = typeof arg === "number" ? arg : __privateGet(this, _status);
-        __privateGet(this, _preparedHeaders) ?? __privateSet(this, _preparedHeaders, {});
-        __privateGet(this, _headers) ?? __privateSet(this, _headers, new Headers());
+        (_a = __privateGet(this, _preparedHeaders)) != null ? _a : __privateSet(this, _preparedHeaders, {});
+        (_b = __privateGet(this, _headers)) != null ? _b : __privateSet(this, _headers, new Headers());
         setHeaders(__privateGet(this, _headers), __privateGet(this, _preparedHeaders));
         if (__privateGet(this, _res)) {
           __privateGet(this, _res).headers.forEach((v, k) => {
-            __privateGet(this, _headers)?.set(k, v);
+            var _a2;
+            (_a2 = __privateGet(this, _headers)) == null ? void 0 : _a2.set(k, v);
           });
           setHeaders(__privateGet(this, _headers), __privateGet(this, _preparedHeaders));
         }
-        headers ?? (headers = {});
+        headers != null ? headers : headers = {};
         for (const [k, v] of Object.entries(headers)) {
           if (typeof v === "string") {
             __privateGet(this, _headers).set(k, v);
@@ -486,8 +491,9 @@
         return typeof arg === "number" ? this.newResponse(text, arg, headers) : this.newResponse(text, arg);
       };
       this.json = (object, arg, headers) => {
+        var _a;
         const body = JSON.stringify(object);
-        __privateGet(this, _preparedHeaders) ?? __privateSet(this, _preparedHeaders, {});
+        (_a = __privateGet(this, _preparedHeaders)) != null ? _a : __privateSet(this, _preparedHeaders, {});
         __privateGet(this, _preparedHeaders)["content-type"] = "application/json; charset=UTF-8";
         return typeof arg === "number" ? this.newResponse(body, arg, headers) : this.newResponse(body, arg);
       };
@@ -495,7 +501,8 @@
         return this.json(object, arg, headers);
       };
       this.html = (html, arg, headers) => {
-        __privateGet(this, _preparedHeaders) ?? __privateSet(this, _preparedHeaders, {});
+        var _a;
+        (_a = __privateGet(this, _preparedHeaders)) != null ? _a : __privateSet(this, _preparedHeaders, {});
         __privateGet(this, _preparedHeaders)["content-type"] = "text/html; charset=UTF-8";
         if (typeof html === "object") {
           if (!(html instanceof Promise)) {
@@ -510,12 +517,13 @@
         return typeof arg === "number" ? this.newResponse(html, arg, headers) : this.newResponse(html, arg);
       };
       this.redirect = (location, status = 302) => {
-        __privateGet(this, _headers) ?? __privateSet(this, _headers, new Headers());
+        var _a;
+        (_a = __privateGet(this, _headers)) != null ? _a : __privateSet(this, _headers, new Headers());
         __privateGet(this, _headers).set("Location", location);
         return this.newResponse(null, status);
       };
       this.streamText = (cb, arg, headers) => {
-        headers ?? (headers = {});
+        headers != null ? headers : headers = {};
         this.header("content-type", TEXT_PLAIN);
         this.header("x-content-type-options", "nosniff");
         this.header("transfer-encoding", "chunked");
@@ -584,26 +592,27 @@
       return { ...this._var };
     }
     get runtime() {
+      var _a, _b;
       const global = globalThis;
-      if (global?.Deno !== void 0) {
+      if ((global == null ? void 0 : global.Deno) !== void 0) {
         return "deno";
       }
-      if (global?.Bun !== void 0) {
+      if ((global == null ? void 0 : global.Bun) !== void 0) {
         return "bun";
       }
-      if (typeof global?.WebSocketPair === "function") {
+      if (typeof (global == null ? void 0 : global.WebSocketPair) === "function") {
         return "workerd";
       }
-      if (typeof global?.EdgeRuntime === "string") {
+      if (typeof (global == null ? void 0 : global.EdgeRuntime) === "string") {
         return "edge-light";
       }
-      if (global?.fastly !== void 0) {
+      if ((global == null ? void 0 : global.fastly) !== void 0) {
         return "fastly";
       }
-      if (global?.__lagon__ !== void 0) {
+      if ((global == null ? void 0 : global.__lagon__) !== void 0) {
         return "lagon";
       }
-      if (global?.process?.release?.name === "node") {
+      if (((_b = (_a = global == null ? void 0 : global.process) == null ? void 0 : _a.release) == null ? void 0 : _b.name) === "node") {
         return "node";
       }
       return "other";
@@ -667,8 +676,8 @@
   // node_modules/.pnpm/hono@3.12.6/node_modules/hono/dist/http-exception.js
   var HTTPException = class extends Error {
     constructor(status = 500, options) {
-      super(options?.message);
-      this.res = options?.res;
+      super(options == null ? void 0 : options.message);
+      this.res = options == null ? void 0 : options.res;
       this.status = status;
     }
     getResponse() {
@@ -785,8 +794,9 @@
       return getQueryParams(this.url, key);
     }
     header(name) {
+      var _a;
       if (name)
-        return this.raw.headers.get(name.toLowerCase()) ?? void 0;
+        return (_a = this.raw.headers.get(name.toLowerCase())) != null ? _a : void 0;
       const headerData = {};
       this.raw.headers.forEach((value, key) => {
         headerData[key] = value;
@@ -916,6 +926,7 @@
   var _path;
   var _Hono = class extends defineDynamicClass() {
     constructor(options = {}) {
+      var _a, _b;
       super();
       this._basePath = "/";
       __privateAdd3(this, _path, "/");
@@ -995,10 +1006,10 @@
         });
         return this;
       };
-      const strict = options.strict ?? true;
+      const strict = (_a = options.strict) != null ? _a : true;
       delete options.strict;
       Object.assign(this, options);
-      this.getPath = strict ? options.getPath ?? getPath : getPathNoStrict;
+      this.getPath = strict ? (_b = options.getPath) != null ? _b : getPath : getPathNoStrict;
     }
     clone() {
       const clone = new _Hono({
@@ -1045,7 +1056,7 @@
         let executionContext = void 0;
         try {
           executionContext = c.executionCtx;
-        } catch {
+        } catch (e) {
         }
         const options = optionHandler ? optionHandler(c) : [c.env, executionContext];
         const optionsArray = Array.isArray(options) ? options : [options];
@@ -1308,14 +1319,16 @@
   var nullMatcher = [/^$/, [], {}];
   var wildcardRegExpCache = {};
   function buildWildcardRegExp(path) {
-    return wildcardRegExpCache[path] ?? (wildcardRegExpCache[path] = new RegExp(
+    var _a;
+    return (_a = wildcardRegExpCache[path]) != null ? _a : wildcardRegExpCache[path] = new RegExp(
       path === "*" ? "" : `^${path.replace(/\/\*/, "(?:|/.*)")}$`
-    ));
+    );
   }
   function clearWildcardRegExpCache() {
     wildcardRegExpCache = {};
   }
   function buildMatcherFromPreprocessedRoutes(routes) {
+    var _a;
     const trie = new Trie();
     const handlerData = [];
     if (routes.length === 0) {
@@ -1356,7 +1369,7 @@
     const [regexp, indexReplacementMap, paramReplacementMap] = trie.buildRegExp();
     for (let i = 0, len = handlerData.length; i < len; i++) {
       for (let j = 0, len2 = handlerData[i].length; j < len2; j++) {
-        const map = handlerData[i][j]?.[1];
+        const map = (_a = handlerData[i][j]) == null ? void 0 : _a[1];
         if (!map) {
           continue;
         }
@@ -1617,8 +1630,9 @@
         if (handlerSet !== void 0) {
           handlerSet.params = {};
           handlerSet.possibleKeys.forEach((key) => {
+            var _a;
             const processed = processedSet[handlerSet.name];
-            handlerSet.params[key] = params[key] && !processed ? params[key] : nodeParams[key] ?? params[key];
+            handlerSet.params[key] = params[key] && !processed ? params[key] : (_a = nodeParams[key]) != null ? _a : params[key];
             processedSet[handlerSet.name] = true;
           });
           handlerSets.push(handlerSet);
@@ -1720,8 +1734,9 @@
   // node_modules/.pnpm/hono@3.12.6/node_modules/hono/dist/hono.js
   var Hono2 = class extends Hono {
     constructor(options = {}) {
+      var _a;
       super(options);
-      this.router = options.router ?? new SmartRouter({
+      this.router = (_a = options.router) != null ? _a : new SmartRouter({
         routers: [new RegExpRouter(), new TrieRouter()]
       });
     }
@@ -1749,6 +1764,7 @@
       }
     })(opts.origin);
     return async function cors2(c, next) {
+      var _a, _b;
       function set(key, value) {
         c.res.headers.set(key, value);
       }
@@ -1762,24 +1778,24 @@
       if (opts.credentials) {
         set("Access-Control-Allow-Credentials", "true");
       }
-      if (opts.exposeHeaders?.length) {
+      if ((_a = opts.exposeHeaders) == null ? void 0 : _a.length) {
         set("Access-Control-Expose-Headers", opts.exposeHeaders.join(","));
       }
       if (c.req.method === "OPTIONS") {
         if (opts.maxAge != null) {
           set("Access-Control-Max-Age", opts.maxAge.toString());
         }
-        if (opts.allowMethods?.length) {
+        if ((_b = opts.allowMethods) == null ? void 0 : _b.length) {
           set("Access-Control-Allow-Methods", opts.allowMethods.join(","));
         }
         let headers = opts.allowHeaders;
-        if (!headers?.length) {
+        if (!(headers == null ? void 0 : headers.length)) {
           const requestHeaders = c.req.header("Access-Control-Request-Headers");
           if (requestHeaders) {
             headers = requestHeaders.split(/\s*,\s*/);
           }
         }
-        if (headers?.length) {
+        if (headers == null ? void 0 : headers.length) {
           set("Access-Control-Allow-Headers", headers.join(","));
           c.res.headers.append("Vary", "Access-Control-Request-Headers");
         }
@@ -1797,20 +1813,21 @@
 
   // node_modules/.pnpm/hono@3.12.6/node_modules/hono/dist/helper/adapter/index.js
   var getRuntimeKey = () => {
+    var _a, _b;
     const global = globalThis;
-    if (global?.Deno !== void 0)
+    if ((global == null ? void 0 : global.Deno) !== void 0)
       return "deno";
-    if (global?.Bun !== void 0)
+    if ((global == null ? void 0 : global.Bun) !== void 0)
       return "bun";
-    if (typeof global?.WebSocketPair === "function")
+    if (typeof (global == null ? void 0 : global.WebSocketPair) === "function")
       return "workerd";
-    if (typeof global?.EdgeRuntime === "string")
+    if (typeof (global == null ? void 0 : global.EdgeRuntime) === "string")
       return "edge-light";
-    if (global?.fastly !== void 0)
+    if ((global == null ? void 0 : global.fastly) !== void 0)
       return "fastly";
-    if (global?.__lagon__ !== void 0)
+    if ((global == null ? void 0 : global.__lagon__) !== void 0)
       return "lagon";
-    if (global?.process?.release?.name === "node")
+    if (((_b = (_a = global == null ? void 0 : global.process) == null ? void 0 : _a.release) == null ? void 0 : _b.name) === "node")
       return "node";
     return "other";
   };
@@ -1857,7 +1874,7 @@
   var getTime = () => {
     try {
       return performance.now();
-    } catch {
+    } catch (e) {
     }
     return Date.now();
   };
@@ -2515,11 +2532,12 @@
     return null;
   }
   function parseBase64(base64) {
+    var _a, _b, _c;
     if (!base64.startsWith("data:")) {
       return { text: "" };
     }
     const [m, data, ..._arr] = base64.split(",");
-    const mimeType = m.match(/:(?<mime>.*?);/)?.groups?.mime ?? "img/png";
+    const mimeType = (_c = (_b = (_a = m.match(/:(?<mime>.*?);/)) == null ? void 0 : _a.groups) == null ? void 0 : _b.mime) != null ? _c : "img/png";
     return {
       inlineData: {
         mimeType,
@@ -2529,18 +2547,20 @@
   }
   function openAiMessageToGeminiMessage(messages) {
     const result = messages.flatMap(({ role, content }) => {
+      var _a;
       if (role === "system") {
         return [
           { role: "user", parts: [{ text: content }] },
           { role: "model", parts: [{ text: "" }] }
         ];
       }
-      const parts = content == null || typeof content === "string" ? [{ text: content?.toString() ?? "" }] : content.map(
+      const parts = content == null || typeof content === "string" ? [{ text: (_a = content == null ? void 0 : content.toString()) != null ? _a : "" }] : content.map(
         (item) => item.type === "text" ? { text: item.text } : parseBase64(item.image_url.url)
       );
       return [{ role: "user" === role ? "user" : "model", parts }];
     }).flatMap((item, idx, arr) => {
-      if (item.role === arr.at(idx + 1)?.role && item.role === "user") {
+      var _a;
+      if (item.role === ((_a = arr.at(idx + 1)) == null ? void 0 : _a.role) && item.role === "user") {
         return [item, { role: "model", parts: [{ text: "" }] }];
       }
       return [item];
@@ -2560,12 +2580,13 @@
     });
   }
   function genModel(genAi, req) {
+    var _a, _b, _c;
     const model = genAi.getGenerativeModel({
       model: hasImageMessage(req.messages) ? "gemini-pro-vision" /* GEMINI_PRO_VISION */ : "gemini-pro" /* GEMINI_PRO */,
       generationConfig: {
-        maxOutputTokens: req.max_tokens ?? void 0,
-        temperature: req.temperature ?? void 0,
-        topP: req.top_p ?? void 0
+        maxOutputTokens: (_a = req.max_tokens) != null ? _a : void 0,
+        temperature: (_b = req.temperature) != null ? _b : void 0,
+        topP: (_c = req.top_p) != null ? _c : void 0
       }
     });
     return model;
@@ -2577,7 +2598,10 @@
     const model = genModel(genAi, req);
     const geminiResp = await model.generateContent({
       contents: openAiMessageToGeminiMessage(req.messages)
-    }).then((it) => it.response.text()).catch((err) => err?.message ?? err.toString());
+    }).then((it) => it.response.text()).catch((err) => {
+      var _a;
+      return (_a = err == null ? void 0 : err.message) != null ? _a : err.toString();
+    });
     log2.debug(JSON.stringify(geminiResp));
     const resp = {
       id: "chatcmpl-abc123",

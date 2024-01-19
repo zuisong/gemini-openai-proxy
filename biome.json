@@ -23,6 +23,6 @@
     }
   },
   "files": {
-    "ignore": ["cloudflare-workers", "node_modules", "dist"]
+    "ignore": ["./cloudflare-workers/**", "./node_modules/**", "./dist/**"]
   }
 }

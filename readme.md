@@ -30,7 +30,21 @@ curl http://localhost:8000/v1/chat/completions \
   - [x] stream
   - [x] complete
 
-## Install
+## Run On Serverless
+
+### [Cloudflare Workers](https://workers.cloudflare.com)
+
+> build command  `npm run build:cf_worker`
+
+Copy [`main_cloudflare-workers.js`](./dist/main_cloudflare-workers.js) to `cloudflare-workers`
+
+### [Deno Deploy](https://deno.com/deploy)
+
+> build command `npm run build:deno_deploy`
+
+Copy [`main_deno.js`](./dist/main_deno.js) to `deno deploy`
+
+## Run On Local
 
 ### deno
 
@@ -59,10 +73,3 @@ docker run -d -p 8000:8000 ghcr.io/zuisong/gemini-openai-proxy:bun
 ## or
 docker run -d -p 8000:8000 ghcr.io/zuisong/gemini-openai-proxy:node
 ```
-
-### Cloudflare Workers
->
-> Want build from source?  
-  run  `npm run build:cf_worker`
-
-Copy [main_cloudflare-workers.js](./cloudflare-workers/main_cloudflare-workers.js) to [cloudflare-workers](https://workers.cloudflare.com)
