@@ -9,14 +9,16 @@
   "scripts": {
     "start:deno": "deno run -A main_deno.ts",
     "start:bun": "bun main_bun.ts",
-    "start:node": "node --import tsx/esm main_node.ts",
-    "build": "npm run build:cf_worker && npm run build:deno_deploy",
+    "start:node": "npm run build:node && node dist/main_node.js",
+    "build": "npm run build:cf_worker && npm run build:deno && npm run build:bun && npm run build:node",
     "build:cf_worker": "npm run _esbuild_ main_cloudflare-workers.ts",
-    "build:deno_deploy": "npm run _esbuild_ main_deno.ts ",
+    "build:deno": "npm run _esbuild_ main_deno.ts ",
+    "build:node": "npm run _esbuild_ main_node.ts",
+    "build:bun": "npm run _esbuild_ main_bun.ts ",
     "test:deno": "deno test",
     "test:node": " node --import tsx/esm --no-warnings --test ./test/**/*",
     "check": "deno run -A npm:@biomejs/biome check --apply .",
-    "_esbuild_": "esbuild --bundle --outdir=dist --target=es2018 --legal-comments=none --tree-shaking=true"
+    "_esbuild_": "esbuild --bundle --outdir=dist --target=es2018 --legal-comments=none --tree-shaking=true --format=esm --platform=node --out-extension:.js=.mjs"
   },
   "dependencies": {
     "@google/generative-ai": "^0.1.3",
@@ -28,7 +30,6 @@
     "@types/node": "^20.11.5",
     "dotenv": "^16.3.1",
     "esbuild": "^0.19.11",
-    "openai": "^4.24.7",
-    "tsx": "^4.7.0"
+    "openai": "^4.24.7"
   }
 }

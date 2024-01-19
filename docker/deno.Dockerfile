@@ -1,12 +1,13 @@
+ARG NODE_VERSION=21-alpine
 ARG DENO_VERSION=latest
-FROM lukechannings/deno:${DENO_VERSION} as builder
+#----------------
+FROM node:${NODE_VERSION} as builder
 WORKDIR /data
 COPY . .
-RUN deno cache main_deno.ts
-RUN deno compile --allow-all --no-check -o app main_deno.ts
+RUN npm install -g pnpm && pnpm install && npm run build
 
-FROM ubuntu
+#----------------
+FROM lukechannings/deno:${DENO_VERSION} 
 WORKDIR /data
-USER root
-COPY --from=builder /data/app /data/app
-CMD ["/data/app", "--allow-net"]
+COPY  --from=builder /data/dist/main_deno.mjs app.mjs
+CMD ["run","--allow-net","app.mjs"]

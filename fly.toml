@@ -2,7 +2,7 @@ app = "gemini-openai-proxy"
 primary_region = "lax"
 
 [build]
-dockerfile = "docker/deno.Dockerfile"
+dockerfile = "docker/bun.Dockerfile"
 
 [env]
 

@@ -40,13 +40,13 @@ curl -s http://localhost:8000/v1/chat/completions \
 
 > build command  `npm run build:cf_worker`
 
-Copy [`main_cloudflare-workers.js`](./dist/main_cloudflare-workers.js) to `cloudflare-workers`
+Copy [`main_cloudflare-workers.mjs`](./dist/main_cloudflare-workers.mjs) to `cloudflare-workers`
 
 ### [Deno Deploy](https://deno.com/deploy)
 
-> build command `npm run build:deno_deploy`
+> build command `npm run build:deno`
 
-Copy [`main_deno.js`](./dist/main_deno.js) to `deno deploy`
+Copy [`main_deno.mjs`](./dist/main_deno.mjs) to `deno deploy`
 
 ## Run On Local
 
