@@ -1,5 +1,5 @@
-import type { OpenAI } from "openai"
 import { streamSSE } from "hono/streaming"
+import type { OpenAI } from "../../../types.ts"
 import { genModel, openAiMessageToGeminiMessage } from "../../../utils.ts"
 import { ChatProxyHandlerType } from "./ChatProxyHandler.ts"
 

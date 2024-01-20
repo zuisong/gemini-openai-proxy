@@ -1,4 +1,4 @@
-import type { OpenAI } from "openai"
+import type { OpenAI } from "../../../types.ts"
 import { genModel, openAiMessageToGeminiMessage } from "../../../utils.ts"
 import { ChatProxyHandlerType } from "./ChatProxyHandler.ts"
 

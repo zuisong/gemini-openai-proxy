@@ -1,5 +1,5 @@
-import type { OpenAI } from "openai"
 import type { Content, GoogleGenerativeAI, Part } from "@google/generative-ai"
+import type { OpenAI } from "./types.ts"
 
 export function getToken(headers: Record<string, string>): string | null {
   for (const [k, v] of Object.entries(headers)) {

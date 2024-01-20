@@ -1,10 +1,11 @@
 import { GoogleGenerativeAI } from "@google/generative-ai"
 import type { Handler } from "hono"
-import type { OpenAI } from "openai"
+
+import { ContextWithLogger } from "../../../app.ts"
+import type { OpenAI } from "../../../types.ts"
 import { getToken } from "../../../utils.ts"
 import { nonStreamingChatProxyHandler } from "./NonStreamingChatProxyHandler.ts"
 import { streamingChatProxyHandler } from "./StreamingChatProxyHandler.ts"
-import { ContextWithLogger } from "../../../app.ts"
 
 export const chatProxyHandler: Handler = async (c: ContextWithLogger) => {
   const log = c.var.log

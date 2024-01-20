@@ -1,9 +1,8 @@
 import assert from "node:assert/strict"
 import * as process from "node:process"
 import { test } from "node:test"
-import type { OpenAI } from "openai"
 import { app } from "../src/app.ts"
-import "dotenv/config"
+import type { OpenAI } from "../src/types.ts"
 
 test("test", async () => {
   const res = await app.request("/v1/chat/completions", {
