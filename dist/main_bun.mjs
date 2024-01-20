@@ -2120,6 +2120,36 @@ curl ${origin}/v1/chat/completions \\
 }).post("/v1/chat/completions", chatProxyHandler);
 
 // main_bun.ts
+var PolyfillTextDecoderStream = class extends TransformStream {
+  encoding;
+  fatal;
+  ignoreBOM;
+  constructor(encoding = "utf-8", {
+    fatal = false,
+    ignoreBOM = false
+  } = {}) {
+    const decoder = new TextDecoder(encoding, { fatal, ignoreBOM });
+    super({
+      transform(chunk, controller) {
+        const decoded = decoder.decode(chunk);
+        if (decoded.length > 0) {
+          controller.enqueue(decoded);
+        }
+      },
+      flush(controller) {
+        const output = decoder.decode();
+        if (output.length > 0) {
+          controller.enqueue(output);
+        }
+      }
+    });
+    this.encoding = encoding;
+    this.fatal = fatal;
+    this.ignoreBOM = ignoreBOM;
+  }
+  [Symbol.toStringTag] = "PolyfillTextDecoderStream";
+};
+globalThis.TextDecoderStream = PolyfillTextDecoderStream;
 Bun.serve({
   port: 8e3,
   fetch: app.fetch
