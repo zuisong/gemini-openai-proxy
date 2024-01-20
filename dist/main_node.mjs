@@ -296,6 +296,94 @@ var serve = (options, listeningListener) => {
   return server;
 };
 
+// node_modules/.pnpm/hono@3.12.6/node_modules/hono/dist/helper/adapter/index.js
+var getRuntimeKey = () => {
+  const global2 = globalThis;
+  if (global2?.Deno !== void 0)
+    return "deno";
+  if (global2?.Bun !== void 0)
+    return "bun";
+  if (typeof global2?.WebSocketPair === "function")
+    return "workerd";
+  if (typeof global2?.EdgeRuntime === "string")
+    return "edge-light";
+  if (global2?.fastly !== void 0)
+    return "fastly";
+  if (global2?.__lagon__ !== void 0)
+    return "lagon";
+  if (global2?.process?.release?.name === "node")
+    return "node";
+  return "other";
+};
+
+// node_modules/.pnpm/hono@3.12.6/node_modules/hono/dist/middleware/cors/index.js
+var cors = (options) => {
+  const defaults = {
+    origin: "*",
+    allowMethods: ["GET", "HEAD", "PUT", "POST", "DELETE", "PATCH"],
+    allowHeaders: [],
+    exposeHeaders: []
+  };
+  const opts = {
+    ...defaults,
+    ...options
+  };
+  const findAllowOrigin = ((optsOrigin) => {
+    if (typeof optsOrigin === "string") {
+      return () => optsOrigin;
+    } else if (typeof optsOrigin === "function") {
+      return optsOrigin;
+    } else {
+      return (origin) => optsOrigin.includes(origin) ? origin : optsOrigin[0];
+    }
+  })(opts.origin);
+  return async function cors2(c, next) {
+    function set(key, value) {
+      c.res.headers.set(key, value);
+    }
+    const allowOrigin = findAllowOrigin(c.req.header("origin") || "");
+    if (allowOrigin) {
+      set("Access-Control-Allow-Origin", allowOrigin);
+    }
+    if (opts.origin !== "*") {
+      set("Vary", "Origin");
+    }
+    if (opts.credentials) {
+      set("Access-Control-Allow-Credentials", "true");
+    }
+    if (opts.exposeHeaders?.length) {
+      set("Access-Control-Expose-Headers", opts.exposeHeaders.join(","));
+    }
+    if (c.req.method === "OPTIONS") {
+      if (opts.maxAge != null) {
+        set("Access-Control-Max-Age", opts.maxAge.toString());
+      }
+      if (opts.allowMethods?.length) {
+        set("Access-Control-Allow-Methods", opts.allowMethods.join(","));
+      }
+      let headers = opts.allowHeaders;
+      if (!headers?.length) {
+        const requestHeaders = c.req.header("Access-Control-Request-Headers");
+        if (requestHeaders) {
+          headers = requestHeaders.split(/\s*,\s*/);
+        }
+      }
+      if (headers?.length) {
+        set("Access-Control-Allow-Headers", headers.join(","));
+        c.res.headers.append("Vary", "Access-Control-Request-Headers");
+      }
+      c.res.headers.delete("Content-Length");
+      c.res.headers.delete("Content-Type");
+      return new Response(null, {
+        headers: c.res.headers,
+        status: 204,
+        statusText: c.res.statusText
+      });
+    }
+    await next();
+  };
+};
+
 // node_modules/.pnpm/hono@3.12.6/node_modules/hono/dist/utils/url.js
 var getPath = (request) => {
   const match = request.url.match(/^https?:\/\/[^/]+(\/[^?]*)/);
@@ -409,6 +497,44 @@ var getQueryParams = (url, key) => {
   return _getQueryParam(url, key, true);
 };
 var decodeURIComponent_ = decodeURIComponent;
+
+// node_modules/.pnpm/hono@3.12.6/node_modules/hono/dist/middleware/logger/index.js
+var humanize = (times) => {
+  const [delimiter, separator] = [",", "."];
+  const orderTimes = times.map((v) => v.replace(/(\d)(?=(\d\d\d)+(?!\d))/g, "$1" + delimiter));
+  return orderTimes.join(separator);
+};
+var time = (start) => {
+  const delta = Date.now() - start;
+  return humanize([delta < 1e3 ? delta + "ms" : Math.round(delta / 1e3) + "s"]);
+};
+var colorStatus = (status) => {
+  const out = {
+    7: `\x1B[35m${status}\x1B[0m`,
+    5: `\x1B[31m${status}\x1B[0m`,
+    4: `\x1B[33m${status}\x1B[0m`,
+    3: `\x1B[36m${status}\x1B[0m`,
+    2: `\x1B[32m${status}\x1B[0m`,
+    1: `\x1B[32m${status}\x1B[0m`,
+    0: `\x1B[33m${status}\x1B[0m`
+  };
+  const calculateStatus = status / 100 | 0;
+  return out[calculateStatus];
+};
+function log(fn, prefix, method, path, status = 0, elapsed) {
+  const out = prefix === "<--" ? `  ${prefix} ${method} ${path}` : `  ${prefix} ${method} ${path} ${colorStatus(status)} ${elapsed}`;
+  fn(out);
+}
+var logger = (fn = console.log) => {
+  return async function logger2(c, next) {
+    const { method } = c.req;
+    const path = getPath(c.req.raw);
+    log(fn, "<--", method, path);
+    const start = Date.now();
+    await next();
+    log(fn, "-->", method, path, c.res.status, time(start));
+  };
+};
 
 // node_modules/.pnpm/hono@3.12.6/node_modules/hono/dist/utils/cookie.js
 var validCookieNameRegEx = /^[\w!#$%&'*.^`|~+-]+$/;
@@ -831,6 +957,91 @@ _headers = /* @__PURE__ */ new WeakMap();
 _preparedHeaders = /* @__PURE__ */ new WeakMap();
 _res = /* @__PURE__ */ new WeakMap();
 _isFresh = /* @__PURE__ */ new WeakMap();
+
+// node_modules/.pnpm/hono@3.12.6/node_modules/hono/dist/middleware/timing/index.js
+var getTime = () => {
+  try {
+    return performance.now();
+  } catch {
+  }
+  return Date.now();
+};
+var timing = (config) => {
+  const options = {
+    ...{
+      total: true,
+      enabled: true,
+      totalDescription: "Total Response Time",
+      autoEnd: true,
+      crossOrigin: false
+    },
+    ...config
+  };
+  return async function timing2(c, next) {
+    const headers = [];
+    const timers = /* @__PURE__ */ new Map();
+    c.set("metric", { headers, timers });
+    if (options.total) {
+      startTime(c, "total", options.totalDescription);
+    }
+    await next();
+    if (options.total) {
+      endTime(c, "total");
+    }
+    if (options.autoEnd) {
+      timers.forEach((_, key) => endTime(c, key));
+    }
+    const enabled = typeof options.enabled === "function" ? options.enabled(c) : options.enabled;
+    if (enabled) {
+      c.res.headers.append("Server-Timing", headers.join(","));
+      if (options.crossOrigin) {
+        c.res.headers.append(
+          "Timing-Allow-Origin",
+          typeof options.crossOrigin === "string" ? options.crossOrigin : "*"
+        );
+      }
+    }
+  };
+};
+var setMetric = (c, name, valueDescription, description, precision) => {
+  const metrics = c.get("metric");
+  if (!metrics) {
+    console.warn("Metrics not initialized! Please add the `timing()` middleware to this route!");
+    return;
+  }
+  if (typeof valueDescription === "number") {
+    const dur = valueDescription.toFixed(precision || 1);
+    const metric = description ? `${name};dur=${dur};desc="${description}"` : `${name};dur=${dur}`;
+    metrics.headers.push(metric);
+  } else {
+    const metric = valueDescription ? `${name};desc="${valueDescription}"` : `${name}`;
+    metrics.headers.push(metric);
+  }
+};
+var startTime = (c, name, description) => {
+  const metrics = c.get("metric");
+  if (!metrics) {
+    console.warn("Metrics not initialized! Please add the `timing()` middleware to this route!");
+    return;
+  }
+  metrics.timers.set(name, { description, start: getTime() });
+};
+var endTime = (c, name, precision) => {
+  const metrics = c.get("metric");
+  if (!metrics) {
+    console.warn("Metrics not initialized! Please add the `timing()` middleware to this route!");
+    return;
+  }
+  const timer = metrics.timers.get(name);
+  if (!timer) {
+    console.warn(`Timer "${name}" does not exist!`);
+    return;
+  }
+  const { description, start } = timer;
+  const duration = getTime() - start;
+  setMetric(c, name, duration, description, precision);
+  metrics.timers.delete(name);
+};
 
 // node_modules/.pnpm/hono@3.12.6/node_modules/hono/dist/compose.js
 var compose = (middleware, onError, onNotFound) => {
@@ -1409,216 +1620,34 @@ var Hono2 = class extends Hono {
   }
 };
 
-// node_modules/.pnpm/hono@3.12.6/node_modules/hono/dist/middleware/cors/index.js
-var cors = (options) => {
-  const defaults = {
-    origin: "*",
-    allowMethods: ["GET", "HEAD", "PUT", "POST", "DELETE", "PATCH"],
-    allowHeaders: [],
-    exposeHeaders: []
-  };
-  const opts = {
-    ...defaults,
-    ...options
-  };
-  const findAllowOrigin = ((optsOrigin) => {
-    if (typeof optsOrigin === "string") {
-      return () => optsOrigin;
-    } else if (typeof optsOrigin === "function") {
-      return optsOrigin;
-    } else {
-      return (origin) => optsOrigin.includes(origin) ? origin : optsOrigin[0];
-    }
-  })(opts.origin);
-  return async function cors2(c, next) {
-    function set(key, value) {
-      c.res.headers.set(key, value);
-    }
-    const allowOrigin = findAllowOrigin(c.req.header("origin") || "");
-    if (allowOrigin) {
-      set("Access-Control-Allow-Origin", allowOrigin);
-    }
-    if (opts.origin !== "*") {
-      set("Vary", "Origin");
-    }
-    if (opts.credentials) {
-      set("Access-Control-Allow-Credentials", "true");
-    }
-    if (opts.exposeHeaders?.length) {
-      set("Access-Control-Expose-Headers", opts.exposeHeaders.join(","));
-    }
-    if (c.req.method === "OPTIONS") {
-      if (opts.maxAge != null) {
-        set("Access-Control-Max-Age", opts.maxAge.toString());
-      }
-      if (opts.allowMethods?.length) {
-        set("Access-Control-Allow-Methods", opts.allowMethods.join(","));
-      }
-      let headers = opts.allowHeaders;
-      if (!headers?.length) {
-        const requestHeaders = c.req.header("Access-Control-Request-Headers");
-        if (requestHeaders) {
-          headers = requestHeaders.split(/\s*,\s*/);
-        }
-      }
-      if (headers?.length) {
-        set("Access-Control-Allow-Headers", headers.join(","));
-        c.res.headers.append("Vary", "Access-Control-Request-Headers");
-      }
-      c.res.headers.delete("Content-Length");
-      c.res.headers.delete("Content-Type");
-      return new Response(null, {
-        headers: c.res.headers,
-        status: 204,
-        statusText: c.res.statusText
-      });
-    }
-    await next();
-  };
-};
-
-// node_modules/.pnpm/hono@3.12.6/node_modules/hono/dist/helper/adapter/index.js
-var getRuntimeKey = () => {
-  const global2 = globalThis;
-  if (global2?.Deno !== void 0)
-    return "deno";
-  if (global2?.Bun !== void 0)
-    return "bun";
-  if (typeof global2?.WebSocketPair === "function")
-    return "workerd";
-  if (typeof global2?.EdgeRuntime === "string")
-    return "edge-light";
-  if (global2?.fastly !== void 0)
-    return "fastly";
-  if (global2?.__lagon__ !== void 0)
-    return "lagon";
-  if (global2?.process?.release?.name === "node")
-    return "node";
-  return "other";
-};
-
-// node_modules/.pnpm/hono@3.12.6/node_modules/hono/dist/middleware/logger/index.js
-var humanize = (times) => {
-  const [delimiter, separator] = [",", "."];
-  const orderTimes = times.map((v) => v.replace(/(\d)(?=(\d\d\d)+(?!\d))/g, "$1" + delimiter));
-  return orderTimes.join(separator);
-};
-var time = (start) => {
-  const delta = Date.now() - start;
-  return humanize([delta < 1e3 ? delta + "ms" : Math.round(delta / 1e3) + "s"]);
-};
-var colorStatus = (status) => {
-  const out = {
-    7: `\x1B[35m${status}\x1B[0m`,
-    5: `\x1B[31m${status}\x1B[0m`,
-    4: `\x1B[33m${status}\x1B[0m`,
-    3: `\x1B[36m${status}\x1B[0m`,
-    2: `\x1B[32m${status}\x1B[0m`,
-    1: `\x1B[32m${status}\x1B[0m`,
-    0: `\x1B[33m${status}\x1B[0m`
-  };
-  const calculateStatus = status / 100 | 0;
-  return out[calculateStatus];
-};
-function log(fn, prefix, method, path, status = 0, elapsed) {
-  const out = prefix === "<--" ? `  ${prefix} ${method} ${path}` : `  ${prefix} ${method} ${path} ${colorStatus(status)} ${elapsed}`;
-  fn(out);
+// src/log.ts
+var LogLevel = /* @__PURE__ */ ((LogLevel2) => {
+  LogLevel2[LogLevel2["error"] = 3] = "error";
+  LogLevel2[LogLevel2["warn"] = 4] = "warn";
+  LogLevel2[LogLevel2["info"] = 5] = "info";
+  LogLevel2[LogLevel2["debug"] = 7] = "debug";
+  return LogLevel2;
+})(LogLevel || {});
+var currentlevel = 7 /* debug */;
+function gen_logger(id) {
+  return mapValues(LogLevel, (value, name) => {
+    return (msg) => {
+      outFunc(name, value, `${id} ${msg}`);
+    };
+  });
 }
-var logger = (fn = console.log) => {
-  return async function logger2(c, next) {
-    const { method } = c.req;
-    const path = getPath(c.req.raw);
-    log(fn, "<--", method, path);
-    const start = Date.now();
-    await next();
-    log(fn, "-->", method, path, c.res.status, time(start));
-  };
-};
-
-// node_modules/.pnpm/hono@3.12.6/node_modules/hono/dist/middleware/timing/index.js
-var getTime = () => {
-  try {
-    return performance.now();
-  } catch {
-  }
-  return Date.now();
-};
-var timing = (config) => {
-  const options = {
-    ...{
-      total: true,
-      enabled: true,
-      totalDescription: "Total Response Time",
-      autoEnd: true,
-      crossOrigin: false
-    },
-    ...config
-  };
-  return async function timing2(c, next) {
-    const headers = [];
-    const timers = /* @__PURE__ */ new Map();
-    c.set("metric", { headers, timers });
-    if (options.total) {
-      startTime(c, "total", options.totalDescription);
-    }
-    await next();
-    if (options.total) {
-      endTime(c, "total");
-    }
-    if (options.autoEnd) {
-      timers.forEach((_, key) => endTime(c, key));
-    }
-    const enabled = typeof options.enabled === "function" ? options.enabled(c) : options.enabled;
-    if (enabled) {
-      c.res.headers.append("Server-Timing", headers.join(","));
-      if (options.crossOrigin) {
-        c.res.headers.append(
-          "Timing-Allow-Origin",
-          typeof options.crossOrigin === "string" ? options.crossOrigin : "*"
-        );
-      }
-    }
-  };
-};
-var setMetric = (c, name, valueDescription, description, precision) => {
-  const metrics = c.get("metric");
-  if (!metrics) {
-    console.warn("Metrics not initialized! Please add the `timing()` middleware to this route!");
+function outFunc(_levelName, levelValue, _msg) {
+  if (levelValue > currentlevel) {
     return;
   }
-  if (typeof valueDescription === "number") {
-    const dur = valueDescription.toFixed(precision || 1);
-    const metric = description ? `${name};dur=${dur};desc="${description}"` : `${name};dur=${dur}`;
-    metrics.headers.push(metric);
-  } else {
-    const metric = valueDescription ? `${name};desc="${valueDescription}"` : `${name}`;
-    metrics.headers.push(metric);
-  }
-};
-var startTime = (c, name, description) => {
-  const metrics = c.get("metric");
-  if (!metrics) {
-    console.warn("Metrics not initialized! Please add the `timing()` middleware to this route!");
-    return;
-  }
-  metrics.timers.set(name, { description, start: getTime() });
-};
-var endTime = (c, name, precision) => {
-  const metrics = c.get("metric");
-  if (!metrics) {
-    console.warn("Metrics not initialized! Please add the `timing()` middleware to this route!");
-    return;
-  }
-  const timer = metrics.timers.get(name);
-  if (!timer) {
-    console.warn(`Timer "${name}" does not exist!`);
-    return;
-  }
-  const { description, start } = timer;
-  const duration = getTime() - start;
-  setMetric(c, name, duration, description, precision);
-  metrics.timers.delete(name);
-};
+}
+function mapValues(obj, fn) {
+  return Object.fromEntries(
+    Object.entries(obj).map(([key, value]) => {
+      return [key, fn(value, key, obj)];
+    })
+  );
+}
 
 // node_modules/.pnpm/@google+generative-ai@0.1.3/node_modules/@google/generative-ai/dist/index.mjs
 var HarmCategory;
@@ -2363,35 +2392,6 @@ var chatProxyHandler = async (c) => {
   }
   return nonStreamingChatProxyHandler(c, req, genAi);
 };
-
-// src/log.ts
-var LogLevel = /* @__PURE__ */ ((LogLevel2) => {
-  LogLevel2[LogLevel2["error"] = 3] = "error";
-  LogLevel2[LogLevel2["warn"] = 4] = "warn";
-  LogLevel2[LogLevel2["info"] = 5] = "info";
-  LogLevel2[LogLevel2["debug"] = 7] = "debug";
-  return LogLevel2;
-})(LogLevel || {});
-var currentlevel = 7 /* debug */;
-function gen_logger(id) {
-  return mapValues(LogLevel, (value, name) => {
-    return (msg) => {
-      outFunc(name, value, `${id} ${msg}`);
-    };
-  });
-}
-function outFunc(levelName, levelValue, msg) {
-  if (levelValue > currentlevel) {
-    return;
-  }
-}
-function mapValues(obj, fn) {
-  return Object.fromEntries(
-    Object.entries(obj).map(([key, value]) => {
-      return [key, fn(value, key, obj)];
-    })
-  );
-}
 
 // src/app.ts
 var app = new Hono2({ strict: true }).use("*", cors(), timing(), logger()).use("*", async (c, next) => {
