@@ -13,12 +13,12 @@
     "build": "npm run build:cf_worker && npm run build:deno && npm run build:bun && npm run build:node",
     "build:cf_worker": "npm run _esbuild_ main_cloudflare-workers.ts",
     "build:deno": "npm run _esbuild_ main_deno.ts ",
-    "build:node": "npm run _esbuild_ main_node.ts",
+    "build:node": "npm run _esbuild_ -- --platform=node main_node.ts",
     "build:bun": "npm run _esbuild_ main_bun.ts ",
     "test:deno": "deno test",
     "test:node": " node --import tsx/esm --no-warnings --test ./test/**/*",
     "check": "npx @biomejs/biome check --apply .",
-    "_esbuild_": "esbuild --bundle --outdir=dist --target=node18,chrome100 --legal-comments=none --tree-shaking=true --format=esm --platform=node --out-extension:.js=.mjs"
+    "_esbuild_": "esbuild --bundle --outdir=dist --target=node18,chrome100 --legal-comments=none --tree-shaking=true --format=esm --out-extension:.js=.mjs"
   },
   "dependencies": {
     "@google/generative-ai": "^0.1.3",
