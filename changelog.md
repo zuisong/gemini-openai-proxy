@@ -1,5 +1,14 @@
 # changelog
 
+## 0.6.0(2024-01-19)
+
+### main changes
+
+- fix bun runtime sream model problem, add ployfill for `TextDecoderStream`
+  > bun does not support `TextDecoderStream` now <https://github.com/oven-sh/bun/issues/5648>
+
+- Imporve document
+
 ## 0.5.0(2024-01-19)
 
 ### main changes
