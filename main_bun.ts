@@ -1,6 +1,6 @@
 import { app } from "./src/app.ts"
 
- class PolyfillTextDecoderStream
+class PolyfillTextDecoderStream
   extends TransformStream<Uint8Array, string>
   implements TextDecoderStream
 {
