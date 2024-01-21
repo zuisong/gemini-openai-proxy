@@ -13,9 +13,11 @@ complex development work.
 
 > Get api key from <https://makersuite.google.com/app/apikey>
 
-```shell
-export YOUR_GEMINI_API_KEY="your api key"
+<details open>
 
+<summary>✅ Gemini Pro</summary>
+
+```shell
 curl -s http://localhost:8000/v1/chat/completions \
   -H "Authorization: Bearer $YOUR_GEMINI_API_KEY" \
   -H "Content-Type: application/json" \
@@ -27,6 +29,41 @@ curl -s http://localhost:8000/v1/chat/completions \
 ```
 
 ![demo](./assets/demo.png)
+</details>
+
+<details>
+
+<summary>✅ Gemini Pro Vision</summary>
+
+```shell
+curl -s http://localhost:8000/v1/chat/completions \
+  -H "Authorization: Bearer $YOUR_GEMINI_API_KEY" \
+  -H "Content-Type: application/json" \
+  -d '{
+  "model": "gpt-3.5-turbo",
+  "messages": [
+    {
+      "role": "user",
+      "content": [
+        {
+          "type": "text",
+          "text": "What do you see in this picture?"
+        },
+        {
+          "type": "image_url",
+          "image_url": {
+            "url": "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAADAAAAAnAgMAAAA0vyM3AAAACVBMVEX/4WwCAgF3aTMcpbzGAAAAa0lEQVR4nGOgAWB1QOYEIHFEcXKmhCBxQqYgcSLEEGymAFEEhzFAFYmTwNoA53A6IDmB1YETidPAiLBVFGgEgrNqJYIzNTQU4Z5QZA6QNQ3hGpAZcNegceBOADFQOQlQDhfQyUwLkPxKVwAABbkRCcDA66QAAAAASUVORK5CYII="
+          }
+        }
+      ]
+    }
+  ],
+  "stream": false
+}'
+```
+
+![vision demo](./assets/vision-demo.jpeg)
+</details>
 
 ## Plan
 
