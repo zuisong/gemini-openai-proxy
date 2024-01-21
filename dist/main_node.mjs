@@ -1,5 +1,6 @@
-// node_modules/.pnpm/@hono+node-server@1.4.0/node_modules/@hono/node-server/dist/index.mjs
+// node_modules/.pnpm/@hono+node-server@1.4.1/node_modules/@hono/node-server/dist/index.mjs
 import { createServer as createServerHTTP } from "http";
+import { resolve } from "path";
 import { Readable } from "stream";
 import crypto2 from "crypto";
 var newRequestFromIncoming = (method, url, incoming) => {
@@ -26,7 +27,13 @@ var requestPrototype = {
     return this[incomingKey].method || "GET";
   },
   get url() {
-    return `http://${this[incomingKey].headers.host}${this[incomingKey].url}`;
+    let path = this[incomingKey]["path"];
+    if (!path) {
+      const originalPath = this[incomingKey].url;
+      path = /\.\./.test(originalPath) ? resolve(originalPath) : originalPath;
+      this[incomingKey]["path"] = path;
+    }
+    return `http://${this[incomingKey].headers.host}${path}`;
   },
   [getRequestCache]() {
     return this[requestCache] ||= newRequestFromIncoming(this.method, this.url, this[incomingKey]);
