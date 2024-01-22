@@ -90,7 +90,7 @@ export function genModel(
   })
   return model
 }
-enum GeminiModel {
+export enum GeminiModel {
   GEMINI_PRO = "gemini-pro",
   GEMINI_PRO_VISION = "gemini-pro-vision",
 }

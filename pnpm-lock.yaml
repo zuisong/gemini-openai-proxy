@@ -25,6 +25,9 @@ devDependencies:
   esbuild:
     specifier: ^0.19.11
     version: 0.19.11
+  eventsource-parser:
+    specifier: ^1.1.1
+    version: 1.1.1
 
 packages:
 
@@ -300,6 +303,11 @@ packages:
       '@esbuild/win32-arm64': 0.19.11
       '@esbuild/win32-ia32': 0.19.11
       '@esbuild/win32-x64': 0.19.11
+    dev: true
+
+  /eventsource-parser@1.1.1:
+    resolution: {integrity: sha512-3Ej2iLj6ZnX+5CMxqyUb8syl9yVZwcwm8IIMrOJlF7I51zxOOrRlU3zxSb/6hFbl03ts1ZxHAGJdWLZOLyKG7w==}
+    engines: {node: '>=14.18'}
     dev: true
 
   /hono@3.12.6:

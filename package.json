@@ -17,7 +17,8 @@
     "build:bun": "npm run _esbuild_ main_bun.ts ",
     "test:deno": "deno test",
     "test:node": " node --import tsx/esm --no-warnings --test ./test/**/*",
-    "_esbuild_": "esbuild --bundle --outdir=dist --target=node18,chrome100 --legal-comments=none --tree-shaking=true --format=esm --out-extension:.js=.mjs"
+    "_esbuild_": "esbuild --bundle --outdir=dist --target=node18,chrome100 --legal-comments=none --tree-shaking=true --format=esm --out-extension:.js=.mjs",
+    "test-cov": "deno test --coverage -A --env && deno coverage coverage --lcov --output=coverage/lcov.info"
   },
   "dependencies": {
     "@google/generative-ai": "^0.1.3",
@@ -27,6 +28,7 @@
     "@hono/node-server": "^1.4.1",
     "@types/bun": "^1.0.3",
     "@types/node": "^20.11.5",
-    "esbuild": "^0.19.11"
+    "esbuild": "^0.19.11",
+    "eventsource-parser": "^1.1.1"
   }
 }

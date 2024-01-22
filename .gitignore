@@ -6,3 +6,5 @@ node_modules/
 bun.lockb
 .DS_Store
 .wrangler/
+
+coverage/
