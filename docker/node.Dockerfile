@@ -1,8 +1,8 @@
 #----------------
-FROM oven/bun:1-alpine as builder
+FROM lukechannings/deno:latest as builder
 WORKDIR /data
 COPY . .
-RUN bun install && bun run build
+RUN deno task build:deno
 
 #----------------
 FROM node:21-alpine

@@ -1,1 +1,1 @@
-export { type OpenAI } from "https://esm.sh/v135/openai@4.24.7/index.d.mts"
+export { type OpenAI } from "https://deno.land/x/openai@v4.25.0/mod.ts"

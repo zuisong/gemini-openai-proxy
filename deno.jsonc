@@ -1,5 +1,6 @@
 {
   "$schema": "https://deno.land/x/deno/cli/schemas/config-file.v1.json",
+  "nodeModulesDir": true,
   "lock": false,
   "exclude": [
     "node_modules",

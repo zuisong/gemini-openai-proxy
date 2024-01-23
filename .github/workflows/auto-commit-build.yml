@@ -8,20 +8,37 @@ on:
   push:
   workflow_dispatch:
 
-env:
-  IMAGE_TAG: ${{ github.ref_name }}
-  IMAGE_NAME: ghcr.io/${{ github.repository }}
-
 jobs:
-  build-image:
-    runs-on: ubuntu-latest
+  test:
+    name: Test on deno ${{ matrix.node_version }} and ${{ matrix.os }}
+    runs-on: ${{ matrix.os }}
+    env:
+      ACTIONS_ALLOW_UNSECURE_COMMANDS: true
+    strategy:
+      matrix:
+        os: [
+            #
+            ubuntu-latest,
+            # windows-latest,
+            # macOS-latest,
+          ]
+
     steps:
-      - name: Checkout
-        uses: actions/checkout@v4
-      - run: |
-          npm i -g pnpm
-          pnpm install
-          pnpm run build
+      - run: git config --global core.autocrlf false
+
+      - uses: actions/checkout@v4
+
+      - name: Setup Deno
+        uses: denoland/setup-deno@v1
+
+      - name: Run build
+        run: deno task build:deno
+
+      - name: "codecov coverage"
+        uses: codecov/codecov-action@v3
+        with:
+          files: coverage/lcov.info
+
       - uses: EndBug/add-and-commit@v9 # You can change this to use a specific version.
         with:
           add: "dist"
@@ -31,4 +48,4 @@ jobs:
           default_author: github_actions
           committer_name: GitHub Actions
           committer_email: actions@github.com
-          message: '🚨 Commit Build Artifact from GitHub Actions'
+          message: "🚨 Commit Build Artifact from GitHub Actions"
