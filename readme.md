@@ -114,3 +114,7 @@ docker run -d -p 8000:8000 ghcr.io/zuisong/gemini-openai-proxy:bun
 ## or
 docker run -d -p 8000:8000 ghcr.io/zuisong/gemini-openai-proxy:node
 ```
+
+## Star History
+
+[![Star History Chart](https://api.star-history.com/svg?repos=zuisong/gemini-openai-proxy&type=Date)](https://star-history.com/#zuisong/gemini-openai-proxy&Date)
