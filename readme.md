@@ -117,4 +117,10 @@ docker run -d -p 8000:8000 ghcr.io/zuisong/gemini-openai-proxy:node
 
 ## Star History
 
-[![Star History Chart](https://api.star-history.com/svg?repos=zuisong/gemini-openai-proxy&type=Date)](https://star-history.com/#zuisong/gemini-openai-proxy&Date)
+<a href="https://star-history.com/#zuisong/gemini-openai-proxy&Date">
+  <picture>
+    <source media="(prefers-color-scheme: dark)" srcset="https://api.star-history.com/svg?repos=zuisong/gemini-openai-proxy&type=Date&theme=dark" />
+    <source media="(prefers-color-scheme: light)" srcset="https://api.star-history.com/svg?repos=zuisong/gemini-openai-proxy&type=Date" />
+    <img alt="Star History Chart" src="https://api.star-history.com/svg?repos=zuisong/gemini-openai-proxy&type=Date" />
+  </picture>
+</a>
