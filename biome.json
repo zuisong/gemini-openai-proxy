@@ -1,5 +1,5 @@
 {
-  "$schema": "https://biomejs.dev/schemas/1.5.2/schema.json",
+  "$schema": "https://biomejs.dev/schemas/1.5.3/schema.json",
   "organizeImports": {
     "enabled": true
   },
@@ -25,7 +25,14 @@
       "semicolons": "asNeeded"
     }
   },
+  "json": {
+    "parser": {
+      "allowTrailingCommas": true,
+      "allowComments": true
+    }
+  },
   "files": {
-    "ignore": ["./cloudflare-workers/**", "./node_modules/**", "./dist/**"]
+    "ignore": ["./cloudflare-workers/**", "./node_modules/**", "./dist/**"],
+    "ignoreUnknown": true
   }
 }
