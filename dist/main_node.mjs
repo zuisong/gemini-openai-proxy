@@ -2287,11 +2287,7 @@ function genModel(genAi, req) {
       maxOutputTokens: req.max_tokens ?? void 0,
       temperature: req.temperature ?? void 0,
       topP: req.top_p ?? void 0
-    },
-    safetySettings: Object.values(HarmCategory).map((category) => ({
-      category,
-      threshold: HarmBlockThreshold.BLOCK_NONE
-    }))
+    }
   });
   return model;
 }
