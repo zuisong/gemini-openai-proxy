@@ -1,4 +1,10 @@
-import type { Content, GoogleGenerativeAI, Part } from "@google/generative-ai"
+import {
+  type Content,
+  type GoogleGenerativeAI,
+  HarmBlockThreshold,
+  HarmCategory,
+  type Part,
+} from "@google/generative-ai"
 import type { OpenAI } from "./types.ts"
 
 export function getToken(headers: Record<string, string>): string | null {
@@ -87,6 +93,10 @@ export function genModel(
       temperature: req.temperature ?? undefined,
       topP: req.top_p ?? undefined,
     },
+    safetySettings: Object.values(HarmCategory).map((category) => ({
+      category,
+      threshold: HarmBlockThreshold.BLOCK_NONE,
+    })),
   })
   return model
 }
