@@ -1331,14 +1331,19 @@ var LogLevel = /* @__PURE__ */ ((LogLevel2) => {
   LogLevel2[LogLevel2["debug"] = 7] = "debug";
   return LogLevel2;
 })(LogLevel || {});
+var currentlevel = 3 /* error */;
 function gen_logger(id) {
   return mapValues(LogLevel, (value, name) => {
     return (msg) => {
-      outFunc(name, value, `${id} ${msg}`);
+      outFunc(name, value, `${id} ${JSON.stringify(msg)}`);
     };
   });
 }
-function outFunc(_levelName, levelValue, _msg) {
+function outFunc(levelName, levelValue, msg) {
+  if (levelValue > currentlevel) {
+    return;
+  }
+  console.log(`${Date.now().toLocaleString()} ${levelName} ${msg}`);
 }
 function mapValues(obj, fn) {
   return Object.fromEntries(
@@ -1976,7 +1981,16 @@ function genModel(genAi, req) {
       maxOutputTokens: req.max_tokens ?? void 0,
       temperature: req.temperature ?? void 0,
       topP: req.top_p ?? void 0
-    }
+    },
+    safetySettings: [
+      HarmCategory.HARM_CATEGORY_HATE_SPEECH,
+      HarmCategory.HARM_CATEGORY_SEXUALLY_EXPLICIT,
+      HarmCategory.HARM_CATEGORY_DANGEROUS_CONTENT,
+      HarmCategory.HARM_CATEGORY_HARASSMENT
+    ].map((category) => ({
+      category,
+      threshold: HarmBlockThreshold.BLOCK_NONE
+    }))
   });
   return model;
 }
@@ -1987,8 +2001,12 @@ var nonStreamingChatProxyHandler = async (c, req, genAi) => {
   const model = genModel(genAi, req);
   const geminiResp = await model.generateContent({
     contents: openAiMessageToGeminiMessage(req.messages)
-  }).then((it) => it.response.text()).catch((err) => err?.message ?? err.toString());
-  log2.debug(JSON.stringify(geminiResp));
+  }).then((it) => it.response.text()).catch((err) => {
+    log2.error(req);
+    log2.error(err);
+    return err?.message ?? err.toString();
+  });
+  log2.debug(geminiResp);
   const resp = {
     id: "chatcmpl-abc123",
     object: "chat.completion",
@@ -2063,12 +2081,13 @@ var streamingChatProxyHandler = async (c, req, genAi) => {
         data: JSON.stringify(genOpenAiResp("", true))
       });
       const geminiResult = (await response).text();
-      log2.info(JSON.stringify(geminiResult));
+      log2.info(geminiResult);
     }).catch(async (e) => {
       await sseStream.writeSSE({
         data: JSON.stringify(genOpenAiResp(e.toString(), true))
       });
-      log2.info(e);
+      log2.error(req);
+      log2.error(e);
     });
     await sseStream.writeSSE({ data: "[DONE]" });
     await sseStream.close();
@@ -2079,7 +2098,7 @@ var streamingChatProxyHandler = async (c, req, genAi) => {
 var chatProxyHandler = async (c) => {
   const log2 = c.var.log;
   const req = await c.req.json();
-  log2.debug(JSON.stringify(req));
+  log2.debug(req);
   const headers = c.req.header();
   const apiKey = getToken(headers);
   if (apiKey == null) {
