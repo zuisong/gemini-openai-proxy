@@ -41,13 +41,15 @@ export const streamingChatProxyHandler: ChatProxyHandlerType = async (
           data: JSON.stringify(genOpenAiResp("", true)),
         })
         const geminiResult = (await response).text()
-        log.info(JSON.stringify(geminiResult))
+        log.info(geminiResult)
       })
       .catch(async (e) => {
         await sseStream.writeSSE({
           data: JSON.stringify(genOpenAiResp(e.toString(), true)),
         })
-        log.info(e)
+        // 出现异常时打印请求参数和响应，以便调试
+        log.error(req)
+        log.error(e)
       })
 
     await sseStream.writeSSE({ data: "[DONE]" })

@@ -6,12 +6,13 @@ enum LogLevel {
 }
 type Any = Parameters<typeof console.log>[0]
 
-const currentlevel = LogLevel.debug
+// 设置日志级别为 error
+const currentlevel = LogLevel.error
 
 export function gen_logger(id: string) {
   return mapValues(LogLevel, (value, name) => {
     return (msg: Any) => {
-      outFunc(name, value, `${id} ${msg}`)
+      outFunc(name, value, `${id} ${JSON.stringify(msg)}`)
     }
   })
 }
@@ -19,10 +20,11 @@ export function gen_logger(id: string) {
 export type Logger = ReturnType<typeof gen_logger>
 
 function outFunc(levelName: string, levelValue: number, msg: string) {
-  // if (levelValue > currentlevel) {
-  //   return
-  // }
-  // console.log(`${Date.now().toLocaleString()} ${levelName} ${msg}`)
+  if (levelValue > currentlevel) {
+    // 仅打印大于等于当前日志级别的日志
+    return
+  }
+  console.log(`${Date.now().toLocaleString()} ${levelName} ${msg}`)
 }
 
 function mapValues<

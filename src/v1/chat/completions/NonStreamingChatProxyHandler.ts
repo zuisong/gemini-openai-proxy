@@ -14,9 +14,14 @@ export const nonStreamingChatProxyHandler: ChatProxyHandlerType = async (
       contents: openAiMessageToGeminiMessage(req.messages),
     })
     .then((it) => it.response.text())
-    .catch((err) => err?.message ?? err.toString())
+    .catch((err) => {
+      // 出现异常时打印请求参数和响应，以便调试
+      log.error(req)
+      log.error(err)
+      return err?.message ?? err.toString()
+    })
 
-  log.debug(JSON.stringify(geminiResp))
+  log.debug(geminiResp)
 
   const resp: OpenAI.Chat.ChatCompletion = {
     id: "chatcmpl-abc123",

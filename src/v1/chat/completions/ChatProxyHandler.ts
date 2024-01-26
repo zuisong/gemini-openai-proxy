@@ -11,7 +11,7 @@ export const chatProxyHandler: Handler = async (c: ContextWithLogger) => {
   const log = c.var.log
 
   const req = await c.req.json<OpenAI.Chat.ChatCompletionCreateParams>()
-  log.debug(JSON.stringify(req))
+  log.debug(req)
   const headers = c.req.header()
   const apiKey = getToken(headers)
   if (apiKey == null) {
