@@ -1,12 +1,6 @@
 # changelog
 
-## 0.7.0(2024-01-26)
-
-### main changes
-
-- change default safe setting config #8
-
-## 0.6.0(2024-01-20)
+## 0.6.0(2024-01-19)
 
 ### main changes
 
