@@ -5,5 +5,13 @@
   "exclude": [
     "node_modules",
     "dist"
-  ]
+  ],
+  "lint": {
+    "rules": {
+      "exclude": [
+        "no-unused-vars",
+        "require-await",
+      ]
+    }
+  }
 }

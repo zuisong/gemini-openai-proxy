@@ -18,7 +18,7 @@ export function gen_logger(id: string) {
 
 export type Logger = ReturnType<typeof gen_logger>
 
-function outFunc(_levelName: string, levelValue: number, _msg: string) {
+function outFunc(levelName: string, levelValue: number, msg: string) {
   // if (levelValue > currentlevel) {
   //   return
   // }

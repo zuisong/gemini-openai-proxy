@@ -1,4 +1,5 @@
 import type { Content, GoogleGenerativeAI, Part } from "@google/generative-ai"
+import { HarmBlockThreshold, HarmCategory } from "@google/generative-ai"
 import type { OpenAI } from "./types.ts"
 
 export function getToken(headers: Record<string, string>): string | null {
@@ -18,7 +19,7 @@ function parseBase64(base64: string): Part {
   const mimeType = m.match(/:(?<mime>.*?);/)?.groups?.mime ?? "img/png"
   return {
     inlineData: {
-      mimeType: mimeType,
+      mimeType,
       data,
     },
   }
@@ -87,6 +88,15 @@ export function genModel(
       temperature: req.temperature ?? undefined,
       topP: req.top_p ?? undefined,
     },
+    safetySettings: [
+      HarmCategory.HARM_CATEGORY_HATE_SPEECH,
+      HarmCategory.HARM_CATEGORY_SEXUALLY_EXPLICIT,
+      HarmCategory.HARM_CATEGORY_DANGEROUS_CONTENT,
+      HarmCategory.HARM_CATEGORY_HARASSMENT,
+    ].map((category) => ({
+      category,
+      threshold: HarmBlockThreshold.BLOCK_NONE,
+    })),
   })
   return model
 }
