@@ -1,4 +1,4 @@
-// node_modules/.deno/hono@3.12.7/node_modules/hono/dist/helper/adapter/index.js
+// node_modules/.deno/hono@3.12.8/node_modules/hono/dist/helper/adapter/index.js
 var getRuntimeKey = () => {
   const global = globalThis;
   if (global?.Deno !== void 0)
@@ -18,7 +18,7 @@ var getRuntimeKey = () => {
   return "other";
 };
 
-// node_modules/.deno/hono@3.12.7/node_modules/hono/dist/middleware/cors/index.js
+// node_modules/.deno/hono@3.12.8/node_modules/hono/dist/middleware/cors/index.js
 var cors = (options) => {
   const defaults = {
     origin: "*",
@@ -86,7 +86,7 @@ var cors = (options) => {
   };
 };
 
-// node_modules/.deno/hono@3.12.7/node_modules/hono/dist/utils/url.js
+// node_modules/.deno/hono@3.12.8/node_modules/hono/dist/utils/url.js
 var getPath = (request) => {
   const match = request.url.match(/^https?:\/\/[^/]+(\/[^?]*)/);
   return match ? match[1] : "";
@@ -200,7 +200,7 @@ var getQueryParams = (url, key) => {
 };
 var decodeURIComponent_ = decodeURIComponent;
 
-// node_modules/.deno/hono@3.12.7/node_modules/hono/dist/middleware/logger/index.js
+// node_modules/.deno/hono@3.12.8/node_modules/hono/dist/middleware/logger/index.js
 var humanize = (times) => {
   const [delimiter, separator] = [",", "."];
   const orderTimes = times.map((v) => v.replace(/(\d)(?=(\d\d\d)+(?!\d))/g, "$1" + delimiter));
@@ -238,7 +238,7 @@ var logger = (fn = console.log) => {
   };
 };
 
-// node_modules/.deno/hono@3.12.7/node_modules/hono/dist/utils/cookie.js
+// node_modules/.deno/hono@3.12.8/node_modules/hono/dist/utils/cookie.js
 var validCookieNameRegEx = /^[\w!#$%&'*.^`|~+-]+$/;
 var validCookieValueRegEx = /^[ !#-:<-[\]-~]*$/;
 var parse = (cookie, name) => {
@@ -292,7 +292,7 @@ var serialize = (name, value, opt = {}) => {
   return _serialize(name, value, opt);
 };
 
-// node_modules/.deno/hono@3.12.7/node_modules/hono/dist/helper/html/index.js
+// node_modules/.deno/hono@3.12.8/node_modules/hono/dist/helper/html/index.js
 var raw = (value, callbacks) => {
   const escapedString = new String(value);
   escapedString.isEscaped = true;
@@ -300,7 +300,7 @@ var raw = (value, callbacks) => {
   return escapedString;
 };
 
-// node_modules/.deno/hono@3.12.7/node_modules/hono/dist/utils/html.js
+// node_modules/.deno/hono@3.12.8/node_modules/hono/dist/utils/html.js
 var HtmlEscapedCallbackPhase = {
   Stringify: 1,
   BeforeStream: 2,
@@ -328,7 +328,7 @@ var resolveCallback = async (str, phase, preserveCallbacks, context, buffer) => 
   }
 };
 
-// node_modules/.deno/hono@3.12.7/node_modules/hono/dist/utils/stream.js
+// node_modules/.deno/hono@3.12.8/node_modules/hono/dist/utils/stream.js
 var StreamingApi = class {
   constructor(writable, _readable) {
     this.abortSubscribers = [];
@@ -379,7 +379,7 @@ var StreamingApi = class {
   }
 };
 
-// node_modules/.deno/hono@3.12.7/node_modules/hono/dist/context.js
+// node_modules/.deno/hono@3.12.8/node_modules/hono/dist/context.js
 var __accessCheck = (obj, member, msg) => {
   if (!member.has(obj))
     throw TypeError("Cannot " + msg);
@@ -656,7 +656,7 @@ _preparedHeaders = /* @__PURE__ */ new WeakMap();
 _res = /* @__PURE__ */ new WeakMap();
 _isFresh = /* @__PURE__ */ new WeakMap();
 
-// node_modules/.deno/hono@3.12.7/node_modules/hono/dist/middleware/timing/index.js
+// node_modules/.deno/hono@3.12.8/node_modules/hono/dist/middleware/timing/index.js
 var getTime = () => {
   try {
     return performance.now();
@@ -741,7 +741,7 @@ var endTime = (c, name, precision) => {
   metrics.timers.delete(name);
 };
 
-// node_modules/.deno/hono@3.12.7/node_modules/hono/dist/compose.js
+// node_modules/.deno/hono@3.12.8/node_modules/hono/dist/compose.js
 var compose = (middleware, onError, onNotFound) => {
   return (context, next) => {
     let index = -1;
@@ -789,7 +789,7 @@ var compose = (middleware, onError, onNotFound) => {
   };
 };
 
-// node_modules/.deno/hono@3.12.7/node_modules/hono/dist/http-exception.js
+// node_modules/.deno/hono@3.12.8/node_modules/hono/dist/http-exception.js
 var HTTPException = class extends Error {
   constructor(status = 500, options) {
     super(options?.message);
@@ -806,7 +806,7 @@ var HTTPException = class extends Error {
   }
 };
 
-// node_modules/.deno/hono@3.12.7/node_modules/hono/dist/utils/body.js
+// node_modules/.deno/hono@3.12.8/node_modules/hono/dist/utils/body.js
 var parseBody = async (request, options = { all: false }) => {
   const contentType = request.headers.get("Content-Type");
   if (isFormDataContent(contentType)) {
@@ -858,7 +858,7 @@ var convertToNewArray = (form, key, value) => {
   form[key] = [form[key], value];
 };
 
-// node_modules/.deno/hono@3.12.7/node_modules/hono/dist/request.js
+// node_modules/.deno/hono@3.12.8/node_modules/hono/dist/request.js
 var __accessCheck2 = (obj, member, msg) => {
   if (!member.has(obj))
     throw TypeError("Cannot " + msg);
@@ -903,21 +903,26 @@ var HonoRequest = class {
     __privateSet2(this, _validatedData, {});
   }
   param(key) {
-    if (key) {
-      const param = __privateGet2(this, _matchResult)[1] ? __privateGet2(this, _matchResult)[1][__privateGet2(this, _matchResult)[0][this.routeIndex][1][key]] : __privateGet2(this, _matchResult)[0][this.routeIndex][1][key];
-      return param ? /\%/.test(param) ? decodeURIComponent_(param) : param : void 0;
-    } else {
-      const decoded = {};
-      const keys = Object.keys(__privateGet2(this, _matchResult)[0][this.routeIndex][1]);
-      for (let i = 0, len = keys.length; i < len; i++) {
-        const key2 = keys[i];
-        const value = __privateGet2(this, _matchResult)[1] ? __privateGet2(this, _matchResult)[1][__privateGet2(this, _matchResult)[0][this.routeIndex][1][key2]] : __privateGet2(this, _matchResult)[0][this.routeIndex][1][key2];
-        if (value && typeof value === "string") {
-          decoded[key2] = /\%/.test(value) ? decodeURIComponent_(value) : value;
-        }
+    return key ? this.getDecodedParam(key) : this.getAllDecodedParams();
+  }
+  getDecodedParam(key) {
+    const paramKey = __privateGet2(this, _matchResult)[0][this.routeIndex][1][key];
+    const param = this.getParamValue(paramKey);
+    return param ? /\%/.test(param) ? decodeURIComponent_(param) : param : void 0;
+  }
+  getAllDecodedParams() {
+    const decoded = {};
+    const keys = Object.keys(__privateGet2(this, _matchResult)[0][this.routeIndex][1]);
+    for (const key of keys) {
+      const value = this.getParamValue(__privateGet2(this, _matchResult)[0][this.routeIndex][1][key]);
+      if (value && typeof value === "string") {
+        decoded[key] = /\%/.test(value) ? decodeURIComponent_(value) : value;
       }
-      return decoded;
     }
+    return decoded;
+  }
+  getParamValue(paramKey) {
+    return __privateGet2(this, _matchResult)[1] ? __privateGet2(this, _matchResult)[1][paramKey] : paramKey;
   }
   query(key) {
     return getQueryParam(this.url, key);
@@ -1011,14 +1016,14 @@ var HonoRequest = class {
 _validatedData = /* @__PURE__ */ new WeakMap();
 _matchResult = /* @__PURE__ */ new WeakMap();
 
-// node_modules/.deno/hono@3.12.7/node_modules/hono/dist/router.js
+// node_modules/.deno/hono@3.12.8/node_modules/hono/dist/router.js
 var METHOD_NAME_ALL = "ALL";
 var METHOD_NAME_ALL_LOWERCASE = "all";
 var METHODS = ["get", "post", "put", "delete", "options", "patch"];
 var UnsupportedPathError = class extends Error {
 };
 
-// node_modules/.deno/hono@3.12.7/node_modules/hono/dist/hono-base.js
+// node_modules/.deno/hono@3.12.8/node_modules/hono/dist/hono-base.js
 var __accessCheck3 = (obj, member, msg) => {
   if (!member.has(obj))
     throw TypeError("Cannot " + msg);
@@ -1244,11 +1249,9 @@ var _Hono = class extends defineDynamicClass() {
       } catch (err) {
         return this.handleError(err, c);
       }
-      if (res instanceof Response)
-        return res;
-      return res.then(
+      return res instanceof Promise ? res.then(
         (resolved) => resolved || (c.finalized ? c.res : this.notFoundHandler(c))
-      ).catch((err) => this.handleError(err, c));
+      ).catch((err) => this.handleError(err, c)) : res;
     }
     const composed = compose(matchResult[0], this.errorHandler, this.notFoundHandler);
     return (async () => {
@@ -1269,7 +1272,7 @@ var _Hono = class extends defineDynamicClass() {
 var Hono = _Hono;
 _path = /* @__PURE__ */ new WeakMap();
 
-// node_modules/.deno/hono@3.12.7/node_modules/hono/dist/router/pattern-router/router.js
+// node_modules/.deno/hono@3.12.8/node_modules/hono/dist/router/pattern-router/router.js
 var PatternRouter = class {
   constructor() {
     this.name = "PatternRouter";
@@ -1315,7 +1318,7 @@ var PatternRouter = class {
   }
 };
 
-// node_modules/.deno/hono@3.12.7/node_modules/hono/dist/preset/tiny.js
+// node_modules/.deno/hono@3.12.8/node_modules/hono/dist/preset/tiny.js
 var Hono2 = class extends Hono {
   constructor(options = {}) {
     super(options);
@@ -2024,7 +2027,7 @@ var nonStreamingChatProxyHandler = async (c, req, genAi) => {
   return c.json(resp);
 };
 
-// node_modules/.deno/hono@3.12.7/node_modules/hono/dist/helper/streaming/sse.js
+// node_modules/.deno/hono@3.12.8/node_modules/hono/dist/helper/streaming/sse.js
 var SSEStreamingApi = class extends StreamingApi {
   constructor(writable, readable) {
     super(writable, readable);
