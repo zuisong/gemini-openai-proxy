@@ -23,4 +23,4 @@ hard_limit = 250
 [[vm]]
 cpu_kind = "shared"
 cpus = 1
-memory = "256MB"
+memory = "512MB"
