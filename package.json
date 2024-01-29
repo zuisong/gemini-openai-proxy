@@ -23,7 +23,7 @@
   },
   "devDependencies": {
     "eventsource-parser": "^1.1.1",
-    "@types/node": "~18",
+    "@types/node": "~20",
     "esbuild": "^0.20.0"
   }
 }
