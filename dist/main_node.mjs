@@ -1,8 +1,24 @@
-// node_modules/.deno/@hono+node-server@1.5.0/node_modules/@hono/node-server/dist/index.mjs
+// node_modules/.deno/@hono+node-server@1.7.0/node_modules/@hono/node-server/dist/index.mjs
 import { createServer as createServerHTTP } from "http";
 import { Http2ServerRequest } from "http2";
 import { Readable } from "stream";
 import crypto2 from "crypto";
+var GlobalRequest = global.Request;
+var Request2 = class extends GlobalRequest {
+  constructor(input, options) {
+    if (typeof input === "object" && getRequestCache in input) {
+      input = input[getRequestCache]();
+    }
+    if (options?.body instanceof ReadableStream) {
+      ;
+      options.duplex = "half";
+    }
+    super(input, options);
+  }
+};
+Object.defineProperty(global, "Request", {
+  value: Request2
+});
 var newRequestFromIncoming = (method, url, incoming) => {
   const headerRecord = [];
   const rawHeaders = incoming.rawHeaders;
@@ -19,9 +35,8 @@ var newRequestFromIncoming = (method, url, incoming) => {
   };
   if (!(method === "GET" || method === "HEAD")) {
     init.body = Readable.toWeb(incoming);
-    init.duplex = "half";
   }
-  return new Request(url, init);
+  return new Request2(url, init);
 };
 var getRequestCache = Symbol("getRequestCache");
 var requestCache = Symbol("requestCache");
@@ -69,7 +84,7 @@ var requestPrototype = {
     }
   });
 });
-Object.setPrototypeOf(requestPrototype, global.Request.prototype);
+Object.setPrototypeOf(requestPrototype, Request2.prototype);
 var newRequest = (incoming) => {
   const req = Object.create(requestPrototype);
   req[incomingKey] = incoming;
@@ -96,8 +111,9 @@ function writeFromReadableStream(stream2, writable) {
   function cancel(error) {
     reader.cancel(error).catch(() => {
     });
-    if (error)
+    if (error) {
       writable.destroy(error);
+    }
   }
   function onDrain() {
     reader.read().then(flow, cancel);
@@ -196,9 +212,6 @@ Object.setPrototypeOf(Response2.prototype, GlobalResponse.prototype);
 Object.defineProperty(global, "Response", {
   value: Response2
 });
-Object.defineProperty(global, "Response", {
-  value: Response2
-});
 var webFetch = global.fetch;
 if (typeof global.crypto === "undefined") {
   global.crypto = crypto2;
@@ -223,8 +236,9 @@ var handleResponseError = (e, outgoing) => {
     console.info("The user aborted a request.");
   } else {
     console.error(e);
-    if (!outgoing.headersSent)
+    if (!outgoing.headersSent) {
       outgoing.writeHead(500, { "Content-Type": "text/plain" });
+    }
     outgoing.end(`Error: ${err.message}`);
     outgoing.destroy(err);
   }
@@ -242,12 +256,25 @@ var responseViaCache = (res, outgoing) => {
     );
   }
 };
-var responseViaResponseObject = async (res, outgoing) => {
+var responseViaResponseObject = async (res, outgoing, options = {}) => {
   if (res instanceof Promise) {
-    res = await res.catch(handleFetchError);
+    if (options.errorHandler) {
+      try {
+        res = await res;
+      } catch (err) {
+        const errRes = await options.errorHandler(err);
+        if (!errRes) {
+          return;
+        }
+        res = errRes;
+      }
+    } else {
+      res = await res.catch(handleFetchError);
+    }
   }
   try {
-    if (cacheKey in res) {
+    const isCached = cacheKey in res;
+    if (isCached) {
       return responseViaCache(res, outgoing);
     }
   } catch (e) {
@@ -256,8 +283,15 @@ var responseViaResponseObject = async (res, outgoing) => {
   const resHeaderRecord = buildOutgoingHttpHeaders(res.headers);
   if (res.body) {
     try {
-      if (resHeaderRecord["transfer-encoding"] || resHeaderRecord["content-encoding"] || resHeaderRecord["content-length"] || // nginx buffering variant
-      resHeaderRecord["x-accel-buffering"] && regBuffer.test(resHeaderRecord["x-accel-buffering"]) || !regContentType.test(resHeaderRecord["content-type"])) {
+      const {
+        "transfer-encoding": transferEncoding,
+        "content-encoding": contentEncoding,
+        "content-length": contentLength,
+        "x-accel-buffering": accelBuffering,
+        "content-type": contentType
+      } = resHeaderRecord;
+      if (transferEncoding || contentEncoding || contentLength || // nginx buffering variant
+      accelBuffering && regBuffer.test(accelBuffering) || !regContentType.test(contentType)) {
         outgoing.writeHead(res.status, resHeaderRecord);
         await writeFromReadableStream(res.body, outgoing);
       } else {
@@ -274,23 +308,30 @@ var responseViaResponseObject = async (res, outgoing) => {
     outgoing.end();
   }
 };
-var getRequestListener = (fetchCallback) => {
-  return (incoming, outgoing) => {
+var getRequestListener = (fetchCallback, options = {}) => {
+  return async (incoming, outgoing) => {
     let res;
     const req = newRequest(incoming);
     try {
-      res = fetchCallback(req);
+      res = fetchCallback(req, { incoming, outgoing });
       if (cacheKey in res) {
         return responseViaCache(res, outgoing);
       }
     } catch (e) {
       if (!res) {
-        res = handleFetchError(e);
+        if (options.errorHandler) {
+          res = await options.errorHandler(e);
+          if (!res) {
+            return;
+          }
+        } else {
+          res = handleFetchError(e);
+        }
       } else {
         return handleResponseError(e, outgoing);
       }
     }
-    return responseViaResponseObject(res, outgoing);
+    return responseViaResponseObject(res, outgoing, options);
   };
 };
 var createAdaptorServer = (options) => {
