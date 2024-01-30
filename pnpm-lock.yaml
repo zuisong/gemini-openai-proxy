@@ -9,16 +9,13 @@ dependencies:
     specifier: ^0.1.3
     version: 0.1.3
   '@hono/node-server':
-    specifier: ^1.5.0
-    version: 1.5.0
+    specifier: ^1.7.0
+    version: 1.7.0
   hono:
     specifier: ^3.12.8
     version: 3.12.8
 
 devDependencies:
-  '@types/node':
-    specifier: ~18
-    version: 18.19.10
   esbuild:
     specifier: ^0.20.0
     version: 0.20.0
@@ -240,16 +237,10 @@ packages:
     engines: {node: '>=18.0.0'}
     dev: false
 
-  /@hono/node-server@1.5.0:
-    resolution: {integrity: sha512-xMZW2tuHLdUtx5B28E5bsLazJe9NVU2z4QW/Xefgvg41U84r4L1mTxNutTMNwt6BrRujy7hs1aKyUpIuSqcXtQ==}
+  /@hono/node-server@1.7.0:
+    resolution: {integrity: sha512-W+Gy16xWZMgB8hYU4XInCwE746y8V3VDTH1J3+EhUBqbCzk4zEXo1p6dv3BiCD5O6Z4aHuoCW+mRKoJgUn3ZCA==}
     engines: {node: '>=18.14.1'}
     dev: false
-
-  /@types/node@18.19.10:
-    resolution: {integrity: sha512-IZD8kAM02AW1HRDTPOlz3npFava678pr8Ie9Vp8uRhBROXAv8MXT2pCnGZZAKYdromsNQLHQcfWQ6EOatVLtqA==}
-    dependencies:
-      undici-types: 5.26.5
-    dev: true
 
   /esbuild@0.20.0:
     resolution: {integrity: sha512-6iwE3Y2RVYCME1jLpBqq7LQWK3MW6vjV2bZy6gt/WrqkY+WE74Spyc0ThAOYpMtITvnjX09CrC6ym7A/m9mebA==}
@@ -291,7 +282,3 @@ packages:
     resolution: {integrity: sha512-vnOEIRdqsp4uHE/dkOBr9EYmTsR86sD/FyG2xhfAQzR9udDRglN1nuO7SGc/7U3HfSorc6PSCNGN6upnVtCmfg==}
     engines: {node: '>=16.0.0'}
     dev: false
-
-  /undici-types@5.26.5:
-    resolution: {integrity: sha512-JlCMO+ehdEIKqlFxk6IfVoAUVmgz7cU7zD/h9XZ0qzeosSHmUJVOzSQvvYSYWXkFXC+IfLKSIffhv0sVZup6pA==}
-    dev: true
