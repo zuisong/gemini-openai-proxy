@@ -1,6 +1,13 @@
 # changelog
 
-## 0.6.0(2024-01-19)
+## 0.9.0(2024-02-02)
+
+### main changes
+
+- change default safe setting config #8
+- fix can't pull docker image with no manifest #13
+
+## 0.6.0(2024-01-20)
 
 ### main changes
 
