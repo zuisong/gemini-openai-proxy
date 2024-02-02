@@ -6,14 +6,14 @@ settings:
 
 dependencies:
   '@google/generative-ai':
-    specifier: ^0.1.3
-    version: 0.1.3
+    specifier: ^0.2.0
+    version: 0.2.0
   '@hono/node-server':
     specifier: ^1.7.0
     version: 1.7.0
   hono:
-    specifier: ^3.12.8
-    version: 3.12.8
+    specifier: ^3.12.9
+    version: 3.12.9
 
 devDependencies:
   esbuild:
@@ -232,8 +232,8 @@ packages:
     dev: true
     optional: true
 
-  /@google/generative-ai@0.1.3:
-    resolution: {integrity: sha512-Cm4uJX1sKarpm1mje/MiOIinM7zdUUrQp/5/qGPAgznbdd/B9zup5ehT6c1qGqycFcSopTA1J1HpqHS5kJR8hQ==}
+  /@google/generative-ai@0.2.0:
+    resolution: {integrity: sha512-ivlJS7H/9YY1CMrGmcSXm7CRGDept5uvamIEZwHrInX0lA4K55U2YEjQyhRV+M0wgYix6EezEVCJzSdvxeZEkA==}
     engines: {node: '>=18.0.0'}
     dev: false
 
@@ -278,7 +278,7 @@ packages:
     engines: {node: '>=14.18'}
     dev: true
 
-  /hono@3.12.8:
-    resolution: {integrity: sha512-vnOEIRdqsp4uHE/dkOBr9EYmTsR86sD/FyG2xhfAQzR9udDRglN1nuO7SGc/7U3HfSorc6PSCNGN6upnVtCmfg==}
+  /hono@3.12.9:
+    resolution: {integrity: sha512-JhurtI3+VspowZoP3dv6BylhUPIpTWNRlBsVfb5UbI/tmMGqd6RpeexGO7RjnrSG9Vqwb1ydKp7HHTTcYJU5Zw==}
     engines: {node: '>=16.0.0'}
     dev: false
