@@ -350,27 +350,34 @@ var serve = (options, listeningListener) => {
   return server;
 };
 
-// node_modules/.deno/hono@3.12.8/node_modules/hono/dist/helper/adapter/index.js
+// node_modules/.deno/hono@3.12.9/node_modules/hono/dist/helper/adapter/index.js
 var getRuntimeKey = () => {
   const global2 = globalThis;
-  if (global2?.Deno !== void 0)
+  if (global2?.Deno !== void 0) {
     return "deno";
-  if (global2?.Bun !== void 0)
+  }
+  if (global2?.Bun !== void 0) {
     return "bun";
-  if (typeof global2?.WebSocketPair === "function")
+  }
+  if (typeof global2?.WebSocketPair === "function") {
     return "workerd";
-  if (typeof global2?.EdgeRuntime === "string")
+  }
+  if (typeof global2?.EdgeRuntime === "string") {
     return "edge-light";
-  if (global2?.fastly !== void 0)
+  }
+  if (global2?.fastly !== void 0) {
     return "fastly";
-  if (global2?.__lagon__ !== void 0)
+  }
+  if (global2?.__lagon__ !== void 0) {
     return "lagon";
-  if (global2?.process?.release?.name === "node")
+  }
+  if (global2?.process?.release?.name === "node") {
     return "node";
+  }
   return "other";
 };
 
-// node_modules/.deno/hono@3.12.8/node_modules/hono/dist/middleware/cors/index.js
+// node_modules/.deno/hono@3.12.9/node_modules/hono/dist/middleware/cors/index.js
 var cors = (options) => {
   const defaults = {
     origin: "*",
@@ -438,7 +445,7 @@ var cors = (options) => {
   };
 };
 
-// node_modules/.deno/hono@3.12.8/node_modules/hono/dist/utils/url.js
+// node_modules/.deno/hono@3.12.9/node_modules/hono/dist/utils/url.js
 var getPath = (request) => {
   const match = request.url.match(/^https?:\/\/[^/]+(\/[^?]*)/);
   return match ? match[1] : "";
@@ -552,7 +559,7 @@ var getQueryParams = (url, key) => {
 };
 var decodeURIComponent_ = decodeURIComponent;
 
-// node_modules/.deno/hono@3.12.8/node_modules/hono/dist/middleware/logger/index.js
+// node_modules/.deno/hono@3.12.9/node_modules/hono/dist/middleware/logger/index.js
 var humanize = (times) => {
   const [delimiter, separator] = [",", "."];
   const orderTimes = times.map((v) => v.replace(/(\d)(?=(\d\d\d)+(?!\d))/g, "$1" + delimiter));
@@ -590,7 +597,7 @@ var logger = (fn = console.log) => {
   };
 };
 
-// node_modules/.deno/hono@3.12.8/node_modules/hono/dist/utils/cookie.js
+// node_modules/.deno/hono@3.12.9/node_modules/hono/dist/utils/cookie.js
 var validCookieNameRegEx = /^[\w!#$%&'*.^`|~+-]+$/;
 var validCookieValueRegEx = /^[ !#-:<-[\]-~]*$/;
 var parse = (cookie, name) => {
@@ -598,16 +605,20 @@ var parse = (cookie, name) => {
   return pairs.reduce((parsedCookie, pairStr) => {
     pairStr = pairStr.trim();
     const valueStartPos = pairStr.indexOf("=");
-    if (valueStartPos === -1)
+    if (valueStartPos === -1) {
       return parsedCookie;
+    }
     const cookieName = pairStr.substring(0, valueStartPos).trim();
-    if (name && name !== cookieName || !validCookieNameRegEx.test(cookieName))
+    if (name && name !== cookieName || !validCookieNameRegEx.test(cookieName)) {
       return parsedCookie;
+    }
     let cookieValue = pairStr.substring(valueStartPos + 1).trim();
-    if (cookieValue.startsWith('"') && cookieValue.endsWith('"'))
+    if (cookieValue.startsWith('"') && cookieValue.endsWith('"')) {
       cookieValue = cookieValue.slice(1, -1);
-    if (validCookieValueRegEx.test(cookieValue))
+    }
+    if (validCookieValueRegEx.test(cookieValue)) {
       parsedCookie[cookieName] = decodeURIComponent_(cookieValue);
+    }
     return parsedCookie;
   }, {});
 };
@@ -644,7 +655,7 @@ var serialize = (name, value, opt = {}) => {
   return _serialize(name, value, opt);
 };
 
-// node_modules/.deno/hono@3.12.8/node_modules/hono/dist/helper/html/index.js
+// node_modules/.deno/hono@3.12.9/node_modules/hono/dist/helper/html/index.js
 var raw = (value, callbacks) => {
   const escapedString = new String(value);
   escapedString.isEscaped = true;
@@ -652,7 +663,7 @@ var raw = (value, callbacks) => {
   return escapedString;
 };
 
-// node_modules/.deno/hono@3.12.8/node_modules/hono/dist/utils/html.js
+// node_modules/.deno/hono@3.12.9/node_modules/hono/dist/utils/html.js
 var HtmlEscapedCallbackPhase = {
   Stringify: 1,
   BeforeStream: 2,
@@ -680,7 +691,7 @@ var resolveCallback = async (str, phase, preserveCallbacks, context, buffer) => 
   }
 };
 
-// node_modules/.deno/hono@3.12.8/node_modules/hono/dist/utils/stream.js
+// node_modules/.deno/hono@3.12.9/node_modules/hono/dist/utils/stream.js
 var StreamingApi = class {
   constructor(writable, _readable) {
     this.abortSubscribers = [];
@@ -731,7 +742,7 @@ var StreamingApi = class {
   }
 };
 
-// node_modules/.deno/hono@3.12.8/node_modules/hono/dist/context.js
+// node_modules/.deno/hono@3.12.9/node_modules/hono/dist/context.js
 var __accessCheck = (obj, member, msg) => {
   if (!member.has(obj))
     throw TypeError("Cannot " + msg);
@@ -1008,7 +1019,7 @@ _preparedHeaders = /* @__PURE__ */ new WeakMap();
 _res = /* @__PURE__ */ new WeakMap();
 _isFresh = /* @__PURE__ */ new WeakMap();
 
-// node_modules/.deno/hono@3.12.8/node_modules/hono/dist/middleware/timing/index.js
+// node_modules/.deno/hono@3.12.9/node_modules/hono/dist/middleware/timing/index.js
 var getTime = () => {
   try {
     return performance.now();
@@ -1093,7 +1104,7 @@ var endTime = (c, name, precision) => {
   metrics.timers.delete(name);
 };
 
-// node_modules/.deno/hono@3.12.8/node_modules/hono/dist/compose.js
+// node_modules/.deno/hono@3.12.9/node_modules/hono/dist/compose.js
 var compose = (middleware, onError, onNotFound) => {
   return (context, next) => {
     let index = -1;
@@ -1141,7 +1152,7 @@ var compose = (middleware, onError, onNotFound) => {
   };
 };
 
-// node_modules/.deno/hono@3.12.8/node_modules/hono/dist/http-exception.js
+// node_modules/.deno/hono@3.12.9/node_modules/hono/dist/http-exception.js
 var HTTPException = class extends Error {
   constructor(status = 500, options) {
     super(options?.message);
@@ -1158,7 +1169,7 @@ var HTTPException = class extends Error {
   }
 };
 
-// node_modules/.deno/hono@3.12.8/node_modules/hono/dist/utils/body.js
+// node_modules/.deno/hono@3.12.9/node_modules/hono/dist/utils/body.js
 var parseBody = async (request, options = { all: false }) => {
   const contentType = request.headers.get("Content-Type");
   if (isFormDataContent(contentType)) {
@@ -1210,7 +1221,7 @@ var convertToNewArray = (form, key, value) => {
   form[key] = [form[key], value];
 };
 
-// node_modules/.deno/hono@3.12.8/node_modules/hono/dist/request.js
+// node_modules/.deno/hono@3.12.9/node_modules/hono/dist/request.js
 var __accessCheck2 = (obj, member, msg) => {
   if (!member.has(obj))
     throw TypeError("Cannot " + msg);
@@ -1240,8 +1251,9 @@ var HonoRequest = class {
     this.cachedBody = (key) => {
       const { bodyCache, raw: raw2 } = this;
       const cachedBody = bodyCache[key];
-      if (cachedBody)
+      if (cachedBody) {
         return cachedBody;
+      }
       if (bodyCache.arrayBuffer) {
         return (async () => {
           return await new Response(bodyCache.arrayBuffer)[key]();
@@ -1283,8 +1295,9 @@ var HonoRequest = class {
     return getQueryParams(this.url, key);
   }
   header(name) {
-    if (name)
+    if (name) {
       return this.raw.headers.get(name.toLowerCase()) ?? void 0;
+    }
     const headerData = {};
     this.raw.headers.forEach((value, key) => {
       headerData[key] = value;
@@ -1293,8 +1306,9 @@ var HonoRequest = class {
   }
   cookie(key) {
     const cookie = this.raw.headers.get("Cookie");
-    if (!cookie)
+    if (!cookie) {
       return;
+    }
     const obj = parse(cookie);
     if (key) {
       const value = obj[key];
@@ -1304,8 +1318,9 @@ var HonoRequest = class {
     }
   }
   async parseBody(options) {
-    if (this.bodyCache.parsedBody)
+    if (this.bodyCache.parsedBody) {
       return this.bodyCache.parsedBody;
+    }
     const parsedBody = await parseBody(this, options);
     this.bodyCache.parsedBody = parsedBody;
     return parsedBody;
@@ -1368,14 +1383,14 @@ var HonoRequest = class {
 _validatedData = /* @__PURE__ */ new WeakMap();
 _matchResult = /* @__PURE__ */ new WeakMap();
 
-// node_modules/.deno/hono@3.12.8/node_modules/hono/dist/router.js
+// node_modules/.deno/hono@3.12.9/node_modules/hono/dist/router.js
 var METHOD_NAME_ALL = "ALL";
 var METHOD_NAME_ALL_LOWERCASE = "all";
 var METHODS = ["get", "post", "put", "delete", "options", "patch"];
 var UnsupportedPathError = class extends Error {
 };
 
-// node_modules/.deno/hono@3.12.8/node_modules/hono/dist/hono-base.js
+// node_modules/.deno/hono@3.12.9/node_modules/hono/dist/hono-base.js
 var __accessCheck3 = (obj, member, msg) => {
   if (!member.has(obj))
     throw TypeError("Cannot " + msg);
@@ -1471,8 +1486,9 @@ var _Hono = class extends defineDynamicClass() {
       };
     });
     this.on = (method, path, ...handlers) => {
-      if (!method)
+      if (!method) {
         return this;
+      }
       __privateSet3(this, _path, path);
       for (const m of [method].flat()) {
         handlers.map((handler) => {
@@ -1554,8 +1570,9 @@ var _Hono = class extends defineDynamicClass() {
         ),
         ...optionsArray
       );
-      if (res)
+      if (res) {
         return res;
+      }
       await next();
     };
     this.addRoute(METHOD_NAME_ALL, mergePath(path, "*"), handler);
@@ -1624,7 +1641,7 @@ var _Hono = class extends defineDynamicClass() {
 var Hono = _Hono;
 _path = /* @__PURE__ */ new WeakMap();
 
-// node_modules/.deno/hono@3.12.8/node_modules/hono/dist/router/pattern-router/router.js
+// node_modules/.deno/hono@3.12.9/node_modules/hono/dist/router/pattern-router/router.js
 var PatternRouter = class {
   constructor() {
     this.name = "PatternRouter";
@@ -1670,7 +1687,7 @@ var PatternRouter = class {
   }
 };
 
-// node_modules/.deno/hono@3.12.8/node_modules/hono/dist/preset/tiny.js
+// node_modules/.deno/hono@3.12.9/node_modules/hono/dist/preset/tiny.js
 var Hono2 = class extends Hono {
   constructor(options = {}) {
     super(options);
@@ -1708,7 +1725,7 @@ function mapValues(obj, fn) {
   );
 }
 
-// node_modules/.deno/@google+generative-ai@0.1.3/node_modules/@google/generative-ai/dist/index.mjs
+// node_modules/.deno/@google+generative-ai@0.2.0/node_modules/@google/generative-ai/dist/index.mjs
 var HarmCategory;
 (function(HarmCategory2) {
   HarmCategory2["HARM_CATEGORY_UNSPECIFIED"] = "HARM_CATEGORY_UNSPECIFIED";
@@ -1770,7 +1787,7 @@ var GoogleGenerativeAIResponseError = class extends GoogleGenerativeAIError {
 };
 var BASE_URL = "https://generativelanguage.googleapis.com";
 var API_VERSION = "v1";
-var PACKAGE_VERSION = "0.1.3";
+var PACKAGE_VERSION = "0.2.0";
 var PACKAGE_LOG_HEADER = "genai-js";
 var Task;
 (function(Task2) {
@@ -1798,18 +1815,14 @@ var RequestUrl = class {
 function getClientHeaders() {
   return `${PACKAGE_LOG_HEADER}/${PACKAGE_VERSION}`;
 }
-async function makeRequest(url, body) {
+async function makeRequest(url, body, requestOptions) {
   let response;
   try {
-    response = await fetch(url.toString(), {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-        "x-goog-api-client": getClientHeaders(),
-        "x-goog-api-key": url.apiKey
-      },
-      body
-    });
+    response = await fetch(url.toString(), Object.assign(Object.assign({}, buildFetchOptions(requestOptions)), { method: "POST", headers: {
+      "Content-Type": "application/json",
+      "x-goog-api-client": getClientHeaders(),
+      "x-goog-api-key": url.apiKey
+    }, body }));
     if (!response.ok) {
       let message = "";
       try {
@@ -1828,6 +1841,16 @@ async function makeRequest(url, body) {
     throw err;
   }
   return response;
+}
+function buildFetchOptions(requestOptions) {
+  const fetchOptions = {};
+  if ((requestOptions === null || requestOptions === void 0 ? void 0 : requestOptions.timeout) >= 0) {
+    const abortController = new AbortController();
+    const signal = abortController.signal;
+    setTimeout(() => abortController.abort(), requestOptions.timeout);
+    fetchOptions.signal = signal;
+  }
+  return fetchOptions;
 }
 function addHelpers(response) {
   response.text = () => {
@@ -2028,7 +2051,7 @@ function aggregateResponses(responses) {
   }
   return aggregatedResponse;
 }
-async function generateContentStream(apiKey, model, params) {
+async function generateContentStream(apiKey, model, params, requestOptions) {
   const url = new RequestUrl(
     model,
     Task.STREAM_GENERATE_CONTENT,
@@ -2036,10 +2059,10 @@ async function generateContentStream(apiKey, model, params) {
     /* stream */
     true
   );
-  const response = await makeRequest(url, JSON.stringify(params));
+  const response = await makeRequest(url, JSON.stringify(params), requestOptions);
   return processStream(response);
 }
-async function generateContent(apiKey, model, params) {
+async function generateContent(apiKey, model, params, requestOptions) {
   const url = new RequestUrl(
     model,
     Task.GENERATE_CONTENT,
@@ -2047,7 +2070,7 @@ async function generateContent(apiKey, model, params) {
     /* stream */
     false
   );
-  const response = await makeRequest(url, JSON.stringify(params));
+  const response = await makeRequest(url, JSON.stringify(params), requestOptions);
   const responseJson = await response.json();
   const enhancedResponse = addHelpers(responseJson);
   return {
@@ -2086,9 +2109,10 @@ function formatEmbedContentInput(params) {
 }
 var SILENT_ERROR = "SILENT_ERROR";
 var ChatSession = class {
-  constructor(apiKey, model, params) {
+  constructor(apiKey, model, params, requestOptions) {
     this.model = model;
     this.params = params;
+    this.requestOptions = requestOptions;
     this._history = [];
     this._sendPromise = Promise.resolve();
     this._apiKey = apiKey;
@@ -2124,7 +2148,7 @@ var ChatSession = class {
       contents: [...this._history, newContent]
     };
     let finalResult;
-    this._sendPromise = this._sendPromise.then(() => generateContent(this._apiKey, this.model, generateContentRequest)).then((result) => {
+    this._sendPromise = this._sendPromise.then(() => generateContent(this._apiKey, this.model, generateContentRequest, this.requestOptions)).then((result) => {
       var _a2;
       if (result.response.candidates && result.response.candidates.length > 0) {
         this._history.push(newContent);
@@ -2159,7 +2183,7 @@ var ChatSession = class {
       generationConfig: (_b = this.params) === null || _b === void 0 ? void 0 : _b.generationConfig,
       contents: [...this._history, newContent]
     };
-    const streamPromise = generateContentStream(this._apiKey, this.model, generateContentRequest);
+    const streamPromise = generateContentStream(this._apiKey, this.model, generateContentRequest, this.requestOptions);
     this._sendPromise = this._sendPromise.then(() => streamPromise).catch((_ignored) => {
       throw new Error(SILENT_ERROR);
     }).then((streamResult) => streamResult.response).then((response) => {
@@ -2184,26 +2208,26 @@ var ChatSession = class {
     return streamPromise;
   }
 };
-async function countTokens(apiKey, model, params) {
+async function countTokens(apiKey, model, params, requestOptions) {
   const url = new RequestUrl(model, Task.COUNT_TOKENS, apiKey, false);
-  const response = await makeRequest(url, JSON.stringify(Object.assign(Object.assign({}, params), { model })));
+  const response = await makeRequest(url, JSON.stringify(Object.assign(Object.assign({}, params), { model })), requestOptions);
   return response.json();
 }
-async function embedContent(apiKey, model, params) {
+async function embedContent(apiKey, model, params, requestOptions) {
   const url = new RequestUrl(model, Task.EMBED_CONTENT, apiKey, false);
-  const response = await makeRequest(url, JSON.stringify(params));
+  const response = await makeRequest(url, JSON.stringify(params), requestOptions);
   return response.json();
 }
-async function batchEmbedContents(apiKey, model, params) {
+async function batchEmbedContents(apiKey, model, params, requestOptions) {
   const url = new RequestUrl(model, Task.BATCH_EMBED_CONTENTS, apiKey, false);
   const requestsWithModel = params.requests.map((request) => {
     return Object.assign(Object.assign({}, request), { model: `models/${model}` });
   });
-  const response = await makeRequest(url, JSON.stringify({ requests: requestsWithModel }));
+  const response = await makeRequest(url, JSON.stringify({ requests: requestsWithModel }), requestOptions);
   return response.json();
 }
 var GenerativeModel = class {
-  constructor(apiKey, modelParams) {
+  constructor(apiKey, modelParams, requestOptions) {
     var _a;
     this.apiKey = apiKey;
     if (modelParams.model.startsWith("models/")) {
@@ -2213,6 +2237,7 @@ var GenerativeModel = class {
     }
     this.generationConfig = modelParams.generationConfig || {};
     this.safetySettings = modelParams.safetySettings || [];
+    this.requestOptions = requestOptions || {};
   }
   /**
    * Makes a single non-streaming call to the model
@@ -2220,7 +2245,7 @@ var GenerativeModel = class {
    */
   async generateContent(request) {
     const formattedParams = formatGenerateContentInput(request);
-    return generateContent(this.apiKey, this.model, Object.assign({ generationConfig: this.generationConfig, safetySettings: this.safetySettings }, formattedParams));
+    return generateContent(this.apiKey, this.model, Object.assign({ generationConfig: this.generationConfig, safetySettings: this.safetySettings }, formattedParams), this.requestOptions);
   }
   /**
    * Makes a single streaming call to the model
@@ -2230,14 +2255,14 @@ var GenerativeModel = class {
    */
   async generateContentStream(request) {
     const formattedParams = formatGenerateContentInput(request);
-    return generateContentStream(this.apiKey, this.model, Object.assign({ generationConfig: this.generationConfig, safetySettings: this.safetySettings }, formattedParams));
+    return generateContentStream(this.apiKey, this.model, Object.assign({ generationConfig: this.generationConfig, safetySettings: this.safetySettings }, formattedParams), this.requestOptions);
   }
   /**
    * Gets a new {@link ChatSession} instance which can be used for
    * multi-turn chats.
    */
   startChat(startChatParams) {
-    return new ChatSession(this.apiKey, this.model, startChatParams);
+    return new ChatSession(this.apiKey, this.model, startChatParams, this.requestOptions);
   }
   /**
    * Counts the tokens in the provided request.
@@ -2257,7 +2282,7 @@ var GenerativeModel = class {
    * Embeds an array of {@link EmbedContentRequest}s.
    */
   async batchEmbedContents(batchEmbedContentRequest) {
-    return batchEmbedContents(this.apiKey, this.model, batchEmbedContentRequest);
+    return batchEmbedContents(this.apiKey, this.model, batchEmbedContentRequest, this.requestOptions);
   }
 };
 var GoogleGenerativeAI = class {
@@ -2267,11 +2292,11 @@ var GoogleGenerativeAI = class {
   /**
    * Gets a {@link GenerativeModel} instance for the provided model name.
    */
-  getGenerativeModel(modelParams) {
+  getGenerativeModel(modelParams, requestOptions) {
     if (!modelParams.model) {
       throw new GoogleGenerativeAIError(`Must provide a model name. Example: genai.getGenerativeModel({ model: 'my-model-name' })`);
     }
-    return new GenerativeModel(this.apiKey, modelParams);
+    return new GenerativeModel(this.apiKey, modelParams, requestOptions);
   }
 };
 
@@ -2379,7 +2404,7 @@ var nonStreamingChatProxyHandler = async (c, req, genAi) => {
   return c.json(resp);
 };
 
-// node_modules/.deno/hono@3.12.8/node_modules/hono/dist/helper/streaming/sse.js
+// node_modules/.deno/hono@3.12.9/node_modules/hono/dist/helper/streaming/sse.js
 var SSEStreamingApi = class extends StreamingApi {
   constructor(writable, readable) {
     super(writable, readable);
