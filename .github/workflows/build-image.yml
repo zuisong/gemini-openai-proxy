@@ -44,6 +44,7 @@ jobs:
           file: docker/${{ matrix.runtime }}.Dockerfile
           platforms: linux/amd64,linux/arm64
           push: true
+          provenance: false
           tags: |
             ${{ env.IMAGE_NAME }}:${{ env.IMAGE_TAG }}_${{ matrix.runtime }}
             ${{ env.IMAGE_NAME }}:${{ matrix.runtime }}
