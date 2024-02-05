@@ -35,7 +35,7 @@ jobs:
         run: deno task build:deno
 
       - name: "codecov coverage"
-        uses: codecov/codecov-action@v3
+        uses: codecov/codecov-action@v4
         with:
           files: coverage/lcov.info
 
