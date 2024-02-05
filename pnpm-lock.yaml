@@ -12,8 +12,8 @@ dependencies:
     specifier: ^1.7.0
     version: 1.7.0
   hono:
-    specifier: ^3.12.9
-    version: 3.12.9
+    specifier: ^3.12.11
+    version: 3.12.11
 
 devDependencies:
   esbuild:
@@ -278,7 +278,7 @@ packages:
     engines: {node: '>=14.18'}
     dev: true
 
-  /hono@3.12.9:
-    resolution: {integrity: sha512-JhurtI3+VspowZoP3dv6BylhUPIpTWNRlBsVfb5UbI/tmMGqd6RpeexGO7RjnrSG9Vqwb1ydKp7HHTTcYJU5Zw==}
+  /hono@3.12.11:
+    resolution: {integrity: sha512-LSpxVgIMR3UzyFiXZaPvqBUGqyOKG0LMZqgMn2RXz9f+YAdkHSfFQQX0dtU72fPm5GnEMh5AYXs0ek5NYgMOmA==}
     engines: {node: '>=16.0.0'}
     dev: false
