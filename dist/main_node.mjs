@@ -350,7 +350,7 @@ var serve = (options, listeningListener) => {
   return server;
 };
 
-// node_modules/.deno/hono@3.12.11/node_modules/hono/dist/helper/adapter/index.js
+// node_modules/.deno/hono@4.0.1/node_modules/hono/dist/helper/adapter/index.js
 var getRuntimeKey = () => {
   const global2 = globalThis;
   if (global2?.Deno !== void 0) {
@@ -368,16 +368,13 @@ var getRuntimeKey = () => {
   if (global2?.fastly !== void 0) {
     return "fastly";
   }
-  if (global2?.__lagon__ !== void 0) {
-    return "lagon";
-  }
   if (global2?.process?.release?.name === "node") {
     return "node";
   }
   return "other";
 };
 
-// node_modules/.deno/hono@3.12.11/node_modules/hono/dist/middleware/cors/index.js
+// node_modules/.deno/hono@4.0.1/node_modules/hono/dist/middleware/cors/index.js
 var cors = (options) => {
   const defaults = {
     origin: "*",
@@ -445,7 +442,7 @@ var cors = (options) => {
   };
 };
 
-// node_modules/.deno/hono@3.12.11/node_modules/hono/dist/utils/url.js
+// node_modules/.deno/hono@4.0.1/node_modules/hono/dist/utils/url.js
 var getPath = (request) => {
   const match = request.url.match(/^https?:\/\/[^/]+(\/[^?]*)/);
   return match ? match[1] : "";
@@ -559,7 +556,7 @@ var getQueryParams = (url, key) => {
 };
 var decodeURIComponent_ = decodeURIComponent;
 
-// node_modules/.deno/hono@3.12.11/node_modules/hono/dist/middleware/logger/index.js
+// node_modules/.deno/hono@4.0.1/node_modules/hono/dist/middleware/logger/index.js
 var humanize = (times) => {
   const [delimiter, separator] = [",", "."];
   const orderTimes = times.map((v) => v.replace(/(\d)(?=(\d\d\d)+(?!\d))/g, "$1" + delimiter));
@@ -597,65 +594,7 @@ var logger = (fn = console.log) => {
   };
 };
 
-// node_modules/.deno/hono@3.12.11/node_modules/hono/dist/utils/cookie.js
-var validCookieNameRegEx = /^[\w!#$%&'*.^`|~+-]+$/;
-var validCookieValueRegEx = /^[ !#-:<-[\]-~]*$/;
-var parse = (cookie, name) => {
-  const pairs = cookie.trim().split(";");
-  return pairs.reduce((parsedCookie, pairStr) => {
-    pairStr = pairStr.trim();
-    const valueStartPos = pairStr.indexOf("=");
-    if (valueStartPos === -1) {
-      return parsedCookie;
-    }
-    const cookieName = pairStr.substring(0, valueStartPos).trim();
-    if (name && name !== cookieName || !validCookieNameRegEx.test(cookieName)) {
-      return parsedCookie;
-    }
-    let cookieValue = pairStr.substring(valueStartPos + 1).trim();
-    if (cookieValue.startsWith('"') && cookieValue.endsWith('"')) {
-      cookieValue = cookieValue.slice(1, -1);
-    }
-    if (validCookieValueRegEx.test(cookieValue)) {
-      parsedCookie[cookieName] = decodeURIComponent_(cookieValue);
-    }
-    return parsedCookie;
-  }, {});
-};
-var _serialize = (name, value, opt = {}) => {
-  let cookie = `${name}=${value}`;
-  if (opt && typeof opt.maxAge === "number" && opt.maxAge >= 0) {
-    cookie += `; Max-Age=${Math.floor(opt.maxAge)}`;
-  }
-  if (opt.domain) {
-    cookie += `; Domain=${opt.domain}`;
-  }
-  if (opt.path) {
-    cookie += `; Path=${opt.path}`;
-  }
-  if (opt.expires) {
-    cookie += `; Expires=${opt.expires.toUTCString()}`;
-  }
-  if (opt.httpOnly) {
-    cookie += "; HttpOnly";
-  }
-  if (opt.secure) {
-    cookie += "; Secure";
-  }
-  if (opt.sameSite) {
-    cookie += `; SameSite=${opt.sameSite}`;
-  }
-  if (opt.partitioned) {
-    cookie += "; Partitioned";
-  }
-  return cookie;
-};
-var serialize = (name, value, opt = {}) => {
-  value = encodeURIComponent(value);
-  return _serialize(name, value, opt);
-};
-
-// node_modules/.deno/hono@3.12.11/node_modules/hono/dist/utils/html.js
+// node_modules/.deno/hono@4.0.1/node_modules/hono/dist/utils/html.js
 var HtmlEscapedCallbackPhase = {
   Stringify: 1,
   BeforeStream: 2,
@@ -689,58 +628,7 @@ var resolveCallback = async (str, phase, preserveCallbacks, context, buffer) => 
   }
 };
 
-// node_modules/.deno/hono@3.12.11/node_modules/hono/dist/utils/stream.js
-var StreamingApi = class {
-  constructor(writable, _readable) {
-    this.abortSubscribers = [];
-    this.writable = writable;
-    this.writer = writable.getWriter();
-    this.encoder = new TextEncoder();
-    const reader = _readable.getReader();
-    this.responseReadable = new ReadableStream({
-      async pull(controller) {
-        const { done, value } = await reader.read();
-        done ? controller.close() : controller.enqueue(value);
-      },
-      cancel: () => {
-        this.abortSubscribers.forEach((subscriber) => subscriber());
-      }
-    });
-  }
-  async write(input) {
-    try {
-      if (typeof input === "string") {
-        input = this.encoder.encode(input);
-      }
-      await this.writer.write(input);
-    } catch (e) {
-    }
-    return this;
-  }
-  async writeln(input) {
-    await this.write(input + "\n");
-    return this;
-  }
-  sleep(ms) {
-    return new Promise((res) => setTimeout(res, ms));
-  }
-  async close() {
-    try {
-      await this.writer.close();
-    } catch (e) {
-    }
-  }
-  async pipe(body) {
-    this.writer.releaseLock();
-    await body.pipeTo(this.writable, { preventClose: true });
-    this.writer = this.writable.getWriter();
-  }
-  async onAbort(listener) {
-    this.abortSubscribers.push(listener);
-  }
-};
-
-// node_modules/.deno/hono@3.12.11/node_modules/hono/dist/context.js
+// node_modules/.deno/hono@4.0.1/node_modules/hono/dist/context.js
 var __accessCheck = (obj, member, msg) => {
   if (!member.has(obj))
     throw TypeError("Cannot " + msg);
@@ -782,9 +670,12 @@ var Context = class {
     __privateAdd(this, _preparedHeaders, void 0);
     __privateAdd(this, _res, void 0);
     __privateAdd(this, _isFresh, true);
+    this.layout = void 0;
     this.renderer = (content) => this.html(content);
     this.notFoundHandler = () => new Response();
     this.render = (...args) => this.renderer(...args);
+    this.setLayout = (layout) => this.layout = layout;
+    this.getLayout = () => this.layout;
     this.setRenderer = (renderer) => {
       this.renderer = renderer;
     };
@@ -892,9 +783,6 @@ var Context = class {
       __privateGet(this, _preparedHeaders)["content-type"] = "application/json; charset=UTF-8";
       return typeof arg === "number" ? this.newResponse(body, arg, headers) : this.newResponse(body, arg);
     };
-    this.jsonT = (object, arg, headers) => {
-      return this.json(object, arg, headers);
-    };
     this.html = (html, arg, headers) => {
       __privateGet(this, _preparedHeaders) ?? __privateSet(this, _preparedHeaders, {});
       __privateGet(this, _preparedHeaders)["content-type"] = "text/html; charset=UTF-8";
@@ -914,23 +802,6 @@ var Context = class {
       __privateGet(this, _headers) ?? __privateSet(this, _headers, new Headers());
       __privateGet(this, _headers).set("Location", location);
       return this.newResponse(null, status);
-    };
-    this.streamText = (cb, arg, headers) => {
-      headers ?? (headers = {});
-      this.header("content-type", TEXT_PLAIN);
-      this.header("x-content-type-options", "nosniff");
-      this.header("transfer-encoding", "chunked");
-      return this.stream(cb, arg, headers);
-    };
-    this.stream = (cb, arg, headers) => {
-      const { readable, writable } = new TransformStream();
-      const stream2 = new StreamingApi(writable, readable);
-      cb(stream2).finally(() => stream2.close());
-      return typeof arg === "number" ? this.newResponse(stream2.responseReadable, arg, headers) : this.newResponse(stream2.responseReadable, arg);
-    };
-    this.cookie = (name, value, opt) => {
-      const cookie = serialize(name, value, opt);
-      this.header("set-cookie", cookie, { append: true });
     };
     this.notFound = () => {
       return this.notFoundHandler(this);
@@ -984,31 +855,6 @@ var Context = class {
   get var() {
     return { ...this._var };
   }
-  get runtime() {
-    const global2 = globalThis;
-    if (global2?.Deno !== void 0) {
-      return "deno";
-    }
-    if (global2?.Bun !== void 0) {
-      return "bun";
-    }
-    if (typeof global2?.WebSocketPair === "function") {
-      return "workerd";
-    }
-    if (typeof global2?.EdgeRuntime === "string") {
-      return "edge-light";
-    }
-    if (global2?.fastly !== void 0) {
-      return "fastly";
-    }
-    if (global2?.__lagon__ !== void 0) {
-      return "lagon";
-    }
-    if (global2?.process?.release?.name === "node") {
-      return "node";
-    }
-    return "other";
-  }
 };
 _status = /* @__PURE__ */ new WeakMap();
 _executionCtx = /* @__PURE__ */ new WeakMap();
@@ -1017,7 +863,7 @@ _preparedHeaders = /* @__PURE__ */ new WeakMap();
 _res = /* @__PURE__ */ new WeakMap();
 _isFresh = /* @__PURE__ */ new WeakMap();
 
-// node_modules/.deno/hono@3.12.11/node_modules/hono/dist/middleware/timing/index.js
+// node_modules/.deno/hono@4.0.1/node_modules/hono/dist/middleware/timing/index.js
 var getTime = () => {
   try {
     return performance.now();
@@ -1102,7 +948,7 @@ var endTime = (c, name, precision) => {
   metrics.timers.delete(name);
 };
 
-// node_modules/.deno/hono@3.12.11/node_modules/hono/dist/compose.js
+// node_modules/.deno/hono@4.0.1/node_modules/hono/dist/compose.js
 var compose = (middleware, onError, onNotFound) => {
   return (context, next) => {
     let index = -1;
@@ -1150,7 +996,7 @@ var compose = (middleware, onError, onNotFound) => {
   };
 };
 
-// node_modules/.deno/hono@3.12.11/node_modules/hono/dist/http-exception.js
+// node_modules/.deno/hono@4.0.1/node_modules/hono/dist/http-exception.js
 var HTTPException = class extends Error {
   constructor(status = 500, options) {
     super(options?.message);
@@ -1167,9 +1013,10 @@ var HTTPException = class extends Error {
   }
 };
 
-// node_modules/.deno/hono@3.12.11/node_modules/hono/dist/utils/body.js
+// node_modules/.deno/hono@4.0.1/node_modules/hono/dist/utils/body.js
 var parseBody = async (request, options = { all: false }) => {
-  const contentType = request.headers.get("Content-Type");
+  const headers = request instanceof HonoRequest ? request.raw.headers : request.headers;
+  const contentType = headers.get("Content-Type");
   if (isFormDataContent(contentType)) {
     return parseFormData(request, options);
   }
@@ -1219,7 +1066,7 @@ var convertToNewArray = (form, key, value) => {
   form[key] = [form[key], value];
 };
 
-// node_modules/.deno/hono@3.12.11/node_modules/hono/dist/request.js
+// node_modules/.deno/hono@4.0.1/node_modules/hono/dist/request.js
 var __accessCheck2 = (obj, member, msg) => {
   if (!member.has(obj))
     throw TypeError("Cannot " + msg);
@@ -1302,19 +1149,6 @@ var HonoRequest = class {
     });
     return headerData;
   }
-  cookie(key) {
-    const cookie = this.raw.headers.get("Cookie");
-    if (!cookie) {
-      return;
-    }
-    const obj = parse(cookie);
-    if (key) {
-      const value = obj[key];
-      return value;
-    } else {
-      return obj;
-    }
-  }
   async parseBody(options) {
     if (this.bodyCache.parsedBody) {
       return this.bodyCache.parsedBody;
@@ -1356,39 +1190,18 @@ var HonoRequest = class {
   get routePath() {
     return __privateGet2(this, _matchResult)[0].map(([[, route]]) => route)[this.routeIndex].path;
   }
-  get headers() {
-    return this.raw.headers;
-  }
-  get body() {
-    return this.raw.body;
-  }
-  get bodyUsed() {
-    return this.raw.bodyUsed;
-  }
-  get integrity() {
-    return this.raw.integrity;
-  }
-  get keepalive() {
-    return this.raw.keepalive;
-  }
-  get referrer() {
-    return this.raw.referrer;
-  }
-  get signal() {
-    return this.raw.signal;
-  }
 };
 _validatedData = /* @__PURE__ */ new WeakMap();
 _matchResult = /* @__PURE__ */ new WeakMap();
 
-// node_modules/.deno/hono@3.12.11/node_modules/hono/dist/router.js
+// node_modules/.deno/hono@4.0.1/node_modules/hono/dist/router.js
 var METHOD_NAME_ALL = "ALL";
 var METHOD_NAME_ALL_LOWERCASE = "all";
 var METHODS = ["get", "post", "put", "delete", "options", "patch"];
 var UnsupportedPathError = class extends Error {
 };
 
-// node_modules/.deno/hono@3.12.11/node_modules/hono/dist/hono-base.js
+// node_modules/.deno/hono@4.0.1/node_modules/hono/dist/hono-base.js
 var __accessCheck3 = (obj, member, msg) => {
   if (!member.has(obj))
     throw TypeError("Cannot " + msg);
@@ -1420,8 +1233,7 @@ var errorHandler = (err, c) => {
     return err.getResponse();
   }
   console.error(err);
-  const message = "Internal Server Error";
-  return c.text(message, 500);
+  return c.text("Internal Server Error", 500);
 };
 var _path;
 var _Hono = class extends defineDynamicClass() {
@@ -1439,13 +1251,6 @@ var _Hono = class extends defineDynamicClass() {
     this.notFound = (handler) => {
       this.notFoundHandler = handler;
       return this;
-    };
-    this.head = () => {
-      console.warn("`app.head()` is no longer used. `app.get()` implicitly handles the HEAD method.");
-      return this;
-    };
-    this.handleEvent = (event) => {
-      return this.dispatch(event.request, event, void 0, event.request.method);
     };
     this.fetch = (request, Env, executionCtx) => {
       return this.dispatch(request, executionCtx, Env, request.method);
@@ -1487,11 +1292,13 @@ var _Hono = class extends defineDynamicClass() {
       if (!method) {
         return this;
       }
-      __privateSet3(this, _path, path);
-      for (const m of [method].flat()) {
-        handlers.map((handler) => {
-          this.addRoute(m.toUpperCase(), __privateGet3(this, _path), handler);
-        });
+      for (const p of [path].flat()) {
+        __privateSet3(this, _path, p);
+        for (const m of [method].flat()) {
+          handlers.map((handler) => {
+            this.addRoute(m.toUpperCase(), __privateGet3(this, _path), handler);
+          });
+        }
       }
       return this;
     };
@@ -1499,6 +1306,7 @@ var _Hono = class extends defineDynamicClass() {
       if (typeof arg1 === "string") {
         __privateSet3(this, _path, arg1);
       } else {
+        __privateSet3(this, _path, "*");
         handlers.unshift(arg1);
       }
       handlers.map((handler) => {
@@ -1541,14 +1349,6 @@ var _Hono = class extends defineDynamicClass() {
     subApp._basePath = mergePath(this._basePath, path);
     return subApp;
   }
-  showRoutes() {
-    const length = 8;
-    this.routes.map((route) => {
-      console.log(
-        `\x1B[32m${route.method}\x1B[0m ${" ".repeat(length - route.method.length)} ${route.path}`
-      );
-    });
-  }
   mount(path, applicationHandler, optionHandler) {
     const mergedPath = mergePath(this._basePath, path);
     const pathPrefixLength = mergedPath === "/" ? 0 : mergedPath.length;
@@ -1575,10 +1375,6 @@ var _Hono = class extends defineDynamicClass() {
     };
     this.addRoute(METHOD_NAME_ALL, mergePath(path, "*"), handler);
     return this;
-  }
-  get routerName() {
-    this.matchRoute("GET", "/");
-    return this.router.name;
   }
   addRoute(method, path, handler) {
     method = method.toUpperCase();
@@ -1611,8 +1407,10 @@ var _Hono = class extends defineDynamicClass() {
       let res;
       try {
         res = matchResult[0][0][0][0](c, async () => {
-          c.res = await this.notFoundHandler(c);
         });
+        if (!res) {
+          return this.notFoundHandler(c);
+        }
       } catch (err) {
         return this.handleError(err, c);
       }
@@ -1639,7 +1437,7 @@ var _Hono = class extends defineDynamicClass() {
 var Hono = _Hono;
 _path = /* @__PURE__ */ new WeakMap();
 
-// node_modules/.deno/hono@3.12.11/node_modules/hono/dist/router/pattern-router/router.js
+// node_modules/.deno/hono@4.0.1/node_modules/hono/dist/router/pattern-router/router.js
 var PatternRouter = class {
   constructor() {
     this.name = "PatternRouter";
@@ -1685,7 +1483,7 @@ var PatternRouter = class {
   }
 };
 
-// node_modules/.deno/hono@3.12.11/node_modules/hono/dist/preset/tiny.js
+// node_modules/.deno/hono@4.0.1/node_modules/hono/dist/preset/tiny.js
 var Hono2 = class extends Hono {
   constructor(options = {}) {
     super(options);
@@ -2402,7 +2200,58 @@ var nonStreamingChatProxyHandler = async (c, req, genAi) => {
   return c.json(resp);
 };
 
-// node_modules/.deno/hono@3.12.11/node_modules/hono/dist/helper/streaming/sse.js
+// node_modules/.deno/hono@4.0.1/node_modules/hono/dist/utils/stream.js
+var StreamingApi = class {
+  constructor(writable, _readable) {
+    this.abortSubscribers = [];
+    this.writable = writable;
+    this.writer = writable.getWriter();
+    this.encoder = new TextEncoder();
+    const reader = _readable.getReader();
+    this.responseReadable = new ReadableStream({
+      async pull(controller) {
+        const { done, value } = await reader.read();
+        done ? controller.close() : controller.enqueue(value);
+      },
+      cancel: () => {
+        this.abortSubscribers.forEach((subscriber) => subscriber());
+      }
+    });
+  }
+  async write(input) {
+    try {
+      if (typeof input === "string") {
+        input = this.encoder.encode(input);
+      }
+      await this.writer.write(input);
+    } catch (e) {
+    }
+    return this;
+  }
+  async writeln(input) {
+    await this.write(input + "\n");
+    return this;
+  }
+  sleep(ms) {
+    return new Promise((res) => setTimeout(res, ms));
+  }
+  async close() {
+    try {
+      await this.writer.close();
+    } catch (e) {
+    }
+  }
+  async pipe(body) {
+    this.writer.releaseLock();
+    await body.pipeTo(this.writable, { preventClose: true });
+    this.writer = this.writable.getWriter();
+  }
+  async onAbort(listener) {
+    this.abortSubscribers.push(listener);
+  }
+};
+
+// node_modules/.deno/hono@4.0.1/node_modules/hono/dist/helper/streaming/sse.js
 var SSEStreamingApi = class extends StreamingApi {
   constructor(writable, readable) {
     super(writable, readable);
@@ -2411,7 +2260,12 @@ var SSEStreamingApi = class extends StreamingApi {
     const data = message.data.split("\n").map((line) => {
       return `data: ${line}`;
     }).join("\n");
-    const sseData = [message.event && `event: ${message.event}`, data, message.id && `id: ${message.id}`].filter(Boolean).join("\n") + "\n\n";
+    const sseData = [
+      message.event && `event: ${message.event}`,
+      data,
+      message.id && `id: ${message.id}`,
+      message.retry && `retry: ${message.retry}`
+    ].filter(Boolean).join("\n") + "\n\n";
     await this.write(sseData);
   }
 };
