@@ -1,4 +1,4 @@
-// node_modules/.deno/@hono+node-server@1.7.0/node_modules/@hono/node-server/dist/index.mjs
+// node_modules/.deno/@hono+node-server@1.8.0/node_modules/@hono/node-server/dist/index.mjs
 import { createServer as createServerHTTP } from "http";
 import { Http2ServerRequest } from "http2";
 import { Readable } from "stream";
@@ -19,7 +19,7 @@ var Request2 = class extends GlobalRequest {
 Object.defineProperty(global, "Request", {
   value: Request2
 });
-var newRequestFromIncoming = (method, url, incoming) => {
+var newRequestFromIncoming = (method, url, incoming, abortController) => {
   const headerRecord = [];
   const rawHeaders = incoming.rawHeaders;
   for (let i = 0; i < rawHeaders.length; i += 2) {
@@ -31,7 +31,8 @@ var newRequestFromIncoming = (method, url, incoming) => {
   }
   const init = {
     method,
-    headers: headerRecord
+    headers: headerRecord,
+    signal: abortController.signal
   };
   if (!(method === "GET" || method === "HEAD")) {
     init.body = Readable.toWeb(incoming);
@@ -42,6 +43,8 @@ var getRequestCache = Symbol("getRequestCache");
 var requestCache = Symbol("requestCache");
 var incomingKey = Symbol("incomingKey");
 var urlKey = Symbol("urlKey");
+var abortControllerKey = Symbol("abortControllerKey");
+var getAbortController = Symbol("getAbortController");
 var requestPrototype = {
   get method() {
     return this[incomingKey].method || "GET";
@@ -49,11 +52,17 @@ var requestPrototype = {
   get url() {
     return this[urlKey];
   },
+  [getAbortController]() {
+    this[getRequestCache]();
+    return this[abortControllerKey];
+  },
   [getRequestCache]() {
+    this[abortControllerKey] ||= new AbortController();
     return this[requestCache] ||= newRequestFromIncoming(
       this.method,
       this[urlKey],
-      this[incomingKey]
+      this[incomingKey],
+      this[abortControllerKey]
     );
   }
 };
@@ -145,16 +154,17 @@ var buildOutgoingHttpHeaders = (headers) => {
   if (cookies.length > 0) {
     res["set-cookie"] = cookies;
   }
-  res["content-type"] ??= "text/plain;charset=UTF-8";
+  res["content-type"] ??= "text/plain; charset=UTF-8";
   return res;
 };
 var responseCache = Symbol("responseCache");
+var getResponseCache = Symbol("getResponseCache");
 var cacheKey = Symbol("cache");
 var GlobalResponse = global.Response;
 var Response2 = class _Response {
   #body;
   #init;
-  get cache() {
+  [getResponseCache]() {
     delete this[cacheKey];
     return this[responseCache] ||= new GlobalResponse(this.#body, this.#init);
   }
@@ -164,7 +174,7 @@ var Response2 = class _Response {
       const cachedGlobalResponse = init[responseCache];
       if (cachedGlobalResponse) {
         this.#init = cachedGlobalResponse;
-        this.cache;
+        this[getResponseCache]();
         return;
       } else {
         this.#init = init.#init;
@@ -173,7 +183,7 @@ var Response2 = class _Response {
       this.#init = init;
     }
     if (typeof body === "string" || body instanceof ReadableStream) {
-      let headers = init?.headers || { "content-type": "text/plain;charset=UTF-8" };
+      let headers = init?.headers || { "content-type": "text/plain; charset=UTF-8" };
       if (headers instanceof Headers) {
         headers = buildOutgoingHttpHeaders(headers);
       }
@@ -196,14 +206,14 @@ var Response2 = class _Response {
 ].forEach((k) => {
   Object.defineProperty(Response2.prototype, k, {
     get() {
-      return this.cache[k];
+      return this[getResponseCache]()[k];
     }
   });
 });
 ["arrayBuffer", "blob", "clone", "formData", "json", "text"].forEach((k) => {
   Object.defineProperty(Response2.prototype, k, {
     value: function() {
-      return this.cache[k]();
+      return this[getResponseCache]()[k]();
     }
   });
 });
@@ -212,6 +222,22 @@ Object.setPrototypeOf(Response2.prototype, GlobalResponse.prototype);
 Object.defineProperty(global, "Response", {
   value: Response2
 });
+var stateKey = Reflect.ownKeys(new GlobalResponse()).find(
+  (k) => typeof k === "symbol" && k.toString() === "Symbol(state)"
+);
+if (!stateKey) {
+  console.warn("Failed to find Response internal state key");
+}
+function getInternalBody(response) {
+  if (!stateKey) {
+    return;
+  }
+  if (response instanceof Response2) {
+    response = response[getResponseCache]();
+  }
+  const state = response[stateKey];
+  return state && state.body || void 0;
+}
 var webFetch = global.fetch;
 if (typeof global.crypto === "undefined") {
   global.crypto = crypto2;
@@ -272,36 +298,40 @@ var responseViaResponseObject = async (res, outgoing, options = {}) => {
       res = await res.catch(handleFetchError);
     }
   }
-  try {
-    const isCached = cacheKey in res;
-    if (isCached) {
-      return responseViaCache(res, outgoing);
-    }
-  } catch (e) {
-    return handleResponseError(e, outgoing);
+  if (cacheKey in res) {
+    return responseViaCache(res, outgoing);
   }
   const resHeaderRecord = buildOutgoingHttpHeaders(res.headers);
-  if (res.body) {
-    try {
-      const {
-        "transfer-encoding": transferEncoding,
-        "content-encoding": contentEncoding,
-        "content-length": contentLength,
-        "x-accel-buffering": accelBuffering,
-        "content-type": contentType
-      } = resHeaderRecord;
-      if (transferEncoding || contentEncoding || contentLength || // nginx buffering variant
-      accelBuffering && regBuffer.test(accelBuffering) || !regContentType.test(contentType)) {
-        outgoing.writeHead(res.status, resHeaderRecord);
-        await writeFromReadableStream(res.body, outgoing);
-      } else {
-        const buffer = await res.arrayBuffer();
-        resHeaderRecord["content-length"] = buffer.byteLength;
-        outgoing.writeHead(res.status, resHeaderRecord);
-        outgoing.end(new Uint8Array(buffer));
-      }
-    } catch (e) {
-      handleResponseError(e, outgoing);
+  const internalBody = getInternalBody(res);
+  if (internalBody) {
+    if (internalBody.length) {
+      resHeaderRecord["content-length"] = internalBody.length;
+    }
+    outgoing.writeHead(res.status, resHeaderRecord);
+    if (typeof internalBody.source === "string" || internalBody.source instanceof Uint8Array) {
+      outgoing.end(internalBody.source);
+    } else if (internalBody.source instanceof Blob) {
+      outgoing.end(new Uint8Array(await internalBody.source.arrayBuffer()));
+    } else {
+      await writeFromReadableStream(internalBody.stream, outgoing);
+    }
+  } else if (res.body) {
+    const {
+      "transfer-encoding": transferEncoding,
+      "content-encoding": contentEncoding,
+      "content-length": contentLength,
+      "x-accel-buffering": accelBuffering,
+      "content-type": contentType
+    } = resHeaderRecord;
+    if (transferEncoding || contentEncoding || contentLength || // nginx buffering variant
+    accelBuffering && regBuffer.test(accelBuffering) || !regContentType.test(contentType)) {
+      outgoing.writeHead(res.status, resHeaderRecord);
+      await writeFromReadableStream(res.body, outgoing);
+    } else {
+      const buffer = await res.arrayBuffer();
+      resHeaderRecord["content-length"] = buffer.byteLength;
+      outgoing.writeHead(res.status, resHeaderRecord);
+      outgoing.end(new Uint8Array(buffer));
     }
   } else {
     outgoing.writeHead(res.status, resHeaderRecord);
@@ -312,6 +342,11 @@ var getRequestListener = (fetchCallback, options = {}) => {
   return async (incoming, outgoing) => {
     let res;
     const req = newRequest(incoming);
+    outgoing.on("close", () => {
+      if (incoming.destroyed) {
+        req[getAbortController]().abort();
+      }
+    });
     try {
       res = fetchCallback(req, { incoming, outgoing });
       if (cacheKey in res) {
@@ -331,7 +366,11 @@ var getRequestListener = (fetchCallback, options = {}) => {
         return handleResponseError(e, outgoing);
       }
     }
-    return responseViaResponseObject(res, outgoing, options);
+    try {
+      return responseViaResponseObject(res, outgoing, options);
+    } catch (e) {
+      return handleResponseError(e, outgoing);
+    }
   };
 };
 var createAdaptorServer = (options) => {
@@ -350,7 +389,7 @@ var serve = (options, listeningListener) => {
   return server;
 };
 
-// node_modules/.deno/hono@4.0.2/node_modules/hono/dist/helper/adapter/index.js
+// node_modules/.deno/hono@4.0.3/node_modules/hono/dist/helper/adapter/index.js
 var getRuntimeKey = () => {
   const global2 = globalThis;
   if (global2?.Deno !== void 0) {
@@ -374,7 +413,7 @@ var getRuntimeKey = () => {
   return "other";
 };
 
-// node_modules/.deno/hono@4.0.2/node_modules/hono/dist/middleware/cors/index.js
+// node_modules/.deno/hono@4.0.3/node_modules/hono/dist/middleware/cors/index.js
 var cors = (options) => {
   const defaults = {
     origin: "*",
@@ -442,7 +481,7 @@ var cors = (options) => {
   };
 };
 
-// node_modules/.deno/hono@4.0.2/node_modules/hono/dist/utils/url.js
+// node_modules/.deno/hono@4.0.3/node_modules/hono/dist/utils/url.js
 var getPath = (request) => {
   const match = request.url.match(/^https?:\/\/[^/]+(\/[^?]*)/);
   return match ? match[1] : "";
@@ -556,7 +595,7 @@ var getQueryParams = (url, key) => {
 };
 var decodeURIComponent_ = decodeURIComponent;
 
-// node_modules/.deno/hono@4.0.2/node_modules/hono/dist/middleware/logger/index.js
+// node_modules/.deno/hono@4.0.3/node_modules/hono/dist/middleware/logger/index.js
 var humanize = (times) => {
   const [delimiter, separator] = [",", "."];
   const orderTimes = times.map((v) => v.replace(/(\d)(?=(\d\d\d)+(?!\d))/g, "$1" + delimiter));
@@ -594,7 +633,7 @@ var logger = (fn = console.log) => {
   };
 };
 
-// node_modules/.deno/hono@4.0.2/node_modules/hono/dist/utils/html.js
+// node_modules/.deno/hono@4.0.3/node_modules/hono/dist/utils/html.js
 var HtmlEscapedCallbackPhase = {
   Stringify: 1,
   BeforeStream: 2,
@@ -628,7 +667,7 @@ var resolveCallback = async (str, phase, preserveCallbacks, context, buffer) => 
   }
 };
 
-// node_modules/.deno/hono@4.0.2/node_modules/hono/dist/context.js
+// node_modules/.deno/hono@4.0.3/node_modules/hono/dist/context.js
 var __accessCheck = (obj, member, msg) => {
   if (!member.has(obj))
     throw TypeError("Cannot " + msg);
@@ -735,7 +774,7 @@ var Context = class {
         const headers2 = setHeaders(new Headers(arg.headers), __privateGet(this, _preparedHeaders));
         return new Response(data, {
           headers: headers2,
-          status: arg.status
+          status: arg.status ?? __privateGet(this, _status)
         });
       }
       const status = typeof arg === "number" ? arg : __privateGet(this, _status);
@@ -863,7 +902,7 @@ _preparedHeaders = /* @__PURE__ */ new WeakMap();
 _res = /* @__PURE__ */ new WeakMap();
 _isFresh = /* @__PURE__ */ new WeakMap();
 
-// node_modules/.deno/hono@4.0.2/node_modules/hono/dist/middleware/timing/index.js
+// node_modules/.deno/hono@4.0.3/node_modules/hono/dist/middleware/timing/index.js
 var getTime = () => {
   try {
     return performance.now();
@@ -948,7 +987,7 @@ var endTime = (c, name, precision) => {
   metrics.timers.delete(name);
 };
 
-// node_modules/.deno/hono@4.0.2/node_modules/hono/dist/compose.js
+// node_modules/.deno/hono@4.0.3/node_modules/hono/dist/compose.js
 var compose = (middleware, onError, onNotFound) => {
   return (context, next) => {
     let index = -1;
@@ -996,7 +1035,7 @@ var compose = (middleware, onError, onNotFound) => {
   };
 };
 
-// node_modules/.deno/hono@4.0.2/node_modules/hono/dist/http-exception.js
+// node_modules/.deno/hono@4.0.3/node_modules/hono/dist/http-exception.js
 var HTTPException = class extends Error {
   constructor(status = 500, options) {
     super(options?.message);
@@ -1013,7 +1052,7 @@ var HTTPException = class extends Error {
   }
 };
 
-// node_modules/.deno/hono@4.0.2/node_modules/hono/dist/utils/body.js
+// node_modules/.deno/hono@4.0.3/node_modules/hono/dist/utils/body.js
 var parseBody = async (request, options = { all: false }) => {
   const headers = request instanceof HonoRequest ? request.raw.headers : request.headers;
   const contentType = headers.get("Content-Type");
@@ -1066,7 +1105,7 @@ var convertToNewArray = (form, key, value) => {
   form[key] = [form[key], value];
 };
 
-// node_modules/.deno/hono@4.0.2/node_modules/hono/dist/request.js
+// node_modules/.deno/hono@4.0.3/node_modules/hono/dist/request.js
 var __accessCheck2 = (obj, member, msg) => {
   if (!member.has(obj))
     throw TypeError("Cannot " + msg);
@@ -1194,14 +1233,14 @@ var HonoRequest = class {
 _validatedData = /* @__PURE__ */ new WeakMap();
 _matchResult = /* @__PURE__ */ new WeakMap();
 
-// node_modules/.deno/hono@4.0.2/node_modules/hono/dist/router.js
+// node_modules/.deno/hono@4.0.3/node_modules/hono/dist/router.js
 var METHOD_NAME_ALL = "ALL";
 var METHOD_NAME_ALL_LOWERCASE = "all";
 var METHODS = ["get", "post", "put", "delete", "options", "patch"];
 var UnsupportedPathError = class extends Error {
 };
 
-// node_modules/.deno/hono@4.0.2/node_modules/hono/dist/hono-base.js
+// node_modules/.deno/hono@4.0.3/node_modules/hono/dist/hono-base.js
 var __accessCheck3 = (obj, member, msg) => {
   if (!member.has(obj))
     throw TypeError("Cannot " + msg);
@@ -1407,10 +1446,8 @@ var _Hono = class extends defineDynamicClass() {
       let res;
       try {
         res = matchResult[0][0][0][0](c, async () => {
+          c.res = await this.notFoundHandler(c);
         });
-        if (!res) {
-          return this.notFoundHandler(c);
-        }
       } catch (err) {
         return this.handleError(err, c);
       }
@@ -1437,7 +1474,7 @@ var _Hono = class extends defineDynamicClass() {
 var Hono = _Hono;
 _path = /* @__PURE__ */ new WeakMap();
 
-// node_modules/.deno/hono@4.0.2/node_modules/hono/dist/router/pattern-router/router.js
+// node_modules/.deno/hono@4.0.3/node_modules/hono/dist/router/pattern-router/router.js
 var PatternRouter = class {
   constructor() {
     this.name = "PatternRouter";
@@ -1483,7 +1520,7 @@ var PatternRouter = class {
   }
 };
 
-// node_modules/.deno/hono@4.0.2/node_modules/hono/dist/preset/tiny.js
+// node_modules/.deno/hono@4.0.3/node_modules/hono/dist/preset/tiny.js
 var Hono2 = class extends Hono {
   constructor(options = {}) {
     super(options);
@@ -2199,7 +2236,7 @@ var nonStreamingChatProxyHandler = async (c, req, genAi) => {
   return c.json(resp);
 };
 
-// node_modules/.deno/hono@4.0.2/node_modules/hono/dist/utils/stream.js
+// node_modules/.deno/hono@4.0.3/node_modules/hono/dist/utils/stream.js
 var StreamingApi = class {
   constructor(writable, _readable) {
     this.abortSubscribers = [];
@@ -2250,7 +2287,7 @@ var StreamingApi = class {
   }
 };
 
-// node_modules/.deno/hono@4.0.2/node_modules/hono/dist/helper/streaming/sse.js
+// node_modules/.deno/hono@4.0.3/node_modules/hono/dist/helper/streaming/sse.js
 var SSEStreamingApi = class extends StreamingApi {
   constructor(writable, readable) {
     super(writable, readable);
