@@ -9,11 +9,11 @@ dependencies:
     specifier: ^0.2.1
     version: 0.2.1
   '@hono/node-server':
-    specifier: ^1.7.0
-    version: 1.7.0
+    specifier: ^1.8.0
+    version: 1.8.0
   hono:
-    specifier: ^4.0.2
-    version: 4.0.2
+    specifier: ^4.0.3
+    version: 4.0.3
 
 devDependencies:
   esbuild:
@@ -237,8 +237,8 @@ packages:
     engines: {node: '>=18.0.0'}
     dev: false
 
-  /@hono/node-server@1.7.0:
-    resolution: {integrity: sha512-W+Gy16xWZMgB8hYU4XInCwE746y8V3VDTH1J3+EhUBqbCzk4zEXo1p6dv3BiCD5O6Z4aHuoCW+mRKoJgUn3ZCA==}
+  /@hono/node-server@1.8.0:
+    resolution: {integrity: sha512-vlebYBWAE9PVbRXps8O918Cj34F1FLCJW+ZlepcIpLKp0SRXgDZ2tpYbSoJeT/QOkKVP6TQcjfTl5rs3z88rVw==}
     engines: {node: '>=18.14.1'}
     dev: false
 
@@ -278,7 +278,7 @@ packages:
     engines: {node: '>=14.18'}
     dev: true
 
-  /hono@4.0.2:
-    resolution: {integrity: sha512-ZW/13BsQmQHlFb3IYGuzgbzY0wBO6WTvOHbpmUfVhVvdMyBNGtuz55quxM7JXoG2orzmv5hEorOAm3ocwzaV0Q==}
+  /hono@4.0.3:
+    resolution: {integrity: sha512-LLZFvqiksAO6Hf080XCUbsEjRxIrqEoiIN1HUzL0xtYP+BZUxGfeWg8yB5Dvp/sI7T0Lt4XdtGTGLwpIzAsl8w==}
     engines: {node: '>=16.0.0'}
     dev: false
