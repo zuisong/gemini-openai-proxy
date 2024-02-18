@@ -1,12 +1,8 @@
-app = "gemini-openai-proxy"
-primary_region = "lax"
+app = 'gemini-openai-proxy'
+primary_region = 'lax'
 
 [build]
-dockerfile = "docker/bun.Dockerfile"
-
-[env]
-
-[processes]
+dockerfile = 'docker/bun.Dockerfile'
 
 [http_service]
 internal_port = 8000
@@ -14,13 +10,14 @@ force_https = true
 auto_stop_machines = true
 auto_start_machines = true
 min_machines_running = 0
-processes = ["app"]
+processes = ['app']
+
 [http_service.concurrency]
-type = "requests"
-soft_limit = 200
+type = 'requests'
 hard_limit = 250
+soft_limit = 200
 
 [[vm]]
-cpu_kind = "shared"
+memory = '256MB'
+cpu_kind = 'shared'
 cpus = 1
-memory = "512MB"
