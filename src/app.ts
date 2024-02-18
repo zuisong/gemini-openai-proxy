@@ -6,6 +6,7 @@ import { timing } from "hono/timing"
 import { Hono } from "hono/tiny"
 import { Logger, gen_logger } from "./log.ts"
 import { chatProxyHandler } from "./v1/chat/completions/ChatProxyHandler.ts"
+import { modelDetail, models } from "./v1/models.ts"
 
 export const app = new Hono({ strict: true })
   .use("*", cors(), timing(), logger())
@@ -34,5 +35,7 @@ curl ${origin}/v1/chat/completions \\
 `)
   })
   .post("/v1/chat/completions", chatProxyHandler)
+  .get("/v1/models", models)
+  .get("/v1/models/:model", modelDetail)
 
 export type ContextWithLogger = Context<{ Variables: { log: Logger } }>
