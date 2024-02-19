@@ -9,8 +9,8 @@ dependencies:
     specifier: ^0.2.1
     version: 0.2.1
   '@hono/node-server':
-    specifier: ^1.8.0
-    version: 1.8.0
+    specifier: ^1.8.1
+    version: 1.8.1
   hono:
     specifier: ^4.0.3
     version: 4.0.3
@@ -237,8 +237,8 @@ packages:
     engines: {node: '>=18.0.0'}
     dev: false
 
-  /@hono/node-server@1.8.0:
-    resolution: {integrity: sha512-vlebYBWAE9PVbRXps8O918Cj34F1FLCJW+ZlepcIpLKp0SRXgDZ2tpYbSoJeT/QOkKVP6TQcjfTl5rs3z88rVw==}
+  /@hono/node-server@1.8.1:
+    resolution: {integrity: sha512-9ondWs/5EuyZOd/iyiRp0GQfMEq+IA+IbV8Wy2bgdr5+cC55I3xbQrqtXKprw7jJhfvq3IVw7ALiuvCEmLdCAA==}
     engines: {node: '>=18.14.1'}
     dev: false
 
