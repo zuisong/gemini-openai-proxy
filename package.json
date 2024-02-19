@@ -23,6 +23,6 @@
   },
   "devDependencies": {
     "eventsource-parser": "^1.1.2",
-    "esbuild": "^0.20.0"
+    "esbuild": "^0.20.1"
   }
 }
