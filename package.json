@@ -18,7 +18,7 @@
   },
   "dependencies": {
     "@google/generative-ai": "^0.2.1",
-    "@hono/node-server": "^1.8.0",
+    "@hono/node-server": "^1.8.1",
     "hono": "^4.0.3"
   },
   "devDependencies": {
