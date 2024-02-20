@@ -6,11 +6,13 @@ permissions:
 
 on:
   push:
+    branches:
+      - main
   workflow_dispatch:
 
 jobs:
   test:
-    name: Test on deno ${{ matrix.node_version }} and ${{ matrix.os }}
+    name: Test on deno and ${{ matrix.os }}
     runs-on: ${{ matrix.os }}
     env:
       ACTIONS_ALLOW_UNSECURE_COMMANDS: true

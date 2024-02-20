@@ -4,6 +4,8 @@ node_modules/
 .vscode/
 
 bun.lockb
+pnpm-lock.yaml
+
 .DS_Store
 .wrangler/
 
