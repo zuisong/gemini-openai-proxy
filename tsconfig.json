@@ -5,6 +5,13 @@
     "esModuleInterop": true,
     "useUnknownInCatchVariables": false,
     "module": "Node16",
-    "moduleResolution": "Node16"
+    "moduleResolution": "Node16",
+    "lib": [
+      "ESNext.Array",
+      "DOM",
+      "ESNext",
+      "ESNext.Disposable",
+      "ESNext.AsyncIterable"
+    ]
   },
 }

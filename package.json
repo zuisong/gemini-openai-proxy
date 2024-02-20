@@ -22,7 +22,8 @@
     "hono": "^4.0.4"
   },
   "devDependencies": {
-    "eventsource-parser": "^1.1.2",
-    "esbuild": "^0.20.1"
+    "@types/node": "^20.11.19",
+    "esbuild": "^0.20.1",
+    "eventsource-parser": "^1.1.2"
   }
 }

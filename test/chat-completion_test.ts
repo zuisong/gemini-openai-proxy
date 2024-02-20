@@ -1,6 +1,6 @@
 import assert from "node:assert/strict"
 import { test } from "node:test"
-import { EventSourceParserStream } from "eventsource-parser/stream"
+import { ParseEvent, createParser } from "eventsource-parser"
 import { app } from "../src/app.ts"
 import type { OpenAI } from "../src/types.ts"
 import { getApiKeyFromEnv } from "./common.ts"
@@ -45,12 +45,18 @@ test("stream-test", async () => {
     } satisfies OpenAI.Chat.ChatCompletionCreateParams),
   })
 
-  const eventStream = res.body
-    ?.pipeThrough(new TextDecoderStream())
-    .pipeThrough(new EventSourceParserStream())
-
-  // biome-ignore lint/style/noNonNullAssertion: <explanation>
-  for await (const v of eventStream!) {
-    console.log(JSON.stringify(v))
-  }
+  createParser((event: ParseEvent) => {
+    if (event.type === "event") {
+      console.log("id: %s", event.id || "<none>")
+      console.log("data: %s", event.data)
+      console.log("-")
+    } else if (event.type === "reconnect-interval") {
+      console.log(
+        "We should set reconnect interval to %d milliseconds",
+        event.value,
+      )
+    }
+  })
+    //
+    .feed(await res.text())
 })

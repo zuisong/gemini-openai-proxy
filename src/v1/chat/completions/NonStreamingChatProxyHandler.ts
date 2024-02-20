@@ -17,7 +17,7 @@ export const nonStreamingChatProxyHandler: ChatProxyHandlerType = async (
     .catch((err) => {
       // 出现异常时打印请求参数和响应，以便调试
       log.error(req)
-      log.error(err)
+      log.error(err?.message ?? err.toString())
       return err?.message ?? err.toString()
     })
 
