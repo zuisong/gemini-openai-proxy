@@ -80,9 +80,7 @@ function hasImageMessage(
 
 export function genModel(
   genAi: GoogleGenerativeAI,
-  req:
-    | OpenAI.ChatCompletionCreateParamsNonStreaming
-    | OpenAI.ChatCompletionCreateParamsStreaming,
+  req: OpenAI.Chat.ChatCompletionCreateParams,
 ): GenerativeModel {
   const model = genAi.getGenerativeModel({
     model: hasImageMessage(req.messages)
