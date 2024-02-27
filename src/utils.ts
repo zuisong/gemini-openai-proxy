@@ -1,10 +1,10 @@
 import type {
   Content,
-  GenerativeModel,
-  GoogleGenerativeAI,
+  GenerateContentCandidate,
+  GenerateContentRequest,
   Part,
-} from "@google/generative-ai"
-import { HarmBlockThreshold, HarmCategory } from "@google/generative-ai"
+} from "./gemini-api-client/types.ts"
+import { HarmBlockThreshold, HarmCategory } from "./gemini-api-client/types.ts"
 import type { OpenAI } from "./types.ts"
 
 export function getToken(headers: Record<string, string>): string | null {
@@ -79,13 +79,14 @@ function hasImageMessage(
 }
 
 export function genModel(
-  genAi: GoogleGenerativeAI,
   req: OpenAI.Chat.ChatCompletionCreateParams,
-): GenerativeModel {
-  const model = genAi.getGenerativeModel({
-    model: hasImageMessage(req.messages)
-      ? GeminiModel.GEMINI_PRO_VISION
-      : GeminiModel.GEMINI_PRO,
+): [GeminiModel, GenerateContentRequest] {
+  const model = hasImageMessage(req.messages)
+    ? GeminiModel.GEMINI_PRO_VISION
+    : GeminiModel.GEMINI_PRO
+
+  const generateContentRequest: GenerateContentRequest = {
+    contents: openAiMessageToGeminiMessage(req.messages),
     generationConfig: {
       maxOutputTokens: req.max_tokens ?? undefined,
       temperature: req.temperature ?? undefined,
@@ -100,8 +101,8 @@ export function genModel(
       category,
       threshold: HarmBlockThreshold.BLOCK_NONE,
     })),
-  })
-  return model
+  }
+  return [model, generateContentRequest]
 }
 export enum GeminiModel {
   GEMINI_PRO = "gemini-pro",

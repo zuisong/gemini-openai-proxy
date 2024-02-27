@@ -1,4 +1,3 @@
-import { GoogleGenerativeAI } from "@google/generative-ai"
 import type { Handler } from "hono"
 
 import { ContextWithLogger } from "../../../app.ts"
@@ -17,18 +16,17 @@ export const chatProxyHandler: Handler = async (c: ContextWithLogger) => {
   if (apiKey == null) {
     return c.text("Unauthorized", 401)
   }
-  const genAi = new GoogleGenerativeAI(apiKey)
 
   if (req.stream === true) {
-    return streamingChatProxyHandler(c, req, genAi)
+    return streamingChatProxyHandler(c, req, apiKey)
   }
-  return nonStreamingChatProxyHandler(c, req, genAi)
+  return nonStreamingChatProxyHandler(c, req, apiKey)
 }
 
 export interface ChatProxyHandlerType {
   (
     c: ContextWithLogger,
     req: OpenAI.Chat.ChatCompletionCreateParams,
-    genAi: GoogleGenerativeAI,
+    apiKey: string,
   ): ReturnType<Handler>
 }
