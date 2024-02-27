@@ -7,10 +7,26 @@ import type {
 import { HarmBlockThreshold, HarmCategory } from "./gemini-api-client/types.ts"
 import type { OpenAI } from "./types.ts"
 
-export function getToken(headers: Record<string, string>): string | null {
+export interface CustomApiParam {
+  key: string
+  usebeta: boolean
+}
+
+export function getToken(
+  headers: Record<string, string>,
+): CustomApiParam | null {
   for (const [k, v] of Object.entries(headers)) {
     if (k.toLowerCase() === "authorization") {
-      return v.substring(v.indexOf(" ") + 1)
+      const apikey = v.substring(v.indexOf(" ") + 1)
+
+      if (apikey.includes("#")) {
+        // todo read config from apikey
+      } else {
+        return {
+          key: apikey,
+          usebeta: false,
+        }
+      }
     }
   }
   return null

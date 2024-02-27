@@ -7,11 +7,11 @@ import { ChatProxyHandlerType } from "./ChatProxyHandler.ts"
 export const nonStreamingChatProxyHandler: ChatProxyHandlerType = async (
   c,
   req,
-  genAi,
+  apiKey,
 ) => {
   const log = c.var.log
   const [model, geminiReq] = genModel(req)
-  const geminiResp: string = await generateContent(genAi, model, geminiReq)
+  const geminiResp: string = await generateContent(apiKey, model, geminiReq)
     .then((it) => it.response.text())
     .catch((err) => {
       // 出现异常时打印请求参数和响应，以便调试

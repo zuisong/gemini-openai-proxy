@@ -1,3 +1,4 @@
+import { CustomApiParam } from "../utils.ts"
 import { GeminiModel } from "../utils.ts"
 import { GoogleGenerativeAIError } from "./errors.ts"
 import { addHelpers } from "./response-helper.ts"
@@ -9,7 +10,7 @@ import {
 } from "./types.ts"
 
 export async function generateContent(
-  apiKey: string,
+  apiKey: CustomApiParam,
   model: GeminiModel,
   params: GenerateContentRequest,
   requestOptions?: RequestOptions,
@@ -17,8 +18,9 @@ export async function generateContent(
   const url = new RequestUrl(
     model,
     Task.GENERATE_CONTENT,
-    apiKey,
+    apiKey.key,
     /* stream */ false,
+    apiKey.usebeta,
   )
   const response = await makeRequest(
     url,
@@ -76,6 +78,7 @@ export class RequestUrl {
     public task: Task,
     public apiKey: string,
     public stream: boolean,
+    public usebeta: boolean,
   ) {}
   toString(): string {
     const urlSearchParams = new URLSearchParams({
@@ -85,7 +88,9 @@ export class RequestUrl {
       urlSearchParams.append("alt", "sse")
     }
 
-    const url = `${BASE_URL}/${API_VERSION}/models/${this.model}:${
+    const api_version = this.usebeta ? API_VERSION.v1beta : API_VERSION.v1
+
+    const url = `${BASE_URL}/${api_version}/models/${this.model}:${
       this.task
     }?${urlSearchParams.toString()}`
 
@@ -103,7 +108,10 @@ export enum Task {
 
 const BASE_URL = "https://generativelanguage.googleapis.com"
 
-const API_VERSION = "v1"
+enum API_VERSION {
+  v1beta = "v1beta",
+  v1 = "v1",
+}
 
 /**
  * Generates the request options to be passed to the fetch API.
@@ -112,7 +120,7 @@ const API_VERSION = "v1"
  */
 function buildFetchOptions(requestOptions?: RequestOptions): RequestInit {
   const fetchOptions = {} as RequestInit
-  if (requestOptions?.timeout >= 0) {
+  if (requestOptions?.timeout) {
     const abortController = new AbortController()
     const signal = abortController.signal
     setTimeout(() => abortController.abort(), requestOptions.timeout)
