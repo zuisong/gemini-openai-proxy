@@ -5,8 +5,8 @@ import { logger } from "hono/logger"
 import { timing } from "hono/timing"
 import { Hono } from "hono/tiny"
 import { Logger, gen_logger } from "./log.ts"
-import { chatProxyHandler } from "./v1/chat/completions/ChatProxyHandler.ts"
-import { modelDetail, models } from "./v1/models.ts"
+import { chatProxyHandler } from "./openai/chat/completions/ChatProxyHandler.ts"
+import { modelDetail, models } from "./openai/models.ts"
 
 export const app = new Hono({ strict: true })
   .use("*", cors(), timing(), logger())
