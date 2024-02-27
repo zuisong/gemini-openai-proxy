@@ -35,7 +35,13 @@ jobs:
           registry: ghcr.io
           username: ${{ github.repository_owner }}
           password: ${{ secrets.GITHUB_TOKEN }}
-
+      - uses: actions/github-script@v7
+        id: set-tag-name
+        with:
+          script: return '${{ github.ref_name }}'.toLowerCase().replaceAll(/[/.]/g, '-').trim('-')
+          result-encoding: string
+      - name: Get result
+        run: echo "${{steps.set-tag-name.outputs.result}}"
       - name: Build and push
         uses: docker/build-push-action@v5
         with:
@@ -45,7 +51,7 @@ jobs:
           push: ${{ startsWith(github.ref, 'refs/tags/v') }}
           provenance: false
           tags: |
-            ${{ env.IMAGE_NAME }}:${{ env.IMAGE_TAG }}_${{ matrix.runtime }}
+            ${{ env.IMAGE_NAME }}:${{ steps.set-tag-name.outputs.result }}_${{ matrix.runtime }}
             ${{ env.IMAGE_NAME }}:${{ matrix.runtime }}
   biome-ci-check:
     name: biome check
