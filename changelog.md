@@ -1,6 +1,10 @@
 # changelog
 
-## 0.10.0 (Unreleased)
+## 0.11.0 (Unreleased)
+
+-
+
+## 0.10.0 (2024-02-28)
 
 - gemini-openai-proxy can now act as a reverse proxy for google gemini, which can be useful for people in region that don't have access to the google gemini
   > it will request `https://generativelanguage.googleapis.com`
