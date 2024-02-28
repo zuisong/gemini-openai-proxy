@@ -1,4 +1,4 @@
-import { CustomApiParam } from "../utils.ts"
+import { ApiParam } from "../utils.ts"
 import { GeminiModel } from "../utils.ts"
 import { GoogleGenerativeAIError } from "./errors.ts"
 import { addHelpers } from "./response-helper.ts"
@@ -10,7 +10,7 @@ import {
 } from "./types.ts"
 
 export async function generateContent(
-  apiKey: CustomApiParam,
+  apiParam: ApiParam,
   model: GeminiModel,
   params: GenerateContentRequest,
   requestOptions?: RequestOptions,
@@ -18,9 +18,8 @@ export async function generateContent(
   const url = new RequestUrl(
     model,
     Task.GENERATE_CONTENT,
-    apiKey.key,
     /* stream */ false,
-    apiKey.usebeta,
+    apiParam,
   )
   const response = await makeRequest(
     url,
@@ -76,19 +75,20 @@ export class RequestUrl {
   constructor(
     public model: string,
     public task: Task,
-    public apiKey: string,
     public stream: boolean,
-    public usebeta: boolean,
+    public apiParam: ApiParam,
   ) {}
   toString(): string {
     const urlSearchParams = new URLSearchParams({
-      key: this.apiKey,
+      key: this.apiParam.apikey,
     })
     if (this.stream) {
       urlSearchParams.append("alt", "sse")
     }
 
-    const api_version = this.usebeta ? API_VERSION.v1beta : API_VERSION.v1
+    const api_version = this.apiParam.useBeta
+      ? API_VERSION.v1beta
+      : API_VERSION.v1
 
     const url = `${BASE_URL}/${api_version}/models/${this.model}:${
       this.task

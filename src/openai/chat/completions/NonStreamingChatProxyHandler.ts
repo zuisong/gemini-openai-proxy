@@ -1,17 +1,16 @@
 import { generateContent } from "../../../gemini-api-client/gemini-api-client.ts"
-import { RequestOptions } from "../../../gemini-api-client/types.ts"
 import type { OpenAI } from "../../../types.ts"
-import { genModel, openAiMessageToGeminiMessage } from "../../../utils.ts"
+import { genModel } from "../../../utils.ts"
 import { ChatProxyHandlerType } from "./ChatProxyHandler.ts"
 
 export const nonStreamingChatProxyHandler: ChatProxyHandlerType = async (
   c,
   req,
-  apiKey,
+  apiParam,
 ) => {
   const log = c.var.log
   const [model, geminiReq] = genModel(req)
-  const geminiResp: string = await generateContent(apiKey, model, geminiReq)
+  const geminiResp: string = await generateContent(apiParam, model, geminiReq)
     .then((it) => it.response.text())
     .catch((err) => {
       // 出现异常时打印请求参数和响应，以便调试

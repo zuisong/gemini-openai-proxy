@@ -3,7 +3,7 @@ import type { Handler } from "hono"
 import { ContextWithLogger } from "../../../app.ts"
 import type { OpenAI } from "../../../types.ts"
 import { getToken } from "../../../utils.ts"
-import { CustomApiParam } from "../../../utils.ts"
+import { ApiParam } from "../../../utils.ts"
 import { nonStreamingChatProxyHandler } from "./NonStreamingChatProxyHandler.ts"
 import { streamingChatProxyHandler } from "./StreamingChatProxyHandler.ts"
 
@@ -28,6 +28,6 @@ export interface ChatProxyHandlerType {
   (
     c: ContextWithLogger,
     req: OpenAI.Chat.ChatCompletionCreateParams,
-    apiParam: CustomApiParam,
+    apiParam: ApiParam,
   ): ReturnType<Handler>
 }

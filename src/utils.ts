@@ -1,31 +1,36 @@
 import type {
   Content,
-  GenerateContentCandidate,
   GenerateContentRequest,
   Part,
 } from "./gemini-api-client/types.ts"
 import { HarmBlockThreshold, HarmCategory } from "./gemini-api-client/types.ts"
 import type { OpenAI } from "./types.ts"
 
-export interface CustomApiParam {
-  key: string
-  usebeta: boolean
+export interface ApiParam {
+  apikey: string
+  useBeta: boolean
 }
 
-export function getToken(
-  headers: Record<string, string>,
-): CustomApiParam | null {
+export function getToken(headers: Record<string, string>): ApiParam | null {
   for (const [k, v] of Object.entries(headers)) {
     if (k.toLowerCase() === "authorization") {
-      const apikey = v.substring(v.indexOf(" ") + 1)
+      const rawApikey = v.substring(v.indexOf(" ") + 1)
 
-      if (apikey.includes("#")) {
-        // todo read config from apikey
-      } else {
+      if (!rawApikey.includes("#")) {
         return {
-          key: apikey,
-          usebeta: false,
+          apikey: rawApikey,
+          useBeta: false,
         }
+      }
+
+      // todo read config from apikey
+      const apikey = rawApikey.substring(0, rawApikey.indexOf("#"))
+      const params = new URLSearchParams(
+        rawApikey.substring(rawApikey.indexOf("#") + 1),
+      )
+      return {
+        apikey,
+        useBeta: params.has("useBeta"),
       }
     }
   }
