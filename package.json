@@ -1,7 +1,7 @@
 {
   "name": "gemini-openai-proxy",
   "private": true,
-  "version": "0.1.0",
+  "version": "0.10.0",
   "author": "zuisong",
   "homepage": "https://github.com/zuisong/gemini-openai-proxy",
   "type": "module",
