@@ -1,4 +1,4 @@
-// node_modules/.deno/hono@4.0.5/node_modules/hono/dist/helper/adapter/index.js
+// node_modules/.deno/hono@4.0.8/node_modules/hono/dist/helper/adapter/index.js
 var getRuntimeKey = () => {
   const global = globalThis;
   if (global?.Deno !== void 0) {
@@ -22,7 +22,7 @@ var getRuntimeKey = () => {
   return "other";
 };
 
-// node_modules/.deno/hono@4.0.5/node_modules/hono/dist/middleware/cors/index.js
+// node_modules/.deno/hono@4.0.8/node_modules/hono/dist/middleware/cors/index.js
 var cors = (options) => {
   const defaults = {
     origin: "*",
@@ -90,7 +90,7 @@ var cors = (options) => {
   };
 };
 
-// node_modules/.deno/hono@4.0.5/node_modules/hono/dist/utils/url.js
+// node_modules/.deno/hono@4.0.8/node_modules/hono/dist/utils/url.js
 var getPath = (request) => {
   const match = request.url.match(/^https?:\/\/[^/]+(\/[^?]*)/);
   return match ? match[1] : "";
@@ -204,7 +204,7 @@ var getQueryParams = (url, key) => {
 };
 var decodeURIComponent_ = decodeURIComponent;
 
-// node_modules/.deno/hono@4.0.5/node_modules/hono/dist/middleware/logger/index.js
+// node_modules/.deno/hono@4.0.8/node_modules/hono/dist/middleware/logger/index.js
 var humanize = (times) => {
   const [delimiter, separator] = [",", "."];
   const orderTimes = times.map((v) => v.replace(/(\d)(?=(\d\d\d)+(?!\d))/g, "$1" + delimiter));
@@ -242,7 +242,7 @@ var logger = (fn = console.log) => {
   };
 };
 
-// node_modules/.deno/hono@4.0.5/node_modules/hono/dist/utils/html.js
+// node_modules/.deno/hono@4.0.8/node_modules/hono/dist/utils/html.js
 var HtmlEscapedCallbackPhase = {
   Stringify: 1,
   BeforeStream: 2,
@@ -276,7 +276,7 @@ var resolveCallback = async (str, phase, preserveCallbacks, context, buffer) => 
   }
 };
 
-// node_modules/.deno/hono@4.0.5/node_modules/hono/dist/context.js
+// node_modules/.deno/hono@4.0.8/node_modules/hono/dist/context.js
 var __accessCheck = (obj, member, msg) => {
   if (!member.has(obj))
     throw TypeError("Cannot " + msg);
@@ -511,7 +511,7 @@ _preparedHeaders = /* @__PURE__ */ new WeakMap();
 _res = /* @__PURE__ */ new WeakMap();
 _isFresh = /* @__PURE__ */ new WeakMap();
 
-// node_modules/.deno/hono@4.0.5/node_modules/hono/dist/middleware/timing/index.js
+// node_modules/.deno/hono@4.0.8/node_modules/hono/dist/middleware/timing/index.js
 var getTime = () => {
   try {
     return performance.now();
@@ -596,7 +596,7 @@ var endTime = (c, name, precision) => {
   metrics.timers.delete(name);
 };
 
-// node_modules/.deno/hono@4.0.5/node_modules/hono/dist/compose.js
+// node_modules/.deno/hono@4.0.8/node_modules/hono/dist/compose.js
 var compose = (middleware, onError, onNotFound) => {
   return (context, next) => {
     let index = -1;
@@ -644,7 +644,7 @@ var compose = (middleware, onError, onNotFound) => {
   };
 };
 
-// node_modules/.deno/hono@4.0.5/node_modules/hono/dist/http-exception.js
+// node_modules/.deno/hono@4.0.8/node_modules/hono/dist/http-exception.js
 var HTTPException = class extends Error {
   constructor(status = 500, options) {
     super(options?.message);
@@ -661,7 +661,7 @@ var HTTPException = class extends Error {
   }
 };
 
-// node_modules/.deno/hono@4.0.5/node_modules/hono/dist/utils/body.js
+// node_modules/.deno/hono@4.0.8/node_modules/hono/dist/utils/body.js
 var parseBody = async (request, options = { all: false }) => {
   const headers = request instanceof HonoRequest ? request.raw.headers : request.headers;
   const contentType = headers.get("Content-Type");
@@ -714,7 +714,7 @@ var convertToNewArray = (form, key, value) => {
   form[key] = [form[key], value];
 };
 
-// node_modules/.deno/hono@4.0.5/node_modules/hono/dist/request.js
+// node_modules/.deno/hono@4.0.8/node_modules/hono/dist/request.js
 var __accessCheck2 = (obj, member, msg) => {
   if (!member.has(obj))
     throw TypeError("Cannot " + msg);
@@ -842,14 +842,14 @@ var HonoRequest = class {
 _validatedData = /* @__PURE__ */ new WeakMap();
 _matchResult = /* @__PURE__ */ new WeakMap();
 
-// node_modules/.deno/hono@4.0.5/node_modules/hono/dist/router.js
+// node_modules/.deno/hono@4.0.8/node_modules/hono/dist/router.js
 var METHOD_NAME_ALL = "ALL";
 var METHOD_NAME_ALL_LOWERCASE = "all";
 var METHODS = ["get", "post", "put", "delete", "options", "patch"];
 var UnsupportedPathError = class extends Error {
 };
 
-// node_modules/.deno/hono@4.0.5/node_modules/hono/dist/hono-base.js
+// node_modules/.deno/hono@4.0.8/node_modules/hono/dist/hono-base.js
 var __accessCheck3 = (obj, member, msg) => {
   if (!member.has(obj))
     throw TypeError("Cannot " + msg);
@@ -1083,7 +1083,7 @@ var _Hono = class extends defineDynamicClass() {
 var Hono = _Hono;
 _path = /* @__PURE__ */ new WeakMap();
 
-// node_modules/.deno/hono@4.0.5/node_modules/hono/dist/router/pattern-router/router.js
+// node_modules/.deno/hono@4.0.8/node_modules/hono/dist/router/pattern-router/router.js
 var PatternRouter = class {
   constructor() {
     this.name = "PatternRouter";
@@ -1129,7 +1129,7 @@ var PatternRouter = class {
   }
 };
 
-// node_modules/.deno/hono@4.0.5/node_modules/hono/dist/preset/tiny.js
+// node_modules/.deno/hono@4.0.8/node_modules/hono/dist/preset/tiny.js
 var Hono2 = class extends Hono {
   constructor(options = {}) {
     super(options);
@@ -1816,7 +1816,7 @@ function genModel(genAi, req) {
   return model;
 }
 
-// src/v1/chat/completions/NonStreamingChatProxyHandler.ts
+// src/openai/chat/completions/NonStreamingChatProxyHandler.ts
 var nonStreamingChatProxyHandler = async (c, req, genAi) => {
   const log2 = c.var.log;
   const model = genModel(genAi, req);
@@ -1845,7 +1845,7 @@ var nonStreamingChatProxyHandler = async (c, req, genAi) => {
   return c.json(resp);
 };
 
-// node_modules/.deno/hono@4.0.5/node_modules/hono/dist/utils/stream.js
+// node_modules/.deno/hono@4.0.8/node_modules/hono/dist/utils/stream.js
 var StreamingApi = class {
   constructor(writable, _readable) {
     this.abortSubscribers = [];
@@ -1853,6 +1853,9 @@ var StreamingApi = class {
     this.writer = writable.getWriter();
     this.encoder = new TextEncoder();
     const reader = _readable.getReader();
+    this.abortSubscribers.push(async () => {
+      await reader.cancel();
+    });
     this.responseReadable = new ReadableStream({
       async pull(controller) {
         const { done, value } = await reader.read();
@@ -1896,7 +1899,7 @@ var StreamingApi = class {
   }
 };
 
-// node_modules/.deno/hono@4.0.5/node_modules/hono/dist/helper/streaming/sse.js
+// node_modules/.deno/hono@4.0.8/node_modules/hono/dist/helper/streaming/sse.js
 var SSEStreamingApi = class extends StreamingApi {
   constructor(writable, readable) {
     super(writable, readable);
@@ -1920,15 +1923,27 @@ var setSSEHeaders = (context) => {
   context.header("Cache-Control", "no-cache");
   context.header("Connection", "keep-alive");
 };
-var streamSSE = (c, cb) => {
+var streamSSE = (c, cb, onError) => {
   const { readable, writable } = new TransformStream();
   const stream2 = new SSEStreamingApi(writable, readable);
-  cb(stream2).finally(() => stream2.close());
+  (async () => {
+    try {
+      await cb(stream2);
+    } catch (e) {
+      if (e instanceof Error && onError) {
+        await onError(e, stream2);
+      } else {
+        console.error(e);
+      }
+    } finally {
+      stream2.close();
+    }
+  })();
   setSSEHeaders(c);
   return c.newResponse(stream2.responseReadable);
 };
 
-// src/v1/chat/completions/StreamingChatProxyHandler.ts
+// src/openai/chat/completions/StreamingChatProxyHandler.ts
 var streamingChatProxyHandler = async (c, req, genAi) => {
   const log2 = c.var.log;
   const model = genModel(genAi, req);
@@ -1971,7 +1986,7 @@ var streamingChatProxyHandler = async (c, req, genAi) => {
   });
 };
 
-// src/v1/chat/completions/ChatProxyHandler.ts
+// src/openai/chat/completions/ChatProxyHandler.ts
 var chatProxyHandler = async (c) => {
   const log2 = c.var.log;
   const req = await c.req.json();
@@ -1988,7 +2003,7 @@ var chatProxyHandler = async (c) => {
   return nonStreamingChatProxyHandler(c, req, genAi);
 };
 
-// src/v1/models.ts
+// src/openai/models.ts
 var modelData = [
   {
     created: 1677610602,
@@ -2051,6 +2066,16 @@ var modelDetail = async (c) => {
 };
 
 // src/app.ts
+var geminiProxy = async (c) => {
+  const rawReq = c.req.raw;
+  const url = new URL(rawReq.url);
+  url.host = "generativelanguage.googleapis.com";
+  url.port = "";
+  url.protocol = "https:";
+  const req = new Request(url, rawReq.clone());
+  const resp = await fetch(req);
+  return c.newResponse(resp.body, resp);
+};
 var app = new Hono2({ strict: true }).use("*", cors(), timing(), logger()).use("*", async (c, next) => {
   const logger2 = gen_logger(crypto.randomUUID());
   c.set("log", logger2);
@@ -2072,7 +2097,7 @@ curl ${origin}/v1/chat/completions \\
         "temperature": 0.7
         }'
 `);
-}).post("/v1/chat/completions", chatProxyHandler).get("/v1/models", models).get("/v1/models/:model", modelDetail);
+}).post("/v1/chat/completions", chatProxyHandler).get("/v1/models", models).get("/v1/models/:model", modelDetail).post(":model_version/models/:model_and_action", geminiProxy);
 
 // main_cloudflare-workers.ts
 app.fire();
