@@ -1,16 +1,37 @@
 import type {
   Content,
-  GenerativeModel,
-  GoogleGenerativeAI,
+  GenerateContentRequest,
   Part,
-} from "@google/generative-ai"
-import { HarmBlockThreshold, HarmCategory } from "@google/generative-ai"
+} from "./gemini-api-client/types.ts"
+import { HarmBlockThreshold, HarmCategory } from "./gemini-api-client/types.ts"
 import type { OpenAI } from "./types.ts"
 
-export function getToken(headers: Record<string, string>): string | null {
+export interface ApiParam {
+  apikey: string
+  useBeta: boolean
+}
+
+export function getToken(headers: Record<string, string>): ApiParam | null {
   for (const [k, v] of Object.entries(headers)) {
     if (k.toLowerCase() === "authorization") {
-      return v.substring(v.indexOf(" ") + 1)
+      const rawApikey = v.substring(v.indexOf(" ") + 1)
+
+      if (!rawApikey.includes("#")) {
+        return {
+          apikey: rawApikey,
+          useBeta: false,
+        }
+      }
+
+      // todo read config from apikey
+      const apikey = rawApikey.substring(0, rawApikey.indexOf("#"))
+      const params = new URLSearchParams(
+        rawApikey.substring(rawApikey.indexOf("#") + 1),
+      )
+      return {
+        apikey,
+        useBeta: params.has("useBeta"),
+      }
     }
   }
   return null
@@ -79,13 +100,14 @@ function hasImageMessage(
 }
 
 export function genModel(
-  genAi: GoogleGenerativeAI,
   req: OpenAI.Chat.ChatCompletionCreateParams,
-): GenerativeModel {
-  const model = genAi.getGenerativeModel({
-    model: hasImageMessage(req.messages)
-      ? GeminiModel.GEMINI_PRO_VISION
-      : GeminiModel.GEMINI_PRO,
+): [GeminiModel, GenerateContentRequest] {
+  const model = hasImageMessage(req.messages)
+    ? GeminiModel.GEMINI_PRO_VISION
+    : GeminiModel.GEMINI_PRO
+
+  const generateContentRequest: GenerateContentRequest = {
+    contents: openAiMessageToGeminiMessage(req.messages),
     generationConfig: {
       maxOutputTokens: req.max_tokens ?? undefined,
       temperature: req.temperature ?? undefined,
@@ -100,8 +122,8 @@ export function genModel(
       category,
       threshold: HarmBlockThreshold.BLOCK_NONE,
     })),
-  })
-  return model
+  }
+  return [model, generateContentRequest]
 }
 export enum GeminiModel {
   GEMINI_PRO = "gemini-pro",

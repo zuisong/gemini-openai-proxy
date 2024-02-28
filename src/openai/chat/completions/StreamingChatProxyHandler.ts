@@ -1,6 +1,7 @@
 import { streamSSE } from "hono/streaming"
+import { generateContent } from "../../../gemini-api-client/gemini-api-client.ts"
 import type { OpenAI } from "../../../types.ts"
-import { genModel, openAiMessageToGeminiMessage } from "../../../utils.ts"
+import { genModel } from "../../../utils.ts"
 import { ChatProxyHandlerType } from "./ChatProxyHandler.ts"
 
 export const streamingChatProxyHandler: ChatProxyHandlerType = async (
@@ -9,7 +10,6 @@ export const streamingChatProxyHandler: ChatProxyHandlerType = async (
   genAi,
 ) => {
   const log = c.var.log
-  const model = genModel(genAi, req)
 
   const genOpenAiResp = (content: string, stop: boolean) =>
     ({
@@ -27,30 +27,16 @@ export const streamingChatProxyHandler: ChatProxyHandlerType = async (
     }) satisfies OpenAI.Chat.ChatCompletionChunk
 
   return streamSSE(c, async (sseStream) => {
-    await model
-      .generateContentStream({
-        contents: openAiMessageToGeminiMessage(req.messages),
-      })
-      .then(async ({ stream, response }) => {
-        for await (const { text } of stream) {
-          await sseStream.writeSSE({
-            data: JSON.stringify(genOpenAiResp(text(), false)),
-          })
-        }
-        await sseStream.writeSSE({
-          data: JSON.stringify(genOpenAiResp("", true)),
-        })
-        const geminiResult = (await response).text()
-        log.info(geminiResult)
-      })
-      .catch(async (e) => {
-        await sseStream.writeSSE({
-          data: JSON.stringify(genOpenAiResp(e.toString(), true)),
-        })
-        // 出现异常时打印请求参数和响应，以便调试
-        log.error(req)
-        log.error(e)
-      })
+    const [model, geminiReq] = genModel(req)
+    const geminiResp: string = await generateContent(genAi, model, geminiReq)
+      .then((it) => it.response.text())
+      .catch((e) => e.message ?? e?.toString())
+
+    await sseStream.writeSSE({
+      data: JSON.stringify(genOpenAiResp(geminiResp, true)),
+    })
+    const geminiResult = geminiResp
+    log.info(geminiResult)
 
     await sseStream.writeSSE({ data: "[DONE]" })
     await sseStream.close()
