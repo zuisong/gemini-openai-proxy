@@ -1,4 +1,4 @@
-import type { Context } from "hono"
+import type { Context, Handler } from "hono"
 import { getRuntimeKey } from "hono/adapter"
 import { cors } from "hono/cors"
 import { logger } from "hono/logger"
@@ -7,6 +7,21 @@ import { Hono } from "hono/tiny"
 import { Logger, gen_logger } from "./log.ts"
 import { chatProxyHandler } from "./openai/chat/completions/ChatProxyHandler.ts"
 import { modelDetail, models } from "./openai/models.ts"
+
+const geminiProxy: Handler = async (c) => {
+  const rawReq = c.req.raw
+  const url = new URL(rawReq.url)
+
+  url.host = "generativelanguage.googleapis.com"
+  url.port = ""
+  url.protocol = "https:"
+
+  const req = new Request(url, rawReq.clone())
+
+  const resp = await fetch(req)
+
+  return c.newResponse(resp.body, resp)
+}
 
 export const app = new Hono({ strict: true })
   .use("*", cors(), timing(), logger())
@@ -37,5 +52,6 @@ curl ${origin}/v1/chat/completions \\
   .post("/v1/chat/completions", chatProxyHandler)
   .get("/v1/models", models)
   .get("/v1/models/:model", modelDetail)
+  .post(":model_version/models/:model_and_action", geminiProxy)
 
 export type ContextWithLogger = Context<{ Variables: { log: Logger } }>
