@@ -1,15 +1,37 @@
 # changelog
 
-## 0.9.0(2024-02-02)
+## 0.10.0 (Unreleased)
 
-### main changes
+- gemini-openai-proxy can now act as a reverse proxy for google gemini, which can be useful for people in region that don't have access to the google gemini
+  > it will request `https://generativelanguage.googleapis.com`
+
+  ```shell
+  curl \
+    "http://localhost:8000/v1/models/gemini-pro:generateContent?key=$YOUR_GEMINI_API_KEY" \
+  --header 'Content-Type: application/json' \
+  --data '{"contents":[{"parts":[{"text":"Hello"}]}]}'
+  ```
+
+- Service settings can now be passed via apikey, currently the first supported setting is `useBeta` , which can be set like so
+   > it will use `v1beta` version gemini api, <https://ai.google.dev/docs/api_versions>
+
+  ```shell
+  curl http://localhost:8000/v1/chat/completions \
+    -H "Authorization: Bearer $YOUR_GEMINI_API_KEY#useBeta" \
+    -H "Content-Type: application/json" \
+    -d '{
+    "model": "gpt-3.5-turbo",
+    "messages": [{"role": "user", "content": "Hello"}],
+    "temperature": 0.7,"stream":true
+    }'
+  ```
+
+## 0.9.0(2024-02-02)
 
 - change default safe setting config #8
 - fix can't pull docker image with no manifest #13
 
 ## 0.6.0(2024-01-20)
-
-### main changes
 
 - fix bun runtime sream model problem, add ployfill for `TextDecoderStream`
   > bun does not support `TextDecoderStream` now <https://github.com/oven-sh/bun/issues/5648>
@@ -18,33 +40,23 @@
 
 ## 0.5.0(2024-01-19)
 
-### main changes
-
 - Add cloudflare workers support
 - Reduce docker image size
 - Imporve document
 
 ## 0.4.0(2024-01-17)
 
-### main changes
-
 - Refined the handling of consecutive user messages
 
 ## 0.3.0(2024-01-16)
-
-### main changes
 
 - Add system message support
 
 ## 0.2.0(2024-01-10)
 
-### main changes
-
 - Add stream api support
 
 ## 0.1.0(2024-01-08)
-
-### main changes
 
 - support gemini-pro api
 - support gemini-pro-vision api
