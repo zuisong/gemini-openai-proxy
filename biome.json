@@ -18,7 +18,8 @@
   },
   "formatter": {
     "indentWidth": 2,
-    "indentStyle": "space"
+    "indentStyle": "space",
+    "lineWidth": 120
   },
   "javascript": {
     "formatter": {
@@ -32,12 +33,7 @@
     }
   },
   "files": {
-    "ignore": [
-      "./cloudflare-workers/**",
-      "./node_modules/**",
-      "./dist/**",
-      "src/openai-types.ts"
-    ],
+    "ignore": ["./cloudflare-workers/**", "./node_modules/**", "./dist/**", "coverage/", "src/openai-types.ts"],
     "ignoreUnknown": true
   }
 }

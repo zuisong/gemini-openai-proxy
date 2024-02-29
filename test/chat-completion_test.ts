@@ -1,11 +1,10 @@
-import assert from "node:assert/strict"
-import { test } from "node:test"
 import { ParseEvent, createParser } from "eventsource-parser"
 import { app } from "../src/app.ts"
 import type { OpenAI } from "../src/types.ts"
 import { getApiKeyFromEnv } from "./common.ts"
+import { expect } from "jsr:@std/expect"
 
-test("test", async () => {
+Deno.test("test", async () => {
   const res = await app.request("/v1/chat/completions", {
     headers: {
       authorization: `Bearer ${getApiKeyFromEnv()}`,
@@ -23,10 +22,10 @@ test("test", async () => {
     } satisfies OpenAI.Chat.ChatCompletionCreateParams),
   })
 
-  assert.ok((await res.json()).choices)
+  expect((await res.json()).choices).toBeTruthy()
 })
 
-test("stream-test", async () => {
+Deno.test("stream-test", async () => {
   const res = await app.request("/v1/chat/completions", {
     headers: {
       authorization: `Bearer ${getApiKeyFromEnv()}`,
@@ -51,10 +50,7 @@ test("stream-test", async () => {
       console.log("data: %s", event.data)
       console.log("-")
     } else if (event.type === "reconnect-interval") {
-      console.log(
-        "We should set reconnect interval to %d milliseconds",
-        event.value,
-      )
+      console.log("We should set reconnect interval to %d milliseconds", event.value)
     }
   })
     //

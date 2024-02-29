@@ -4,11 +4,7 @@ import type { OpenAI } from "../../../types.ts"
 import { genModel } from "../../../utils.ts"
 import { ChatProxyHandlerType } from "./ChatProxyHandler.ts"
 
-export const streamingChatProxyHandler: ChatProxyHandlerType = async (
-  c,
-  req,
-  genAi,
-) => {
+export const streamingChatProxyHandler: ChatProxyHandlerType = async (c, req, genAi) => {
   const log = c.var.log
 
   const genOpenAiResp = (content: string, stop: boolean) =>

@@ -4,12 +4,7 @@ import * as esbuild from "esbuild"
  * @type {esbuild.BuildOptions}
  */
 const config = {
-  entryPoints: [
-    "./main_bun.ts",
-    "./main_cloudflare-workers.ts",
-    "./main_deno.ts",
-    "./main_node.ts",
-  ],
+  entryPoints: ["./main_bun.ts", "./main_cloudflare-workers.ts", "./main_deno.ts", "./main_node.ts"],
   bundle: true,
   outdir: "dist",
   platform: "node",

@@ -1,11 +1,26 @@
-import assert from "node:assert/strict"
-import { test } from "node:test"
 import { getToken } from "../src/utils.ts"
+import { ApiParam } from "../src/utils.ts"
+import { expect } from "jsr:@std/expect"
 
-test("get token_test", () => {
-  assert.equal(getToken({ authorization: "Bearer my_key" }), "my_key")
-  assert.equal(getToken({ other_key: "Bearer my_key" }), null)
-  assert.equal(getToken({ other_key: "my_key" }), null)
-  assert.equal(getToken({ authorization: "my_key" }), "my_key")
-  assert.equal(getToken({ Authorization: "my_key" }), "my_key")
+Deno.test("get token_test", () => {
+  expect(getToken({ authorization: "Bearer my_key" })).toStrictEqual({
+    apikey: "my_key",
+    useBeta: false,
+  } satisfies ApiParam)
+  expect(getToken({ other_key: "Bearer my_key" })).toStrictEqual(null)
+  expect(getToken({ other_key: "my_key" })).toStrictEqual(null)
+  expect(getToken({ authorization: "my_key" })?.apikey).toStrictEqual("my_key")
+  expect(getToken({ Authorization: "my_key" })?.apikey).toStrictEqual("my_key")
+  expect(getToken({ Authorization: "Bearer my_key#useBeta" })).toStrictEqual({
+    apikey: "my_key",
+    useBeta: true,
+  } satisfies ApiParam)
+  expect(getToken({ Authorization: "bearer my_key#useBeta" })).toStrictEqual({
+    apikey: "my_key",
+    useBeta: true,
+  } satisfies ApiParam)
+  expect(getToken({ Authorization: "bearer my_key#otherConfig" })).toStrictEqual({
+    apikey: "my_key",
+    useBeta: false,
+  } satisfies ApiParam)
 })

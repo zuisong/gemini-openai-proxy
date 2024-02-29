@@ -27,11 +27,10 @@ function outFunc(levelName: string, levelValue: number, msg: string) {
   console.log(`${Date.now().toLocaleString()} ${levelName} ${msg}`)
 }
 
-function mapValues<
-  T extends Record<string | number | symbol, Any>,
-  K extends keyof T,
-  V,
->(obj: T, fn: (value: T[K], key: K, obj: T) => V): Record<K, V> {
+function mapValues<T extends Record<string | number | symbol, Any>, K extends keyof T, V>(
+  obj: T,
+  fn: (value: T[K], key: K, obj: T) => V,
+): Record<K, V> {
   return Object.fromEntries(
     Object.entries(obj).map(([key, value]) => {
       return [key, fn(value, key as K, obj)]

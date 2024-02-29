@@ -1,8 +1,4 @@
-import type {
-  Content,
-  GenerateContentRequest,
-  Part,
-} from "./gemini-api-client/types.ts"
+import type { Content, GenerateContentRequest, Part } from "./gemini-api-client/types.ts"
 import { HarmBlockThreshold, HarmCategory } from "./gemini-api-client/types.ts"
 import type { OpenAI } from "./types.ts"
 
@@ -25,9 +21,7 @@ export function getToken(headers: Record<string, string>): ApiParam | null {
 
       // todo read config from apikey
       const apikey = rawApikey.substring(0, rawApikey.indexOf("#"))
-      const params = new URLSearchParams(
-        rawApikey.substring(rawApikey.indexOf("#") + 1),
-      )
+      const params = new URLSearchParams(rawApikey.substring(rawApikey.indexOf("#") + 1))
       return {
         apikey,
         useBeta: params.has("useBeta"),
@@ -51,9 +45,7 @@ function parseBase64(base64: string): Part {
   }
 }
 
-export function openAiMessageToGeminiMessage(
-  messages: OpenAI.Chat.ChatCompletionMessageParam[],
-): Content[] {
+export function openAiMessageToGeminiMessage(messages: OpenAI.Chat.ChatCompletionMessageParam[]): Content[] {
   const result: Content[] = messages
     .flatMap(({ role, content }) => {
       if (role === "system") {
@@ -66,11 +58,7 @@ export function openAiMessageToGeminiMessage(
       const parts: Part[] =
         content == null || typeof content === "string"
           ? [{ text: content?.toString() ?? "" }]
-          : content.map((item) =>
-              item.type === "text"
-                ? { text: item.text }
-                : parseBase64(item.image_url.url),
-            )
+          : content.map((item) => (item.type === "text" ? { text: item.text } : parseBase64(item.image_url.url)))
 
       return [{ role: "user" === role ? "user" : "model", parts: parts }]
     })
@@ -84,9 +72,7 @@ export function openAiMessageToGeminiMessage(
   return result
 }
 
-function hasImageMessage(
-  messages: OpenAI.Chat.ChatCompletionMessageParam[],
-): boolean {
+function hasImageMessage(messages: OpenAI.Chat.ChatCompletionMessageParam[]): boolean {
   return messages.some((msg) => {
     const content = msg.content
     if (content == null) {
@@ -99,12 +85,8 @@ function hasImageMessage(
   })
 }
 
-export function genModel(
-  req: OpenAI.Chat.ChatCompletionCreateParams,
-): [GeminiModel, GenerateContentRequest] {
-  const model = hasImageMessage(req.messages)
-    ? GeminiModel.GEMINI_PRO_VISION
-    : GeminiModel.GEMINI_PRO
+export function genModel(req: OpenAI.Chat.ChatCompletionCreateParams): [GeminiModel, GenerateContentRequest] {
+  const model = hasImageMessage(req.messages) ? GeminiModel.GEMINI_PRO_VISION : GeminiModel.GEMINI_PRO
 
   const generateContentRequest: GenerateContentRequest = {
     contents: openAiMessageToGeminiMessage(req.messages),

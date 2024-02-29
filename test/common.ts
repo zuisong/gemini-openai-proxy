@@ -1,5 +1,12 @@
-import * as process from "node:process"
-
 export function getApiKeyFromEnv(): string {
-  return process.env.GEMINI_API_KEY ?? ""
+  return safeRun(() => Deno.env.toObject().GEMINI_API_KEY) ?? ""
+}
+
+export function safeRun<T>(fn: () => T): T | undefined {
+  try {
+    return fn()
+  } catch (e) {
+    console.error(e)
+  }
+  return undefined
 }

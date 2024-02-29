@@ -10,9 +10,7 @@ import {
  * Adds convenience helper methods to a response object, including stream
  * chunks (as long as each chunk is a complete GenerateContentResponse JSON).
  */
-export function addHelpers(
-  response: GenerateContentResponse,
-): EnhancedGenerateContentResponse {
+export function addHelpers(response: GenerateContentResponse): EnhancedGenerateContentResponse {
   ;(response as EnhancedGenerateContentResponse).text = () => {
     if (response.candidates && response.candidates.length > 0) {
       if (response.candidates.length > 1) {
@@ -52,20 +50,12 @@ export function getText(response: GenerateContentResponse): string {
 const badFinishReasons = [FinishReason.RECITATION, FinishReason.SAFETY]
 
 function hadBadFinishReason(candidate: GenerateContentCandidate): boolean {
-  return (
-    !!candidate.finishReason &&
-    badFinishReasons.includes(candidate.finishReason)
-  )
+  return !!candidate.finishReason && badFinishReasons.includes(candidate.finishReason)
 }
 
-export function formatBlockErrorMessage(
-  response: GenerateContentResponse,
-): string {
+export function formatBlockErrorMessage(response: GenerateContentResponse): string {
   let message = ""
-  if (
-    (!response.candidates || response.candidates.length === 0) &&
-    response.promptFeedback
-  ) {
+  if ((!response.candidates || response.candidates.length === 0) && response.promptFeedback) {
     message += "Response was blocked"
     if (response.promptFeedback?.blockReason) {
       message += ` due to ${response.promptFeedback.blockReason}`

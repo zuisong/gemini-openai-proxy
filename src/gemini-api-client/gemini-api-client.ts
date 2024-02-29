@@ -2,12 +2,7 @@ import { ApiParam } from "../utils.ts"
 import { GeminiModel } from "../utils.ts"
 import { GoogleGenerativeAIError } from "./errors.ts"
 import { addHelpers } from "./response-helper.ts"
-import {
-  GenerateContentRequest,
-  GenerateContentResponse,
-  GenerateContentResult,
-  RequestOptions,
-} from "./types.ts"
+import { GenerateContentRequest, GenerateContentResponse, GenerateContentResult, RequestOptions } from "./types.ts"
 
 export async function generateContent(
   apiParam: ApiParam,
@@ -15,17 +10,8 @@ export async function generateContent(
   params: GenerateContentRequest,
   requestOptions?: RequestOptions,
 ): Promise<GenerateContentResult> {
-  const url = new RequestUrl(
-    model,
-    Task.GENERATE_CONTENT,
-    /* stream */ false,
-    apiParam,
-  )
-  const response = await makeRequest(
-    url,
-    JSON.stringify(params),
-    requestOptions,
-  )
+  const url = new RequestUrl(model, Task.GENERATE_CONTENT, /* stream */ false, apiParam)
+  const response = await makeRequest(url, JSON.stringify(params), requestOptions)
   const responseJson: GenerateContentResponse = await response.json()
   const enhancedResponse = addHelpers(responseJson)
   return {
@@ -33,11 +19,7 @@ export async function generateContent(
   }
 }
 
-export async function makeRequest(
-  url: RequestUrl,
-  body: string,
-  requestOptions?: RequestOptions,
-): Promise<Response> {
+export async function makeRequest(url: RequestUrl, body: string, requestOptions?: RequestOptions): Promise<Response> {
   let response: Response
   try {
     response = await fetch(url.toString(), {
@@ -62,9 +44,7 @@ export async function makeRequest(
       throw new Error(`[${response.status} ${response.statusText}] ${message}`)
     }
   } catch (e) {
-    const err = new GoogleGenerativeAIError(
-      `Error fetching from ${url.toString()}: ${e.message}`,
-    )
+    const err = new GoogleGenerativeAIError(`Error fetching from ${url.toString()}: ${e.message}`)
     err.stack = e.stack
     throw err
   }
@@ -86,13 +66,9 @@ export class RequestUrl {
       urlSearchParams.append("alt", "sse")
     }
 
-    const api_version = this.apiParam.useBeta
-      ? API_VERSION.v1beta
-      : API_VERSION.v1
+    const api_version = this.apiParam.useBeta ? API_VERSION.v1beta : API_VERSION.v1
 
-    const url = `${BASE_URL}/${api_version}/models/${this.model}:${
-      this.task
-    }?${urlSearchParams.toString()}`
+    const url = `${BASE_URL}/${api_version}/models/${this.model}:${this.task}?${urlSearchParams.toString()}`
 
     return url
   }

@@ -4,9 +4,7 @@ export class GoogleGenerativeAIError extends Error {
   }
 }
 
-export class GoogleGenerativeAIResponseError<
-  T,
-> extends GoogleGenerativeAIError {
+export class GoogleGenerativeAIResponseError<T> extends GoogleGenerativeAIError {
   constructor(
     message: string,
     public response?: T,

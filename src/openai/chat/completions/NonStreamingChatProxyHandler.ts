@@ -3,11 +3,7 @@ import type { OpenAI } from "../../../types.ts"
 import { genModel } from "../../../utils.ts"
 import { ChatProxyHandlerType } from "./ChatProxyHandler.ts"
 
-export const nonStreamingChatProxyHandler: ChatProxyHandlerType = async (
-  c,
-  req,
-  apiParam,
-) => {
+export const nonStreamingChatProxyHandler: ChatProxyHandlerType = async (c, req, apiParam) => {
   const log = c.var.log
   const [model, geminiReq] = genModel(req)
   const geminiResp: string = await generateContent(apiParam, model, geminiReq)
