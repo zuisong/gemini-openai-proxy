@@ -1571,9 +1571,7 @@ function getToken(headers) {
         };
       }
       const apikey = rawApikey.substring(0, rawApikey.indexOf("#"));
-      const params = new URLSearchParams(
-        rawApikey.substring(rawApikey.indexOf("#") + 1)
-      );
+      const params = new URLSearchParams(rawApikey.substring(rawApikey.indexOf("#") + 1));
       return {
         apikey,
         useBeta: params.has("useBeta")
@@ -1603,9 +1601,7 @@ function openAiMessageToGeminiMessage(messages) {
         { role: "model", parts: [{ text: "" }] }
       ];
     }
-    const parts = content == null || typeof content === "string" ? [{ text: content?.toString() ?? "" }] : content.map(
-      (item) => item.type === "text" ? { text: item.text } : parseBase64(item.image_url.url)
-    );
+    const parts = content == null || typeof content === "string" ? [{ text: content?.toString() ?? "" }] : content.map((item) => item.type === "text" ? { text: item.text } : parseBase64(item.image_url.url));
     return [{ role: "user" === role ? "user" : "model", parts }];
   }).flatMap((item, idx, arr) => {
     if (item.role === arr.at(idx + 1)?.role && item.role === "user") {
@@ -1731,11 +1727,7 @@ async function generateContent(apiParam, model, params, requestOptions) {
     false,
     apiParam
   );
-  const response = await makeRequest(
-    url,
-    JSON.stringify(params),
-    requestOptions
-  );
+  const response = await makeRequest(url, JSON.stringify(params), requestOptions);
   const responseJson = await response.json();
   const enhancedResponse = addHelpers(responseJson);
   return {
@@ -1766,9 +1758,7 @@ async function makeRequest(url, body, requestOptions) {
       throw new Error(`[${response.status} ${response.statusText}] ${message}`);
     }
   } catch (e) {
-    const err = new GoogleGenerativeAIError(
-      `Error fetching from ${url.toString()}: ${e.message}`
-    );
+    const err = new GoogleGenerativeAIError(`Error fetching from ${url.toString()}: ${e.message}`);
     err.stack = e.stack;
     throw err;
   }
