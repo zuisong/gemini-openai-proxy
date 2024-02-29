@@ -1366,11 +1366,14 @@ export interface components {
        */
       voice: "alloy" | "echo" | "fable" | "onyx" | "nova" | "shimmer";
       /**
-       * @description The format to audio in. Supported formats are `mp3`, `opus`, `aac`, and `flac`.
+       * @description The format to return audio in.
+       * Supported formats are `mp3`, `opus`, `aac`, `flac`, `pcm`, and `wav`.
+       *
+       * The `pcm` audio format, similar to `wav` but without a header, utilizes a 24kHz sample rate, mono channel, and 16-bit depth in signed little-endian format.
        * @default mp3
        * @enum {string}
        */
-      response_format?: "mp3" | "opus" | "aac" | "flac";
+      response_format?: "mp3" | "opus" | "aac" | "flac" | "pcm" | "wav";
       /**
        * @description The speed of the generated audio. Select a value from `0.25` to `4.0`. `1.0` is the default.
        * @default 1

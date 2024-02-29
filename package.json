@@ -14,14 +14,16 @@
     "build:node": "node build.mjs",
     "build:bun": "bun build.mjs",
     "test:deno": "deno test --allow-net --allow-env",
-    "test-cov": "deno test --coverage -A --env && deno coverage coverage --lcov --output=coverage/lcov.info"
+    "test-cov": "deno test --coverage -A --env && deno coverage coverage --lcov --output=coverage/lcov.info",
+    "generate-opeai-types": "deno run --allow-net --deny-env --allow-write=./src/openai-types.ts generate-opeai-types.ts"
   },
   "dependencies": {
-    "@hono/node-server": "^1.8.2",
-    "hono": "^4.0.7"
+    "@hono/node-server": "1.8.2",
+    "hono": "4.0.8"
   },
   "devDependencies": {
-    "esbuild": "^0.20.1",
-    "eventsource-parser": "^1.1.2"
+    "@types/node": "20.11.22",
+    "esbuild": "0.20.1",
+    "eventsource-parser": "1.1.2"
   }
 }
