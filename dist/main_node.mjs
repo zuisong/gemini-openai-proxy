@@ -391,6 +391,23 @@ var serve = (options, listeningListener) => {
 };
 
 // node_modules/.deno/hono@4.0.8/node_modules/hono/dist/helper/adapter/index.js
+var env = (c, runtime) => {
+  const global2 = globalThis;
+  const globalEnv = global2?.process?.env;
+  runtime ?? (runtime = getRuntimeKey());
+  const runtimeEnvHandlers = {
+    bun: () => globalEnv,
+    node: () => globalEnv,
+    "edge-light": () => globalEnv,
+    deno: () => {
+      return Deno.env.toObject();
+    },
+    workerd: () => c.env,
+    fastly: () => ({}),
+    other: () => ({})
+  };
+  return runtimeEnvHandlers[runtime]();
+};
 var getRuntimeKey = () => {
   const global2 = globalThis;
   if (global2?.Deno !== void 0) {
@@ -1432,14 +1449,14 @@ var _Hono = class extends defineDynamicClass() {
     }
     throw err;
   }
-  dispatch(request, executionCtx, env, method) {
+  dispatch(request, executionCtx, env2, method) {
     if (method === "HEAD") {
-      return (async () => new Response(null, await this.dispatch(request, executionCtx, env, "GET")))();
+      return (async () => new Response(null, await this.dispatch(request, executionCtx, env2, "GET")))();
     }
-    const path = this.getPath(request, { env });
+    const path = this.getPath(request, { env: env2 });
     const matchResult = this.matchRoute(method, path);
     const c = new Context(new HonoRequest(request, path, matchResult), {
-      env,
+      env: env2,
       executionCtx,
       notFoundHandler: this.notFoundHandler
     });
@@ -1530,34 +1547,29 @@ var Hono2 = class extends Hono {
 };
 
 // src/log.ts
-var LogLevel = /* @__PURE__ */ ((LogLevel2) => {
-  LogLevel2[LogLevel2["error"] = 3] = "error";
-  LogLevel2[LogLevel2["warn"] = 4] = "warn";
-  LogLevel2[LogLevel2["info"] = 5] = "info";
-  LogLevel2[LogLevel2["debug"] = 7] = "debug";
-  return LogLevel2;
-})(LogLevel || {});
-var currentlevel = 3 /* error */;
-function gen_logger(id) {
-  return mapValues(LogLevel, (value, name) => {
-    return (msg) => {
-      outFunc(name, value, `${id} ${JSON.stringify(msg)}`);
-    };
-  });
-}
-function outFunc(levelName, levelValue, msg) {
-  if (levelValue > currentlevel) {
-    return;
+var LogLevel = {
+  error: 3,
+  warn: 4,
+  info: 5,
+  debug: 7
+};
+var Logger = class {
+  constructor(level, id) {
+    this.level = level;
+    this.id = id;
   }
-  console.log(`${Date.now().toLocaleString()} ${levelName} ${msg}`);
-}
-function mapValues(obj, fn) {
-  return Object.fromEntries(
-    Object.entries(obj).map(([key, value]) => {
-      return [key, fn(value, key, obj)];
-    })
-  );
-}
+  error = (msg) => this.outFunc("error", LogLevel.error, `${this.id} ${JSON.stringify(msg)}`);
+  warn = (msg) => this.outFunc("warn", LogLevel.warn, `${this.id} ${JSON.stringify(msg)}`);
+  info = (msg) => this.outFunc("info", LogLevel.info, `${this.id} ${JSON.stringify(msg)}`);
+  debug = (msg) => this.outFunc("debug", LogLevel.debug, `${this.id} ${JSON.stringify(msg)}`);
+  outFunc(levelName, levelValue, msg) {
+    const level = Object.keys(LogLevel).includes(this.level) ? this.level : "debug";
+    if (levelValue > LogLevel[level]) {
+      return;
+    }
+    console.log(`${Date.now().toLocaleString()} ${levelName} ${msg}`);
+  }
+};
 
 // src/utils.ts
 function getToken(headers) {
@@ -1804,6 +1816,7 @@ var nonStreamingChatProxyHandler = async (c, req, apiParam) => {
     log2.error(err?.message ?? err.toString());
     return err?.message ?? err.toString();
   });
+  log2.debug(req);
   log2.debug(geminiResp);
   const resp = {
     id: "chatcmpl-abc123",
@@ -1943,7 +1956,8 @@ var streamingChatProxyHandler = async (c, req, genAi) => {
       data: JSON.stringify(genOpenAiResp(geminiResp, true))
     });
     const geminiResult = geminiResp;
-    log2.info(geminiResult);
+    log2.debug(req);
+    log2.debug(geminiResult);
     await sseStream.writeSSE({ data: "[DONE]" });
     await sseStream.close();
   });
@@ -2039,7 +2053,7 @@ var geminiProxy = async (c) => {
   return c.newResponse(resp.body, resp);
 };
 var app = new Hono2({ strict: true }).use("*", cors(), timing(), logger()).use("*", async (c, next) => {
-  const logger2 = gen_logger(crypto.randomUUID());
+  const logger2 = new Logger(env(c).LogLevel ?? "error", crypto.randomUUID());
   c.set("log", logger2);
   await next();
   c.set("log", void 0);
