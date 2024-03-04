@@ -1,10 +1,10 @@
 import type { Context, Handler } from "hono"
-import { getRuntimeKey } from "hono/adapter"
+import { env, getRuntimeKey } from "hono/adapter"
 import { cors } from "hono/cors"
 import { logger } from "hono/logger"
 import { timing } from "hono/timing"
 import { Hono } from "hono/tiny"
-import { Logger, gen_logger } from "./log.ts"
+import { ILogger, Logger } from "./log.ts"
 import { chatProxyHandler } from "./openai/chat/completions/ChatProxyHandler.ts"
 import { modelDetail, models } from "./openai/models.ts"
 
@@ -26,10 +26,10 @@ const geminiProxy: Handler = async (c) => {
 export const app = new Hono({ strict: true })
   .use("*", cors(), timing(), logger())
   .use("*", async (c: ContextWithLogger, next) => {
-    const logger = gen_logger(crypto.randomUUID())
+    const logger = new Logger((env(c).LogLevel as string) ?? "error", crypto.randomUUID())
     c.set("log", logger)
     await next()
-    c.set("log", undefined as unknown as Logger)
+    c.set("log", undefined as unknown as ILogger)
   })
   .options("*", (c) => c.text("", 204))
   .get("/", (c) => {
@@ -54,4 +54,4 @@ curl ${origin}/v1/chat/completions \\
   .get("/v1/models/:model", modelDetail)
   .post(":model_version/models/:model_and_action", geminiProxy)
 
-export type ContextWithLogger = Context<{ Variables: { log: Logger } }>
+export type ContextWithLogger = Context<{ Variables: { log: ILogger } }>

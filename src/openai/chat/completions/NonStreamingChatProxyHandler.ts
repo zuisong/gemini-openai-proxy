@@ -14,7 +14,7 @@ export const nonStreamingChatProxyHandler: ChatProxyHandlerType = async (c, req,
       log.error(err?.message ?? err.toString())
       return err?.message ?? err.toString()
     })
-
+  log.debug(req)
   log.debug(geminiResp)
 
   const resp: OpenAI.Chat.ChatCompletion = {
