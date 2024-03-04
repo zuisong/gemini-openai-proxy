@@ -9,4 +9,4 @@ FROM lukechannings/deno:latest
 WORKDIR /data
 COPY  --from=builder /data/dist/main_deno.mjs app.mjs
 ENTRYPOINT [ "" ]
-CMD ["deno","run","--allow-net","app.mjs"]
+CMD ["deno","run","--allow-net","--allow-env","app.mjs"]
