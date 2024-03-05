@@ -102,7 +102,7 @@ export interface paths {
     delete: operations["deleteModel"];
   };
   "/moderations": {
-    /** Classifies if text violates OpenAI's Content Policy */
+    /** Classifies if text is potentially harmful. */
     post: operations["createModeration"];
   };
   "/assistants": {
@@ -668,7 +668,7 @@ export interface components {
        * @default false
        */
       logprobs?: boolean | null;
-      /** @description An integer between 0 and 5 specifying the number of most likely tokens to return at each token position, each with an associated log probability. `logprobs` must be set to `true` if this parameter is used. */
+      /** @description An integer between 0 and 20 specifying the number of most likely tokens to return at each token position, each with an associated log probability. `logprobs` must be set to `true` if this parameter is used. */
       top_logprobs?: number | null;
       /**
        * @description The maximum number of [tokens](/tokenizer) that can be generated in the chat completion.
@@ -848,7 +848,7 @@ export interface components {
     ChatCompletionTokenLogprob: {
       /** @description The token. */
       token: string;
-      /** @description The log probability of this token. */
+      /** @description The log probability of this token, if it is within the top 20 most likely tokens. Otherwise, the value `-9999.0` is used to signify that the token is very unlikely. */
       logprob: number;
       /** @description A list of integers representing the UTF-8 bytes representation of the token. Useful in instances where characters are represented by multiple tokens and their byte representations must be combined to generate the correct text representation. Can be `null` if there is no bytes representation for the token. */
       bytes: number[] | null;
@@ -856,7 +856,7 @@ export interface components {
       top_logprobs: ({
           /** @description The token. */
           token: string;
-          /** @description The log probability of this token. */
+          /** @description The log probability of this token, if it is within the top 20 most likely tokens. Otherwise, the value `-9999.0` is used to signify that the token is very unlikely. */
           logprob: number;
           /** @description A list of integers representing the UTF-8 bytes representation of the token. Useful in instances where characters are represented by multiple tokens and their byte representations must be combined to generate the correct text representation. Can be `null` if there is no bytes representation for the token. */
           bytes: number[] | null;
@@ -935,7 +935,7 @@ export interface components {
        */
       quality?: "standard" | "hd";
       /**
-       * @description The format in which the generated images are returned. Must be one of `url` or `b64_json`.
+       * @description The format in which the generated images are returned. Must be one of `url` or `b64_json`. URLs are only valid for 60 minutes after the image has been generated.
        * @default url
        * @example url
        * @enum {string|null}
@@ -1011,7 +1011,7 @@ export interface components {
        */
       size?: "256x256" | "512x512" | "1024x1024" | null;
       /**
-       * @description The format in which the generated images are returned. Must be one of `url` or `b64_json`.
+       * @description The format in which the generated images are returned. Must be one of `url` or `b64_json`. URLs are only valid for 60 minutes after the image has been generated.
        * @default url
        * @example url
        * @enum {string|null}
@@ -1043,7 +1043,7 @@ export interface components {
        */
       n?: number | null;
       /**
-       * @description The format in which the generated images are returned. Must be one of `url` or `b64_json`.
+       * @description The format in which the generated images are returned. Must be one of `url` or `b64_json`. URLs are only valid for 60 minutes after the image has been generated.
        * @default url
        * @example url
        * @enum {string|null}
@@ -1076,7 +1076,7 @@ export interface components {
        */
       model?: string | ("text-moderation-latest" | "text-moderation-stable");
     };
-    /** @description Represents policy compliance report by OpenAI's content moderation model against a given input. */
+    /** @description Represents if a given text input is potentially harmful. */
     CreateModerationResponse: {
       /** @description The unique identifier for the moderation request. */
       id: string;
@@ -1084,7 +1084,7 @@ export interface components {
       model: string;
       /** @description A list of moderation objects. */
       results: {
-          /** @description Whether the content violates [OpenAI's usage policies](/policies/usage-policies). */
+          /** @description Whether any of the below categories are flagged. */
           flagged: boolean;
           /** @description A list of the categories, and whether they are flagged or not. */
           categories: {
@@ -1291,7 +1291,7 @@ export interface components {
        */
       file: string;
       /**
-       * @description ID of the model to use. Only `whisper-1` is currently available.
+       * @description ID of the model to use. Only `whisper-1` (which is powered by our open source Whisper V2 model) is currently available.
        *
        * @example whisper-1
        */
@@ -1314,7 +1314,7 @@ export interface components {
        */
       temperature?: number;
       /**
-       * @description The timestamp granularities to populate for this transcription. Any of these options: `word`, or `segment`. Note: There is no additional latency for segment timestamps, but generating word timestamps incurs additional latency.
+       * @description The timestamp granularities to populate for this transcription. `response_format` must be set `verbose_json` to use timestamp granularities. Either or both of these options are supported: `word`, or `segment`. Note: There is no additional latency for segment timestamps, but generating word timestamps incurs additional latency.
        *
        * @default [
        *   "segment"
@@ -1322,8 +1322,77 @@ export interface components {
        */
       "timestamp_granularities[]"?: ("word" | "segment")[];
     };
-    CreateTranscriptionResponse: {
+    /** @description Represents a transcription response returned by model, based on the provided input. */
+    CreateTranscriptionResponseJson: {
+      /** @description The transcribed text. */
       text: string;
+    };
+    TranscriptionSegment: {
+      /** @description Unique identifier of the segment. */
+      id: number;
+      /** @description Seek offset of the segment. */
+      seek: number;
+      /**
+       * Format: float
+       * @description Start time of the segment in seconds.
+       */
+      start: number;
+      /**
+       * Format: float
+       * @description End time of the segment in seconds.
+       */
+      end: number;
+      /** @description Text content of the segment. */
+      text: string;
+      /** @description Array of token IDs for the text content. */
+      tokens: number[];
+      /**
+       * Format: float
+       * @description Temperature parameter used for generating the segment.
+       */
+      temperature: number;
+      /**
+       * Format: float
+       * @description Average logprob of the segment. If the value is lower than -1, consider the logprobs failed.
+       */
+      avg_logprob: number;
+      /**
+       * Format: float
+       * @description Compression ratio of the segment. If the value is greater than 2.4, consider the compression failed.
+       */
+      compression_ratio: number;
+      /**
+       * Format: float
+       * @description Probability of no speech in the segment. If the value is higher than 1.0 and the `avg_logprob` is below -1, consider this segment silent.
+       */
+      no_speech_prob: number;
+    };
+    TranscriptionWord: {
+      /** @description The text content of the word. */
+      word: string;
+      /**
+       * Format: float
+       * @description Start time of the word in seconds.
+       */
+      start: number;
+      /**
+       * Format: float
+       * @description End time of the word in seconds.
+       */
+      end: number;
+    };
+    /** @description Represents a verbose json transcription response returned by model, based on the provided input. */
+    CreateTranscriptionResponseVerboseJson: {
+      /** @description The language of the input audio. */
+      language: string;
+      /** @description The duration of the input audio. */
+      duration: string;
+      /** @description The transcribed text. */
+      text: string;
+      /** @description Extracted words and their corresponding timestamps. */
+      words?: components["schemas"]["TranscriptionWord"][];
+      /** @description Segments of the transcribed text and their corresponding details. */
+      segments?: components["schemas"]["TranscriptionSegment"][];
     };
     CreateTranslationRequest: {
       /**
@@ -1332,7 +1401,7 @@ export interface components {
        */
       file: string;
       /**
-       * @description ID of the model to use. Only `whisper-1` is currently available.
+       * @description ID of the model to use. Only `whisper-1` (which is powered by our open source Whisper V2 model) is currently available.
        *
        * @example whisper-1
        */
@@ -1352,8 +1421,18 @@ export interface components {
        */
       temperature?: number;
     };
-    CreateTranslationResponse: {
+    CreateTranslationResponseJson: {
       text: string;
+    };
+    CreateTranslationResponseVerboseJson: {
+      /** @description The language of the output translation (always `english`). */
+      language: string;
+      /** @description The duration of the input audio. */
+      duration: string;
+      /** @description The translated text. */
+      text: string;
+      /** @description Segments of the translated text and their corresponding details. */
+      segments?: components["schemas"]["TranscriptionSegment"][];
     };
     CreateSpeechRequest: {
       /** @description One of the available [TTS models](/docs/models/tts): `tts-1` or `tts-1-hd` */
@@ -1366,14 +1445,11 @@ export interface components {
        */
       voice: "alloy" | "echo" | "fable" | "onyx" | "nova" | "shimmer";
       /**
-       * @description The format to return audio in.
-       * Supported formats are `mp3`, `opus`, `aac`, `flac`, `pcm`, and `wav`.
-       *
-       * The `pcm` audio format, similar to `wav` but without a header, utilizes a 24kHz sample rate, mono channel, and 16-bit depth in signed little-endian format.
+       * @description The format to audio in. Supported formats are `mp3`, `opus`, `aac`, `flac`, `wav`, and `pcm`.
        * @default mp3
        * @enum {string}
        */
-      response_format?: "mp3" | "opus" | "aac" | "flac" | "pcm" | "wav";
+      response_format?: "mp3" | "opus" | "aac" | "flac" | "wav" | "pcm";
       /**
        * @description The speed of the generated audio. Select a value from `0.25` to `4.0`. `1.0` is the default.
        * @default 1
@@ -1701,10 +1777,10 @@ export interface components {
       /** @description The last error associated with this run. Will be `null` if there are no errors. */
       last_error: ({
         /**
-         * @description One of `server_error` or `rate_limit_exceeded`.
+         * @description One of `server_error`, `rate_limit_exceeded`, or `invalid_prompt`.
          * @enum {string}
          */
-        code: "server_error" | "rate_limit_exceeded";
+        code: "server_error" | "rate_limit_exceeded" | "invalid_prompt";
         /** @description A human-readable description of the error. */
         message: string;
       }) | null;
@@ -2369,7 +2445,7 @@ export interface operations {
       /** @description OK */
       200: {
         content: {
-          "application/json": components["schemas"]["CreateTranscriptionResponse"];
+          "application/json": components["schemas"]["CreateTranscriptionResponseJson"] | components["schemas"]["CreateTranscriptionResponseVerboseJson"];
         };
       };
     };
@@ -2385,7 +2461,7 @@ export interface operations {
       /** @description OK */
       200: {
         content: {
-          "application/json": components["schemas"]["CreateTranslationResponse"];
+          "application/json": components["schemas"]["CreateTranslationResponseJson"] | components["schemas"]["CreateTranslationResponseVerboseJson"];
         };
       };
     };
@@ -2627,7 +2703,7 @@ export interface operations {
       };
     };
   };
-  /** Classifies if text violates OpenAI's Content Policy */
+  /** Classifies if text is potentially harmful. */
   createModeration: {
     requestBody: {
       content: {
