@@ -25,5 +25,5 @@ export const chatProxyHandler: Handler = async (c: ContextWithLogger) => {
 }
 
 export interface ChatProxyHandlerType {
-  (c: ContextWithLogger, req: OpenAI.Chat.ChatCompletionCreateParams, apiParam: ApiParam): ReturnType<Handler>
+  (c: ContextWithLogger, req: OpenAI.Chat.ChatCompletionCreateParams, apiParam: ApiParam): Promise<Response>
 }

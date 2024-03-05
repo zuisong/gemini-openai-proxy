@@ -1,34 +1,41 @@
-const LogLevel = {
-  error: 3,
-  warn: 4,
-  info: 5,
-  debug: 7,
-} as const
-type Any = Parameters<typeof console.log>[0]
+export type Any = Parameters<typeof console.log>[0]
 
 export interface ILogger {
-  error: (msg: Any) => void
-  warn: (msg: Any) => void
-  info: (msg: Any) => void
-  debug: (msg: Any) => void
+  error: (...data: Any[]) => void
+  warn: (...data: Any[]) => void
+  info: (...data: Any[]) => void
+  debug: (...data: Any[]) => void
+}
+
+const LEVEL = ["debug", "info", "warn", "error"] as const
+
+interface Config {
+  level: (typeof LEVEL)[number]
+  prefix: string
 }
 
 export class Logger implements ILogger {
-  constructor(
-    private level: string,
-    private id: string,
-  ) {}
-  error = (msg: Any) => this.outFunc("error", LogLevel.error, `${this.id} ${JSON.stringify(msg)}`)
-  warn = (msg: Any) => this.outFunc("warn", LogLevel.warn, `${this.id} ${JSON.stringify(msg)}`)
-  info = (msg: Any) => this.outFunc("info", LogLevel.info, `${this.id} ${JSON.stringify(msg)}`)
-  debug = (msg: Any) => this.outFunc("debug", LogLevel.debug, `${this.id} ${JSON.stringify(msg)}`)
+  private config: Config
 
-  outFunc(levelName: string, levelValue: number, msg: string) {
-    const level = Object.keys(LogLevel).includes(this.level) ? this.level : "debug"
-    if (levelValue > LogLevel[level as keyof typeof LogLevel]) {
-      // 仅打印大于等于当前日志级别的日志
+  constructor(config?: Omit<Partial<Config>, "level"> & { level?: string }) {
+    const level = LEVEL.find((it) => it === config?.level) ?? "warn"
+    this.config = {
+      prefix: config?.prefix ?? "",
+      level,
+    }
+  }
+
+  #write(level: Config["level"], ...data: Any[]) {
+    const { level: configLevel, prefix } = this.config
+    if (LEVEL.indexOf(level) < LEVEL.indexOf(configLevel)) {
       return
     }
-    console.log(`${Date.now().toLocaleString()} ${levelName} ${msg}`)
+
+    console[level](`${new Date().toISOString()} ${level.toUpperCase()}${prefix ? ` ${prefix}` : ""}`, ...data)
   }
+
+  debug = (...data: Any[]) => this.#write("debug", ...data)
+  info = (...data: Any[]) => this.#write("info", ...data)
+  warn = (...data: Any[]) => this.#write("warn", ...data)
+  error = (...data: Any[]) => this.#write("error", ...data)
 }

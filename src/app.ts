@@ -26,7 +26,10 @@ const geminiProxy: Handler = async (c) => {
 export const app = new Hono({ strict: true })
   .use("*", cors(), timing(), logger())
   .use("*", async (c: ContextWithLogger, next) => {
-    const logger = new Logger((env(c).LogLevel as string) ?? "error", crypto.randomUUID())
+    const logger = new Logger({
+      level: env(c).LogLevel as string | undefined,
+      prefix: crypto.randomUUID(),
+    })
     c.set("log", logger)
     await next()
     c.set("log", undefined as unknown as ILogger)
