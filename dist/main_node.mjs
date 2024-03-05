@@ -1547,28 +1547,27 @@ var Hono2 = class extends Hono {
 };
 
 // src/log.ts
-var LogLevel = {
-  error: 3,
-  warn: 4,
-  info: 5,
-  debug: 7
-};
+var LEVEL = ["debug", "info", "warn", "error"];
 var Logger = class {
-  constructor(level, id) {
-    this.level = level;
-    this.id = id;
+  config;
+  constructor(config) {
+    const level = LEVEL.find((it) => it === config?.level) ?? "warn";
+    this.config = {
+      prefix: config?.prefix ?? "",
+      level
+    };
   }
-  error = (msg) => this.outFunc("error", LogLevel.error, `${this.id} ${JSON.stringify(msg)}`);
-  warn = (msg) => this.outFunc("warn", LogLevel.warn, `${this.id} ${JSON.stringify(msg)}`);
-  info = (msg) => this.outFunc("info", LogLevel.info, `${this.id} ${JSON.stringify(msg)}`);
-  debug = (msg) => this.outFunc("debug", LogLevel.debug, `${this.id} ${JSON.stringify(msg)}`);
-  outFunc(levelName, levelValue, msg) {
-    const level = Object.keys(LogLevel).includes(this.level) ? this.level : "debug";
-    if (levelValue > LogLevel[level]) {
+  #write(level, ...data) {
+    const { level: configLevel, prefix } = this.config;
+    if (LEVEL.indexOf(level) < LEVEL.indexOf(configLevel)) {
       return;
     }
-    console.log(`${Date.now().toLocaleString()} ${levelName} ${msg}`);
+    console[level](`${(/* @__PURE__ */ new Date()).toISOString()} ${level.toUpperCase()}${prefix ? ` ${prefix}` : ""}`, ...data);
   }
+  debug = (...data) => this.#write("debug", ...data);
+  info = (...data) => this.#write("info", ...data);
+  warn = (...data) => this.#write("warn", ...data);
+  error = (...data) => this.#write("error", ...data);
 };
 
 // src/utils.ts
@@ -2053,7 +2052,10 @@ var geminiProxy = async (c) => {
   return c.newResponse(resp.body, resp);
 };
 var app = new Hono2({ strict: true }).use("*", cors(), timing(), logger()).use("*", async (c, next) => {
-  const logger2 = new Logger(env(c).LogLevel ?? "error", crypto.randomUUID());
+  const logger2 = new Logger({
+    level: env(c).LogLevel,
+    prefix: crypto.randomUUID()
+  });
   c.set("log", logger2);
   await next();
   c.set("log", void 0);
