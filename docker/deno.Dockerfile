@@ -1,11 +1,11 @@
 #----------------
-FROM lukechannings/deno:latest as builder
+FROM denoland/deno:latest as builder
 WORKDIR /data
 COPY . .
 RUN deno task build:deno
 
 #----------------
-FROM lukechannings/deno:latest
+FROM denoland/deno:latest
 WORKDIR /data
 COPY  --from=builder /data/dist/main_deno.mjs app.mjs
 ENTRYPOINT [ "" ]
