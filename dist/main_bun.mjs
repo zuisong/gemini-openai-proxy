@@ -1560,7 +1560,10 @@ var streamingChatProxyHandler = async (c, req, genAi) => {
     const [model, geminiReq] = genModel(req);
     const geminiResp = await generateContent(genAi, model, geminiReq).then((it) => it.response.text()).catch((e) => e.message ?? e?.toString());
     await sseStream.writeSSE({
-      data: JSON.stringify(genOpenAiResp(geminiResp, true))
+      data: JSON.stringify(genOpenAiResp(geminiResp, false))
+    });
+    await sseStream.writeSSE({
+      data: JSON.stringify(genOpenAiResp("", true))
     });
     const geminiResult = geminiResp;
     log2.debug(req);
