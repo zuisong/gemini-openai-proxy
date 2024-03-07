@@ -27,7 +27,7 @@ export const app = new Hono({ strict: true })
   .use("*", cors(), timing(), logger())
   .use("*", async (c: ContextWithLogger, next) => {
     const logger = new Logger({
-      level: env(c).LogLevel as string | undefined,
+      level: env(c)?.LogLevel as string | undefined,
       prefix: crypto.randomUUID(),
     })
     c.set("log", logger)
