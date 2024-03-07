@@ -1661,7 +1661,7 @@ var geminiProxy = async (c) => {
 };
 var app = new Hono2({ strict: true }).use("*", cors(), timing(), logger()).use("*", async (c, next) => {
   const logger2 = new Logger({
-    level: env(c).LogLevel,
+    level: env(c)?.LogLevel,
     prefix: crypto.randomUUID()
   });
   c.set("log", logger2);
