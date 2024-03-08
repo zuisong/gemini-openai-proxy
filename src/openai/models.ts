@@ -1,6 +1,6 @@
 import type { Handler } from "hono"
 import type { OpenAI } from "../types.ts"
-const modelData: OpenAI.Models.Model[] = [
+export const modelData: OpenAI.Models.Model[] = [
   {
     created: 1677610602,
     object: "model",
