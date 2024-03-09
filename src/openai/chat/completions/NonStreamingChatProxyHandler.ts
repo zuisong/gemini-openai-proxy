@@ -1,7 +1,7 @@
 import { generateContent } from "../../../gemini-api-client/gemini-api-client.ts"
 import type { OpenAI } from "../../../types.ts"
 import { genModel } from "../../../utils.ts"
-import { ChatProxyHandlerType } from "./ChatProxyHandler.ts"
+import type { ChatProxyHandlerType } from "./ChatProxyHandler.ts"
 
 export const nonStreamingChatProxyHandler: ChatProxyHandlerType = async (c, req, apiParam) => {
   const log = c.var.log

@@ -4,7 +4,7 @@ import { cors } from "hono/cors"
 import { logger } from "hono/logger"
 import { timing } from "hono/timing"
 import { Hono } from "hono/tiny"
-import { ILogger, Logger } from "./log.ts"
+import { type ILogger, Logger } from "./log.ts"
 import { chatProxyHandler } from "./openai/chat/completions/ChatProxyHandler.ts"
 import { modelDetail, models } from "./openai/models.ts"
 

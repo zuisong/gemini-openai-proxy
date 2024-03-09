@@ -1,8 +1,7 @@
-import { ApiParam } from "../utils.ts"
-import { GeminiModel } from "../utils.ts"
+import type { ApiParam, GeminiModel } from "../utils.ts"
 import { GoogleGenerativeAIError } from "./errors.ts"
 import { addHelpers } from "./response-helper.ts"
-import { GenerateContentRequest, GenerateContentResponse, GenerateContentResult, RequestOptions } from "./types.ts"
+import type { GenerateContentRequest, GenerateContentResponse, GenerateContentResult, RequestOptions } from "./types.ts"
 
 export async function generateContent(
   apiParam: ApiParam,

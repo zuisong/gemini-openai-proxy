@@ -1,5 +1,5 @@
 // deno-lint-ignore-file no-namespace
-import { components } from "./openai-types.ts"
+import type { components } from "./openai-types.ts"
 
 export namespace OpenAI {
   export namespace Chat {

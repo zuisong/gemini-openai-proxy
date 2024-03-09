@@ -1,9 +1,9 @@
 import { GoogleGenerativeAIResponseError } from "./errors.ts"
 import {
-  EnhancedGenerateContentResponse,
+  type EnhancedGenerateContentResponse,
   FinishReason,
-  GenerateContentCandidate,
-  GenerateContentResponse,
+  type GenerateContentCandidate,
+  type GenerateContentResponse,
 } from "./types.ts"
 
 /**

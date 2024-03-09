@@ -1,6 +1,6 @@
-import { getToken } from "../src/utils.ts"
-import { ApiParam } from "../src/utils.ts"
 import { expect } from "jsr:@std/expect"
+import { getToken } from "../src/utils.ts"
+import type { ApiParam } from "../src/utils.ts"
 
 Deno.test("get token_test", () => {
   expect(getToken({ authorization: "Bearer my_key" })).toStrictEqual({

@@ -1,17 +1,15 @@
-import { ParseEvent, createParser } from "eventsource-parser"
+import { assertFalse } from "jsr:@std/assert"
+import { expect } from "jsr:@std/expect"
+import { afterEach, beforeEach, describe, it } from "jsr:@std/testing/bdd"
+import { MockFetch } from "https://deno.land/x/deno_mock_fetch@1.0.1/mod.ts"
+import { type ParseEvent, createParser } from "eventsource-parser"
 import { app } from "../src/app.ts"
 import type { OpenAI } from "../src/types.ts"
 import { getApiKeyFromEnv } from "./common.ts"
-import { expect } from "jsr:@std/expect"
-import * as bdd from "jsr:@std/testing/bdd"
-
-import { MockFetch } from "https://deno.land/x/deno_mock_fetch@1.0.1/mod.ts"
 import { gemini_ok_resp } from "./test-data.ts"
-import { assertFalse } from "jsr:@std/assert@^0.217.0/assert_false"
-import { afterEach, beforeEach } from "jsr:@std/testing/bdd"
 
-bdd.describe("openai to gemini test", () => {
-  bdd.describe("success test", () => {
+describe("openai to gemini test", () => {
+  describe("success test", () => {
     const mockFetch = new MockFetch()
     beforeEach(() => {
       mockFetch
@@ -31,7 +29,7 @@ bdd.describe("openai to gemini test", () => {
       mockFetch.close()
     })
 
-    bdd.it("no streaming test", async () => {
+    it("no streaming test", async () => {
       const res = await app.request("/v1/chat/completions", {
         headers: {
           authorization: "Bearer MyApiKey",
@@ -54,7 +52,7 @@ bdd.describe("openai to gemini test", () => {
       expect(resp.choices.map((it) => it.message.content).join("")).toEqual("Hello there! How can I assist you today?")
     })
 
-    bdd.it("stream test", async () => {
+    it("stream test", async () => {
       const res = await app.request("/v1/chat/completions", {
         headers: {
           authorization: `Bearer ${getApiKeyFromEnv()}`,

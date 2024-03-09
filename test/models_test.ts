@@ -1,6 +1,6 @@
-import { app } from "../src/app.ts"
 import { expect } from "jsr:@std/expect"
 import * as bdd from "jsr:@std/testing/bdd"
+import { app } from "../src/app.ts"
 
 import { modelData } from "../src/openai/models.ts"
 
