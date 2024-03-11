@@ -11,7 +11,8 @@
         "noNodejsModules": "off"
       },
       "style": {
-        "useNamingConvention": "off"
+        "useNamingConvention": "off",
+        "noUnusedTemplateLiteral": "off"
       }
     }
   },

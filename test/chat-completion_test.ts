@@ -5,7 +5,6 @@ import { MockFetch } from "https://deno.land/x/deno_mock_fetch@1.0.1/mod.ts"
 import { type ParseEvent, createParser } from "eventsource-parser"
 import { app } from "../src/app.ts"
 import type { OpenAI } from "../src/types.ts"
-import { getApiKeyFromEnv } from "./common.ts"
 import { gemini_ok_resp } from "./test-data.ts"
 
 describe("openai to gemini test", () => {
@@ -32,7 +31,7 @@ describe("openai to gemini test", () => {
     it("no streaming test", async () => {
       const res = await app.request("/v1/chat/completions", {
         headers: {
-          authorization: "Bearer MyApiKey",
+          authorization: "Bearer fake-api-key",
         },
         method: "post",
         body: JSON.stringify({
@@ -55,7 +54,7 @@ describe("openai to gemini test", () => {
     it("stream test", async () => {
       const res = await app.request("/v1/chat/completions", {
         headers: {
-          authorization: `Bearer ${getApiKeyFromEnv()}`,
+          authorization: "Bearer fake-api-key",
         },
         method: "post",
         body: JSON.stringify({

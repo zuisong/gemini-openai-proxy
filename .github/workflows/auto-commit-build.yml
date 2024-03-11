@@ -39,10 +39,11 @@ jobs:
       - name: Run build
         run: deno task build:deno
 
-      - name: "codecov coverage"
-        uses: codecov/codecov-action@v4
+      - name: Coveralls
+        uses: coverallsapp/github-action@v2
         with:
           files: coverage/lcov.info
+          fail-on-error: false
 
       - uses: EndBug/add-and-commit@v9 # You can change this to use a specific version.
         with:
