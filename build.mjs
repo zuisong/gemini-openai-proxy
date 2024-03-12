@@ -13,6 +13,7 @@ const config = {
   outExtension: { ".js": ".mjs" },
   target: ["chrome100", "node20"],
   external: ["node:*"],
+  minify: false,
 }
 
 await esbuild.build(config)

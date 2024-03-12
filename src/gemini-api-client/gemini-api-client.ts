@@ -9,7 +9,7 @@ export async function generateContent(
   params: GenerateContentRequest,
   requestOptions?: RequestOptions,
 ): Promise<GenerateContentResult> {
-  const url = new RequestUrl(model, Task.GENERATE_CONTENT, /* stream */ false, apiParam)
+  const url = new RequestUrl(model, Task.GENERATE_CONTENT, false, apiParam)
   const response = await makeRequest(url, JSON.stringify(params), requestOptions)
   const responseJson: GenerateContentResponse = await response.json()
   const enhancedResponse = addHelpers(responseJson)
@@ -21,7 +21,7 @@ export async function generateContent(
 export async function makeRequest(url: RequestUrl, body: string, requestOptions?: RequestOptions): Promise<Response> {
   let response: Response
   try {
-    response = await fetch(url.toString(), {
+    response = await fetch(url.toURL(), {
       ...buildFetchOptions(requestOptions),
       method: "POST",
       headers: {
@@ -37,13 +37,13 @@ export async function makeRequest(url: RequestUrl, body: string, requestOptions?
         if (json.error.details) {
           message += ` ${JSON.stringify(json.error.details)}`
         }
-      } catch (e) {
+      } catch (_e) {
         // ignored
       }
       throw new Error(`[${response.status} ${response.statusText}] ${message}`)
     }
   } catch (e) {
-    const err = new GoogleGenerativeAIError(`Error fetching from ${url.toString()}: ${e.message}`)
+    const err = new GoogleGenerativeAIError(`Error fetching from ${url.toURL()} -> ${e.message}`)
     err.stack = e.stack
     throw err
   }
@@ -57,18 +57,13 @@ export class RequestUrl {
     public stream: boolean,
     public apiParam: ApiParam,
   ) {}
-  toString(): string {
-    const urlSearchParams = new URLSearchParams({
-      key: this.apiParam.apikey,
-    })
-    if (this.stream) {
-      urlSearchParams.append("alt", "sse")
-    }
-
+  toURL(): URL {
     const api_version = this.apiParam.useBeta ? API_VERSION.v1beta : API_VERSION.v1
-
-    const url = `${BASE_URL}/${api_version}/models/${this.model}:${this.task}?${urlSearchParams.toString()}`
-
+    const url = new URL(`${BASE_URL}/${api_version}/models/${this.model}:${this.task}`)
+    url.searchParams.append("key", this.apiParam.apikey)
+    if (this.stream) {
+      url.searchParams.append("alt", "sse")
+    }
     return url
   }
 }

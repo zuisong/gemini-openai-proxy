@@ -28,15 +28,15 @@ export const streamingChatProxyHandler: ChatProxyHandlerType = async (c, req, ge
       .then((it) => it.response.text())
       .catch((e) => e.message ?? e?.toString())
 
+    log.debug(req)
+    log.debug(geminiResp)
+
     await sseStream.writeSSE({
       data: JSON.stringify(genOpenAiResp(geminiResp, false)),
     })
     await sseStream.writeSSE({
       data: JSON.stringify(genOpenAiResp("", true)),
     })
-    const geminiResult = geminiResp
-    log.debug(req)
-    log.debug(geminiResult)
 
     await sseStream.writeSSE({ data: "[DONE]" })
     await sseStream.close()
