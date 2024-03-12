@@ -390,11 +390,11 @@ var serve = (options, listeningListener) => {
   return server;
 };
 
-// node_modules/.deno/hono@4.0.9/node_modules/hono/dist/helper/adapter/index.js
+// node_modules/.deno/hono@4.1.0/node_modules/hono/dist/helper/adapter/index.js
 var env = (c, runtime) => {
   const global2 = globalThis;
   const globalEnv = global2?.process?.env;
-  runtime ?? (runtime = getRuntimeKey());
+  runtime ??= getRuntimeKey();
   const runtimeEnvHandlers = {
     bun: () => globalEnv,
     node: () => globalEnv,
@@ -431,7 +431,7 @@ var getRuntimeKey = () => {
   return "other";
 };
 
-// node_modules/.deno/hono@4.0.9/node_modules/hono/dist/middleware/cors/index.js
+// node_modules/.deno/hono@4.1.0/node_modules/hono/dist/middleware/cors/index.js
 var cors = (options) => {
   const defaults = {
     origin: "*",
@@ -499,7 +499,14 @@ var cors = (options) => {
   };
 };
 
-// node_modules/.deno/hono@4.0.9/node_modules/hono/dist/utils/url.js
+// node_modules/.deno/hono@4.1.0/node_modules/hono/dist/utils/color.js
+function getColorEnabled() {
+  const { process, Deno: Deno2 } = globalThis;
+  const isNoColor = typeof process !== "undefined" ? "NO_COLOR" in process?.env : typeof Deno2?.noColor === "boolean" ? Deno2.noColor : false;
+  return !isNoColor;
+}
+
+// node_modules/.deno/hono@4.1.0/node_modules/hono/dist/utils/url.js
 var getPath = (request) => {
   const match = request.url.match(/^https?:\/\/[^/]+(\/[^?]*)/);
   return match ? match[1] : "";
@@ -567,7 +574,7 @@ var _getQueryParam = (url, key, multiple) => {
     }
   }
   const results = {};
-  encoded ?? (encoded = /[%+]/.test(url));
+  encoded ??= /[%+]/.test(url);
   let keyIndex = url.indexOf("?", 8);
   while (keyIndex !== -1) {
     const nextKeyIndex = url.indexOf("&", keyIndex + 1);
@@ -602,7 +609,7 @@ var _getQueryParam = (url, key, multiple) => {
       ;
       results[name].push(value);
     } else {
-      results[name] ?? (results[name] = value);
+      results[name] ??= value;
     }
   }
   return key ? results[key] : results;
@@ -613,7 +620,7 @@ var getQueryParams = (url, key) => {
 };
 var decodeURIComponent_ = decodeURIComponent;
 
-// node_modules/.deno/hono@4.0.9/node_modules/hono/dist/middleware/logger/index.js
+// node_modules/.deno/hono@4.1.0/node_modules/hono/dist/middleware/logger/index.js
 var humanize = (times) => {
   const [delimiter, separator] = [",", "."];
   const orderTimes = times.map((v) => v.replace(/(\d)(?=(\d\d\d)+(?!\d))/g, "$1" + delimiter));
@@ -624,14 +631,15 @@ var time = (start) => {
   return humanize([delta < 1e3 ? delta + "ms" : Math.round(delta / 1e3) + "s"]);
 };
 var colorStatus = (status) => {
+  const colorEnabled = getColorEnabled();
   const out = {
-    7: `\x1B[35m${status}\x1B[0m`,
-    5: `\x1B[31m${status}\x1B[0m`,
-    4: `\x1B[33m${status}\x1B[0m`,
-    3: `\x1B[36m${status}\x1B[0m`,
-    2: `\x1B[32m${status}\x1B[0m`,
-    1: `\x1B[32m${status}\x1B[0m`,
-    0: `\x1B[33m${status}\x1B[0m`
+    7: colorEnabled ? `\x1B[35m${status}\x1B[0m` : `${status}`,
+    5: colorEnabled ? `\x1B[31m${status}\x1B[0m` : `${status}`,
+    4: colorEnabled ? `\x1B[33m${status}\x1B[0m` : `${status}`,
+    3: colorEnabled ? `\x1B[36m${status}\x1B[0m` : `${status}`,
+    2: colorEnabled ? `\x1B[32m${status}\x1B[0m` : `${status}`,
+    1: colorEnabled ? `\x1B[32m${status}\x1B[0m` : `${status}`,
+    0: colorEnabled ? `\x1B[33m${status}\x1B[0m` : `${status}`
   };
   const calculateStatus = status / 100 | 0;
   return out[calculateStatus];
@@ -651,7 +659,7 @@ var logger = (fn = console.log) => {
   };
 };
 
-// node_modules/.deno/hono@4.0.9/node_modules/hono/dist/utils/html.js
+// node_modules/.deno/hono@4.1.0/node_modules/hono/dist/utils/html.js
 var HtmlEscapedCallbackPhase = {
   Stringify: 1,
   BeforeStream: 2,
@@ -685,187 +693,31 @@ var resolveCallback = async (str, phase, preserveCallbacks, context, buffer) => 
   }
 };
 
-// node_modules/.deno/hono@4.0.9/node_modules/hono/dist/context.js
-var __accessCheck = (obj, member, msg) => {
-  if (!member.has(obj))
-    throw TypeError("Cannot " + msg);
-};
-var __privateGet = (obj, member, getter) => {
-  __accessCheck(obj, member, "read from private field");
-  return getter ? getter.call(obj) : member.get(obj);
-};
-var __privateAdd = (obj, member, value) => {
-  if (member.has(obj))
-    throw TypeError("Cannot add the same private member more than once");
-  member instanceof WeakSet ? member.add(obj) : member.set(obj, value);
-};
-var __privateSet = (obj, member, value, setter) => {
-  __accessCheck(obj, member, "write to private field");
-  setter ? setter.call(obj, value) : member.set(obj, value);
-  return value;
-};
+// node_modules/.deno/hono@4.1.0/node_modules/hono/dist/context.js
 var TEXT_PLAIN = "text/plain; charset=UTF-8";
 var setHeaders = (headers, map = {}) => {
   Object.entries(map).forEach(([key, value]) => headers.set(key, value));
   return headers;
 };
-var _status;
-var _executionCtx;
-var _headers;
-var _preparedHeaders;
-var _res;
-var _isFresh;
 var Context = class {
+  req;
+  env = {};
+  _var = {};
+  finalized = false;
+  error = void 0;
+  #status = 200;
+  #executionCtx;
+  #headers = void 0;
+  #preparedHeaders = void 0;
+  #res;
+  #isFresh = true;
+  layout = void 0;
+  renderer = (content) => this.html(content);
+  notFoundHandler = () => new Response();
   constructor(req, options) {
-    this.env = {};
-    this._var = {};
-    this.finalized = false;
-    this.error = void 0;
-    __privateAdd(this, _status, 200);
-    __privateAdd(this, _executionCtx, void 0);
-    __privateAdd(this, _headers, void 0);
-    __privateAdd(this, _preparedHeaders, void 0);
-    __privateAdd(this, _res, void 0);
-    __privateAdd(this, _isFresh, true);
-    this.layout = void 0;
-    this.renderer = (content) => this.html(content);
-    this.notFoundHandler = () => new Response();
-    this.render = (...args) => this.renderer(...args);
-    this.setLayout = (layout) => this.layout = layout;
-    this.getLayout = () => this.layout;
-    this.setRenderer = (renderer) => {
-      this.renderer = renderer;
-    };
-    this.header = (name, value, options2) => {
-      if (value === void 0) {
-        if (__privateGet(this, _headers)) {
-          __privateGet(this, _headers).delete(name);
-        } else if (__privateGet(this, _preparedHeaders)) {
-          delete __privateGet(this, _preparedHeaders)[name.toLocaleLowerCase()];
-        }
-        if (this.finalized) {
-          this.res.headers.delete(name);
-        }
-        return;
-      }
-      if (options2?.append) {
-        if (!__privateGet(this, _headers)) {
-          __privateSet(this, _isFresh, false);
-          __privateSet(this, _headers, new Headers(__privateGet(this, _preparedHeaders)));
-          __privateSet(this, _preparedHeaders, {});
-        }
-        __privateGet(this, _headers).append(name, value);
-      } else {
-        if (__privateGet(this, _headers)) {
-          __privateGet(this, _headers).set(name, value);
-        } else {
-          __privateGet(this, _preparedHeaders) ?? __privateSet(this, _preparedHeaders, {});
-          __privateGet(this, _preparedHeaders)[name.toLowerCase()] = value;
-        }
-      }
-      if (this.finalized) {
-        if (options2?.append) {
-          this.res.headers.append(name, value);
-        } else {
-          this.res.headers.set(name, value);
-        }
-      }
-    };
-    this.status = (status) => {
-      __privateSet(this, _isFresh, false);
-      __privateSet(this, _status, status);
-    };
-    this.set = (key, value) => {
-      this._var ?? (this._var = {});
-      this._var[key] = value;
-    };
-    this.get = (key) => {
-      return this._var ? this._var[key] : void 0;
-    };
-    this.newResponse = (data, arg, headers) => {
-      if (__privateGet(this, _isFresh) && !headers && !arg && __privateGet(this, _status) === 200) {
-        return new Response(data, {
-          headers: __privateGet(this, _preparedHeaders)
-        });
-      }
-      if (arg && typeof arg !== "number") {
-        const headers2 = setHeaders(new Headers(arg.headers), __privateGet(this, _preparedHeaders));
-        return new Response(data, {
-          headers: headers2,
-          status: arg.status ?? __privateGet(this, _status)
-        });
-      }
-      const status = typeof arg === "number" ? arg : __privateGet(this, _status);
-      __privateGet(this, _preparedHeaders) ?? __privateSet(this, _preparedHeaders, {});
-      __privateGet(this, _headers) ?? __privateSet(this, _headers, new Headers());
-      setHeaders(__privateGet(this, _headers), __privateGet(this, _preparedHeaders));
-      if (__privateGet(this, _res)) {
-        __privateGet(this, _res).headers.forEach((v, k) => {
-          __privateGet(this, _headers)?.set(k, v);
-        });
-        setHeaders(__privateGet(this, _headers), __privateGet(this, _preparedHeaders));
-      }
-      headers ?? (headers = {});
-      for (const [k, v] of Object.entries(headers)) {
-        if (typeof v === "string") {
-          __privateGet(this, _headers).set(k, v);
-        } else {
-          __privateGet(this, _headers).delete(k);
-          for (const v2 of v) {
-            __privateGet(this, _headers).append(k, v2);
-          }
-        }
-      }
-      return new Response(data, {
-        status,
-        headers: __privateGet(this, _headers)
-      });
-    };
-    this.body = (data, arg, headers) => {
-      return typeof arg === "number" ? this.newResponse(data, arg, headers) : this.newResponse(data, arg);
-    };
-    this.text = (text, arg, headers) => {
-      if (!__privateGet(this, _preparedHeaders)) {
-        if (__privateGet(this, _isFresh) && !headers && !arg) {
-          return new Response(text);
-        }
-        __privateSet(this, _preparedHeaders, {});
-      }
-      __privateGet(this, _preparedHeaders)["content-type"] = TEXT_PLAIN;
-      return typeof arg === "number" ? this.newResponse(text, arg, headers) : this.newResponse(text, arg);
-    };
-    this.json = (object, arg, headers) => {
-      const body = JSON.stringify(object);
-      __privateGet(this, _preparedHeaders) ?? __privateSet(this, _preparedHeaders, {});
-      __privateGet(this, _preparedHeaders)["content-type"] = "application/json; charset=UTF-8";
-      return typeof arg === "number" ? this.newResponse(body, arg, headers) : this.newResponse(body, arg);
-    };
-    this.html = (html, arg, headers) => {
-      __privateGet(this, _preparedHeaders) ?? __privateSet(this, _preparedHeaders, {});
-      __privateGet(this, _preparedHeaders)["content-type"] = "text/html; charset=UTF-8";
-      if (typeof html === "object") {
-        if (!(html instanceof Promise)) {
-          html = html.toString();
-        }
-        if (html instanceof Promise) {
-          return html.then((html2) => resolveCallback(html2, HtmlEscapedCallbackPhase.Stringify, false, {})).then((html2) => {
-            return typeof arg === "number" ? this.newResponse(html2, arg, headers) : this.newResponse(html2, arg);
-          });
-        }
-      }
-      return typeof arg === "number" ? this.newResponse(html, arg, headers) : this.newResponse(html, arg);
-    };
-    this.redirect = (location, status = 302) => {
-      __privateGet(this, _headers) ?? __privateSet(this, _headers, new Headers());
-      __privateGet(this, _headers).set("Location", location);
-      return this.newResponse(null, status);
-    };
-    this.notFound = () => {
-      return this.notFoundHandler(this);
-    };
     this.req = req;
     if (options) {
-      __privateSet(this, _executionCtx, options.executionCtx);
+      this.#executionCtx = options.executionCtx;
       this.env = options.env;
       if (options.notFoundHandler) {
         this.notFoundHandler = options.notFoundHandler;
@@ -873,54 +725,181 @@ var Context = class {
     }
   }
   get event() {
-    if (__privateGet(this, _executionCtx) && "respondWith" in __privateGet(this, _executionCtx)) {
-      return __privateGet(this, _executionCtx);
+    if (this.#executionCtx && "respondWith" in this.#executionCtx) {
+      return this.#executionCtx;
     } else {
       throw Error("This context has no FetchEvent");
     }
   }
   get executionCtx() {
-    if (__privateGet(this, _executionCtx)) {
-      return __privateGet(this, _executionCtx);
+    if (this.#executionCtx) {
+      return this.#executionCtx;
     } else {
       throw Error("This context has no ExecutionContext");
     }
   }
   get res() {
-    __privateSet(this, _isFresh, false);
-    return __privateGet(this, _res) || __privateSet(this, _res, new Response("404 Not Found", { status: 404 }));
+    this.#isFresh = false;
+    return this.#res ||= new Response("404 Not Found", { status: 404 });
   }
-  set res(_res2) {
-    __privateSet(this, _isFresh, false);
-    if (__privateGet(this, _res) && _res2) {
-      __privateGet(this, _res).headers.delete("content-type");
-      for (const [k, v] of __privateGet(this, _res).headers.entries()) {
+  set res(_res) {
+    this.#isFresh = false;
+    if (this.#res && _res) {
+      this.#res.headers.delete("content-type");
+      for (const [k, v] of this.#res.headers.entries()) {
         if (k === "set-cookie") {
-          const cookies = __privateGet(this, _res).headers.getSetCookie();
-          _res2.headers.delete("set-cookie");
+          const cookies = this.#res.headers.getSetCookie();
+          _res.headers.delete("set-cookie");
           for (const cookie of cookies) {
-            _res2.headers.append("set-cookie", cookie);
+            _res.headers.append("set-cookie", cookie);
           }
         } else {
-          _res2.headers.set(k, v);
+          _res.headers.set(k, v);
         }
       }
     }
-    __privateSet(this, _res, _res2);
+    this.#res = _res;
     this.finalized = true;
   }
+  render = (...args) => this.renderer(...args);
+  setLayout = (layout) => this.layout = layout;
+  getLayout = () => this.layout;
+  setRenderer = (renderer) => {
+    this.renderer = renderer;
+  };
+  header = (name, value, options) => {
+    if (value === void 0) {
+      if (this.#headers) {
+        this.#headers.delete(name);
+      } else if (this.#preparedHeaders) {
+        delete this.#preparedHeaders[name.toLocaleLowerCase()];
+      }
+      if (this.finalized) {
+        this.res.headers.delete(name);
+      }
+      return;
+    }
+    if (options?.append) {
+      if (!this.#headers) {
+        this.#isFresh = false;
+        this.#headers = new Headers(this.#preparedHeaders);
+        this.#preparedHeaders = {};
+      }
+      this.#headers.append(name, value);
+    } else {
+      if (this.#headers) {
+        this.#headers.set(name, value);
+      } else {
+        this.#preparedHeaders ??= {};
+        this.#preparedHeaders[name.toLowerCase()] = value;
+      }
+    }
+    if (this.finalized) {
+      if (options?.append) {
+        this.res.headers.append(name, value);
+      } else {
+        this.res.headers.set(name, value);
+      }
+    }
+  };
+  status = (status) => {
+    this.#isFresh = false;
+    this.#status = status;
+  };
+  set = (key, value) => {
+    this._var ??= {};
+    this._var[key] = value;
+  };
+  get = (key) => {
+    return this._var ? this._var[key] : void 0;
+  };
   get var() {
     return { ...this._var };
   }
+  newResponse = (data, arg, headers) => {
+    if (this.#isFresh && !headers && !arg && this.#status === 200) {
+      return new Response(data, {
+        headers: this.#preparedHeaders
+      });
+    }
+    if (arg && typeof arg !== "number") {
+      const headers2 = setHeaders(new Headers(arg.headers), this.#preparedHeaders);
+      return new Response(data, {
+        headers: headers2,
+        status: arg.status ?? this.#status
+      });
+    }
+    const status = typeof arg === "number" ? arg : this.#status;
+    this.#preparedHeaders ??= {};
+    this.#headers ??= new Headers();
+    setHeaders(this.#headers, this.#preparedHeaders);
+    if (this.#res) {
+      this.#res.headers.forEach((v, k) => {
+        this.#headers?.set(k, v);
+      });
+      setHeaders(this.#headers, this.#preparedHeaders);
+    }
+    headers ??= {};
+    for (const [k, v] of Object.entries(headers)) {
+      if (typeof v === "string") {
+        this.#headers.set(k, v);
+      } else {
+        this.#headers.delete(k);
+        for (const v2 of v) {
+          this.#headers.append(k, v2);
+        }
+      }
+    }
+    return new Response(data, {
+      status,
+      headers: this.#headers
+    });
+  };
+  body = (data, arg, headers) => {
+    return typeof arg === "number" ? this.newResponse(data, arg, headers) : this.newResponse(data, arg);
+  };
+  text = (text, arg, headers) => {
+    if (!this.#preparedHeaders) {
+      if (this.#isFresh && !headers && !arg) {
+        return new Response(text);
+      }
+      this.#preparedHeaders = {};
+    }
+    this.#preparedHeaders["content-type"] = TEXT_PLAIN;
+    return typeof arg === "number" ? this.newResponse(text, arg, headers) : this.newResponse(text, arg);
+  };
+  json = (object, arg, headers) => {
+    const body = JSON.stringify(object);
+    this.#preparedHeaders ??= {};
+    this.#preparedHeaders["content-type"] = "application/json; charset=UTF-8";
+    return typeof arg === "number" ? this.newResponse(body, arg, headers) : this.newResponse(body, arg);
+  };
+  html = (html, arg, headers) => {
+    this.#preparedHeaders ??= {};
+    this.#preparedHeaders["content-type"] = "text/html; charset=UTF-8";
+    if (typeof html === "object") {
+      if (!(html instanceof Promise)) {
+        html = html.toString();
+      }
+      if (html instanceof Promise) {
+        return html.then((html2) => resolveCallback(html2, HtmlEscapedCallbackPhase.Stringify, false, {})).then((html2) => {
+          return typeof arg === "number" ? this.newResponse(html2, arg, headers) : this.newResponse(html2, arg);
+        });
+      }
+    }
+    return typeof arg === "number" ? this.newResponse(html, arg, headers) : this.newResponse(html, arg);
+  };
+  redirect = (location, status = 302) => {
+    this.#headers ??= new Headers();
+    this.#headers.set("Location", location);
+    return this.newResponse(null, status);
+  };
+  notFound = () => {
+    return this.notFoundHandler(this);
+  };
 };
-_status = /* @__PURE__ */ new WeakMap();
-_executionCtx = /* @__PURE__ */ new WeakMap();
-_headers = /* @__PURE__ */ new WeakMap();
-_preparedHeaders = /* @__PURE__ */ new WeakMap();
-_res = /* @__PURE__ */ new WeakMap();
-_isFresh = /* @__PURE__ */ new WeakMap();
 
-// node_modules/.deno/hono@4.0.9/node_modules/hono/dist/middleware/timing/index.js
+// node_modules/.deno/hono@4.1.0/node_modules/hono/dist/middleware/timing/index.js
 var getTime = () => {
   try {
     return performance.now();
@@ -1005,7 +984,7 @@ var endTime = (c, name, precision) => {
   metrics.timers.delete(name);
 };
 
-// node_modules/.deno/hono@4.0.9/node_modules/hono/dist/compose.js
+// node_modules/.deno/hono@4.1.0/node_modules/hono/dist/compose.js
 var compose = (middleware, onError, onNotFound) => {
   return (context, next) => {
     let index = -1;
@@ -1053,10 +1032,12 @@ var compose = (middleware, onError, onNotFound) => {
   };
 };
 
-// node_modules/.deno/hono@4.0.9/node_modules/hono/dist/http-exception.js
+// node_modules/.deno/hono@4.1.0/node_modules/hono/dist/http-exception.js
 var HTTPException = class extends Error {
+  res;
+  status;
   constructor(status = 500, options) {
-    super(options?.message);
+    super(options?.message, { cause: options?.cause });
     this.res = options?.res;
     this.status = status;
   }
@@ -1070,7 +1051,7 @@ var HTTPException = class extends Error {
   }
 };
 
-// node_modules/.deno/hono@4.0.9/node_modules/hono/dist/utils/body.js
+// node_modules/.deno/hono@4.1.0/node_modules/hono/dist/utils/body.js
 var parseBody = async (request, options = { all: false }) => {
   const headers = request instanceof HonoRequest ? request.raw.headers : request.headers;
   const contentType = headers.get("Content-Type");
@@ -1123,64 +1104,33 @@ var convertToNewArray = (form, key, value) => {
   form[key] = [form[key], value];
 };
 
-// node_modules/.deno/hono@4.0.9/node_modules/hono/dist/request.js
-var __accessCheck2 = (obj, member, msg) => {
-  if (!member.has(obj))
-    throw TypeError("Cannot " + msg);
-};
-var __privateGet2 = (obj, member, getter) => {
-  __accessCheck2(obj, member, "read from private field");
-  return getter ? getter.call(obj) : member.get(obj);
-};
-var __privateAdd2 = (obj, member, value) => {
-  if (member.has(obj))
-    throw TypeError("Cannot add the same private member more than once");
-  member instanceof WeakSet ? member.add(obj) : member.set(obj, value);
-};
-var __privateSet2 = (obj, member, value, setter) => {
-  __accessCheck2(obj, member, "write to private field");
-  setter ? setter.call(obj, value) : member.set(obj, value);
-  return value;
-};
-var _validatedData;
-var _matchResult;
+// node_modules/.deno/hono@4.1.0/node_modules/hono/dist/request.js
 var HonoRequest = class {
+  raw;
+  #validatedData;
+  #matchResult;
+  routeIndex = 0;
+  path;
+  bodyCache = {};
   constructor(request, path = "/", matchResult = [[]]) {
-    __privateAdd2(this, _validatedData, void 0);
-    __privateAdd2(this, _matchResult, void 0);
-    this.routeIndex = 0;
-    this.bodyCache = {};
-    this.cachedBody = (key) => {
-      const { bodyCache, raw: raw2 } = this;
-      const cachedBody = bodyCache[key];
-      if (cachedBody) {
-        return cachedBody;
-      }
-      if (bodyCache.arrayBuffer) {
-        return (async () => {
-          return await new Response(bodyCache.arrayBuffer)[key]();
-        })();
-      }
-      return bodyCache[key] = raw2[key]();
-    };
     this.raw = request;
     this.path = path;
-    __privateSet2(this, _matchResult, matchResult);
-    __privateSet2(this, _validatedData, {});
+    this.#matchResult = matchResult;
+    this.#validatedData = {};
   }
   param(key) {
     return key ? this.getDecodedParam(key) : this.getAllDecodedParams();
   }
   getDecodedParam(key) {
-    const paramKey = __privateGet2(this, _matchResult)[0][this.routeIndex][1][key];
+    const paramKey = this.#matchResult[0][this.routeIndex][1][key];
     const param = this.getParamValue(paramKey);
     return param ? /\%/.test(param) ? decodeURIComponent_(param) : param : void 0;
   }
   getAllDecodedParams() {
     const decoded = {};
-    const keys = Object.keys(__privateGet2(this, _matchResult)[0][this.routeIndex][1]);
+    const keys = Object.keys(this.#matchResult[0][this.routeIndex][1]);
     for (const key of keys) {
-      const value = this.getParamValue(__privateGet2(this, _matchResult)[0][this.routeIndex][1][key]);
+      const value = this.getParamValue(this.#matchResult[0][this.routeIndex][1][key]);
       if (value && typeof value === "string") {
         decoded[key] = /\%/.test(value) ? decodeURIComponent_(value) : value;
       }
@@ -1188,7 +1138,7 @@ var HonoRequest = class {
     return decoded;
   }
   getParamValue(paramKey) {
-    return __privateGet2(this, _matchResult)[1] ? __privateGet2(this, _matchResult)[1][paramKey] : paramKey;
+    return this.#matchResult[1] ? this.#matchResult[1][paramKey] : paramKey;
   }
   query(key) {
     return getQueryParam(this.url, key);
@@ -1214,6 +1164,19 @@ var HonoRequest = class {
     this.bodyCache.parsedBody = parsedBody;
     return parsedBody;
   }
+  cachedBody = (key) => {
+    const { bodyCache, raw: raw2 } = this;
+    const cachedBody = bodyCache[key];
+    if (cachedBody) {
+      return cachedBody;
+    }
+    if (bodyCache.arrayBuffer) {
+      return (async () => {
+        return await new Response(bodyCache.arrayBuffer)[key]();
+      })();
+    }
+    return bodyCache[key] = raw2[key]();
+  };
   json() {
     return this.cachedBody("json");
   }
@@ -1230,10 +1193,10 @@ var HonoRequest = class {
     return this.cachedBody("formData");
   }
   addValidatedData(target, data) {
-    __privateGet2(this, _validatedData)[target] = data;
+    this.#validatedData[target] = data;
   }
   valid(target) {
-    return __privateGet2(this, _validatedData)[target];
+    return this.#validatedData[target];
   }
   get url() {
     return this.raw.url;
@@ -1242,41 +1205,21 @@ var HonoRequest = class {
     return this.raw.method;
   }
   get matchedRoutes() {
-    return __privateGet2(this, _matchResult)[0].map(([[, route]]) => route);
+    return this.#matchResult[0].map(([[, route]]) => route);
   }
   get routePath() {
-    return __privateGet2(this, _matchResult)[0].map(([[, route]]) => route)[this.routeIndex].path;
+    return this.#matchResult[0].map(([[, route]]) => route)[this.routeIndex].path;
   }
 };
-_validatedData = /* @__PURE__ */ new WeakMap();
-_matchResult = /* @__PURE__ */ new WeakMap();
 
-// node_modules/.deno/hono@4.0.9/node_modules/hono/dist/router.js
+// node_modules/.deno/hono@4.1.0/node_modules/hono/dist/router.js
 var METHOD_NAME_ALL = "ALL";
 var METHOD_NAME_ALL_LOWERCASE = "all";
 var METHODS = ["get", "post", "put", "delete", "options", "patch"];
 var UnsupportedPathError = class extends Error {
 };
 
-// node_modules/.deno/hono@4.0.9/node_modules/hono/dist/hono-base.js
-var __accessCheck3 = (obj, member, msg) => {
-  if (!member.has(obj))
-    throw TypeError("Cannot " + msg);
-};
-var __privateGet3 = (obj, member, getter) => {
-  __accessCheck3(obj, member, "read from private field");
-  return getter ? getter.call(obj) : member.get(obj);
-};
-var __privateAdd3 = (obj, member, value) => {
-  if (member.has(obj))
-    throw TypeError("Cannot add the same private member more than once");
-  member instanceof WeakSet ? member.add(obj) : member.set(obj, value);
-};
-var __privateSet3 = (obj, member, value, setter) => {
-  __accessCheck3(obj, member, "write to private field");
-  setter ? setter.call(obj, value) : member.set(obj, value);
-  return value;
-};
+// node_modules/.deno/hono@4.1.0/node_modules/hono/dist/hono-base.js
 var COMPOSED_HANDLER = Symbol("composedHandler");
 function defineDynamicClass() {
   return class {
@@ -1292,54 +1235,25 @@ var errorHandler = (err, c) => {
   console.error(err);
   return c.text("Internal Server Error", 500);
 };
-var _path;
-var _Hono = class extends defineDynamicClass() {
+var Hono = class extends defineDynamicClass() {
+  router;
+  getPath;
+  _basePath = "/";
+  #path = "/";
+  routes = [];
   constructor(options = {}) {
     super();
-    this._basePath = "/";
-    __privateAdd3(this, _path, "/");
-    this.routes = [];
-    this.notFoundHandler = notFoundHandler;
-    this.errorHandler = errorHandler;
-    this.onError = (handler) => {
-      this.errorHandler = handler;
-      return this;
-    };
-    this.notFound = (handler) => {
-      this.notFoundHandler = handler;
-      return this;
-    };
-    this.fetch = (request, Env, executionCtx) => {
-      return this.dispatch(request, executionCtx, Env, request.method);
-    };
-    this.request = (input, requestInit, Env, executionCtx) => {
-      if (input instanceof Request) {
-        if (requestInit !== void 0) {
-          input = new Request(input, requestInit);
-        }
-        return this.fetch(input, Env, executionCtx);
-      }
-      input = input.toString();
-      const path = /^https?:\/\//.test(input) ? input : `http://localhost${mergePath("/", input)}`;
-      const req = new Request(path, requestInit);
-      return this.fetch(req, Env, executionCtx);
-    };
-    this.fire = () => {
-      addEventListener("fetch", (event) => {
-        event.respondWith(this.dispatch(event.request, event, void 0, event.request.method));
-      });
-    };
     const allMethods = [...METHODS, METHOD_NAME_ALL_LOWERCASE];
     allMethods.map((method) => {
       this[method] = (args1, ...args) => {
         if (typeof args1 === "string") {
-          __privateSet3(this, _path, args1);
+          this.#path = args1;
         } else {
-          this.addRoute(method, __privateGet3(this, _path), args1);
+          this.addRoute(method, this.#path, args1);
         }
         args.map((handler) => {
           if (typeof handler !== "string") {
-            this.addRoute(method, __privateGet3(this, _path), handler);
+            this.addRoute(method, this.#path, handler);
           }
         });
         return this;
@@ -1350,10 +1264,10 @@ var _Hono = class extends defineDynamicClass() {
         return this;
       }
       for (const p of [path].flat()) {
-        __privateSet3(this, _path, p);
+        this.#path = p;
         for (const m of [method].flat()) {
           handlers.map((handler) => {
-            this.addRoute(m.toUpperCase(), __privateGet3(this, _path), handler);
+            this.addRoute(m.toUpperCase(), this.#path, handler);
           });
         }
       }
@@ -1361,13 +1275,13 @@ var _Hono = class extends defineDynamicClass() {
     };
     this.use = (arg1, ...handlers) => {
       if (typeof arg1 === "string") {
-        __privateSet3(this, _path, arg1);
+        this.#path = arg1;
       } else {
-        __privateSet3(this, _path, "*");
+        this.#path = "*";
         handlers.unshift(arg1);
       }
       handlers.map((handler) => {
-        this.addRoute(METHOD_NAME_ALL, __privateGet3(this, _path), handler);
+        this.addRoute(METHOD_NAME_ALL, this.#path, handler);
       });
       return this;
     };
@@ -1377,13 +1291,15 @@ var _Hono = class extends defineDynamicClass() {
     this.getPath = strict ? options.getPath ?? getPath : getPathNoStrict;
   }
   clone() {
-    const clone = new _Hono({
+    const clone = new Hono({
       router: this.router,
       getPath: this.getPath
     });
     clone.routes = this.routes;
     return clone;
   }
+  notFoundHandler = notFoundHandler;
+  errorHandler = errorHandler;
   route(path, app2) {
     const subApp = this.basePath(path);
     if (!app2) {
@@ -1406,6 +1322,14 @@ var _Hono = class extends defineDynamicClass() {
     subApp._basePath = mergePath(this._basePath, path);
     return subApp;
   }
+  onError = (handler) => {
+    this.errorHandler = handler;
+    return this;
+  };
+  notFound = (handler) => {
+    this.notFoundHandler = handler;
+    return this;
+  };
   mount(path, applicationHandler, optionHandler) {
     const mergedPath = mergePath(this._basePath, path);
     const pathPrefixLength = mergedPath === "/" ? 0 : mergedPath.length;
@@ -1488,16 +1412,32 @@ var _Hono = class extends defineDynamicClass() {
       }
     })();
   }
+  fetch = (request, Env, executionCtx) => {
+    return this.dispatch(request, executionCtx, Env, request.method);
+  };
+  request = (input, requestInit, Env, executionCtx) => {
+    if (input instanceof Request) {
+      if (requestInit !== void 0) {
+        input = new Request(input, requestInit);
+      }
+      return this.fetch(input, Env, executionCtx);
+    }
+    input = input.toString();
+    const path = /^https?:\/\//.test(input) ? input : `http://localhost${mergePath("/", input)}`;
+    const req = new Request(path, requestInit);
+    return this.fetch(req, Env, executionCtx);
+  };
+  fire = () => {
+    addEventListener("fetch", (event) => {
+      event.respondWith(this.dispatch(event.request, event, void 0, event.request.method));
+    });
+  };
 };
-var Hono = _Hono;
-_path = /* @__PURE__ */ new WeakMap();
 
-// node_modules/.deno/hono@4.0.9/node_modules/hono/dist/router/pattern-router/router.js
+// node_modules/.deno/hono@4.1.0/node_modules/hono/dist/router/pattern-router/router.js
 var PatternRouter = class {
-  constructor() {
-    this.name = "PatternRouter";
-    this.routes = [];
-  }
+  name = "PatternRouter";
+  routes = [];
   add(method, path, handler) {
     const endsWithWildcard = path[path.length - 1] === "*";
     if (endsWithWildcard) {
@@ -1538,7 +1478,7 @@ var PatternRouter = class {
   }
 };
 
-// node_modules/.deno/hono@4.0.9/node_modules/hono/dist/preset/tiny.js
+// node_modules/.deno/hono@4.1.0/node_modules/hono/dist/preset/tiny.js
 var Hono2 = class extends Hono {
   constructor(options = {}) {
     super(options);
@@ -1834,10 +1774,14 @@ var nonStreamingChatProxyHandler = async (c, req, apiParam) => {
   return c.json(resp);
 };
 
-// node_modules/.deno/hono@4.0.9/node_modules/hono/dist/utils/stream.js
+// node_modules/.deno/hono@4.1.0/node_modules/hono/dist/utils/stream.js
 var StreamingApi = class {
+  writer;
+  encoder;
+  writable;
+  abortSubscribers = [];
+  responseReadable;
   constructor(writable, _readable) {
-    this.abortSubscribers = [];
     this.writable = writable;
     this.writer = writable.getWriter();
     this.encoder = new TextEncoder();
@@ -1888,7 +1832,7 @@ var StreamingApi = class {
   }
 };
 
-// node_modules/.deno/hono@4.0.9/node_modules/hono/dist/helper/streaming/sse.js
+// node_modules/.deno/hono@4.1.0/node_modules/hono/dist/helper/streaming/sse.js
 var SSEStreamingApi = class extends StreamingApi {
   constructor(writable, readable) {
     super(writable, readable);
