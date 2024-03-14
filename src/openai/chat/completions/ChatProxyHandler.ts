@@ -14,7 +14,7 @@ export async function chatProxyHandler(rawReq: Request) {
   rawReq.logger?.debug(req)
 
   if (req.stream !== true) {
-    const resp = await nonStreamingChatProxyHandler(req, apiParam)
+    const resp = await nonStreamingChatProxyHandler(req, apiParam, rawReq.logger)
     rawReq.logger?.debug(resp)
     return Response.json(resp)
   }

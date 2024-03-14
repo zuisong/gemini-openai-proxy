@@ -8,6 +8,7 @@ export namespace OpenAI {
     export type ChatCompletionChunk = components["schemas"]["CreateChatCompletionStreamResponse"]
     export type ChatCompletion = components["schemas"]["CreateChatCompletionResponse"]
     export type ChatCompletionMessageParam = components["schemas"]["ChatCompletionRequestMessage"]
+    export type FunctionObject = components["schemas"]["FunctionObject"]
   }
   export namespace Models {
     export type Model = components["schemas"]["Model"]
