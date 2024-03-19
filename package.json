@@ -19,11 +19,11 @@
   },
   "dependencies": {
     "@hono/node-server": "1.8.2",
-    "hono": "4.1.0"
+    "hono": "4.1.2"
   },
   "devDependencies": {
-    "@types/node": "20.11.26",
-    "esbuild": "0.20.1",
+    "@types/node": "20.11.29",
+    "esbuild": "0.20.2",
     "eventsource-parser": "1.1.2"
   }
 }
