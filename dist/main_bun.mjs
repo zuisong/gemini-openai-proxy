@@ -1,4 +1,4 @@
-// node_modules/.deno/hono@4.1.0/node_modules/hono/dist/helper/adapter/index.js
+// node_modules/.deno/hono@4.1.2/node_modules/hono/dist/helper/adapter/index.js
 var env = (c, runtime) => {
   const global = globalThis;
   const globalEnv = global?.process?.env;
@@ -39,235 +39,7 @@ var getRuntimeKey = () => {
   return "other";
 };
 
-// node_modules/.deno/hono@4.1.0/node_modules/hono/dist/middleware/cors/index.js
-var cors = (options) => {
-  const defaults = {
-    origin: "*",
-    allowMethods: ["GET", "HEAD", "PUT", "POST", "DELETE", "PATCH"],
-    allowHeaders: [],
-    exposeHeaders: []
-  };
-  const opts = {
-    ...defaults,
-    ...options
-  };
-  const findAllowOrigin = ((optsOrigin) => {
-    if (typeof optsOrigin === "string") {
-      return () => optsOrigin;
-    } else if (typeof optsOrigin === "function") {
-      return optsOrigin;
-    } else {
-      return (origin) => optsOrigin.includes(origin) ? origin : optsOrigin[0];
-    }
-  })(opts.origin);
-  return async function cors2(c, next) {
-    function set(key, value) {
-      c.res.headers.set(key, value);
-    }
-    const allowOrigin = findAllowOrigin(c.req.header("origin") || "");
-    if (allowOrigin) {
-      set("Access-Control-Allow-Origin", allowOrigin);
-    }
-    if (opts.origin !== "*") {
-      set("Vary", "Origin");
-    }
-    if (opts.credentials) {
-      set("Access-Control-Allow-Credentials", "true");
-    }
-    if (opts.exposeHeaders?.length) {
-      set("Access-Control-Expose-Headers", opts.exposeHeaders.join(","));
-    }
-    if (c.req.method === "OPTIONS") {
-      if (opts.maxAge != null) {
-        set("Access-Control-Max-Age", opts.maxAge.toString());
-      }
-      if (opts.allowMethods?.length) {
-        set("Access-Control-Allow-Methods", opts.allowMethods.join(","));
-      }
-      let headers = opts.allowHeaders;
-      if (!headers?.length) {
-        const requestHeaders = c.req.header("Access-Control-Request-Headers");
-        if (requestHeaders) {
-          headers = requestHeaders.split(/\s*,\s*/);
-        }
-      }
-      if (headers?.length) {
-        set("Access-Control-Allow-Headers", headers.join(","));
-        c.res.headers.append("Vary", "Access-Control-Request-Headers");
-      }
-      c.res.headers.delete("Content-Length");
-      c.res.headers.delete("Content-Type");
-      return new Response(null, {
-        headers: c.res.headers,
-        status: 204,
-        statusText: c.res.statusText
-      });
-    }
-    await next();
-  };
-};
-
-// node_modules/.deno/hono@4.1.0/node_modules/hono/dist/utils/color.js
-function getColorEnabled() {
-  const { process, Deno: Deno2 } = globalThis;
-  const isNoColor = typeof process !== "undefined" ? "NO_COLOR" in process?.env : typeof Deno2?.noColor === "boolean" ? Deno2.noColor : false;
-  return !isNoColor;
-}
-
-// node_modules/.deno/hono@4.1.0/node_modules/hono/dist/utils/url.js
-var getPath = (request) => {
-  const match = request.url.match(/^https?:\/\/[^/]+(\/[^?]*)/);
-  return match ? match[1] : "";
-};
-var getQueryStrings = (url) => {
-  const queryIndex = url.indexOf("?", 8);
-  return queryIndex === -1 ? "" : "?" + url.slice(queryIndex + 1);
-};
-var getPathNoStrict = (request) => {
-  const result = getPath(request);
-  return result.length > 1 && result[result.length - 1] === "/" ? result.slice(0, -1) : result;
-};
-var mergePath = (...paths) => {
-  let p = "";
-  let endsWithSlash = false;
-  for (let path of paths) {
-    if (p[p.length - 1] === "/") {
-      p = p.slice(0, -1);
-      endsWithSlash = true;
-    }
-    if (path[0] !== "/") {
-      path = `/${path}`;
-    }
-    if (path === "/" && endsWithSlash) {
-      p = `${p}/`;
-    } else if (path !== "/") {
-      p = `${p}${path}`;
-    }
-    if (path === "/" && p === "") {
-      p = "/";
-    }
-  }
-  return p;
-};
-var _decodeURI = (value) => {
-  if (!/[%+]/.test(value)) {
-    return value;
-  }
-  if (value.indexOf("+") !== -1) {
-    value = value.replace(/\+/g, " ");
-  }
-  return /%/.test(value) ? decodeURIComponent_(value) : value;
-};
-var _getQueryParam = (url, key, multiple) => {
-  let encoded;
-  if (!multiple && key && !/[%+]/.test(key)) {
-    let keyIndex2 = url.indexOf(`?${key}`, 8);
-    if (keyIndex2 === -1) {
-      keyIndex2 = url.indexOf(`&${key}`, 8);
-    }
-    while (keyIndex2 !== -1) {
-      const trailingKeyCode = url.charCodeAt(keyIndex2 + key.length + 1);
-      if (trailingKeyCode === 61) {
-        const valueIndex = keyIndex2 + key.length + 2;
-        const endIndex = url.indexOf("&", valueIndex);
-        return _decodeURI(url.slice(valueIndex, endIndex === -1 ? void 0 : endIndex));
-      } else if (trailingKeyCode == 38 || isNaN(trailingKeyCode)) {
-        return "";
-      }
-      keyIndex2 = url.indexOf(`&${key}`, keyIndex2 + 1);
-    }
-    encoded = /[%+]/.test(url);
-    if (!encoded) {
-      return void 0;
-    }
-  }
-  const results = {};
-  encoded ??= /[%+]/.test(url);
-  let keyIndex = url.indexOf("?", 8);
-  while (keyIndex !== -1) {
-    const nextKeyIndex = url.indexOf("&", keyIndex + 1);
-    let valueIndex = url.indexOf("=", keyIndex);
-    if (valueIndex > nextKeyIndex && nextKeyIndex !== -1) {
-      valueIndex = -1;
-    }
-    let name = url.slice(
-      keyIndex + 1,
-      valueIndex === -1 ? nextKeyIndex === -1 ? void 0 : nextKeyIndex : valueIndex
-    );
-    if (encoded) {
-      name = _decodeURI(name);
-    }
-    keyIndex = nextKeyIndex;
-    if (name === "") {
-      continue;
-    }
-    let value;
-    if (valueIndex === -1) {
-      value = "";
-    } else {
-      value = url.slice(valueIndex + 1, nextKeyIndex === -1 ? void 0 : nextKeyIndex);
-      if (encoded) {
-        value = _decodeURI(value);
-      }
-    }
-    if (multiple) {
-      if (!(results[name] && Array.isArray(results[name]))) {
-        results[name] = [];
-      }
-      ;
-      results[name].push(value);
-    } else {
-      results[name] ??= value;
-    }
-  }
-  return key ? results[key] : results;
-};
-var getQueryParam = _getQueryParam;
-var getQueryParams = (url, key) => {
-  return _getQueryParam(url, key, true);
-};
-var decodeURIComponent_ = decodeURIComponent;
-
-// node_modules/.deno/hono@4.1.0/node_modules/hono/dist/middleware/logger/index.js
-var humanize = (times) => {
-  const [delimiter, separator] = [",", "."];
-  const orderTimes = times.map((v) => v.replace(/(\d)(?=(\d\d\d)+(?!\d))/g, "$1" + delimiter));
-  return orderTimes.join(separator);
-};
-var time = (start) => {
-  const delta = Date.now() - start;
-  return humanize([delta < 1e3 ? delta + "ms" : Math.round(delta / 1e3) + "s"]);
-};
-var colorStatus = (status) => {
-  const colorEnabled = getColorEnabled();
-  const out = {
-    7: colorEnabled ? `\x1B[35m${status}\x1B[0m` : `${status}`,
-    5: colorEnabled ? `\x1B[31m${status}\x1B[0m` : `${status}`,
-    4: colorEnabled ? `\x1B[33m${status}\x1B[0m` : `${status}`,
-    3: colorEnabled ? `\x1B[36m${status}\x1B[0m` : `${status}`,
-    2: colorEnabled ? `\x1B[32m${status}\x1B[0m` : `${status}`,
-    1: colorEnabled ? `\x1B[32m${status}\x1B[0m` : `${status}`,
-    0: colorEnabled ? `\x1B[33m${status}\x1B[0m` : `${status}`
-  };
-  const calculateStatus = status / 100 | 0;
-  return out[calculateStatus];
-};
-function log(fn, prefix, method, path, status = 0, elapsed) {
-  const out = prefix === "<--" ? `  ${prefix} ${method} ${path}` : `  ${prefix} ${method} ${path} ${colorStatus(status)} ${elapsed}`;
-  fn(out);
-}
-var logger = (fn = console.log) => {
-  return async function logger2(c, next) {
-    const { method } = c.req;
-    const path = getPath(c.req.raw);
-    log(fn, "<--", method, path);
-    const start = Date.now();
-    await next();
-    log(fn, "-->", method, path, c.res.status, time(start));
-  };
-};
-
-// node_modules/.deno/hono@4.1.0/node_modules/hono/dist/utils/html.js
+// node_modules/.deno/hono@4.1.2/node_modules/hono/dist/utils/html.js
 var HtmlEscapedCallbackPhase = {
   Stringify: 1,
   BeforeStream: 2,
@@ -301,7 +73,7 @@ var resolveCallback = async (str, phase, preserveCallbacks, context, buffer) => 
   }
 };
 
-// node_modules/.deno/hono@4.1.0/node_modules/hono/dist/context.js
+// node_modules/.deno/hono@4.1.2/node_modules/hono/dist/context.js
 var TEXT_PLAIN = "text/plain; charset=UTF-8";
 var setHeaders = (headers, map = {}) => {
   Object.entries(map).forEach(([key, value]) => headers.set(key, value));
@@ -431,7 +203,13 @@ var Context = class {
       });
     }
     if (arg && typeof arg !== "number") {
-      const headers2 = setHeaders(new Headers(arg.headers), this.#preparedHeaders);
+      const header = new Headers(arg.headers);
+      if (this.#headers) {
+        this.#headers.forEach((v, k) => {
+          header.set(k, v);
+        });
+      }
+      const headers2 = setHeaders(header, this.#preparedHeaders);
       return new Response(data, {
         headers: headers2,
         status: arg.status ?? this.#status
@@ -507,92 +285,7 @@ var Context = class {
   };
 };
 
-// node_modules/.deno/hono@4.1.0/node_modules/hono/dist/middleware/timing/index.js
-var getTime = () => {
-  try {
-    return performance.now();
-  } catch {
-  }
-  return Date.now();
-};
-var timing = (config) => {
-  const options = {
-    ...{
-      total: true,
-      enabled: true,
-      totalDescription: "Total Response Time",
-      autoEnd: true,
-      crossOrigin: false
-    },
-    ...config
-  };
-  return async function timing2(c, next) {
-    const headers = [];
-    const timers = /* @__PURE__ */ new Map();
-    c.set("metric", { headers, timers });
-    if (options.total) {
-      startTime(c, "total", options.totalDescription);
-    }
-    await next();
-    if (options.total) {
-      endTime(c, "total");
-    }
-    if (options.autoEnd) {
-      timers.forEach((_, key) => endTime(c, key));
-    }
-    const enabled = typeof options.enabled === "function" ? options.enabled(c) : options.enabled;
-    if (enabled) {
-      c.res.headers.append("Server-Timing", headers.join(","));
-      if (options.crossOrigin) {
-        c.res.headers.append(
-          "Timing-Allow-Origin",
-          typeof options.crossOrigin === "string" ? options.crossOrigin : "*"
-        );
-      }
-    }
-  };
-};
-var setMetric = (c, name, valueDescription, description, precision) => {
-  const metrics = c.get("metric");
-  if (!metrics) {
-    console.warn("Metrics not initialized! Please add the `timing()` middleware to this route!");
-    return;
-  }
-  if (typeof valueDescription === "number") {
-    const dur = valueDescription.toFixed(precision || 1);
-    const metric = description ? `${name};dur=${dur};desc="${description}"` : `${name};dur=${dur}`;
-    metrics.headers.push(metric);
-  } else {
-    const metric = valueDescription ? `${name};desc="${valueDescription}"` : `${name}`;
-    metrics.headers.push(metric);
-  }
-};
-var startTime = (c, name, description) => {
-  const metrics = c.get("metric");
-  if (!metrics) {
-    console.warn("Metrics not initialized! Please add the `timing()` middleware to this route!");
-    return;
-  }
-  metrics.timers.set(name, { description, start: getTime() });
-};
-var endTime = (c, name, precision) => {
-  const metrics = c.get("metric");
-  if (!metrics) {
-    console.warn("Metrics not initialized! Please add the `timing()` middleware to this route!");
-    return;
-  }
-  const timer = metrics.timers.get(name);
-  if (!timer) {
-    console.warn(`Timer "${name}" does not exist!`);
-    return;
-  }
-  const { description, start } = timer;
-  const duration = getTime() - start;
-  setMetric(c, name, duration, description, precision);
-  metrics.timers.delete(name);
-};
-
-// node_modules/.deno/hono@4.1.0/node_modules/hono/dist/compose.js
+// node_modules/.deno/hono@4.1.2/node_modules/hono/dist/compose.js
 var compose = (middleware, onError, onNotFound) => {
   return (context, next) => {
     let index = -1;
@@ -640,7 +333,7 @@ var compose = (middleware, onError, onNotFound) => {
   };
 };
 
-// node_modules/.deno/hono@4.1.0/node_modules/hono/dist/http-exception.js
+// node_modules/.deno/hono@4.1.2/node_modules/hono/dist/http-exception.js
 var HTTPException = class extends Error {
   res;
   status;
@@ -659,7 +352,7 @@ var HTTPException = class extends Error {
   }
 };
 
-// node_modules/.deno/hono@4.1.0/node_modules/hono/dist/utils/body.js
+// node_modules/.deno/hono@4.1.2/node_modules/hono/dist/utils/body.js
 var parseBody = async (request, options = { all: false }) => {
   const headers = request instanceof HonoRequest ? request.raw.headers : request.headers;
   const contentType = headers.get("Content-Type");
@@ -712,7 +405,122 @@ var convertToNewArray = (form, key, value) => {
   form[key] = [form[key], value];
 };
 
-// node_modules/.deno/hono@4.1.0/node_modules/hono/dist/request.js
+// node_modules/.deno/hono@4.1.2/node_modules/hono/dist/utils/url.js
+var getPath = (request) => {
+  const url = request.url;
+  const queryIndex = url.indexOf("?", 8);
+  return url.slice(url.indexOf("/", 8), queryIndex === -1 ? void 0 : queryIndex);
+};
+var getQueryStrings = (url) => {
+  const queryIndex = url.indexOf("?", 8);
+  return queryIndex === -1 ? "" : "?" + url.slice(queryIndex + 1);
+};
+var getPathNoStrict = (request) => {
+  const result = getPath(request);
+  return result.length > 1 && result[result.length - 1] === "/" ? result.slice(0, -1) : result;
+};
+var mergePath = (...paths) => {
+  let p = "";
+  let endsWithSlash = false;
+  for (let path of paths) {
+    if (p[p.length - 1] === "/") {
+      p = p.slice(0, -1);
+      endsWithSlash = true;
+    }
+    if (path[0] !== "/") {
+      path = `/${path}`;
+    }
+    if (path === "/" && endsWithSlash) {
+      p = `${p}/`;
+    } else if (path !== "/") {
+      p = `${p}${path}`;
+    }
+    if (path === "/" && p === "") {
+      p = "/";
+    }
+  }
+  return p;
+};
+var _decodeURI = (value) => {
+  if (!/[%+]/.test(value)) {
+    return value;
+  }
+  if (value.indexOf("+") !== -1) {
+    value = value.replace(/\+/g, " ");
+  }
+  return /%/.test(value) ? decodeURIComponent_(value) : value;
+};
+var _getQueryParam = (url, key, multiple) => {
+  let encoded;
+  if (!multiple && key && !/[%+]/.test(key)) {
+    let keyIndex2 = url.indexOf(`?${key}`, 8);
+    if (keyIndex2 === -1) {
+      keyIndex2 = url.indexOf(`&${key}`, 8);
+    }
+    while (keyIndex2 !== -1) {
+      const trailingKeyCode = url.charCodeAt(keyIndex2 + key.length + 1);
+      if (trailingKeyCode === 61) {
+        const valueIndex = keyIndex2 + key.length + 2;
+        const endIndex = url.indexOf("&", valueIndex);
+        return _decodeURI(url.slice(valueIndex, endIndex === -1 ? void 0 : endIndex));
+      } else if (trailingKeyCode == 38 || isNaN(trailingKeyCode)) {
+        return "";
+      }
+      keyIndex2 = url.indexOf(`&${key}`, keyIndex2 + 1);
+    }
+    encoded = /[%+]/.test(url);
+    if (!encoded) {
+      return void 0;
+    }
+  }
+  const results = {};
+  encoded ??= /[%+]/.test(url);
+  let keyIndex = url.indexOf("?", 8);
+  while (keyIndex !== -1) {
+    const nextKeyIndex = url.indexOf("&", keyIndex + 1);
+    let valueIndex = url.indexOf("=", keyIndex);
+    if (valueIndex > nextKeyIndex && nextKeyIndex !== -1) {
+      valueIndex = -1;
+    }
+    let name = url.slice(
+      keyIndex + 1,
+      valueIndex === -1 ? nextKeyIndex === -1 ? void 0 : nextKeyIndex : valueIndex
+    );
+    if (encoded) {
+      name = _decodeURI(name);
+    }
+    keyIndex = nextKeyIndex;
+    if (name === "") {
+      continue;
+    }
+    let value;
+    if (valueIndex === -1) {
+      value = "";
+    } else {
+      value = url.slice(valueIndex + 1, nextKeyIndex === -1 ? void 0 : nextKeyIndex);
+      if (encoded) {
+        value = _decodeURI(value);
+      }
+    }
+    if (multiple) {
+      if (!(results[name] && Array.isArray(results[name]))) {
+        results[name] = [];
+      }
+      ;
+      results[name].push(value);
+    } else {
+      results[name] ??= value;
+    }
+  }
+  return key ? results[key] : results;
+};
+var getQueryParam = _getQueryParam;
+var getQueryParams = (url, key) => {
+  return _getQueryParam(url, key, true);
+};
+var decodeURIComponent_ = decodeURIComponent;
+
+// node_modules/.deno/hono@4.1.2/node_modules/hono/dist/request.js
 var HonoRequest = class {
   raw;
   #validatedData;
@@ -820,14 +628,14 @@ var HonoRequest = class {
   }
 };
 
-// node_modules/.deno/hono@4.1.0/node_modules/hono/dist/router.js
+// node_modules/.deno/hono@4.1.2/node_modules/hono/dist/router.js
 var METHOD_NAME_ALL = "ALL";
 var METHOD_NAME_ALL_LOWERCASE = "all";
 var METHODS = ["get", "post", "put", "delete", "options", "patch"];
 var UnsupportedPathError = class extends Error {
 };
 
-// node_modules/.deno/hono@4.1.0/node_modules/hono/dist/hono-base.js
+// node_modules/.deno/hono@4.1.2/node_modules/hono/dist/hono-base.js
 var COMPOSED_HANDLER = Symbol("composedHandler");
 function defineDynamicClass() {
   return class {
@@ -1042,7 +850,7 @@ var Hono = class extends defineDynamicClass() {
   };
 };
 
-// node_modules/.deno/hono@4.1.0/node_modules/hono/dist/router/pattern-router/router.js
+// node_modules/.deno/hono@4.1.2/node_modules/hono/dist/router/pattern-router/router.js
 var PatternRouter = class {
   name = "PatternRouter";
   routes = [];
@@ -1051,19 +859,16 @@ var PatternRouter = class {
     if (endsWithWildcard) {
       path = path.slice(0, -2);
     }
-    const parts = path.match(/\/?(:\w+(?:{(?:(?:{[\d,]+})|[^}])+})?)|\/?[^\/\?]+|(\?)/g) || [];
-    if (parts[parts.length - 1] === "?") {
-      this.add(method, parts.slice(0, parts.length - 2).join(""), handler);
-      parts.pop();
+    if (path.at(-1) === "?") {
+      path = path.slice(0, -1);
+      this.add(method, path.replace(/\/[^/]+$/, ""), handler);
     }
-    for (let i = 0, len = parts.length; i < len; i++) {
-      const match = parts[i].match(/^\/:([^{]+)(?:{(.*)})?/);
-      if (match) {
-        parts[i] = `/(?<${match[1]}>${match[2] || "[^/]+"})`;
-      } else if (parts[i] === "/*") {
-        parts[i] = "/[^/]+";
+    const parts = (path.match(/\/?(:\w+(?:{(?:(?:{[\d,]+})|[^}])+})?)|\/?[^\/\?]+/g) || []).map(
+      (part) => {
+        const match = part.match(/^\/:([^{]+)(?:{(.*)})?/);
+        return match ? `/(?<${match[1]}>${match[2] || "[^/]+"})` : part === "/*" ? "/[^/]+" : part.replace(/[.\\+*[^\]$()]/g, "\\$&");
       }
-    }
+    );
     let re;
     try {
       re = new RegExp(`^${parts.join("")}${endsWithWildcard ? "" : "/?$"}`);
@@ -1078,7 +883,7 @@ var PatternRouter = class {
       if (routeMethod === METHOD_NAME_ALL || routeMethod === method) {
         const match = pattern.exec(path);
         if (match) {
-          handlers.push([handler, match.groups || {}]);
+          handlers.push([handler, match.groups || /* @__PURE__ */ Object.create(null)]);
         }
       }
     }
@@ -1086,7 +891,7 @@ var PatternRouter = class {
   }
 };
 
-// node_modules/.deno/hono@4.1.0/node_modules/hono/dist/preset/tiny.js
+// node_modules/.deno/hono@4.1.2/node_modules/hono/dist/preset/tiny.js
 var Hono2 = class extends Hono {
   constructor(options = {}) {
     super(options);
@@ -1098,12 +903,19 @@ var Hono2 = class extends Hono {
 var LEVEL = ["debug", "info", "warn", "error"];
 var Logger = class {
   config;
+  debug;
+  info;
+  warn;
+  error;
   constructor(config) {
     const level = LEVEL.find((it) => it === config?.level) ?? "warn";
     this.config = {
       prefix: config?.prefix ?? "",
       level
     };
+    for (const m of LEVEL) {
+      this[m] = (...data) => this.#write(m, ...data);
+    }
   }
   #write(level, ...data) {
     const { level: configLevel, prefix } = this.config;
@@ -1112,10 +924,6 @@ var Logger = class {
     }
     console[level](`${(/* @__PURE__ */ new Date()).toISOString()} ${level.toUpperCase()}${prefix ? ` ${prefix}` : ""}`, ...data);
   }
-  debug = (...data) => this.#write("debug", ...data);
-  info = (...data) => this.#write("info", ...data);
-  warn = (...data) => this.#write("warn", ...data);
-  error = (...data) => this.#write("error", ...data);
 };
 
 // src/utils.ts
@@ -1279,13 +1087,7 @@ function formatBlockErrorMessage(response) {
 
 // src/gemini-api-client/gemini-api-client.ts
 async function generateContent(apiParam, model, params, requestOptions) {
-  const url = new RequestUrl(
-    model,
-    "generateContent" /* GENERATE_CONTENT */,
-    /* stream */
-    false,
-    apiParam
-  );
+  const url = new RequestUrl(model, "generateContent" /* GENERATE_CONTENT */, false, apiParam);
   const response = await makeRequest(url, JSON.stringify(params), requestOptions);
   const responseJson = await response.json();
   const enhancedResponse = addHelpers(responseJson);
@@ -1296,7 +1098,7 @@ async function generateContent(apiParam, model, params, requestOptions) {
 async function makeRequest(url, body, requestOptions) {
   let response;
   try {
-    response = await fetch(url.toString(), {
+    response = await fetch(url.toURL(), {
       ...buildFetchOptions(requestOptions),
       method: "POST",
       headers: {
@@ -1312,12 +1114,12 @@ async function makeRequest(url, body, requestOptions) {
         if (json.error.details) {
           message += ` ${JSON.stringify(json.error.details)}`;
         }
-      } catch (e) {
+      } catch (_e) {
       }
       throw new Error(`[${response.status} ${response.statusText}] ${message}`);
     }
   } catch (e) {
-    const err = new GoogleGenerativeAIError(`Error fetching from ${url.toString()}: ${e.message}`);
+    const err = new GoogleGenerativeAIError(`Error fetching from ${url.toURL()} -> ${e.message}`);
     err.stack = e.stack;
     throw err;
   }
@@ -1330,15 +1132,13 @@ var RequestUrl = class {
     this.stream = stream2;
     this.apiParam = apiParam;
   }
-  toString() {
-    const urlSearchParams = new URLSearchParams({
-      key: this.apiParam.apikey
-    });
-    if (this.stream) {
-      urlSearchParams.append("alt", "sse");
-    }
+  toURL() {
     const api_version = this.apiParam.useBeta ? "v1beta" /* v1beta */ : "v1" /* v1 */;
-    const url = `${BASE_URL}/${api_version}/models/${this.model}:${this.task}?${urlSearchParams.toString()}`;
+    const url = new URL(`${BASE_URL}/${api_version}/models/${this.model}:${this.task}`);
+    url.searchParams.append("key", this.apiParam.apikey);
+    if (this.stream) {
+      url.searchParams.append("alt", "sse");
+    }
     return url;
   }
 };
@@ -1356,15 +1156,15 @@ function buildFetchOptions(requestOptions) {
 
 // src/openai/chat/completions/NonStreamingChatProxyHandler.ts
 var nonStreamingChatProxyHandler = async (c, req, apiParam) => {
-  const log2 = c.var.log;
+  const log = c.var.log;
   const [model, geminiReq] = genModel(req);
   const geminiResp = await generateContent(apiParam, model, geminiReq).then((it) => it.response.text()).catch((err) => {
-    log2.error(req);
-    log2.error(err?.message ?? err.toString());
+    log.error(req);
+    log.error(err?.message ?? err.toString());
     return err?.message ?? err.toString();
   });
-  log2.debug(req);
-  log2.debug(geminiResp);
+  log.debug(req);
+  log.debug(geminiResp);
   const resp = {
     id: "chatcmpl-abc123",
     object: "chat.completion",
@@ -1382,7 +1182,7 @@ var nonStreamingChatProxyHandler = async (c, req, apiParam) => {
   return c.json(resp);
 };
 
-// node_modules/.deno/hono@4.1.0/node_modules/hono/dist/utils/stream.js
+// node_modules/.deno/hono@4.1.2/node_modules/hono/dist/utils/stream.js
 var StreamingApi = class {
   writer;
   encoder;
@@ -1440,7 +1240,7 @@ var StreamingApi = class {
   }
 };
 
-// node_modules/.deno/hono@4.1.0/node_modules/hono/dist/helper/streaming/sse.js
+// node_modules/.deno/hono@4.1.2/node_modules/hono/dist/helper/streaming/sse.js
 var SSEStreamingApi = class extends StreamingApi {
   constructor(writable, readable) {
     super(writable, readable);
@@ -1458,35 +1258,35 @@ var SSEStreamingApi = class extends StreamingApi {
     await this.write(sseData);
   }
 };
-var setSSEHeaders = (context) => {
-  context.header("Transfer-Encoding", "chunked");
-  context.header("Content-Type", "text/event-stream");
-  context.header("Cache-Control", "no-cache");
-  context.header("Connection", "keep-alive");
+var run = async (stream2, cb, onError) => {
+  try {
+    await cb(stream2);
+  } catch (e) {
+    if (e instanceof Error && onError) {
+      await onError(e, stream2);
+      await stream2.writeSSE({
+        event: "error",
+        data: e.message
+      });
+    } else {
+      console.error(e);
+    }
+  }
 };
 var streamSSE = (c, cb, onError) => {
   const { readable, writable } = new TransformStream();
   const stream2 = new SSEStreamingApi(writable, readable);
-  (async () => {
-    try {
-      await cb(stream2);
-    } catch (e) {
-      if (e instanceof Error && onError) {
-        await onError(e, stream2);
-      } else {
-        console.error(e);
-      }
-    } finally {
-      stream2.close();
-    }
-  })();
-  setSSEHeaders(c);
+  c.header("Transfer-Encoding", "chunked");
+  c.header("Content-Type", "text/event-stream");
+  c.header("Cache-Control", "no-cache");
+  c.header("Connection", "keep-alive");
+  run(stream2, cb, onError);
   return c.newResponse(stream2.responseReadable);
 };
 
 // src/openai/chat/completions/StreamingChatProxyHandler.ts
 var streamingChatProxyHandler = async (c, req, genAi) => {
-  const log2 = c.var.log;
+  const log = c.var.log;
   const genOpenAiResp = (content, stop) => ({
     id: "chatcmpl-abc123",
     object: "chat.completion.chunk",
@@ -1503,15 +1303,14 @@ var streamingChatProxyHandler = async (c, req, genAi) => {
   return streamSSE(c, async (sseStream) => {
     const [model, geminiReq] = genModel(req);
     const geminiResp = await generateContent(genAi, model, geminiReq).then((it) => it.response.text()).catch((e) => e.message ?? e?.toString());
+    log.debug(req);
+    log.debug(geminiResp);
     await sseStream.writeSSE({
       data: JSON.stringify(genOpenAiResp(geminiResp, false))
     });
     await sseStream.writeSSE({
       data: JSON.stringify(genOpenAiResp("", true))
     });
-    const geminiResult = geminiResp;
-    log2.debug(req);
-    log2.debug(geminiResult);
     await sseStream.writeSSE({ data: "[DONE]" });
     await sseStream.close();
   });
@@ -1519,9 +1318,9 @@ var streamingChatProxyHandler = async (c, req, genAi) => {
 
 // src/openai/chat/completions/ChatProxyHandler.ts
 var chatProxyHandler = async (c) => {
-  const log2 = c.var.log;
+  const log = c.var.log;
   const req = await c.req.json();
-  log2.debug(req);
+  log.debug(req);
   const headers = c.req.header();
   const apiParam = getToken(headers);
   if (apiParam == null) {
@@ -1596,25 +1395,26 @@ var modelDetail = async (c) => {
 };
 
 // src/app.ts
-var geminiProxy = async (c) => {
-  const rawReq = c.req.raw;
-  const url = new URL(rawReq.url);
-  url.host = "generativelanguage.googleapis.com";
-  url.port = "";
-  url.protocol = "https:";
-  const req = new Request(url, rawReq.clone());
-  const resp = await fetch(req);
-  return c.newResponse(resp.body, resp);
-};
-var app = new Hono2({ strict: true }).use("*", cors(), timing(), logger()).use("*", async (c, next) => {
-  const logger2 = new Logger({
+var app = new Hono2({ strict: true }).use("*", async (c, next) => {
+  const logger = new Logger({
     level: env(c)?.LogLevel,
     prefix: crypto.randomUUID()
   });
-  c.set("log", logger2);
+  c.set("log", logger);
   await next();
-  c.set("log", void 0);
-}).options("*", (c) => c.text("", 204)).get("/", (c) => {
+}).use("*", async (c, next) => {
+  c.var.log.warn(`--> ${c.req.method} ${c.req.path}`);
+  await next();
+  c.var.log.warn(`<-- ${c.req.method} ${c.req.path}`);
+}).options("*", () => {
+  return new Response(null, {
+    status: 204,
+    headers: {
+      "Access-Control-Allow-Methods": ["GET", "HEAD", "PUT", "POST", "DELETE", "PATCH"].join(","),
+      "Access-Control-Allow-Origin": "*"
+    }
+  });
+}).get("/", (c) => {
   const origin = new URL(c.req.url).origin;
   return c.text(`
 Hello Gemini-OpenAI-Proxy from ${getRuntimeKey()}! 
@@ -1630,7 +1430,16 @@ curl ${origin}/v1/chat/completions \\
         "temperature": 0.7
         }'
 `);
-}).post("/v1/chat/completions", chatProxyHandler).get("/v1/models", models).get("/v1/models/:model", modelDetail).post(":model_version/models/:model_and_action", geminiProxy);
+}).post("/v1/chat/completions", chatProxyHandler).get("/v1/models", models).get("/v1/models/:model", modelDetail).post(":model_version/models/:model_and_action", async (c) => {
+  const rawReq = c.req.raw;
+  const url = new URL(rawReq.url);
+  url.host = "generativelanguage.googleapis.com";
+  url.port = "";
+  url.protocol = "https:";
+  const req = new Request(url, rawReq);
+  const resp = await fetch(req);
+  return c.newResponse(resp.body, resp);
+});
 
 // main_bun.ts
 console.log("Listening on http://localhost:8000/");
