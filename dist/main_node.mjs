@@ -431,6 +431,74 @@ var getRuntimeKey = () => {
   return "other";
 };
 
+// node_modules/.deno/hono@4.1.2/node_modules/hono/dist/middleware/cors/index.js
+var cors = (options) => {
+  const defaults = {
+    origin: "*",
+    allowMethods: ["GET", "HEAD", "PUT", "POST", "DELETE", "PATCH"],
+    allowHeaders: [],
+    exposeHeaders: []
+  };
+  const opts = {
+    ...defaults,
+    ...options
+  };
+  const findAllowOrigin = ((optsOrigin) => {
+    if (typeof optsOrigin === "string") {
+      return () => optsOrigin;
+    } else if (typeof optsOrigin === "function") {
+      return optsOrigin;
+    } else {
+      return (origin) => optsOrigin.includes(origin) ? origin : optsOrigin[0];
+    }
+  })(opts.origin);
+  return async function cors2(c, next) {
+    function set(key, value) {
+      c.res.headers.set(key, value);
+    }
+    const allowOrigin = findAllowOrigin(c.req.header("origin") || "");
+    if (allowOrigin) {
+      set("Access-Control-Allow-Origin", allowOrigin);
+    }
+    if (opts.origin !== "*") {
+      set("Vary", "Origin");
+    }
+    if (opts.credentials) {
+      set("Access-Control-Allow-Credentials", "true");
+    }
+    if (opts.exposeHeaders?.length) {
+      set("Access-Control-Expose-Headers", opts.exposeHeaders.join(","));
+    }
+    if (c.req.method === "OPTIONS") {
+      if (opts.maxAge != null) {
+        set("Access-Control-Max-Age", opts.maxAge.toString());
+      }
+      if (opts.allowMethods?.length) {
+        set("Access-Control-Allow-Methods", opts.allowMethods.join(","));
+      }
+      let headers = opts.allowHeaders;
+      if (!headers?.length) {
+        const requestHeaders = c.req.header("Access-Control-Request-Headers");
+        if (requestHeaders) {
+          headers = requestHeaders.split(/\s*,\s*/);
+        }
+      }
+      if (headers?.length) {
+        set("Access-Control-Allow-Headers", headers.join(","));
+        c.res.headers.append("Vary", "Access-Control-Request-Headers");
+      }
+      c.res.headers.delete("Content-Length");
+      c.res.headers.delete("Content-Type");
+      return new Response(null, {
+        headers: c.res.headers,
+        status: 204,
+        statusText: c.res.statusText
+      });
+    }
+    await next();
+  };
+};
+
 // node_modules/.deno/hono@4.1.2/node_modules/hono/dist/utils/html.js
 var HtmlEscapedCallbackPhase = {
   Stringify: 1,
@@ -1787,7 +1855,7 @@ var modelDetail = async (c) => {
 };
 
 // src/app.ts
-var app = new Hono2({ strict: true }).use("*", async (c, next) => {
+var app = new Hono2({ strict: true }).use("*", cors()).use("*", async (c, next) => {
   const logger = new Logger({
     level: env(c)?.LogLevel,
     prefix: crypto.randomUUID()
@@ -1798,14 +1866,6 @@ var app = new Hono2({ strict: true }).use("*", async (c, next) => {
   c.var.log.warn(`--> ${c.req.method} ${c.req.path}`);
   await next();
   c.var.log.warn(`<-- ${c.req.method} ${c.req.path}`);
-}).options("*", () => {
-  return new Response(null, {
-    status: 204,
-    headers: {
-      "Access-Control-Allow-Methods": ["GET", "HEAD", "PUT", "POST", "DELETE", "PATCH"].join(","),
-      "Access-Control-Allow-Origin": "*"
-    }
-  });
 }).get("/", (c) => {
   const origin = new URL(c.req.url).origin;
   return c.text(`
