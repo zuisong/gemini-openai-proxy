@@ -40,7 +40,7 @@ export function addHelpers(response: GenerateContentResponse): EnhancedGenerateC
 /**
  * Returns text of first candidate.
  */
-export function getText(response: GenerateContentResponse): string {
+function getText(response: GenerateContentResponse): string {
   if (response.candidates?.[0].content?.parts?.[0]?.text) {
     return response.candidates[0].content.parts[0].text
   }
@@ -53,7 +53,7 @@ function hadBadFinishReason(candidate: GenerateContentCandidate): boolean {
   return !!candidate.finishReason && badFinishReasons.includes(candidate.finishReason)
 }
 
-export function formatBlockErrorMessage(response: GenerateContentResponse): string {
+function formatBlockErrorMessage(response: GenerateContentResponse): string {
   let message = ""
   if ((!response.candidates || response.candidates.length === 0) && response.promptFeedback) {
     message += "Response was blocked"

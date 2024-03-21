@@ -18,7 +18,7 @@ export async function generateContent(
   }
 }
 
-export async function makeRequest(url: RequestUrl, body: string, requestOptions?: RequestOptions): Promise<Response> {
+async function makeRequest(url: RequestUrl, body: string, requestOptions?: RequestOptions): Promise<Response> {
   let response: Response
   try {
     response = await fetch(url.toURL(), {
@@ -68,7 +68,7 @@ export class RequestUrl {
   }
 }
 
-export enum Task {
+enum Task {
   GENERATE_CONTENT = "generateContent",
   STREAM_GENERATE_CONTENT = "streamGenerateContent",
   COUNT_TOKENS = "countTokens",

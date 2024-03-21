@@ -6,7 +6,8 @@
 
 ## 0.10.0 (2024-02-28)
 
-- gemini-openai-proxy can now act as a reverse proxy for google gemini, which can be useful for people in region that don't have access to the google gemini
+- gemini-openai-proxy can now act as a reverse proxy for google gemini, which
+  can be useful for people in region that don't have access to the google gemini
   > it will request `https://generativelanguage.googleapis.com`
 
   ```shell
@@ -16,8 +17,10 @@
   --data '{"contents":[{"parts":[{"text":"Hello"}]}]}'
   ```
 
-- Service settings can now be passed via apikey, currently the first supported setting is `useBeta` , which can be set like so
-   > it will use `v1beta` version gemini api, <https://ai.google.dev/docs/api_versions>
+- Service settings can now be passed via apikey, currently the first supported
+  setting is `useBeta` , which can be set like so
+  > it will use `v1beta` version gemini api,
+  > <https://ai.google.dev/docs/api_versions>
 
   ```shell
   curl http://localhost:8000/v1/chat/completions \
@@ -38,7 +41,8 @@
 ## 0.6.0(2024-01-20)
 
 - fix bun runtime sream model problem, add ployfill for `TextDecoderStream`
-  > bun does not support `TextDecoderStream` now <https://github.com/oven-sh/bun/issues/5648>
+  > bun does not support `TextDecoderStream` now
+  > <https://github.com/oven-sh/bun/issues/5648>
 
 - Imporve document
 

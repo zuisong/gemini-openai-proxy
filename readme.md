@@ -29,6 +29,7 @@ curl -s http://localhost:8000/v1/chat/completions \
 ```
 
 ![demo](./assets/demo.png)
+
 </details>
 
 <details>
@@ -63,6 +64,7 @@ curl -s http://localhost:8000/v1/chat/completions \
 ```
 
 ![vision demo](./assets/vision-demo.jpeg)
+
 </details>
 
 ## Plan
@@ -75,9 +77,10 @@ curl -s http://localhost:8000/v1/chat/completions \
 
 ### [Cloudflare Workers](https://workers.cloudflare.com)
 
-> build command  `npm run build:cf_worker`
+> build command `npm run build:cf_worker`
 
-Copy [`main_cloudflare-workers.mjs`](./dist/main_cloudflare-workers.mjs) to `cloudflare-workers`
+Copy [`main_cloudflare-workers.mjs`](./dist/main_cloudflare-workers.mjs) to
+`cloudflare-workers`
 
 ### [Deno Deploy](https://deno.com/deploy)
 
