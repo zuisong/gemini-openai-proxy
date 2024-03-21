@@ -1,21 +1,12 @@
 import { generateContent } from "../../../gemini-api-client/gemini-api-client.ts"
 import type { OpenAI } from "../../../types.ts"
-import { genModel } from "../../../utils.ts"
-import type { ChatProxyHandlerType } from "./ChatProxyHandler.ts"
+import { type ApiParam, genModel } from "../../../utils.ts"
 
-export const nonStreamingChatProxyHandler: ChatProxyHandlerType = async (c, req, apiParam) => {
-  const log = c.var.log
+export async function nonStreamingChatProxyHandler(req: OpenAI.Chat.ChatCompletionCreateParams, apiParam: ApiParam) {
   const [model, geminiReq] = genModel(req)
   const geminiResp: string = await generateContent(apiParam, model, geminiReq)
     .then((it) => it.response.text())
-    .catch((err) => {
-      // 出现异常时打印请求参数和响应，以便调试
-      log.error(req)
-      log.error(err?.message ?? err.toString())
-      return err?.message ?? err.toString()
-    })
-  log.debug(req)
-  log.debug(geminiResp)
+    .catch((e) => e.message ?? e?.toString())
 
   const resp: OpenAI.Chat.ChatCompletion = {
     id: "chatcmpl-abc123",
@@ -31,5 +22,5 @@ export const nonStreamingChatProxyHandler: ChatProxyHandlerType = async (c, req,
       },
     ],
   }
-  return c.json(resp)
+  return resp
 }

@@ -4,6 +4,11 @@
  */
 
 
+/** OneOf type helpers */
+type Without<T, U> = { [P in Exclude<keyof T, keyof U>]?: never };
+type XOR<T, U> = (T | U) extends object ? (Without<T, U> & U) | (Without<U, T> & T) : T | U;
+type OneOf<T extends any[]> = T extends [infer Only] ? Only : T extends [infer A, infer B, ...infer Rest] ? OneOf<[XOR<A, B>, ...Rest]> : never;
+
 export interface paths {
   "/chat/completions": {
     /** Creates a model response for the given chat conversation. */
@@ -321,6 +326,9 @@ export interface components {
       stream?: boolean | null;
       /**
        * @description The suffix that comes after a completion of inserted text.
+       *
+       * This parameter is only supported for `gpt-3.5-turbo-instruct`.
+       *
        * @default null
        * @example test.
        */
@@ -742,7 +750,7 @@ export interface components {
        * @example 1
        */
       top_p?: number | null;
-      /** @description A list of tools the model may call. Currently, only functions are supported as a tool. Use this to provide a list of functions the model may generate JSON inputs for. */
+      /** @description A list of tools the model may call. Currently, only functions are supported as a tool. Use this to provide a list of functions the model may generate JSON inputs for. A max of 128 functions are supported. */
       tools?: components["schemas"]["ChatCompletionTool"][];
       tool_choice?: components["schemas"]["ChatCompletionToolChoiceOption"];
       /**
@@ -1785,7 +1793,7 @@ export interface components {
         message: string;
       }) | null;
       /** @description The Unix timestamp (in seconds) for when the run will expire. */
-      expires_at: number;
+      expires_at: number | null;
       /** @description The Unix timestamp (in seconds) for when the run was started. */
       started_at: number | null;
       /** @description The Unix timestamp (in seconds) for when the run was cancelled. */
@@ -1825,6 +1833,8 @@ export interface components {
       tools?: ((components["schemas"]["AssistantToolsCode"] | components["schemas"]["AssistantToolsRetrieval"] | components["schemas"]["AssistantToolsFunction"])[]) | null;
       /** @description Set of 16 key-value pairs that can be attached to an object. This can be useful for storing additional information about the object in a structured format. Keys can be a maximum of 64 characters long and values can be a maxium of 512 characters long. */
       metadata?: unknown;
+      /** @description If `true`, returns a stream of events that happen during the Run as server-sent events, terminating when the Run enters a terminal state with a `data: [DONE]` message. */
+      stream?: boolean | null;
     };
     ListRunsResponse: {
       /** @example list */
@@ -1849,6 +1859,8 @@ export interface components {
           /** @description The output of the tool call to be submitted to continue the run. */
           output?: string;
         }[];
+      /** @description If `true`, returns a stream of events that happen during the Run as server-sent events, terminating when the Run enters a terminal state with a `data: [DONE]` message. */
+      stream?: boolean | null;
     };
     /** @description Tool call objects */
     RunToolCallObject: {
@@ -1880,6 +1892,8 @@ export interface components {
       tools?: ((components["schemas"]["AssistantToolsCode"] | components["schemas"]["AssistantToolsRetrieval"] | components["schemas"]["AssistantToolsFunction"])[]) | null;
       /** @description Set of 16 key-value pairs that can be attached to an object. This can be useful for storing additional information about the object in a structured format. Keys can be a maximum of 64 characters long and values can be a maxium of 512 characters long. */
       metadata?: unknown;
+      /** @description If `true`, returns a stream of events that happen during the Run as server-sent events, terminating when the Run enters a terminal state with a `data: [DONE]` message. */
+      stream?: boolean | null;
     };
     /**
      * Thread
@@ -1942,6 +1956,23 @@ export interface components {
       /** @description The [thread](/docs/api-reference/threads) ID that this message belongs to. */
       thread_id: string;
       /**
+       * @description The status of the message, which can be either `in_progress`, `incomplete`, or `completed`.
+       * @enum {string}
+       */
+      status: "in_progress" | "incomplete" | "completed";
+      /** @description On an incomplete message, details about why the message is incomplete. */
+      incomplete_details: ({
+        /**
+         * @description The reason the message is incomplete.
+         * @enum {string}
+         */
+        reason: "content_filter" | "max_tokens" | "run_cancelled" | "run_expired" | "run_failed";
+      }) | null;
+      /** @description The Unix timestamp (in seconds) for when the message was completed. */
+      completed_at: number | null;
+      /** @description The Unix timestamp (in seconds) for when the message was marked as incomplete. */
+      incomplete_at: number | null;
+      /**
        * @description The entity that produced the message. One of `user` or `assistant`.
        * @enum {string}
        */
@@ -1959,6 +1990,34 @@ export interface components {
       file_ids: string[];
       /** @description Set of 16 key-value pairs that can be attached to an object. This can be useful for storing additional information about the object in a structured format. Keys can be a maximum of 64 characters long and values can be a maxium of 512 characters long. */
       metadata: unknown;
+    };
+    /**
+     * Message delta object
+     * @description Represents a message delta i.e. any changed fields on a message during streaming.
+     */
+    MessageDeltaObject: {
+      /** @description The identifier of the message, which can be referenced in API endpoints. */
+      id: string;
+      /**
+       * @description The object type, which is always `thread.message.delta`.
+       * @enum {string}
+       */
+      object: "thread.message.delta";
+      /** @description The delta containing the fields that have changed on the Message. */
+      delta: {
+        /**
+         * @description The entity that produced the message. One of `user` or `assistant`.
+         * @enum {string}
+         */
+        role?: "user" | "assistant";
+        /** @description The content of the message in array of text and/or images. */
+        content?: (components["schemas"]["MessageDeltaContentImageFileObject"] | components["schemas"]["MessageDeltaContentTextObject"])[];
+        /**
+         * @description A list of [file](/docs/api-reference/files) IDs that the assistant should use. Useful for tools like retrieval and code_interpreter that can access files. A maximum of 10 files can be attached to a message.
+         * @default []
+         */
+        file_ids?: string[];
+      };
     };
     CreateMessageRequest: {
       /**
@@ -2010,6 +2069,23 @@ export interface components {
       image_file: {
         /** @description The [File](/docs/api-reference/files) ID of the image in the message content. */
         file_id: string;
+      };
+    };
+    /**
+     * Image file
+     * @description References an image [File](/docs/api-reference/files) in the content of a message.
+     */
+    MessageDeltaContentImageFileObject: {
+      /** @description The index of the content part in the message. */
+      index: number;
+      /**
+       * @description Always `image_file`.
+       * @enum {string}
+       */
+      type: "image_file";
+      image_file?: {
+        /** @description The [File](/docs/api-reference/files) ID of the image in the message content. */
+        file_id?: string;
       };
     };
     /**
@@ -2069,6 +2145,68 @@ export interface components {
       end_index: number;
     };
     /**
+     * Text
+     * @description The text content that is part of a message.
+     */
+    MessageDeltaContentTextObject: {
+      /** @description The index of the content part in the message. */
+      index: number;
+      /**
+       * @description Always `text`.
+       * @enum {string}
+       */
+      type: "text";
+      text?: {
+        /** @description The data that makes up the text. */
+        value?: string;
+        annotations?: (components["schemas"]["MessageDeltaContentTextAnnotationsFileCitationObject"] | components["schemas"]["MessageDeltaContentTextAnnotationsFilePathObject"])[];
+      };
+    };
+    /**
+     * File citation
+     * @description A citation within the message that points to a specific quote from a specific File associated with the assistant or the message. Generated when the assistant uses the "retrieval" tool to search files.
+     */
+    MessageDeltaContentTextAnnotationsFileCitationObject: {
+      /** @description The index of the annotation in the text content part. */
+      index: number;
+      /**
+       * @description Always `file_citation`.
+       * @enum {string}
+       */
+      type: "file_citation";
+      /** @description The text in the message content that needs to be replaced. */
+      text?: string;
+      file_citation?: {
+        /** @description The ID of the specific File the citation is from. */
+        file_id?: string;
+        /** @description The specific quote in the file. */
+        quote?: string;
+      };
+      start_index?: number;
+      end_index?: number;
+    };
+    /**
+     * File path
+     * @description A URL for the file that's generated when the assistant used the `code_interpreter` tool to generate a file.
+     */
+    MessageDeltaContentTextAnnotationsFilePathObject: {
+      /** @description The index of the annotation in the text content part. */
+      index: number;
+      /**
+       * @description Always `file_path`.
+       * @enum {string}
+       */
+      type: "file_path";
+      /** @description The text in the message content that needs to be replaced. */
+      text?: string;
+      file_path?: {
+        /** @description The ID of the file that was generated. */
+        file_id?: string;
+      };
+      start_index?: number;
+      end_index?: number;
+    };
+    /**
      * Run steps
      * @description Represents a step in execution of a run.
      */
@@ -2122,6 +2260,24 @@ export interface components {
       metadata: unknown;
       usage: components["schemas"]["RunStepCompletionUsage"];
     };
+    /**
+     * Run step delta object
+     * @description Represents a run step delta i.e. any changed fields on a run step during streaming.
+     */
+    RunStepDeltaObject: {
+      /** @description The identifier of the run step, which can be referenced in API endpoints. */
+      id: string;
+      /**
+       * @description The object type, which is always `thread.run.step.delta`.
+       * @enum {string}
+       */
+      object: "thread.run.step.delta";
+      /** @description The delta containing the fields that have changed on the run step. */
+      delta: {
+        /** @description The details of the run step. */
+        step_details?: components["schemas"]["RunStepDeltaStepDetailsMessageCreationObject"] | components["schemas"]["RunStepDeltaStepDetailsToolCallsObject"];
+      };
+    };
     ListRunStepsResponse: {
       /** @example list */
       object: string;
@@ -2149,6 +2305,21 @@ export interface components {
       };
     };
     /**
+     * Message creation
+     * @description Details of the message creation by the run step.
+     */
+    RunStepDeltaStepDetailsMessageCreationObject: {
+      /**
+       * @description Always `message_creation`.
+       * @enum {string}
+       */
+      type: "message_creation";
+      message_creation?: {
+        /** @description The ID of the message that was created by this run step. */
+        message_id?: string;
+      };
+    };
+    /**
      * Tool calls
      * @description Details of the tool call.
      */
@@ -2160,6 +2331,19 @@ export interface components {
       type: "tool_calls";
       /** @description An array of tool calls the run step was involved in. These can be associated with one of three types of tools: `code_interpreter`, `retrieval`, or `function`. */
       tool_calls: (components["schemas"]["RunStepDetailsToolCallsCodeObject"] | components["schemas"]["RunStepDetailsToolCallsRetrievalObject"] | components["schemas"]["RunStepDetailsToolCallsFunctionObject"])[];
+    };
+    /**
+     * Tool calls
+     * @description Details of the tool call.
+     */
+    RunStepDeltaStepDetailsToolCallsObject: {
+      /**
+       * @description Always `tool_calls`.
+       * @enum {string}
+       */
+      type: "tool_calls";
+      /** @description An array of tool calls the run step was involved in. These can be associated with one of three types of tools: `code_interpreter`, `retrieval`, or `function`. */
+      tool_calls?: (components["schemas"]["RunStepDeltaStepDetailsToolCallsCodeObject"] | components["schemas"]["RunStepDeltaStepDetailsToolCallsRetrievalObject"] | components["schemas"]["RunStepDeltaStepDetailsToolCallsFunctionObject"])[];
     };
     /**
      * Code interpreter tool call
@@ -2182,6 +2366,28 @@ export interface components {
       };
     };
     /**
+     * Code interpreter tool call
+     * @description Details of the Code Interpreter tool call the run step was involved in.
+     */
+    RunStepDeltaStepDetailsToolCallsCodeObject: {
+      /** @description The index of the tool call in the tool calls array. */
+      index: number;
+      /** @description The ID of the tool call. */
+      id?: string;
+      /**
+       * @description The type of tool call. This is always going to be `code_interpreter` for this type of tool call.
+       * @enum {string}
+       */
+      type: "code_interpreter";
+      /** @description The Code Interpreter tool call definition. */
+      code_interpreter?: {
+        /** @description The input to the Code Interpreter tool call. */
+        input?: string;
+        /** @description The outputs from the Code Interpreter tool call. Code Interpreter can output one or more items, including text (`logs`) or images (`image`). Each of these are represented by a different object type. */
+        outputs?: (components["schemas"]["RunStepDeltaStepDetailsToolCallsCodeOutputLogsObject"] | components["schemas"]["RunStepDeltaStepDetailsToolCallsCodeOutputImageObject"])[];
+      };
+    };
+    /**
      * Code interpreter log output
      * @description Text output from the Code Interpreter tool call as part of a run step.
      */
@@ -2193,6 +2399,21 @@ export interface components {
       type: "logs";
       /** @description The text output from the Code Interpreter tool call. */
       logs: string;
+    };
+    /**
+     * Code interpreter log output
+     * @description Text output from the Code Interpreter tool call as part of a run step.
+     */
+    RunStepDeltaStepDetailsToolCallsCodeOutputLogsObject: {
+      /** @description The index of the output in the outputs array. */
+      index: number;
+      /**
+       * @description Always `logs`.
+       * @enum {string}
+       */
+      type: "logs";
+      /** @description The text output from the Code Interpreter tool call. */
+      logs?: string;
     };
     /** Code interpreter image output */
     RunStepDetailsToolCallsCodeOutputImageObject: {
@@ -2206,6 +2427,20 @@ export interface components {
         file_id: string;
       };
     };
+    /** Code interpreter image output */
+    RunStepDeltaStepDetailsToolCallsCodeOutputImageObject: {
+      /** @description The index of the output in the outputs array. */
+      index: number;
+      /**
+       * @description Always `image`.
+       * @enum {string}
+       */
+      type: "image";
+      image?: {
+        /** @description The [file](/docs/api-reference/files) ID of the image. */
+        file_id?: string;
+      };
+    };
     /** Retrieval tool call */
     RunStepDetailsToolCallsRetrievalObject: {
       /** @description The ID of the tool call object. */
@@ -2217,6 +2452,20 @@ export interface components {
       type: "retrieval";
       /** @description For now, this is always going to be an empty object. */
       retrieval: Record<string, never>;
+    };
+    /** Retrieval tool call */
+    RunStepDeltaStepDetailsToolCallsRetrievalObject: {
+      /** @description The index of the tool call in the tool calls array. */
+      index: number;
+      /** @description The ID of the tool call object. */
+      id?: string;
+      /**
+       * @description The type of tool call. This is always going to be `retrieval` for this type of tool call.
+       * @enum {string}
+       */
+      type: "retrieval";
+      /** @description For now, this is always going to be an empty object. */
+      retrieval?: Record<string, never>;
     };
     /** Function tool call */
     RunStepDetailsToolCallsFunctionObject: {
@@ -2235,6 +2484,27 @@ export interface components {
         arguments: string;
         /** @description The output of the function. This will be `null` if the outputs have not been [submitted](/docs/api-reference/runs/submitToolOutputs) yet. */
         output: string | null;
+      };
+    };
+    /** Function tool call */
+    RunStepDeltaStepDetailsToolCallsFunctionObject: {
+      /** @description The index of the tool call in the tool calls array. */
+      index: number;
+      /** @description The ID of the tool call object. */
+      id?: string;
+      /**
+       * @description The type of tool call. This is always going to be `function` for this type of tool call.
+       * @enum {string}
+       */
+      type: "function";
+      /** @description The definition of the function that was called. */
+      function?: {
+        /** @description The name of the function. */
+        name?: string;
+        /** @description The arguments passed to the function. */
+        arguments?: string;
+        /** @description The output of the function. This will be `null` if the outputs have not been [submitted](/docs/api-reference/runs/submitToolOutputs) yet. */
+        output?: string | null;
       };
     };
     /**
@@ -2303,6 +2573,133 @@ export interface components {
       last_id: string;
       /** @example false */
       has_more: boolean;
+    };
+    /**
+     * @description Represents an event emitted when streaming a Run.
+     *
+     * Each event in a server-sent events stream has an `event` and `data` property:
+     *
+     * ```
+     * event: thread.created
+     * data: {"id": "thread_123", "object": "thread", ...}
+     * ```
+     *
+     * We emit events whenever a new object is created, transitions to a new state, or is being
+     * streamed in parts (deltas). For example, we emit `thread.run.created` when a new run
+     * is created, `thread.run.completed` when a run completes, and so on. When an Assistant chooses
+     * to create a message during a run, we emit a `thread.message.created event`, a
+     * `thread.message.in_progress` event, many `thread.message.delta` events, and finally a
+     * `thread.message.completed` event.
+     *
+     * We may add additional events over time, so we recommend handling unknown events gracefully
+     * in your code. See the [Assistants API quickstart](/docs/assistants/overview) to learn how to
+     * integrate the Assistants API with streaming.
+     */
+    AssistantStreamEvent: components["schemas"]["ThreadStreamEvent"] | components["schemas"]["RunStreamEvent"] | components["schemas"]["RunStepStreamEvent"] | components["schemas"]["MessageStreamEvent"] | components["schemas"]["ErrorEvent"] | components["schemas"]["DoneEvent"];
+    ThreadStreamEvent: {
+      /** @enum {string} */
+      event: "thread.created";
+      data: components["schemas"]["ThreadObject"];
+    };
+    RunStreamEvent: {
+      /** @enum {string} */
+      event: "thread.run.created";
+      data: components["schemas"]["RunObject"];
+    } | {
+      /** @enum {string} */
+      event: "thread.run.queued";
+      data: components["schemas"]["RunObject"];
+    } | {
+      /** @enum {string} */
+      event: "thread.run.in_progress";
+      data: components["schemas"]["RunObject"];
+    } | {
+      /** @enum {string} */
+      event: "thread.run.requires_action";
+      data: components["schemas"]["RunObject"];
+    } | {
+      /** @enum {string} */
+      event: "thread.run.completed";
+      data: components["schemas"]["RunObject"];
+    } | {
+      /** @enum {string} */
+      event: "thread.run.failed";
+      data: components["schemas"]["RunObject"];
+    } | {
+      /** @enum {string} */
+      event: "thread.run.cancelling";
+      data: components["schemas"]["RunObject"];
+    } | {
+      /** @enum {string} */
+      event: "thread.run.cancelled";
+      data: components["schemas"]["RunObject"];
+    } | {
+      /** @enum {string} */
+      event: "thread.run.expired";
+      data: components["schemas"]["RunObject"];
+    };
+    RunStepStreamEvent: {
+      /** @enum {string} */
+      event: "thread.run.step.created";
+      data: components["schemas"]["RunStepObject"];
+    } | {
+      /** @enum {string} */
+      event: "thread.run.step.in_progress";
+      data: components["schemas"]["RunStepObject"];
+    } | {
+      /** @enum {string} */
+      event: "thread.run.step.delta";
+      data: components["schemas"]["RunStepDeltaObject"];
+    } | {
+      /** @enum {string} */
+      event: "thread.run.step.completed";
+      data: components["schemas"]["RunStepObject"];
+    } | {
+      /** @enum {string} */
+      event: "thread.run.step.failed";
+      data: components["schemas"]["RunStepObject"];
+    } | {
+      /** @enum {string} */
+      event: "thread.run.step.cancelled";
+      data: components["schemas"]["RunStepObject"];
+    } | {
+      /** @enum {string} */
+      event: "thread.run.step.expired";
+      data: components["schemas"]["RunStepObject"];
+    };
+    MessageStreamEvent: OneOf<[{
+      /** @enum {string} */
+      event: "thread.message.created";
+      data: components["schemas"]["MessageObject"];
+    }, {
+      /** @enum {string} */
+      event: "thread.message.in_progress";
+      data: components["schemas"]["MessageObject"];
+    }, {
+      /** @enum {string} */
+      event: "thread.message.delta";
+      data: components["schemas"]["MessageDeltaObject"];
+    }, {
+      /** @enum {string} */
+      event: "thread.message.completed";
+      data: components["schemas"]["MessageObject"];
+    }, {
+      /** @enum {string} */
+      event: "thread.message.incomplete";
+      data: components["schemas"]["MessageObject"];
+    }]>;
+    /** @description Occurs when an [error](/docs/guides/error-codes/api-errors) occurs. This can happen due to an internal server error or a timeout. */
+    ErrorEvent: {
+      /** @enum {string} */
+      event: "error";
+      data: components["schemas"]["Error"];
+    };
+    /** @description Occurs when a stream ends. */
+    DoneEvent: {
+      /** @enum {string} */
+      event: "done";
+      /** @enum {string} */
+      data: "[DONE]";
     };
   };
   responses: never;

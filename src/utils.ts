@@ -1,5 +1,6 @@
 import type { Content, GenerateContentRequest, Part } from "./gemini-api-client/types.ts"
 import { HarmBlockThreshold, HarmCategory } from "./gemini-api-client/types.ts"
+import type { Any } from "./log.ts"
 import type { OpenAI } from "./types.ts"
 
 export interface ApiParam {
@@ -7,25 +8,25 @@ export interface ApiParam {
   useBeta: boolean
 }
 
-export function getToken(headers: Record<string, string>): ApiParam | null {
-  for (const [k, v] of Object.entries(headers)) {
-    if (k.toLowerCase() === "authorization") {
-      const rawApikey = v.substring(v.indexOf(" ") + 1)
+export function getToken(headers: Headers): ApiParam | null {
+  for (const [k, v] of headers.entries()) {
+    if (k.toLowerCase() !== "authorization") continue
 
-      if (!rawApikey.includes("#")) {
-        return {
-          apikey: rawApikey,
-          useBeta: false,
-        }
-      }
+    const rawApikey = v.substring(v.indexOf(" ") + 1)
 
-      // todo read config from apikey
-      const apikey = rawApikey.substring(0, rawApikey.indexOf("#"))
-      const params = new URLSearchParams(rawApikey.substring(rawApikey.indexOf("#") + 1))
+    if (!rawApikey.includes("#")) {
       return {
-        apikey,
-        useBeta: params.has("useBeta"),
+        apikey: rawApikey,
+        useBeta: false,
       }
+    }
+
+    // todo read config from apikey
+    const apikey = rawApikey.substring(0, rawApikey.indexOf("#"))
+    const params = new URLSearchParams(rawApikey.substring(rawApikey.indexOf("#") + 1))
+    return {
+      apikey,
+      useBeta: params.has("useBeta"),
     }
   }
   return null
@@ -110,4 +111,27 @@ export function genModel(req: OpenAI.Chat.ChatCompletionCreateParams): [GeminiMo
 export enum GeminiModel {
   GEMINI_PRO = "gemini-pro",
   GEMINI_PRO_VISION = "gemini-pro-vision",
+}
+
+export function getRuntimeKey() {
+  const global = globalThis as typeof globalThis & Record<string, undefined | Any>
+  if (global?.Deno !== undefined) {
+    return "deno"
+  }
+  if (global?.Bun !== undefined) {
+    return "bun"
+  }
+  if (typeof global?.WebSocketPair === "function") {
+    return "workerd"
+  }
+  if (typeof global?.EdgeRuntime === "string") {
+    return "edge-light"
+  }
+  if (global?.fastly !== undefined) {
+    return "fastly"
+  }
+  if (global?.process?.release?.name === "node") {
+    return "node"
+  }
+  return "other"
 }
