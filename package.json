@@ -18,12 +18,13 @@
     "generate-opeai-types": "deno run --allow-net --deny-env --allow-write=./src/openai-types.ts generate-opeai-types.ts"
   },
   "dependencies": {
-    "@hono/node-server": "1.8.2",
-    "hono": "4.1.2"
+    "itty-router": "4.3.0-next.4",
+    "@hono/node-server": "1.9.0",
+    "eventsource-parser": "1.1.2",
+    "hono": "4.1.5"
   },
   "devDependencies": {
-    "@types/node": "20.11.29",
-    "esbuild": "0.20.2",
-    "eventsource-parser": "1.1.2"
+    "@types/node": "20.11.30",
+    "esbuild": "0.20.2"
   }
 }

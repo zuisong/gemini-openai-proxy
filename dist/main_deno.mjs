@@ -1,4 +1,4 @@
-// node_modules/.deno/hono@4.1.2/node_modules/hono/dist/helper/adapter/index.js
+// node_modules/.deno/hono@4.1.5/node_modules/hono/dist/helper/adapter/index.js
 var env = (c, runtime) => {
   const global = globalThis;
   const globalEnv = global?.process?.env;
@@ -39,7 +39,7 @@ var getRuntimeKey = () => {
   return "other";
 };
 
-// node_modules/.deno/hono@4.1.2/node_modules/hono/dist/middleware/cors/index.js
+// node_modules/.deno/hono@4.1.5/node_modules/hono/dist/middleware/cors/index.js
 var cors = (options) => {
   const defaults = {
     origin: "*",
@@ -107,7 +107,7 @@ var cors = (options) => {
   };
 };
 
-// node_modules/.deno/hono@4.1.2/node_modules/hono/dist/utils/html.js
+// node_modules/.deno/hono@4.1.5/node_modules/hono/dist/utils/html.js
 var HtmlEscapedCallbackPhase = {
   Stringify: 1,
   BeforeStream: 2,
@@ -141,7 +141,7 @@ var resolveCallback = async (str, phase, preserveCallbacks, context, buffer) => 
   }
 };
 
-// node_modules/.deno/hono@4.1.2/node_modules/hono/dist/context.js
+// node_modules/.deno/hono@4.1.5/node_modules/hono/dist/context.js
 var TEXT_PLAIN = "text/plain; charset=UTF-8";
 var setHeaders = (headers, map = {}) => {
   Object.entries(map).forEach(([key, value]) => headers.set(key, value));
@@ -353,7 +353,7 @@ var Context = class {
   };
 };
 
-// node_modules/.deno/hono@4.1.2/node_modules/hono/dist/compose.js
+// node_modules/.deno/hono@4.1.5/node_modules/hono/dist/compose.js
 var compose = (middleware, onError, onNotFound) => {
   return (context, next) => {
     let index = -1;
@@ -401,7 +401,7 @@ var compose = (middleware, onError, onNotFound) => {
   };
 };
 
-// node_modules/.deno/hono@4.1.2/node_modules/hono/dist/http-exception.js
+// node_modules/.deno/hono@4.1.5/node_modules/hono/dist/http-exception.js
 var HTTPException = class extends Error {
   res;
   status;
@@ -420,7 +420,7 @@ var HTTPException = class extends Error {
   }
 };
 
-// node_modules/.deno/hono@4.1.2/node_modules/hono/dist/utils/body.js
+// node_modules/.deno/hono@4.1.5/node_modules/hono/dist/utils/body.js
 var parseBody = async (request, options = { all: false }) => {
   const headers = request instanceof HonoRequest ? request.raw.headers : request.headers;
   const contentType = headers.get("Content-Type");
@@ -473,7 +473,7 @@ var convertToNewArray = (form, key, value) => {
   form[key] = [form[key], value];
 };
 
-// node_modules/.deno/hono@4.1.2/node_modules/hono/dist/utils/url.js
+// node_modules/.deno/hono@4.1.5/node_modules/hono/dist/utils/url.js
 var getPath = (request) => {
   const url = request.url;
   const queryIndex = url.indexOf("?", 8);
@@ -588,7 +588,7 @@ var getQueryParams = (url, key) => {
 };
 var decodeURIComponent_ = decodeURIComponent;
 
-// node_modules/.deno/hono@4.1.2/node_modules/hono/dist/request.js
+// node_modules/.deno/hono@4.1.5/node_modules/hono/dist/request.js
 var HonoRequest = class {
   raw;
   #validatedData;
@@ -696,14 +696,14 @@ var HonoRequest = class {
   }
 };
 
-// node_modules/.deno/hono@4.1.2/node_modules/hono/dist/router.js
+// node_modules/.deno/hono@4.1.5/node_modules/hono/dist/router.js
 var METHOD_NAME_ALL = "ALL";
 var METHOD_NAME_ALL_LOWERCASE = "all";
 var METHODS = ["get", "post", "put", "delete", "options", "patch"];
 var UnsupportedPathError = class extends Error {
 };
 
-// node_modules/.deno/hono@4.1.2/node_modules/hono/dist/hono-base.js
+// node_modules/.deno/hono@4.1.5/node_modules/hono/dist/hono-base.js
 var COMPOSED_HANDLER = Symbol("composedHandler");
 function defineDynamicClass() {
   return class {
@@ -728,14 +728,14 @@ var Hono = class extends defineDynamicClass() {
   constructor(options = {}) {
     super();
     const allMethods = [...METHODS, METHOD_NAME_ALL_LOWERCASE];
-    allMethods.map((method) => {
+    allMethods.forEach((method) => {
       this[method] = (args1, ...args) => {
         if (typeof args1 === "string") {
           this.#path = args1;
         } else {
           this.addRoute(method, this.#path, args1);
         }
-        args.map((handler) => {
+        args.forEach((handler) => {
           if (typeof handler !== "string") {
             this.addRoute(method, this.#path, handler);
           }
@@ -764,7 +764,7 @@ var Hono = class extends defineDynamicClass() {
         this.#path = "*";
         handlers.unshift(arg1);
       }
-      handlers.map((handler) => {
+      handlers.forEach((handler) => {
         this.addRoute(METHOD_NAME_ALL, this.#path, handler);
       });
       return this;
@@ -918,7 +918,7 @@ var Hono = class extends defineDynamicClass() {
   };
 };
 
-// node_modules/.deno/hono@4.1.2/node_modules/hono/dist/router/pattern-router/router.js
+// node_modules/.deno/hono@4.1.5/node_modules/hono/dist/router/pattern-router/router.js
 var PatternRouter = class {
   name = "PatternRouter";
   routes = [];
@@ -959,13 +959,24 @@ var PatternRouter = class {
   }
 };
 
-// node_modules/.deno/hono@4.1.2/node_modules/hono/dist/preset/tiny.js
+// node_modules/.deno/hono@4.1.5/node_modules/hono/dist/preset/tiny.js
 var Hono2 = class extends Hono {
   constructor(options = {}) {
     super(options);
     this.router = new PatternRouter();
   }
 };
+
+// src/gemini-proxy.ts
+async function geminiProxy(rawReq) {
+  const url = new URL(rawReq.url);
+  url.host = "generativelanguage.googleapis.com";
+  url.port = "";
+  url.protocol = "https:";
+  const req = new Request(url, rawReq);
+  const resp = await fetch(req);
+  return new Response(resp.body, resp);
+}
 
 // src/log.ts
 var LEVEL = ["debug", "info", "warn", "error"];
@@ -996,7 +1007,7 @@ var Logger = class {
 
 // src/utils.ts
 function getToken(headers) {
-  for (const [k, v] of Object.entries(headers)) {
+  for (const [k, v] of headers.entries()) {
     if (k.toLowerCase() === "authorization") {
       const rawApikey = v.substring(v.indexOf(" ") + 1);
       if (!rawApikey.includes("#")) {
@@ -1078,6 +1089,28 @@ function genModel(req) {
     }))
   };
   return [model, generateContentRequest];
+}
+function getRuntimeKey2() {
+  const global = globalThis;
+  if (global?.Deno !== void 0) {
+    return "deno";
+  }
+  if (global?.Bun !== void 0) {
+    return "bun";
+  }
+  if (typeof global?.WebSocketPair === "function") {
+    return "workerd";
+  }
+  if (typeof global?.EdgeRuntime === "string") {
+    return "edge-light";
+  }
+  if (global?.fastly !== void 0) {
+    return "fastly";
+  }
+  if (global?.process?.release?.name === "node") {
+    return "node";
+  }
+  return "other";
 }
 
 // src/gemini-api-client/errors.ts
@@ -1194,10 +1227,10 @@ async function makeRequest(url, body, requestOptions) {
   return response;
 }
 var RequestUrl = class {
-  constructor(model, task, stream2, apiParam) {
+  constructor(model, task, stream, apiParam) {
     this.model = model;
     this.task = task;
-    this.stream = stream2;
+    this.stream = stream;
     this.apiParam = apiParam;
   }
   toURL() {
@@ -1223,16 +1256,9 @@ function buildFetchOptions(requestOptions) {
 }
 
 // src/openai/chat/completions/NonStreamingChatProxyHandler.ts
-var nonStreamingChatProxyHandler = async (c, req, apiParam) => {
-  const log = c.var.log;
+async function nonStreamingChatProxyHandler(req, apiParam) {
   const [model, geminiReq] = genModel(req);
-  const geminiResp = await generateContent(apiParam, model, geminiReq).then((it) => it.response.text()).catch((err) => {
-    log.error(req);
-    log.error(err?.message ?? err.toString());
-    return err?.message ?? err.toString();
-  });
-  log.debug(req);
-  log.debug(geminiResp);
+  const geminiResp = await generateContent(apiParam, model, geminiReq).then((it) => it.response.text()).catch((e) => e.message ?? e?.toString());
   const resp = {
     id: "chatcmpl-abc123",
     object: "chat.completion",
@@ -1247,114 +1273,13 @@ var nonStreamingChatProxyHandler = async (c, req, apiParam) => {
       }
     ]
   };
-  return c.json(resp);
-};
-
-// node_modules/.deno/hono@4.1.2/node_modules/hono/dist/utils/stream.js
-var StreamingApi = class {
-  writer;
-  encoder;
-  writable;
-  abortSubscribers = [];
-  responseReadable;
-  constructor(writable, _readable) {
-    this.writable = writable;
-    this.writer = writable.getWriter();
-    this.encoder = new TextEncoder();
-    const reader = _readable.getReader();
-    this.abortSubscribers.push(async () => {
-      await reader.cancel();
-    });
-    this.responseReadable = new ReadableStream({
-      async pull(controller) {
-        const { done, value } = await reader.read();
-        done ? controller.close() : controller.enqueue(value);
-      },
-      cancel: () => {
-        this.abortSubscribers.forEach((subscriber) => subscriber());
-      }
-    });
-  }
-  async write(input) {
-    try {
-      if (typeof input === "string") {
-        input = this.encoder.encode(input);
-      }
-      await this.writer.write(input);
-    } catch (e) {
-    }
-    return this;
-  }
-  async writeln(input) {
-    await this.write(input + "\n");
-    return this;
-  }
-  sleep(ms) {
-    return new Promise((res) => setTimeout(res, ms));
-  }
-  async close() {
-    try {
-      await this.writer.close();
-    } catch (e) {
-    }
-  }
-  async pipe(body) {
-    this.writer.releaseLock();
-    await body.pipeTo(this.writable, { preventClose: true });
-    this.writer = this.writable.getWriter();
-  }
-  onAbort(listener) {
-    this.abortSubscribers.push(listener);
-  }
-};
-
-// node_modules/.deno/hono@4.1.2/node_modules/hono/dist/helper/streaming/sse.js
-var SSEStreamingApi = class extends StreamingApi {
-  constructor(writable, readable) {
-    super(writable, readable);
-  }
-  async writeSSE(message) {
-    const data = message.data.split("\n").map((line) => {
-      return `data: ${line}`;
-    }).join("\n");
-    const sseData = [
-      message.event && `event: ${message.event}`,
-      data,
-      message.id && `id: ${message.id}`,
-      message.retry && `retry: ${message.retry}`
-    ].filter(Boolean).join("\n") + "\n\n";
-    await this.write(sseData);
-  }
-};
-var run = async (stream2, cb, onError) => {
-  try {
-    await cb(stream2);
-  } catch (e) {
-    if (e instanceof Error && onError) {
-      await onError(e, stream2);
-      await stream2.writeSSE({
-        event: "error",
-        data: e.message
-      });
-    } else {
-      console.error(e);
-    }
-  }
-};
-var streamSSE = (c, cb, onError) => {
-  const { readable, writable } = new TransformStream();
-  const stream2 = new SSEStreamingApi(writable, readable);
-  c.header("Transfer-Encoding", "chunked");
-  c.header("Content-Type", "text/event-stream");
-  c.header("Cache-Control", "no-cache");
-  c.header("Connection", "keep-alive");
-  run(stream2, cb, onError);
-  return c.newResponse(stream2.responseReadable);
-};
+  return resp;
+}
 
 // src/openai/chat/completions/StreamingChatProxyHandler.ts
-var streamingChatProxyHandler = async (c, req, genAi) => {
-  const log = c.var.log;
+async function* streamingChatProxyHandler(req, apiParam) {
+  const [model, geminiReq] = genModel(req);
+  const geminiResp = await generateContent(apiParam, model, geminiReq).then((it) => it.response.text()).catch((e) => e.message ?? e?.toString());
   const genOpenAiResp = (content, stop) => ({
     id: "chatcmpl-abc123",
     object: "chat.completion.chunk",
@@ -1368,37 +1293,73 @@ var streamingChatProxyHandler = async (c, req, genAi) => {
       }
     ]
   });
-  return streamSSE(c, async (sseStream) => {
-    const [model, geminiReq] = genModel(req);
-    const geminiResp = await generateContent(genAi, model, geminiReq).then((it) => it.response.text()).catch((e) => e.message ?? e?.toString());
-    log.debug(req);
-    log.debug(geminiResp);
-    await sseStream.writeSSE({
-      data: JSON.stringify(genOpenAiResp(geminiResp, false))
-    });
-    await sseStream.writeSSE({
-      data: JSON.stringify(genOpenAiResp("", true))
-    });
-    await sseStream.writeSSE({ data: "[DONE]" });
-    await sseStream.close();
-  });
-};
+  yield genOpenAiResp(geminiResp, false);
+  yield genOpenAiResp("", true);
+}
 
 // src/openai/chat/completions/ChatProxyHandler.ts
-var chatProxyHandler = async (c) => {
-  const log = c.var.log;
-  const req = await c.req.json();
-  log.debug(req);
-  const headers = c.req.header();
+var chatProxyHandler = async (rawReq) => {
+  const req = await rawReq.json();
+  const headers = rawReq.headers;
   const apiParam = getToken(headers);
   if (apiParam == null) {
-    return c.text("Unauthorized", 401);
+    return new Response("Unauthorized", { status: 401 });
   }
-  if (req.stream === true) {
-    return streamingChatProxyHandler(c, req, apiParam);
+  rawReq.logger?.debug(req);
+  if (req.stream !== true) {
+    const resp = await nonStreamingChatProxyHandler(req, apiParam);
+    rawReq.logger?.debug(resp);
+    return Response.json(resp);
   }
-  return nonStreamingChatProxyHandler(c, req, apiParam);
+  const respArr = streamingChatProxyHandler(req, apiParam);
+  return sseResponse(
+    async function* () {
+      for await (const data of respArr) {
+        rawReq.logger?.debug(data);
+        yield JSON.stringify(data);
+      }
+      yield "[DONE]";
+    }()
+  );
 };
+function sseResponse(dataStream) {
+  const { readable, writable } = new TransformStream();
+  const response = new Response(readable, {
+    status: 200,
+    headers: new Headers({
+      "Content-Type": "text/event-stream"
+    })
+  });
+  const encoder = new TextEncoder();
+  async function writer(data) {
+    const w = writable.getWriter();
+    await w.write(encoder.encode(data));
+    w.releaseLock();
+  }
+  ;
+  (async () => {
+    for await (const data of dataStream) {
+      await writer(toSseMsg({ data }));
+    }
+    await writable.close();
+  })();
+  return response;
+}
+function toSseMsg(sseEvent) {
+  const { event, data, id } = sseEvent;
+  let result = `data: ${data}
+`;
+  if (event) {
+    result += `event: ${event ?? ""}
+`;
+  }
+  if (id) {
+    result += `id: ${id ?? ""}
+`;
+  }
+  return `${result}
+`;
+}
 
 // src/openai/models.ts
 var modelData = [
@@ -1451,16 +1412,34 @@ var modelData = [
     id: "gpt-4-0613"
   }
 ];
-var models = async (c) => {
-  return c.json({
+var models = () => {
+  return {
     object: "list",
     data: modelData
-  });
+  };
 };
-var modelDetail = async (c) => {
-  const model = c.req.param("model");
-  return c.json(modelData.find((it) => it.id === model));
+var modelDetail = (model) => {
+  return modelData.find((it) => it.id === model);
 };
+
+// src/routes.ts
+function hello(req) {
+  const origin = new URL(req.url).origin;
+  return new Response(`
+    Hello Gemini-OpenAI-Proxy from ${getRuntimeKey2()}! 
+    
+    You can try it with:
+    
+    curl ${origin}/v1/chat/completions \\
+    -H "Authorization: Bearer $YOUR_GEMINI_API_KEY" \\
+    -H "Content-Type: application/json" \\
+    -d '{
+        "model": "gpt-3.5-turbo",
+        "messages": [{"role": "user", "content": "Hello"}],
+        "temperature": 0.7
+    }'
+    `);
+}
 
 // src/app.ts
 var app = new Hono2({ strict: true }).use("*", cors()).use("*", async (c, next) => {
@@ -1468,38 +1447,16 @@ var app = new Hono2({ strict: true }).use("*", cors()).use("*", async (c, next) 
     level: env(c)?.LogLevel,
     prefix: crypto.randomUUID()
   });
-  c.set("log", logger);
+  c.req.raw.logger = logger;
+  logger.warn(`--> ${c.req.method} ${c.req.path}`);
   await next();
-}).use("*", async (c, next) => {
-  c.var.log.warn(`--> ${c.req.method} ${c.req.path}`);
-  await next();
-  c.var.log.warn(`<-- ${c.req.method} ${c.req.path}`);
-}).get("/", (c) => {
-  const origin = new URL(c.req.url).origin;
-  return c.text(`
-Hello Gemini-OpenAI-Proxy from ${getRuntimeKey()}! 
-
-You can try it with:
-
-curl ${origin}/v1/chat/completions \\
-    -H "Authorization: Bearer $YOUR_GEMINI_API_KEY" \\
-    -H "Content-Type: application/json" \\
-    -d '{
-        "model": "gpt-3.5-turbo",
-        "messages": [{"role": "user", "content": "Hello"}],
-        "temperature": 0.7
-        }'
-`);
-}).post("/v1/chat/completions", chatProxyHandler).get("/v1/models", models).get("/v1/models/:model", modelDetail).post(":model_version/models/:model_and_action", async (c) => {
-  const rawReq = c.req.raw;
-  const url = new URL(rawReq.url);
-  url.host = "generativelanguage.googleapis.com";
-  url.port = "";
-  url.protocol = "https:";
-  const req = new Request(url, rawReq);
-  const resp = await fetch(req);
-  return c.newResponse(resp.body, resp);
+  logger.warn(`<-- ${c.req.method} ${c.req.path}`);
 });
+app.get("/", (c) => hello(c.req.raw));
+app.post("/v1/chat/completions", (c) => chatProxyHandler(c.req.raw));
+app.get("/v1/models", (c) => Response.json(models()));
+app.get("/v1/models/:model", (c) => Response.json(modelDetail(c.req.param().model)));
+app.post(":model_version/models/:model_and_action", (c) => geminiProxy(c.req.raw));
 
 // main_deno.ts
 Deno.serve({ port: 8e3 }, app.fetch);

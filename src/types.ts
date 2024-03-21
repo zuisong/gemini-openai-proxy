@@ -1,4 +1,5 @@
 // deno-lint-ignore-file no-namespace
+import type { Logger } from "./log.ts"
 import type { components } from "./openai-types.ts"
 
 export namespace OpenAI {
@@ -14,3 +15,9 @@ export namespace OpenAI {
 }
 
 // export type { OpenAI } from "https://deno.land/x/openai@v4.28.0/mod.ts"
+
+declare global {
+  interface Request {
+    logger: Logger | undefined
+  }
+}

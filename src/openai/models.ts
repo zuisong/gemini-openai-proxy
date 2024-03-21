@@ -1,4 +1,3 @@
-import type { Handler } from "hono"
 import type { OpenAI } from "../types.ts"
 export const modelData: OpenAI.Models.Model[] = [
   {
@@ -51,14 +50,13 @@ export const modelData: OpenAI.Models.Model[] = [
   },
 ]
 
-export const models: Handler = async (c) => {
-  return c.json({
+export const models = () => {
+  return {
     object: "list",
     data: modelData,
-  })
+  }
 }
 
-export const modelDetail: Handler = async (c) => {
-  const model = c.req.param("model")
-  return c.json(modelData.find((it) => it.id === model))
+export const modelDetail = (model: string) => {
+  return modelData.find((it) => it.id === model)
 }

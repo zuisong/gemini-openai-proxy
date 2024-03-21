@@ -1,2 +1,5 @@
 import { app } from "./src/app.ts"
-app.fire()
+
+export default {
+  fetch: app.fetch,
+}
