@@ -1,11 +1,13 @@
 import type { Context } from "hono"
 import { env, getRuntimeKey } from "hono/adapter"
+import { cors } from "hono/cors"
 import { Hono } from "hono/tiny"
 import { type ILogger, Logger } from "./log.ts"
 import { chatProxyHandler } from "./openai/chat/completions/ChatProxyHandler.ts"
 import { modelDetail, models } from "./openai/models.ts"
 
 export const app = new Hono({ strict: true })
+  .use("*", cors())
   .use("*", async (c: ContextWithLogger, next) => {
     const logger = new Logger({
       level: env(c)?.LogLevel as string | undefined,
@@ -18,15 +20,6 @@ export const app = new Hono({ strict: true })
     c.var.log.warn(`--> ${c.req.method} ${c.req.path}`)
     await next()
     c.var.log.warn(`<-- ${c.req.method} ${c.req.path}`)
-  })
-  .options("*", () => {
-    return new Response(null, {
-      status: 204,
-      headers: {
-        "Access-Control-Allow-Methods": ["GET", "HEAD", "PUT", "POST", "DELETE", "PATCH"].join(","),
-        "Access-Control-Allow-Origin": "*",
-      },
-    })
   })
   .get("/", (c) => {
     const origin = new URL(c.req.url).origin
