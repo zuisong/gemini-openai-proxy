@@ -25,7 +25,7 @@ export const streamingChatProxyHandler: ChatProxyHandlerType = async (c, req, ge
   return streamSSE(c, async (sseStream) => {
     const [model, geminiReq] = genModel(req)
     const geminiResp: string = await generateContent(genAi, model, geminiReq)
-      .then((it) => it.response.text())
+      .then((it) => it.response.result())
       .catch((e) => e.message ?? e?.toString())
 
     log.debug(req)

@@ -10,8 +10,10 @@ export async function generateContent(
   requestOptions?: RequestOptions,
 ): Promise<GenerateContentResult> {
   const url = new RequestUrl(model, Task.GENERATE_CONTENT, false, apiParam)
+  console.log(JSON.stringify(params))
   const response = await makeRequest(url, JSON.stringify(params), requestOptions)
   const responseJson: GenerateContentResponse = await response.json()
+  console.log(JSON.stringify(responseJson))
   const enhancedResponse = addHelpers(responseJson)
   return {
     response: enhancedResponse,
