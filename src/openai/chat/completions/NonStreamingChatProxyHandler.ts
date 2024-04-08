@@ -11,7 +11,7 @@ export async function nonStreamingChatProxyHandler(req: OpenAI.Chat.ChatCompleti
   const resp: OpenAI.Chat.ChatCompletion = {
     id: "chatcmpl-abc123",
     object: "chat.completion",
-    created: Date.now(),
+    created: Math.floor(Date.now()/1000),
     model: req.model,
     choices: [
       {
