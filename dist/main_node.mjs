@@ -757,7 +757,7 @@ async function nonStreamingChatProxyHandler(req, apiParam) {
   const resp = {
     id: "chatcmpl-abc123",
     object: "chat.completion",
-    created: Date.now(),
+    created: Math.floor(Date.now() / 1e3),
     model: req.model,
     choices: [
       {
@@ -779,7 +779,7 @@ async function* streamingChatProxyHandler(req, apiParam) {
     return {
       id: "chatcmpl-abc123",
       object: "chat.completion.chunk",
-      created: Date.now(),
+      created: Math.floor(Date.now() / 1e3),
       model: req.model,
       choices: [
         {
