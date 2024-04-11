@@ -12,7 +12,7 @@ export async function* streamingChatProxyHandler(req: OpenAI.Chat.ChatCompletion
     return {
       id: "chatcmpl-abc123",
       object: "chat.completion.chunk",
-      created: Math.floor(Date.now()/1000),
+      created: Math.floor(Date.now() / 1000),
       model: req.model,
       choices: [
         {

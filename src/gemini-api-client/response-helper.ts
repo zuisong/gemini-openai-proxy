@@ -1,4 +1,5 @@
 import { GoogleGenerativeAIResponseError } from "./errors.ts"
+import type { FunctionCall } from "./types.ts"
 import {
   type EnhancedGenerateContentResponse,
   FinishReason,
@@ -11,7 +12,7 @@ import {
  * chunks (as long as each chunk is a complete GenerateContentResponse JSON).
  */
 export function addHelpers(response: GenerateContentResponse): EnhancedGenerateContentResponse {
-  ;(response as EnhancedGenerateContentResponse).text = () => {
+  ;(response as EnhancedGenerateContentResponse).result = () => {
     if (response.candidates && response.candidates.length > 0) {
       if (response.candidates.length > 1) {
         console.warn(
@@ -40,9 +41,12 @@ export function addHelpers(response: GenerateContentResponse): EnhancedGenerateC
 /**
  * Returns text of first candidate.
  */
-function getText(response: GenerateContentResponse): string {
+export function getText(response: GenerateContentResponse): string | FunctionCall {
   if (response.candidates?.[0].content?.parts?.[0]?.text) {
     return response.candidates[0].content.parts[0].text
+  }
+  if (response.candidates?.[0].content?.parts?.[0]?.functionCall) {
+    return response.candidates[0].content.parts[0].functionCall
   }
   return ""
 }

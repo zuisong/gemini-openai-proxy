@@ -172,6 +172,8 @@ function hasImageMessage(messages) {
 }
 function genModel(req) {
   const model = hasImageMessage(req.messages) ? "gemini-pro-vision" /* GEMINI_PRO_VISION */ : "gemini-pro" /* GEMINI_PRO */;
+  let functions = req.tools?.filter((it) => it.type === "function")?.map((it) => it.function) ?? [];
+  functions = functions.concat(req.functions ?? []);
   const generateContentRequest = {
     contents: openAiMessageToGeminiMessage(req.messages),
     generationConfig: {
@@ -179,6 +181,11 @@ function genModel(req) {
       temperature: req.temperature ?? void 0,
       topP: req.top_p ?? void 0
     },
+    tools: [
+      {
+        functionDeclarations: functions
+      }
+    ],
     safetySettings: [
       "HARM_CATEGORY_HATE_SPEECH" /* HARM_CATEGORY_HATE_SPEECH */,
       "HARM_CATEGORY_SEXUALLY_EXPLICIT" /* HARM_CATEGORY_SEXUALLY_EXPLICIT */,
@@ -230,7 +237,7 @@ var GoogleGenerativeAIResponseError = class extends GoogleGenerativeAIError {
 // src/gemini-api-client/response-helper.ts
 function addHelpers(response) {
   ;
-  response.text = () => {
+  response.result = () => {
     if (response.candidates && response.candidates.length > 0) {
       if (response.candidates.length > 1) {
         console.warn(
@@ -258,6 +265,9 @@ function addHelpers(response) {
 function getText(response) {
   if (response.candidates?.[0].content?.parts?.[0]?.text) {
     return response.candidates[0].content.parts[0].text;
+  }
+  if (response.candidates?.[0].content?.parts?.[0]?.functionCall) {
+    return response.candidates[0].content.parts[0].functionCall;
   }
   return "";
 }
@@ -357,9 +367,15 @@ function buildFetchOptions(requestOptions) {
 }
 
 // src/openai/chat/completions/NonStreamingChatProxyHandler.ts
-async function nonStreamingChatProxyHandler(req, apiParam) {
+async function nonStreamingChatProxyHandler(req, apiParam, log) {
   const [model, geminiReq] = genModel(req);
-  const geminiResp = await generateContent(apiParam, model, geminiReq).then((it) => it.response.text()).catch((e3) => e3.message ?? e3?.toString());
+  const geminiResp = await generateContent(apiParam, model, geminiReq).then((it) => it.response.result()).catch((err) => {
+    log?.error(req);
+    log?.error(err?.message ?? err.toString());
+    return err?.message ?? err.toString();
+  });
+  log?.debug(req);
+  log?.debug(geminiResp);
   const resp = {
     id: "chatcmpl-abc123",
     object: "chat.completion",
@@ -367,7 +383,14 @@ async function nonStreamingChatProxyHandler(req, apiParam) {
     model: req.model,
     choices: [
       {
-        message: { role: "assistant", content: geminiResp },
+        message: {
+          role: "assistant",
+          content: typeof geminiResp === "string" ? geminiResp : null,
+          function_call: typeof geminiResp === "string" ? void 0 : {
+            name: geminiResp.name,
+            arguments: JSON.stringify(geminiResp.args)
+          }
+        },
         logprobs: null,
         finish_reason: "stop",
         index: 0
@@ -410,7 +433,7 @@ async function chatProxyHandler(rawReq) {
   }
   rawReq.logger?.debug(req);
   if (req.stream !== true) {
-    const resp = await nonStreamingChatProxyHandler(req, apiParam);
+    const resp = await nonStreamingChatProxyHandler(req, apiParam, rawReq.logger);
     rawReq.logger?.debug(resp);
     return Response.json(resp);
   }

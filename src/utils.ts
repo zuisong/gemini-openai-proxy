@@ -1,3 +1,4 @@
+import { it } from "jsr:@std/testing/bdd"
 import type { Content, GenerateContentRequest, Part } from "./gemini-api-client/types.ts"
 import { HarmBlockThreshold, HarmCategory } from "./gemini-api-client/types.ts"
 import type { Any } from "./log.ts"
@@ -36,6 +37,7 @@ function parseBase64(base64: string): Part {
   if (!base64.startsWith("data:")) {
     return { text: "" }
   }
+
   const [m, data, ..._arr] = base64.split(",")
   const mimeType = m.match(/:(?<mime>.*?);/)?.groups?.mime ?? "img/png"
   return {
@@ -89,6 +91,10 @@ function hasImageMessage(messages: OpenAI.Chat.ChatCompletionMessageParam[]): bo
 export function genModel(req: OpenAI.Chat.ChatCompletionCreateParams): [GeminiModel, GenerateContentRequest] {
   const model = hasImageMessage(req.messages) ? GeminiModel.GEMINI_PRO_VISION : GeminiModel.GEMINI_PRO
 
+  let functions = req.tools?.filter((it) => it.type === "function")?.map((it) => it.function) ?? []
+
+  functions = functions.concat(req.functions ?? [])
+
   const generateContentRequest: GenerateContentRequest = {
     contents: openAiMessageToGeminiMessage(req.messages),
     generationConfig: {
@@ -96,6 +102,11 @@ export function genModel(req: OpenAI.Chat.ChatCompletionCreateParams): [GeminiMo
       temperature: req.temperature ?? undefined,
       topP: req.top_p ?? undefined,
     },
+    tools: [
+      {
+        functionDeclarations: functions,
+      },
+    ],
     safetySettings: [
       HarmCategory.HARM_CATEGORY_HATE_SPEECH,
       HarmCategory.HARM_CATEGORY_SEXUALLY_EXPLICIT,

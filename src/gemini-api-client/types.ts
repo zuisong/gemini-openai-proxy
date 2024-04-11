@@ -1,3 +1,5 @@
+import type { OpenAI } from "../types.ts"
+
 /**
  * Base parameters for a number of methods.
  * @public
@@ -128,7 +130,12 @@ export interface EnhancedGenerateContentResponse extends GenerateContentResponse
    * Returns the text string from the response, if available.
    * Throws if the prompt or candidate was blocked.
    */
-  text: () => string
+  result: () => string | FunctionCall
+}
+
+export interface FunctionCall {
+  name: string
+  args: Record<string, string>
 }
 
 /**
@@ -163,6 +170,9 @@ export interface GenerateContentCandidate {
  */
 export interface GenerateContentRequest extends BaseParams {
   contents: Content[]
+  tools: {
+    functionDeclarations: OpenAI.Chat.FunctionObject[]
+  }[]
 }
 
 /**
@@ -282,6 +292,18 @@ export enum HarmProbability {
 export interface InlineDataPart {
   text?: never
   inlineData: GenerativeContentBlob
+
+  functionCall?: never
+}
+
+/**
+ * Content part interface if the part represents an image.
+ * @public
+ */
+export interface FunctionPart {
+  text?: never
+  functionCall?: FunctionCall
+  inlineData?: never
 }
 
 /**
@@ -305,7 +327,7 @@ export interface ModelParams extends BaseParams {
  * Content part - includes text or image part types.
  * @public
  */
-export type Part = TextPart | InlineDataPart
+export type Part = TextPart | InlineDataPart | FunctionPart
 
 /**
  * If the prompt was blocked, this will be populated with `blockReason` and
@@ -372,4 +394,6 @@ export enum TaskType {
 export interface TextPart {
   text: string
   inlineData?: never
+
+  functionCall?: never
 }
