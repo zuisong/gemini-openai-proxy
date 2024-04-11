@@ -1,6 +1,4 @@
-import { it } from "jsr:@std/testing/bdd"
 import type { Content, GenerateContentRequest, Part } from "./gemini-api-client/types.ts"
-import { HarmBlockThreshold, HarmCategory } from "./gemini-api-client/types.ts"
 import type { Any } from "./log.ts"
 import type { OpenAI } from "./types.ts"
 
@@ -89,7 +87,7 @@ function hasImageMessage(messages: OpenAI.Chat.ChatCompletionMessageParam[]): bo
 }
 
 export function genModel(req: OpenAI.Chat.ChatCompletionCreateParams): [GeminiModel, GenerateContentRequest] {
-  const model = hasImageMessage(req.messages) ? GeminiModel.GEMINI_PRO_VISION : GeminiModel.GEMINI_PRO
+  const model: GeminiModel = hasImageMessage(req.messages) ? "gemini-pro-vision" : "gemini-pro"
 
   let functions = req.tools?.filter((it) => it.type === "function")?.map((it) => it.function) ?? []
 
@@ -102,27 +100,29 @@ export function genModel(req: OpenAI.Chat.ChatCompletionCreateParams): [GeminiMo
       temperature: req.temperature ?? undefined,
       topP: req.top_p ?? undefined,
     },
-    tools: [
-      {
-        functionDeclarations: functions,
-      },
-    ],
-    safetySettings: [
-      HarmCategory.HARM_CATEGORY_HATE_SPEECH,
-      HarmCategory.HARM_CATEGORY_SEXUALLY_EXPLICIT,
-      HarmCategory.HARM_CATEGORY_DANGEROUS_CONTENT,
-      HarmCategory.HARM_CATEGORY_HARASSMENT,
-    ].map((category) => ({
+    tools:
+      functions.length === 0
+        ? undefined
+        : [
+            {
+              functionDeclarations: functions,
+            },
+          ],
+    safetySettings: (
+      [
+        "HARM_CATEGORY_HATE_SPEECH",
+        "HARM_CATEGORY_SEXUALLY_EXPLICIT",
+        "HARM_CATEGORY_DANGEROUS_CONTENT",
+        "HARM_CATEGORY_HARASSMENT",
+      ] as const
+    ).map((category) => ({
       category,
-      threshold: HarmBlockThreshold.BLOCK_NONE,
+      threshold: "BLOCK_NONE",
     })),
   }
   return [model, generateContentRequest]
 }
-export enum GeminiModel {
-  GEMINI_PRO = "gemini-pro",
-  GEMINI_PRO_VISION = "gemini-pro-vision",
-}
+export type GeminiModel = "gemini-pro" | "gemini-pro-vision"
 
 export function getRuntimeKey() {
   const global = globalThis as typeof globalThis & Record<string, undefined | Any>

@@ -1,11 +1,6 @@
 import { GoogleGenerativeAIResponseError } from "./errors.ts"
 import type { FunctionCall } from "./types.ts"
-import {
-  type EnhancedGenerateContentResponse,
-  FinishReason,
-  type GenerateContentCandidate,
-  type GenerateContentResponse,
-} from "./types.ts"
+import type { Candidate, EnhancedGenerateContentResponse, FinishReason, GenerateContentResponse } from "./types.ts"
 
 /**
  * Adds convenience helper methods to a response object, including stream
@@ -51,9 +46,9 @@ export function getText(response: GenerateContentResponse): string | FunctionCal
   return ""
 }
 
-const badFinishReasons = [FinishReason.RECITATION, FinishReason.SAFETY]
+const badFinishReasons: FinishReason[] = ["RECITATION", "SAFETY"]
 
-function hadBadFinishReason(candidate: GenerateContentCandidate): boolean {
+function hadBadFinishReason(candidate: Candidate): boolean {
   return !!candidate.finishReason && badFinishReasons.includes(candidate.finishReason)
 }
 

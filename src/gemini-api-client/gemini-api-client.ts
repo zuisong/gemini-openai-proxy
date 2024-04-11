@@ -17,6 +17,14 @@ export async function generateContent(
     response: enhancedResponse,
   }
 }
+export enum TaskType {
+  TASK_TYPE_UNSPECIFIED = "TASK_TYPE_UNSPECIFIED",
+  RETRIEVAL_QUERY = "RETRIEVAL_QUERY",
+  RETRIEVAL_DOCUMENT = "RETRIEVAL_DOCUMENT",
+  SEMANTIC_SIMILARITY = "SEMANTIC_SIMILARITY",
+  CLASSIFICATION = "CLASSIFICATION",
+  CLUSTERING = "CLUSTERING",
+}
 
 async function makeRequest(url: RequestUrl, body: string, requestOptions?: RequestOptions): Promise<Response> {
   let response: Response
@@ -52,7 +60,7 @@ async function makeRequest(url: RequestUrl, body: string, requestOptions?: Reque
 
 export class RequestUrl {
   constructor(
-    public model: string,
+    public model: GeminiModel,
     public task: Task,
     public stream: boolean,
     public apiParam: ApiParam,

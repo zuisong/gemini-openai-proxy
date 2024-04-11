@@ -5,7 +5,7 @@ import { type ApiParam, genModel } from "../../../utils.ts"
 export async function* streamingChatProxyHandler(req: OpenAI.Chat.ChatCompletionCreateParams, apiParam: ApiParam) {
   const [model, geminiReq] = genModel(req)
   const geminiResp: string = await generateContent(apiParam, model, geminiReq)
-    .then((it) => it.response.text())
+    .then((it) => it.response.result())
     .catch((e) => e.message ?? e?.toString())
 
   function genOpenAiResp(content: string, stop: boolean) {

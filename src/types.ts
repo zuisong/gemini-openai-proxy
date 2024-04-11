@@ -1,17 +1,17 @@
+import type { components } from "./generated-types/openai-types.ts"
 // deno-lint-ignore-file no-namespace
 import type { Logger } from "./log.ts"
-import type { components } from "./openai-types.ts"
 
-export namespace OpenAI {
-  export namespace Chat {
-    export type ChatCompletionCreateParams = components["schemas"]["CreateChatCompletionRequest"]
-    export type ChatCompletionChunk = components["schemas"]["CreateChatCompletionStreamResponse"]
-    export type ChatCompletion = components["schemas"]["CreateChatCompletionResponse"]
-    export type ChatCompletionMessageParam = components["schemas"]["ChatCompletionRequestMessage"]
-    export type FunctionObject = components["schemas"]["FunctionObject"]
+export declare namespace OpenAI {
+  namespace Chat {
+    type ChatCompletionCreateParams = components["schemas"]["CreateChatCompletionRequest"]
+    type ChatCompletionChunk = components["schemas"]["CreateChatCompletionStreamResponse"]
+    type ChatCompletion = components["schemas"]["CreateChatCompletionResponse"]
+    type ChatCompletionMessageParam = components["schemas"]["ChatCompletionRequestMessage"]
+    type FunctionObject = components["schemas"]["FunctionObject"]
   }
-  export namespace Models {
-    export type Model = components["schemas"]["Model"]
+  namespace Models {
+    type Model = components["schemas"]["Model"]
   }
 }
 

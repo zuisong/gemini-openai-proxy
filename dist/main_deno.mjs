@@ -1,72 +1,72 @@
-// node_modules/.deno/itty-router@5.0.4/node_modules/itty-router/Router.mjs
-var r = ({ base: r3 = "", routes: e3 = [], ...a } = {}) => ({ __proto__: new Proxy({}, { get: (a2, t3, o, c) => (a3, ...l) => e3.push([t3.toUpperCase?.(), RegExp(`^${(c = (r3 + a3).replace(/\/+(\/|$)/g, "$1")).replace(/(\/?\.?):(\w+)\+/g, "($1(?<$2>*))").replace(/(\/?\.?):(\w+)/g, "($1(?<$2>[^$1/]+?))").replace(/\./g, "\\.").replace(/(\/?)\*/g, "($1.*)?")}/*$`), l, c]) && o }), routes: e3, ...a, async fetch(r4, ...t3) {
-  let o, c, l = new URL(r4.url), p = r4.query = { __proto__: null };
-  for (let [r5, e4] of l.searchParams)
-    p[r5] = p[r5] ? [].concat(p[r5], e4) : e4;
-  r:
+// node_modules/.deno/itty-router@5.0.9/node_modules/itty-router/index.mjs
+var t = ({ base: e = "", routes: t2 = [], ...r2 } = {}) => ({ __proto__: new Proxy({}, { get: (r3, o2, a2, s2) => (r4, ...c) => t2.push([o2.toUpperCase?.(), RegExp(`^${(s2 = (e + r4).replace(/\/+(\/|$)/g, "$1")).replace(/(\/?\.?):(\w+)\+/g, "($1(?<$2>*))").replace(/(\/?\.?):(\w+)/g, "($1(?<$2>[^$1/]+?))").replace(/\./g, "\\.").replace(/(\/?)\*/g, "($1.*)?")}/*$`), c, s2]) && a2 }), routes: t2, ...r2, async fetch(e2, ...o2) {
+  let a2, s2, c = new URL(e2.url), n = e2.query = { __proto__: null };
+  for (let [e3, t3] of c.searchParams)
+    n[e3] = n[e3] ? [].concat(n[e3], t3) : t3;
+  e:
     try {
-      for (let e4 of a.before || [])
-        if (null != (o = await e4(r4.proxy ?? r4, ...t3)))
-          break r;
-      e:
-        for (let [a2, p2, f, h] of e3)
-          if ((a2 == r4.method || "ALL" == a2) && (c = l.pathname.match(p2))) {
-            r4.params = c.groups || {}, r4.route = h;
-            for (let e4 of f)
-              if (null != (o = await e4(r4.proxy ?? r4, ...t3)))
-                break e;
+      for (let t3 of r2.before || [])
+        if (null != (a2 = await t3(e2.proxy ?? e2, ...o2)))
+          break e;
+      t:
+        for (let [r3, n2, l, i] of t2)
+          if ((r3 == e2.method || "ALL" == r3) && (s2 = c.pathname.match(n2))) {
+            e2.params = s2.groups || {}, e2.route = i;
+            for (let t3 of l)
+              if (null != (a2 = await t3(e2.proxy ?? e2, ...o2)))
+                break t;
           }
-    } catch (e4) {
-      if (!a.catch)
-        throw e4;
-      o = await a.catch(e4, r4.proxy ?? r4, ...t3);
+    } catch (t3) {
+      if (!r2.catch)
+        throw t3;
+      a2 = await r2.catch(t3, e2.proxy ?? e2, ...o2);
     }
   try {
-    for (let e4 of a.finally || [])
-      o = await e4(o, r4.proxy ?? r4, ...t3) ?? o;
-  } catch (e4) {
-    if (!a.catch)
-      throw e4;
-    o = await a.catch(e4, r4.proxy ?? r4, ...t3);
+    for (let t3 of r2.finally || [])
+      a2 = await t3(a2, e2.proxy ?? e2, ...o2) ?? a2;
+  } catch (t3) {
+    if (!r2.catch)
+      throw t3;
+    a2 = await r2.catch(t3, e2.proxy ?? e2, ...o2);
   }
-  return o;
+  return a2;
 } });
-
-// node_modules/.deno/itty-router@5.0.4/node_modules/itty-router/cors.mjs
-var e = (e3 = {}) => {
-  const { origin: o = "*", credentials: s = false, allowMethods: r3 = "*", allowHeaders: n, exposeHeaders: c, maxAge: t3 } = e3, a = { "access-control-allow-headers": n?.join?.(",") ?? n, "access-control-expose-headers": c?.join?.(",") ?? c, "access-control-allow-methods": r3?.join?.(",") ?? r3, "access-control-max-age": t3, "access-control-allow-credentials": s }, l = (e4) => {
-    const r4 = e4?.headers.get("origin");
-    return true === o ? r4 : o instanceof RegExp ? o.test(r4) ? r4 : void 0 : Array.isArray(o) ? o.includes(r4) ? r4 : void 0 : o instanceof Function ? o(r4) : "*" == o && s ? r4 : o;
+var r = (e = "text/plain; charset=utf-8", t2) => (r2, { ...o2 } = {}) => {
+  if (void 0 === r2 || r2 instanceof Response)
+    return r2;
+  const a2 = new Response(t2?.(r2) ?? r2, o2);
+  return a2.headers.set("content-type", e), a2;
+};
+var o = r("application/json; charset=utf-8", JSON.stringify);
+var a = (e) => ({ 400: "Bad Request", 401: "Unauthorized", 403: "Forbidden", 404: "Not Found", 500: "Internal Server Error" })[e] || "Unknown Error";
+var s = (e = 500, t2) => {
+  if (e instanceof Error) {
+    const { message: r2, ...o2 } = e;
+    e = e.status || 500, t2 = { error: r2 || a(e), ...o2 };
+  }
+  return t2 = { status: e, ..."object" == typeof t2 ? t2 : { error: t2 || a(e) } }, o(t2, { status: e });
+};
+var p = r("text/plain; charset=utf-8", String);
+var f = r("text/html");
+var u = r("image/jpeg");
+var h = r("image/png");
+var g = r("image/webp");
+var y = (e = {}) => {
+  const { origin: t2 = "*", credentials: r2 = false, allowMethods: o2 = "*", allowHeaders: a2, exposeHeaders: s2, maxAge: c } = e, n = (e2) => {
+    const o3 = e2?.headers.get("origin");
+    return true === t2 ? o3 : t2 instanceof RegExp ? t2.test(o3) ? o3 : void 0 : Array.isArray(t2) ? t2.includes(o3) ? o3 : void 0 : t2 instanceof Function ? t2(o3) : "*" == t2 && r2 ? o3 : t2;
+  }, l = (e2, t3) => {
+    for (const [r3, o3] of Object.entries(t3))
+      o3 && e2.headers.append(r3, o3);
+    return e2;
   };
-  return { corsify: (e4, o2) => e4?.headers?.get("access-control-allow-origin") ? e4 : new Response(e4.body, { ...e4, headers: [...e4.headers, ["access-control-allow-origin", l(o2)], ...Object.entries(a)].filter((e5) => e5[1]) }), preflight: (e4) => {
-    if ("OPTIONS" == e4.method)
-      return new Response(null, { status: 204, headers: Object.entries({ "access-control-allow-origin": l(e4), ...a }).filter((e5) => e5[1]) });
+  return { corsify: (e2, t3) => e2?.headers?.get("access-control-allow-origin") || 101 == e2.status ? e2 : l(e2, { "access-control-allow-origin": n(t3), "access-control-allow-credentials": r2 }), preflight: (e2) => {
+    if ("OPTIONS" == e2.method) {
+      const t3 = new Response(null, { status: 204 });
+      return l(t3, { "access-control-allow-origin": n(e2), "access-control-allow-methods": o2?.join?.(",") ?? o2, "access-control-expose-headers": s2?.join?.(",") ?? s2, "access-control-allow-headers": a2?.join?.(",") ?? a2 ?? e2.headers.get("access-control-request-headers"), "access-control-max-age": c, "access-control-allow-credentials": r2 });
+    }
   } };
 };
-
-// node_modules/.deno/itty-router@5.0.4/node_modules/itty-router/error.mjs
-var t = /* @__PURE__ */ ((t3 = "text/plain; charset=utf-8", e3) => (r3, { ...n } = {}) => {
-  if (void 0 === r3 || r3 instanceof Response)
-    return r3;
-  const o = new Response(e3?.(r3) ?? r3, n);
-  return o.headers.set("content-type", t3), o;
-})("application/json; charset=utf-8", JSON.stringify);
-var e2 = (t3) => ({ 400: "Bad Request", 401: "Unauthorized", 403: "Forbidden", 404: "Not Found", 500: "Internal Server Error" })[t3] || "Unknown Error";
-var r2 = (r3 = 500, n) => {
-  if (r3 instanceof Error) {
-    const { message: t3, ...o } = r3;
-    r3 = r3.status || 500, n = { error: t3 || e2(r3), ...o };
-  }
-  return n = { status: r3, ..."object" == typeof n ? n : { error: n || e2(r3) } }, t(n, { status: r3 });
-};
-
-// node_modules/.deno/itty-router@5.0.4/node_modules/itty-router/json.mjs
-var t2 = /* @__PURE__ */ ((t3 = "text/plain; charset=utf-8", e3) => (n, { ...s } = {}) => {
-  if (void 0 === n || n instanceof Response)
-    return n;
-  const o = new Response(e3?.(n) ?? n, s);
-  return o.headers.set("content-type", t3), o;
-})("application/json; charset=utf-8", JSON.stringify);
 
 // src/gemini-proxy.ts
 async function geminiProxy(rawReq) {
@@ -78,33 +78,6 @@ async function geminiProxy(rawReq) {
   const resp = await fetch(req);
   return new Response(resp.body, resp);
 }
-
-// src/log.ts
-var LEVEL = ["debug", "info", "warn", "error"];
-var Logger = class {
-  config;
-  debug;
-  info;
-  warn;
-  error;
-  constructor(config) {
-    const level = LEVEL.find((it) => it === config?.level) ?? "warn";
-    this.config = {
-      prefix: config?.prefix ?? "",
-      level
-    };
-    for (const m of LEVEL) {
-      this[m] = (...data) => this.#write(m, ...data);
-    }
-  }
-  #write(level, ...data) {
-    const { level: configLevel, prefix } = this.config;
-    if (LEVEL.indexOf(level) < LEVEL.indexOf(configLevel)) {
-      return;
-    }
-    console[level](`${(/* @__PURE__ */ new Date()).toISOString()} ${level.toUpperCase()}${prefix ? ` ${prefix}` : ""}`, ...data);
-  }
-};
 
 // src/utils.ts
 function getToken(headers) {
@@ -171,7 +144,7 @@ function hasImageMessage(messages) {
   });
 }
 function genModel(req) {
-  const model = hasImageMessage(req.messages) ? "gemini-pro-vision" /* GEMINI_PRO_VISION */ : "gemini-pro" /* GEMINI_PRO */;
+  const model = hasImageMessage(req.messages) ? "gemini-pro-vision" : "gemini-pro";
   let functions = req.tools?.filter((it) => it.type === "function")?.map((it) => it.function) ?? [];
   functions = functions.concat(req.functions ?? []);
   const generateContentRequest = {
@@ -187,13 +160,13 @@ function genModel(req) {
       }
     ],
     safetySettings: [
-      "HARM_CATEGORY_HATE_SPEECH" /* HARM_CATEGORY_HATE_SPEECH */,
-      "HARM_CATEGORY_SEXUALLY_EXPLICIT" /* HARM_CATEGORY_SEXUALLY_EXPLICIT */,
-      "HARM_CATEGORY_DANGEROUS_CONTENT" /* HARM_CATEGORY_DANGEROUS_CONTENT */,
-      "HARM_CATEGORY_HARASSMENT" /* HARM_CATEGORY_HARASSMENT */
+      "HARM_CATEGORY_HATE_SPEECH",
+      "HARM_CATEGORY_SEXUALLY_EXPLICIT",
+      "HARM_CATEGORY_DANGEROUS_CONTENT",
+      "HARM_CATEGORY_HARASSMENT"
     ].map((category) => ({
       category,
-      threshold: "BLOCK_NONE" /* BLOCK_NONE */
+      threshold: "BLOCK_NONE"
     }))
   };
   return [model, generateContentRequest];
@@ -220,6 +193,52 @@ function getRuntimeKey() {
   }
   return "other";
 }
+
+// src/hello.ts
+function hello(req) {
+  const origin = new URL(req.url).origin;
+  return new Response(`
+    Hello Gemini-OpenAI-Proxy from ${getRuntimeKey()}! 
+    
+    You can try it with:
+    
+    curl ${origin}/v1/chat/completions \\
+    -H "Authorization: Bearer $YOUR_GEMINI_API_KEY" \\
+    -H "Content-Type: application/json" \\
+    -d '{
+        "model": "gpt-3.5-turbo",
+        "messages": [{"role": "user", "content": "Hello"}],
+        "temperature": 0.7
+    }'
+    `);
+}
+
+// src/log.ts
+var LEVEL = ["debug", "info", "warn", "error"];
+var Logger = class {
+  config;
+  debug;
+  info;
+  warn;
+  error;
+  constructor(config) {
+    const level = LEVEL.find((it) => it === config?.level) ?? "warn";
+    this.config = {
+      prefix: config?.prefix ?? "",
+      level
+    };
+    for (const m of LEVEL) {
+      this[m] = (...data) => this.#write(m, ...data);
+    }
+  }
+  #write(level, ...data) {
+    const { level: configLevel, prefix } = this.config;
+    if (LEVEL.indexOf(level) < LEVEL.indexOf(configLevel)) {
+      return;
+    }
+    console[level](`${(/* @__PURE__ */ new Date()).toISOString()} ${level.toUpperCase()}${prefix ? ` ${prefix}` : ""}`, ...data);
+  }
+};
 
 // src/gemini-api-client/errors.ts
 var GoogleGenerativeAIError = class extends Error {
@@ -271,7 +290,7 @@ function getText(response) {
   }
   return "";
 }
-var badFinishReasons = ["RECITATION" /* RECITATION */, "SAFETY" /* SAFETY */];
+var badFinishReasons = ["RECITATION", "SAFETY"];
 function hadBadFinishReason(candidate) {
   return !!candidate.finishReason && badFinishReasons.includes(candidate.finishReason);
 }
@@ -330,9 +349,9 @@ async function makeRequest(url, body, requestOptions) {
       }
       throw new Error(`[${response.status} ${response.statusText}] ${message}`);
     }
-  } catch (e3) {
-    const err = new GoogleGenerativeAIError(`Error fetching from ${url.toURL()} -> ${e3.message}`);
-    err.stack = e3.stack;
+  } catch (e) {
+    const err = new GoogleGenerativeAIError(`Error fetching from ${url.toURL()} -> ${e.message}`);
+    err.stack = e.stack;
     throw err;
   }
   return response;
@@ -386,9 +405,11 @@ async function nonStreamingChatProxyHandler(req, apiParam, log) {
         message: {
           role: "assistant",
           content: typeof geminiResp === "string" ? geminiResp : null,
-          function_call: typeof geminiResp === "string" ? void 0 : {
-            name: geminiResp.name,
-            arguments: JSON.stringify(geminiResp.args)
+          ...typeof geminiResp === "string" ? void 0 : {
+            function_call: {
+              name: geminiResp.name ?? "",
+              arguments: JSON.stringify(geminiResp.args)
+            }
           }
         },
         logprobs: null,
@@ -403,7 +424,7 @@ async function nonStreamingChatProxyHandler(req, apiParam, log) {
 // src/openai/chat/completions/StreamingChatProxyHandler.ts
 async function* streamingChatProxyHandler(req, apiParam) {
   const [model, geminiReq] = genModel(req);
-  const geminiResp = await generateContent(apiParam, model, geminiReq).then((it) => it.response.text()).catch((e3) => e3.message ?? e3?.toString());
+  const geminiResp = await generateContent(apiParam, model, geminiReq).then((it) => it.response.result()).catch((e) => e.message ?? e?.toString());
   function genOpenAiResp(content, stop) {
     return {
       id: "chatcmpl-abc123",
@@ -548,28 +569,9 @@ var modelDetail = (model) => {
   return modelData.find((it) => it.id === model);
 };
 
-// src/routes.ts
-function hello(req) {
-  const origin = new URL(req.url).origin;
-  return new Response(`
-    Hello Gemini-OpenAI-Proxy from ${getRuntimeKey()}! 
-    
-    You can try it with:
-    
-    curl ${origin}/v1/chat/completions \\
-    -H "Authorization: Bearer $YOUR_GEMINI_API_KEY" \\
-    -H "Content-Type: application/json" \\
-    -d '{
-        "model": "gpt-3.5-turbo",
-        "messages": [{"role": "user", "content": "Hello"}],
-        "temperature": 0.7
-    }'
-    `);
-}
-
 // src/app.ts
-var { preflight, corsify } = e({ allowHeaders: "*" });
-var app = r({
+var { preflight, corsify } = y({ allowHeaders: "*" });
+var app = t({
   before: [
     preflight,
     (req) => {
@@ -577,13 +579,13 @@ var app = r({
       req.logger.warn(`--> ${req.method} ${req.url}`);
     }
   ],
-  catch: r2,
+  catch: s,
   finally: [
     corsify,
     (_, req) => {
       req.logger?.warn(`<-- ${req.method} ${req.url}`);
     },
-    t2
+    o
   ]
 });
 app.get("/", (c) => hello(c));

@@ -211,19 +211,23 @@ export interface components {
       message: string;
       param: string | null;
       type: string;
+      [key: string]: unknown;
     };
     ErrorResponse: {
       error: components["schemas"]["Error"];
+      [key: string]: unknown;
     };
     ListModelsResponse: {
       /** @enum {string} */
       object: "list";
       data: components["schemas"]["Model"][];
+      [key: string]: unknown;
     };
     DeleteModelResponse: {
       id: string;
       deleted: boolean;
       object: string;
+      [key: string]: unknown;
     };
     CreateCompletionRequest: {
       /** @description ID of the model to use. You can use the [List models](/docs/api-reference/models/list) API to see all of your available models, or see our [Model overview](/docs/models/overview) for descriptions of them. */
@@ -357,6 +361,7 @@ export interface components {
        * @example user-1234
        */
       user?: string;
+      [key: string]: unknown;
     };
     /** @description Represents a completion response from the API. Note: both the streamed and non-streamed response objects share the same shape (unlike the chat endpoint). */
     CreateCompletionResponse: {
@@ -380,8 +385,10 @@ export interface components {
             top_logprobs?: {
                 [key: string]: number;
               }[];
+            [key: string]: unknown;
           } | null;
           text: string;
+          [key: string]: unknown;
         })[];
       /** @description The Unix timestamp (in seconds) of when the completion was created. */
       created: number;
@@ -399,6 +406,7 @@ export interface components {
        */
       object: "text_completion";
       usage?: components["schemas"]["CompletionUsage"];
+      [key: string]: unknown;
     };
     ChatCompletionRequestMessageContentPart: components["schemas"]["ChatCompletionRequestMessageContentPartText"] | components["schemas"]["ChatCompletionRequestMessageContentPartImage"];
     /** Image content part */
@@ -420,7 +428,9 @@ export interface components {
          * @enum {string}
          */
         detail?: "auto" | "low" | "high";
+        [key: string]: unknown;
       };
+      [key: string]: unknown;
     };
     /** Text content part */
     ChatCompletionRequestMessageContentPartText: {
@@ -431,6 +441,7 @@ export interface components {
       type: "text";
       /** @description The text content. */
       text: string;
+      [key: string]: unknown;
     };
     ChatCompletionRequestMessage: components["schemas"]["ChatCompletionRequestSystemMessage"] | components["schemas"]["ChatCompletionRequestUserMessage"] | components["schemas"]["ChatCompletionRequestAssistantMessage"] | components["schemas"]["ChatCompletionRequestToolMessage"] | components["schemas"]["ChatCompletionRequestFunctionMessage"];
     /** System message */
@@ -444,6 +455,7 @@ export interface components {
       role: "system";
       /** @description An optional name for the participant. Provides the model information to differentiate between participants of the same role. */
       name?: string;
+      [key: string]: unknown;
     };
     /** User message */
     ChatCompletionRequestUserMessage: {
@@ -456,6 +468,7 @@ export interface components {
       role: "user";
       /** @description An optional name for the participant. Provides the model information to differentiate between participants of the same role. */
       name?: string;
+      [key: string]: unknown;
     };
     /** Assistant message */
     ChatCompletionRequestAssistantMessage: {
@@ -478,7 +491,9 @@ export interface components {
         arguments: string;
         /** @description The name of the function to call. */
         name: string;
+        [key: string]: unknown;
       };
+      [key: string]: unknown;
     };
     /** Tool message */
     ChatCompletionRequestToolMessage: {
@@ -491,6 +506,7 @@ export interface components {
       content: string;
       /** @description Tool call that this message is responding to. */
       tool_call_id: string;
+      [key: string]: unknown;
     };
     /**
      * Function message
@@ -506,6 +522,7 @@ export interface components {
       content: string | null;
       /** @description The name of the function to call. */
       name: string;
+      [key: string]: unknown;
     };
     /**
      * @description The parameters the functions accepts, described as a JSON Schema object. See the [guide](/docs/guides/text-generation/function-calling) for examples, and the [JSON Schema reference](https://json-schema.org/understanding-json-schema/) for documentation about the format.
@@ -522,11 +539,13 @@ export interface components {
       /** @description The name of the function to be called. Must be a-z, A-Z, 0-9, or contain underscores and dashes, with a maximum length of 64. */
       name: string;
       parameters?: components["schemas"]["FunctionParameters"];
+      [key: string]: unknown;
     };
     /** @description Specifying a particular function via `{"name": "my_function"}` forces the model to call that function. */
     ChatCompletionFunctionCallOption: {
       /** @description The name of the function to call. */
       name: string;
+      [key: string]: unknown;
     };
     ChatCompletionTool: {
       /**
@@ -535,6 +554,7 @@ export interface components {
        */
       type: "function";
       function: components["schemas"]["FunctionObject"];
+      [key: string]: unknown;
     };
     FunctionObject: {
       /** @description A description of what the function does, used by the model to choose when and how to call the function. */
@@ -542,6 +562,7 @@ export interface components {
       /** @description The name of the function to be called. Must be a-z, A-Z, 0-9, or contain underscores and dashes, with a maximum length of 64. */
       name: string;
       parameters?: components["schemas"]["FunctionParameters"];
+      [key: string]: unknown;
     };
     /**
      * @description Controls which (if any) function is called by the model.
@@ -562,7 +583,9 @@ export interface components {
       function: {
         /** @description The name of the function to call. */
         name: string;
+        [key: string]: unknown;
       };
+      [key: string]: unknown;
     };
     /** @description The tool calls generated by the model, such as function calls. */
     ChatCompletionMessageToolCalls: components["schemas"]["ChatCompletionMessageToolCall"][];
@@ -580,7 +603,9 @@ export interface components {
         name: string;
         /** @description The arguments to call the function with, as generated by the model in JSON format. Note that the model does not always generate valid JSON, and may hallucinate parameters not defined by your function schema. Validate the arguments in your code before calling your function. */
         arguments: string;
+        [key: string]: unknown;
       };
+      [key: string]: unknown;
     };
     ChatCompletionMessageToolCallChunk: {
       index: number;
@@ -596,7 +621,9 @@ export interface components {
         name?: string;
         /** @description The arguments to call the function with, as generated by the model in JSON format. Note that the model does not always generate valid JSON, and may hallucinate parameters not defined by your function schema. Validate the arguments in your code before calling your function. */
         arguments?: string;
+        [key: string]: unknown;
       };
+      [key: string]: unknown;
     };
     /**
      * @description The role of the author of a message
@@ -622,7 +649,9 @@ export interface components {
         arguments: string;
         /** @description The name of the function to call. */
         name: string;
+        [key: string]: unknown;
       };
+      [key: string]: unknown;
     };
     /** @description A chat completion delta generated by streamed model responses. */
     ChatCompletionStreamResponseDelta: {
@@ -637,6 +666,7 @@ export interface components {
         arguments?: string;
         /** @description The name of the function to call. */
         name?: string;
+        [key: string]: unknown;
       };
       tool_calls?: components["schemas"]["ChatCompletionMessageToolCallChunk"][];
       /**
@@ -644,6 +674,7 @@ export interface components {
        * @enum {string}
        */
       role?: "system" | "user" | "assistant" | "tool";
+      [key: string]: unknown;
     };
     CreateChatCompletionRequest: {
       /** @description A list of messages comprising the conversation so far. [Example Python code](https://cookbook.openai.com/examples/how_to_format_inputs_to_chatgpt_models). */
@@ -713,6 +744,7 @@ export interface components {
          * @enum {string}
          */
         type?: "text" | "json_object";
+        [key: string]: unknown;
       };
       /**
        * @description This feature is in Beta.
@@ -778,6 +810,7 @@ export interface components {
        * A list of functions the model may generate JSON inputs for.
        */
       functions?: components["schemas"]["ChatCompletionFunctions"][];
+      [key: string]: unknown;
     };
     /** @description Represents a chat completion response returned by model, based on the provided input. */
     CreateChatCompletionResponse: {
@@ -801,7 +834,9 @@ export interface components {
           logprobs: ({
             /** @description A list of message content tokens with log probability information. */
             content: components["schemas"]["ChatCompletionTokenLogprob"][] | null;
+            [key: string]: unknown;
           }) | null;
+          [key: string]: unknown;
         })[];
       /** @description The Unix timestamp (in seconds) of when the chat completion was created. */
       created: number;
@@ -819,6 +854,7 @@ export interface components {
        */
       object: "chat.completion";
       usage?: components["schemas"]["CompletionUsage"];
+      [key: string]: unknown;
     };
     /** @description Represents a chat completion response returned by model, based on the provided input. */
     CreateChatCompletionFunctionResponse: {
@@ -835,6 +871,7 @@ export interface components {
           /** @description The index of the choice in the list of choices. */
           index: number;
           message: components["schemas"]["ChatCompletionResponseMessage"];
+          [key: string]: unknown;
         })[];
       /** @description The Unix timestamp (in seconds) of when the chat completion was created. */
       created: number;
@@ -852,6 +889,7 @@ export interface components {
        */
       object: "chat.completion";
       usage?: components["schemas"]["CompletionUsage"];
+      [key: string]: unknown;
     };
     ChatCompletionTokenLogprob: {
       /** @description The token. */
@@ -868,13 +906,16 @@ export interface components {
           logprob: number;
           /** @description A list of integers representing the UTF-8 bytes representation of the token. Useful in instances where characters are represented by multiple tokens and their byte representations must be combined to generate the correct text representation. Can be `null` if there is no bytes representation for the token. */
           bytes: number[] | null;
+          [key: string]: unknown;
         })[];
+      [key: string]: unknown;
     };
     ListPaginatedFineTuningJobsResponse: {
       data: components["schemas"]["FineTuningJob"][];
       has_more: boolean;
       /** @enum {string} */
       object: "list";
+      [key: string]: unknown;
     };
     /** @description Represents a streamed chunk of a chat completion response returned by model, based on the provided input. */
     CreateChatCompletionStreamResponse: {
@@ -887,6 +928,7 @@ export interface components {
           logprobs?: ({
             /** @description A list of message content tokens with log probability information. */
             content: components["schemas"]["ChatCompletionTokenLogprob"][] | null;
+            [key: string]: unknown;
           }) | null;
           /**
            * @description The reason the model stopped generating tokens. This will be `stop` if the model hit a natural stop point or a provided stop sequence,
@@ -899,6 +941,7 @@ export interface components {
           finish_reason: "stop" | "length" | "tool_calls" | "content_filter" | "function_call" | null;
           /** @description The index of the choice in the list of choices. */
           index: number;
+          [key: string]: unknown;
         })[];
       /** @description The Unix timestamp (in seconds) of when the chat completion was created. Each chunk has the same timestamp. */
       created: number;
@@ -914,6 +957,7 @@ export interface components {
        * @enum {string}
        */
       object: "chat.completion.chunk";
+      [key: string]: unknown;
     };
     /** @description Represents a streamed chunk of a chat completion response returned by model, based on the provided input. */
     CreateChatCompletionImageResponse: Record<string, never>;
@@ -969,10 +1013,12 @@ export interface components {
        * @example user-1234
        */
       user?: string;
+      [key: string]: unknown;
     };
     ImagesResponse: {
       created: number;
       data: components["schemas"]["Image"][];
+      [key: string]: unknown;
     };
     /** @description Represents the url or the content of an image generated by the OpenAI API. */
     Image: {
@@ -982,6 +1028,7 @@ export interface components {
       url?: string;
       /** @description The prompt that was used to generate the image, if there was any revision to the prompt. */
       revised_prompt?: string;
+      [key: string]: unknown;
     };
     CreateImageEditRequest: {
       /**
@@ -1031,6 +1078,7 @@ export interface components {
        * @example user-1234
        */
       user?: string;
+      [key: string]: unknown;
     };
     CreateImageVariationRequest: {
       /**
@@ -1070,6 +1118,7 @@ export interface components {
        * @example user-1234
        */
       user?: string;
+      [key: string]: unknown;
     };
     CreateModerationRequest: {
       /** @description The input text to classify */
@@ -1083,6 +1132,7 @@ export interface components {
        * @example text-moderation-stable
        */
       model?: string | ("text-moderation-latest" | "text-moderation-stable");
+      [key: string]: unknown;
     };
     /** @description Represents if a given text input is potentially harmful. */
     CreateModerationResponse: {
@@ -1118,6 +1168,7 @@ export interface components {
             violence: boolean;
             /** @description Content that depicts death, violence, or physical injury in graphic detail. */
             "violence/graphic": boolean;
+            [key: string]: unknown;
           };
           /** @description A list of the categories along with their scores as predicted by model. */
           category_scores: {
@@ -1143,13 +1194,17 @@ export interface components {
             violence: number;
             /** @description The score for the category 'violence/graphic'. */
             "violence/graphic": number;
+            [key: string]: unknown;
           };
+          [key: string]: unknown;
         }[];
+      [key: string]: unknown;
     };
     ListFilesResponse: {
       data: components["schemas"]["OpenAIFile"][];
       /** @enum {string} */
       object: "list";
+      [key: string]: unknown;
     };
     CreateFileRequest: {
       /**
@@ -1165,12 +1220,14 @@ export interface components {
        * @enum {string}
        */
       purpose: "fine-tune" | "assistants";
+      [key: string]: unknown;
     };
     DeleteFileResponse: {
       id: string;
       /** @enum {string} */
       object: "file";
       deleted: boolean;
+      [key: string]: unknown;
     };
     CreateFineTuningJobRequest: {
       /**
@@ -1215,6 +1272,7 @@ export interface components {
          * @default auto
          */
         n_epochs?: "auto" | number;
+        [key: string]: unknown;
       };
       /**
        * @description A string of up to 18 characters that will be added to your fine-tuned model name.
@@ -1239,11 +1297,13 @@ export interface components {
        * @example file-abc123
        */
       validation_file?: string | null;
+      [key: string]: unknown;
     };
     ListFineTuningJobEventsResponse: {
       data: components["schemas"]["FineTuningJobEvent"][];
       /** @enum {string} */
       object: "list";
+      [key: string]: unknown;
     };
     CreateEmbeddingRequest: {
       /**
@@ -1273,6 +1333,7 @@ export interface components {
        * @example user-1234
        */
       user?: string;
+      [key: string]: unknown;
     };
     CreateEmbeddingResponse: {
       /** @description The list of embeddings generated by the model. */
@@ -1290,7 +1351,9 @@ export interface components {
         prompt_tokens: number;
         /** @description The total number of tokens used by the request. */
         total_tokens: number;
+        [key: string]: unknown;
       };
+      [key: string]: unknown;
     };
     CreateTranscriptionRequest: {
       /**
@@ -1329,11 +1392,13 @@ export interface components {
        * ]
        */
       "timestamp_granularities[]"?: ("word" | "segment")[];
+      [key: string]: unknown;
     };
     /** @description Represents a transcription response returned by model, based on the provided input. */
     CreateTranscriptionResponseJson: {
       /** @description The transcribed text. */
       text: string;
+      [key: string]: unknown;
     };
     TranscriptionSegment: {
       /** @description Unique identifier of the segment. */
@@ -1374,6 +1439,7 @@ export interface components {
        * @description Probability of no speech in the segment. If the value is higher than 1.0 and the `avg_logprob` is below -1, consider this segment silent.
        */
       no_speech_prob: number;
+      [key: string]: unknown;
     };
     TranscriptionWord: {
       /** @description The text content of the word. */
@@ -1388,6 +1454,7 @@ export interface components {
        * @description End time of the word in seconds.
        */
       end: number;
+      [key: string]: unknown;
     };
     /** @description Represents a verbose json transcription response returned by model, based on the provided input. */
     CreateTranscriptionResponseVerboseJson: {
@@ -1401,6 +1468,7 @@ export interface components {
       words?: components["schemas"]["TranscriptionWord"][];
       /** @description Segments of the transcribed text and their corresponding details. */
       segments?: components["schemas"]["TranscriptionSegment"][];
+      [key: string]: unknown;
     };
     CreateTranslationRequest: {
       /**
@@ -1428,9 +1496,11 @@ export interface components {
        * @default 0
        */
       temperature?: number;
+      [key: string]: unknown;
     };
     CreateTranslationResponseJson: {
       text: string;
+      [key: string]: unknown;
     };
     CreateTranslationResponseVerboseJson: {
       /** @description The language of the output translation (always `english`). */
@@ -1441,6 +1511,7 @@ export interface components {
       text: string;
       /** @description Segments of the translated text and their corresponding details. */
       segments?: components["schemas"]["TranscriptionSegment"][];
+      [key: string]: unknown;
     };
     CreateSpeechRequest: {
       /** @description One of the available [TTS models](/docs/models/tts): `tts-1` or `tts-1-hd` */
@@ -1463,6 +1534,7 @@ export interface components {
        * @default 1
        */
       speed?: number;
+      [key: string]: unknown;
     };
     /**
      * Model
@@ -1480,6 +1552,7 @@ export interface components {
       object: "model";
       /** @description The organization that owns the model. */
       owned_by: string;
+      [key: string]: unknown;
     };
     /**
      * OpenAIFile
@@ -1515,6 +1588,7 @@ export interface components {
        * @description Deprecated. For details on why a fine-tuning training file failed validation, see the `error` field on `fine_tuning.job`.
        */
       status_details?: string;
+      [key: string]: unknown;
     };
     /** @description Represents an embedding vector returned by embedding endpoint. */
     Embedding: {
@@ -1527,6 +1601,7 @@ export interface components {
        * @enum {string}
        */
       object: "embedding";
+      [key: string]: unknown;
     };
     /**
      * FineTuningJob
@@ -1545,6 +1620,7 @@ export interface components {
         message: string;
         /** @description The parameter that was invalid, usually `training_file` or `validation_file`. This field will be null if the failure was not parameter-specific. */
         param: string | null;
+        [key: string]: unknown;
       }) | null;
       /** @description The name of the fine-tuned model that is being created. The value will be null if the fine-tuning job is still running. */
       fine_tuned_model: string | null;
@@ -1558,6 +1634,7 @@ export interface components {
          * @default auto
          */
         n_epochs: "auto" | number;
+        [key: string]: unknown;
       };
       /** @description The base model that is being fine-tuned. */
       model: string;
@@ -1581,6 +1658,7 @@ export interface components {
       training_file: string;
       /** @description The file ID used for validation. You can retrieve the validation results with the [Files API](/docs/api-reference/files/retrieve-contents). */
       validation_file: string | null;
+      [key: string]: unknown;
     };
     /** @description Fine-tuning job event object */
     FineTuningJobEvent: {
@@ -1591,6 +1669,7 @@ export interface components {
       message: string;
       /** @enum {string} */
       object: "fine_tuning.job.event";
+      [key: string]: unknown;
     };
     /** @description Usage statistics for the completion request. */
     CompletionUsage: {
@@ -1600,6 +1679,7 @@ export interface components {
       prompt_tokens: number;
       /** @description Total number of tokens used in the request (prompt + completion). */
       total_tokens: number;
+      [key: string]: unknown;
     };
     /** @description Usage statistics related to the run. This value will be `null` if the run is not in a terminal state (i.e. `in_progress`, `queued`, etc.). */
     RunCompletionUsage: {
@@ -1609,6 +1689,7 @@ export interface components {
       prompt_tokens: number;
       /** @description Total number of tokens used (prompt + completion). */
       total_tokens: number;
+      [key: string]: unknown;
     } | null;
     /** @description Usage statistics related to the run step. This value will be `null` while the run step's status is `in_progress`. */
     RunStepCompletionUsage: {
@@ -1618,6 +1699,7 @@ export interface components {
       prompt_tokens: number;
       /** @description Total number of tokens used (prompt + completion). */
       total_tokens: number;
+      [key: string]: unknown;
     } | null;
     /**
      * Assistant
@@ -1654,7 +1736,8 @@ export interface components {
        */
       file_ids: string[];
       /** @description Set of 16 key-value pairs that can be attached to an object. This can be useful for storing additional information about the object in a structured format. Keys can be a maximum of 64 characters long and values can be a maxium of 512 characters long. */
-      metadata: unknown;
+      metadata: Record<string, unknown> | null;
+      [key: string]: unknown;
     };
     CreateAssistantRequest: {
       /** @description ID of the model to use. You can use the [List models](/docs/api-reference/models/list) API to see all of your available models, or see our [Model overview](/docs/models/overview) for descriptions of them. */
@@ -1678,7 +1761,8 @@ export interface components {
        */
       file_ids?: string[];
       /** @description Set of 16 key-value pairs that can be attached to an object. This can be useful for storing additional information about the object in a structured format. Keys can be a maximum of 64 characters long and values can be a maxium of 512 characters long. */
-      metadata?: unknown;
+      metadata?: Record<string, unknown> | null;
+      [key: string]: unknown;
     };
     ModifyAssistantRequest: {
       /** @description ID of the model to use. You can use the [List models](/docs/api-reference/models/list) API to see all of your available models, or see our [Model overview](/docs/models/overview) for descriptions of them. */
@@ -1702,13 +1786,15 @@ export interface components {
        */
       file_ids?: string[];
       /** @description Set of 16 key-value pairs that can be attached to an object. This can be useful for storing additional information about the object in a structured format. Keys can be a maximum of 64 characters long and values can be a maxium of 512 characters long. */
-      metadata?: unknown;
+      metadata?: Record<string, unknown> | null;
+      [key: string]: unknown;
     };
     DeleteAssistantResponse: {
       id: string;
       deleted: boolean;
       /** @enum {string} */
       object: "assistant.deleted";
+      [key: string]: unknown;
     };
     ListAssistantsResponse: {
       /** @example list */
@@ -1720,6 +1806,7 @@ export interface components {
       last_id: string;
       /** @example false */
       has_more: boolean;
+      [key: string]: unknown;
     };
     /** Code interpreter tool */
     AssistantToolsCode: {
@@ -1728,6 +1815,7 @@ export interface components {
        * @enum {string}
        */
       type: "code_interpreter";
+      [key: string]: unknown;
     };
     /** Retrieval tool */
     AssistantToolsRetrieval: {
@@ -1736,6 +1824,7 @@ export interface components {
        * @enum {string}
        */
       type: "retrieval";
+      [key: string]: unknown;
     };
     /** Function tool */
     AssistantToolsFunction: {
@@ -1745,6 +1834,7 @@ export interface components {
        */
       type: "function";
       function: components["schemas"]["FunctionObject"];
+      [key: string]: unknown;
     };
     /**
      * A run on a thread
@@ -1780,7 +1870,9 @@ export interface components {
         submit_tool_outputs: {
           /** @description A list of the relevant tool calls. */
           tool_calls: components["schemas"]["RunToolCallObject"][];
+          [key: string]: unknown;
         };
+        [key: string]: unknown;
       } | null;
       /** @description The last error associated with this run. Will be `null` if there are no errors. */
       last_error: ({
@@ -1791,6 +1883,7 @@ export interface components {
         code: "server_error" | "rate_limit_exceeded" | "invalid_prompt";
         /** @description A human-readable description of the error. */
         message: string;
+        [key: string]: unknown;
       }) | null;
       /** @description The Unix timestamp (in seconds) for when the run will expire. */
       expires_at: number | null;
@@ -1817,8 +1910,11 @@ export interface components {
        */
       file_ids: string[];
       /** @description Set of 16 key-value pairs that can be attached to an object. This can be useful for storing additional information about the object in a structured format. Keys can be a maximum of 64 characters long and values can be a maxium of 512 characters long. */
-      metadata: unknown;
+      metadata: Record<string, unknown> | null;
       usage: components["schemas"]["RunCompletionUsage"];
+      /** @description The sampling temperature used for this run. If not set, defaults to 1. */
+      temperature?: number | null;
+      [key: string]: unknown;
     };
     CreateRunRequest: {
       /** @description The ID of the [assistant](/docs/api-reference/assistants) to use to execute this run. */
@@ -1832,9 +1928,17 @@ export interface components {
       /** @description Override the tools the assistant can use for this run. This is useful for modifying the behavior on a per-run basis. */
       tools?: ((components["schemas"]["AssistantToolsCode"] | components["schemas"]["AssistantToolsRetrieval"] | components["schemas"]["AssistantToolsFunction"])[]) | null;
       /** @description Set of 16 key-value pairs that can be attached to an object. This can be useful for storing additional information about the object in a structured format. Keys can be a maximum of 64 characters long and values can be a maxium of 512 characters long. */
-      metadata?: unknown;
+      metadata?: Record<string, unknown> | null;
+      /**
+       * @description What sampling temperature to use, between 0 and 2. Higher values like 0.8 will make the output more random, while lower values like 0.2 will make it more focused and deterministic.
+       *
+       * @default 1
+       * @example 1
+       */
+      temperature?: number | null;
       /** @description If `true`, returns a stream of events that happen during the Run as server-sent events, terminating when the Run enters a terminal state with a `data: [DONE]` message. */
       stream?: boolean | null;
+      [key: string]: unknown;
     };
     ListRunsResponse: {
       /** @example list */
@@ -1846,10 +1950,12 @@ export interface components {
       last_id: string;
       /** @example false */
       has_more: boolean;
+      [key: string]: unknown;
     };
     ModifyRunRequest: {
       /** @description Set of 16 key-value pairs that can be attached to an object. This can be useful for storing additional information about the object in a structured format. Keys can be a maximum of 64 characters long and values can be a maxium of 512 characters long. */
-      metadata?: unknown;
+      metadata?: Record<string, unknown> | null;
+      [key: string]: unknown;
     };
     SubmitToolOutputsRunRequest: {
       /** @description A list of tools for which the outputs are being submitted. */
@@ -1858,9 +1964,11 @@ export interface components {
           tool_call_id?: string;
           /** @description The output of the tool call to be submitted to continue the run. */
           output?: string;
+          [key: string]: unknown;
         }[];
       /** @description If `true`, returns a stream of events that happen during the Run as server-sent events, terminating when the Run enters a terminal state with a `data: [DONE]` message. */
       stream?: boolean | null;
+      [key: string]: unknown;
     };
     /** @description Tool call objects */
     RunToolCallObject: {
@@ -1877,7 +1985,9 @@ export interface components {
         name: string;
         /** @description The arguments that the model expects you to pass to the function. */
         arguments: string;
+        [key: string]: unknown;
       };
+      [key: string]: unknown;
     };
     CreateThreadAndRunRequest: {
       /** @description The ID of the [assistant](/docs/api-reference/assistants) to use to execute this run. */
@@ -1891,9 +2001,17 @@ export interface components {
       /** @description Override the tools the assistant can use for this run. This is useful for modifying the behavior on a per-run basis. */
       tools?: ((components["schemas"]["AssistantToolsCode"] | components["schemas"]["AssistantToolsRetrieval"] | components["schemas"]["AssistantToolsFunction"])[]) | null;
       /** @description Set of 16 key-value pairs that can be attached to an object. This can be useful for storing additional information about the object in a structured format. Keys can be a maximum of 64 characters long and values can be a maxium of 512 characters long. */
-      metadata?: unknown;
+      metadata?: Record<string, unknown> | null;
+      /**
+       * @description What sampling temperature to use, between 0 and 2. Higher values like 0.8 will make the output more random, while lower values like 0.2 will make it more focused and deterministic.
+       *
+       * @default 1
+       * @example 1
+       */
+      temperature?: number | null;
       /** @description If `true`, returns a stream of events that happen during the Run as server-sent events, terminating when the Run enters a terminal state with a `data: [DONE]` message. */
       stream?: boolean | null;
+      [key: string]: unknown;
     };
     /**
      * Thread
@@ -1910,23 +2028,27 @@ export interface components {
       /** @description The Unix timestamp (in seconds) for when the thread was created. */
       created_at: number;
       /** @description Set of 16 key-value pairs that can be attached to an object. This can be useful for storing additional information about the object in a structured format. Keys can be a maximum of 64 characters long and values can be a maxium of 512 characters long. */
-      metadata: unknown;
+      metadata: Record<string, unknown> | null;
+      [key: string]: unknown;
     };
     CreateThreadRequest: {
       /** @description A list of [messages](/docs/api-reference/messages) to start the thread with. */
       messages?: components["schemas"]["CreateMessageRequest"][];
       /** @description Set of 16 key-value pairs that can be attached to an object. This can be useful for storing additional information about the object in a structured format. Keys can be a maximum of 64 characters long and values can be a maxium of 512 characters long. */
-      metadata?: unknown;
+      metadata?: Record<string, unknown> | null;
+      [key: string]: unknown;
     };
     ModifyThreadRequest: {
       /** @description Set of 16 key-value pairs that can be attached to an object. This can be useful for storing additional information about the object in a structured format. Keys can be a maximum of 64 characters long and values can be a maxium of 512 characters long. */
-      metadata?: unknown;
+      metadata?: Record<string, unknown> | null;
+      [key: string]: unknown;
     };
     DeleteThreadResponse: {
       id: string;
       deleted: boolean;
       /** @enum {string} */
       object: "thread.deleted";
+      [key: string]: unknown;
     };
     ListThreadsResponse: {
       /** @example list */
@@ -1938,6 +2060,7 @@ export interface components {
       last_id: string;
       /** @example false */
       has_more: boolean;
+      [key: string]: unknown;
     };
     /**
      * The message object
@@ -1967,6 +2090,7 @@ export interface components {
          * @enum {string}
          */
         reason: "content_filter" | "max_tokens" | "run_cancelled" | "run_expired" | "run_failed";
+        [key: string]: unknown;
       }) | null;
       /** @description The Unix timestamp (in seconds) for when the message was completed. */
       completed_at: number | null;
@@ -1981,7 +2105,7 @@ export interface components {
       content: (components["schemas"]["MessageContentImageFileObject"] | components["schemas"]["MessageContentTextObject"])[];
       /** @description If applicable, the ID of the [assistant](/docs/api-reference/assistants) that authored this message. */
       assistant_id: string | null;
-      /** @description If applicable, the ID of the [run](/docs/api-reference/runs) associated with the authoring of this message. */
+      /** @description The ID of the [run](/docs/api-reference/runs) associated with the creation of this message. Value is `null` when messages are created manually using the create message or create thread endpoints. */
       run_id: string | null;
       /**
        * @description A list of [file](/docs/api-reference/files) IDs that the assistant should use. Useful for tools like retrieval and code_interpreter that can access files. A maximum of 10 files can be attached to a message.
@@ -1989,7 +2113,8 @@ export interface components {
        */
       file_ids: string[];
       /** @description Set of 16 key-value pairs that can be attached to an object. This can be useful for storing additional information about the object in a structured format. Keys can be a maximum of 64 characters long and values can be a maxium of 512 characters long. */
-      metadata: unknown;
+      metadata: Record<string, unknown> | null;
+      [key: string]: unknown;
     };
     /**
      * Message delta object
@@ -2017,14 +2142,19 @@ export interface components {
          * @default []
          */
         file_ids?: string[];
+        [key: string]: unknown;
       };
+      [key: string]: unknown;
     };
     CreateMessageRequest: {
       /**
-       * @description The role of the entity that is creating the message. Currently only `user` is supported.
+       * @description The role of the entity that is creating the message. Allowed values include:
+       * - `user`: Indicates the message is sent by an actual user and should be used in most cases to represent user-generated messages.
+       * - `assistant`: Indicates the message is generated by the assistant. Use this value to insert messages from the assistant into the conversation.
+       *
        * @enum {string}
        */
-      role: "user";
+      role: "user" | "assistant";
       /** @description The content of the message. */
       content: string;
       /**
@@ -2033,17 +2163,20 @@ export interface components {
        */
       file_ids?: string[];
       /** @description Set of 16 key-value pairs that can be attached to an object. This can be useful for storing additional information about the object in a structured format. Keys can be a maximum of 64 characters long and values can be a maxium of 512 characters long. */
-      metadata?: unknown;
+      metadata?: Record<string, unknown> | null;
+      [key: string]: unknown;
     };
     ModifyMessageRequest: {
       /** @description Set of 16 key-value pairs that can be attached to an object. This can be useful for storing additional information about the object in a structured format. Keys can be a maximum of 64 characters long and values can be a maxium of 512 characters long. */
-      metadata?: unknown;
+      metadata?: Record<string, unknown> | null;
+      [key: string]: unknown;
     };
     DeleteMessageResponse: {
       id: string;
       deleted: boolean;
       /** @enum {string} */
       object: "thread.message.deleted";
+      [key: string]: unknown;
     };
     ListMessagesResponse: {
       /** @example list */
@@ -2055,6 +2188,7 @@ export interface components {
       last_id: string;
       /** @example false */
       has_more: boolean;
+      [key: string]: unknown;
     };
     /**
      * Image file
@@ -2069,7 +2203,9 @@ export interface components {
       image_file: {
         /** @description The [File](/docs/api-reference/files) ID of the image in the message content. */
         file_id: string;
+        [key: string]: unknown;
       };
+      [key: string]: unknown;
     };
     /**
      * Image file
@@ -2086,7 +2222,9 @@ export interface components {
       image_file?: {
         /** @description The [File](/docs/api-reference/files) ID of the image in the message content. */
         file_id?: string;
+        [key: string]: unknown;
       };
+      [key: string]: unknown;
     };
     /**
      * Text
@@ -2102,7 +2240,9 @@ export interface components {
         /** @description The data that makes up the text. */
         value: string;
         annotations: (components["schemas"]["MessageContentTextAnnotationsFileCitationObject"] | components["schemas"]["MessageContentTextAnnotationsFilePathObject"])[];
+        [key: string]: unknown;
       };
+      [key: string]: unknown;
     };
     /**
      * File citation
@@ -2121,9 +2261,11 @@ export interface components {
         file_id: string;
         /** @description The specific quote in the file. */
         quote: string;
+        [key: string]: unknown;
       };
       start_index: number;
       end_index: number;
+      [key: string]: unknown;
     };
     /**
      * File path
@@ -2140,9 +2282,11 @@ export interface components {
       file_path: {
         /** @description The ID of the file that was generated. */
         file_id: string;
+        [key: string]: unknown;
       };
       start_index: number;
       end_index: number;
+      [key: string]: unknown;
     };
     /**
      * Text
@@ -2160,7 +2304,9 @@ export interface components {
         /** @description The data that makes up the text. */
         value?: string;
         annotations?: (components["schemas"]["MessageDeltaContentTextAnnotationsFileCitationObject"] | components["schemas"]["MessageDeltaContentTextAnnotationsFilePathObject"])[];
+        [key: string]: unknown;
       };
+      [key: string]: unknown;
     };
     /**
      * File citation
@@ -2181,9 +2327,11 @@ export interface components {
         file_id?: string;
         /** @description The specific quote in the file. */
         quote?: string;
+        [key: string]: unknown;
       };
       start_index?: number;
       end_index?: number;
+      [key: string]: unknown;
     };
     /**
      * File path
@@ -2202,9 +2350,11 @@ export interface components {
       file_path?: {
         /** @description The ID of the file that was generated. */
         file_id?: string;
+        [key: string]: unknown;
       };
       start_index?: number;
       end_index?: number;
+      [key: string]: unknown;
     };
     /**
      * Run steps
@@ -2247,6 +2397,7 @@ export interface components {
         code: "server_error" | "rate_limit_exceeded";
         /** @description A human-readable description of the error. */
         message: string;
+        [key: string]: unknown;
       }) | null;
       /** @description The Unix timestamp (in seconds) for when the run step expired. A step is considered expired if the parent run is expired. */
       expired_at: number | null;
@@ -2257,8 +2408,9 @@ export interface components {
       /** @description The Unix timestamp (in seconds) for when the run step completed. */
       completed_at: number | null;
       /** @description Set of 16 key-value pairs that can be attached to an object. This can be useful for storing additional information about the object in a structured format. Keys can be a maximum of 64 characters long and values can be a maxium of 512 characters long. */
-      metadata: unknown;
+      metadata: Record<string, unknown> | null;
       usage: components["schemas"]["RunStepCompletionUsage"];
+      [key: string]: unknown;
     };
     /**
      * Run step delta object
@@ -2276,7 +2428,9 @@ export interface components {
       delta: {
         /** @description The details of the run step. */
         step_details?: components["schemas"]["RunStepDeltaStepDetailsMessageCreationObject"] | components["schemas"]["RunStepDeltaStepDetailsToolCallsObject"];
+        [key: string]: unknown;
       };
+      [key: string]: unknown;
     };
     ListRunStepsResponse: {
       /** @example list */
@@ -2288,6 +2442,7 @@ export interface components {
       last_id: string;
       /** @example false */
       has_more: boolean;
+      [key: string]: unknown;
     };
     /**
      * Message creation
@@ -2302,7 +2457,9 @@ export interface components {
       message_creation: {
         /** @description The ID of the message that was created by this run step. */
         message_id: string;
+        [key: string]: unknown;
       };
+      [key: string]: unknown;
     };
     /**
      * Message creation
@@ -2317,7 +2474,9 @@ export interface components {
       message_creation?: {
         /** @description The ID of the message that was created by this run step. */
         message_id?: string;
+        [key: string]: unknown;
       };
+      [key: string]: unknown;
     };
     /**
      * Tool calls
@@ -2331,6 +2490,7 @@ export interface components {
       type: "tool_calls";
       /** @description An array of tool calls the run step was involved in. These can be associated with one of three types of tools: `code_interpreter`, `retrieval`, or `function`. */
       tool_calls: (components["schemas"]["RunStepDetailsToolCallsCodeObject"] | components["schemas"]["RunStepDetailsToolCallsRetrievalObject"] | components["schemas"]["RunStepDetailsToolCallsFunctionObject"])[];
+      [key: string]: unknown;
     };
     /**
      * Tool calls
@@ -2344,6 +2504,7 @@ export interface components {
       type: "tool_calls";
       /** @description An array of tool calls the run step was involved in. These can be associated with one of three types of tools: `code_interpreter`, `retrieval`, or `function`. */
       tool_calls?: (components["schemas"]["RunStepDeltaStepDetailsToolCallsCodeObject"] | components["schemas"]["RunStepDeltaStepDetailsToolCallsRetrievalObject"] | components["schemas"]["RunStepDeltaStepDetailsToolCallsFunctionObject"])[];
+      [key: string]: unknown;
     };
     /**
      * Code interpreter tool call
@@ -2363,7 +2524,9 @@ export interface components {
         input: string;
         /** @description The outputs from the Code Interpreter tool call. Code Interpreter can output one or more items, including text (`logs`) or images (`image`). Each of these are represented by a different object type. */
         outputs: (components["schemas"]["RunStepDetailsToolCallsCodeOutputLogsObject"] | components["schemas"]["RunStepDetailsToolCallsCodeOutputImageObject"])[];
+        [key: string]: unknown;
       };
+      [key: string]: unknown;
     };
     /**
      * Code interpreter tool call
@@ -2385,7 +2548,9 @@ export interface components {
         input?: string;
         /** @description The outputs from the Code Interpreter tool call. Code Interpreter can output one or more items, including text (`logs`) or images (`image`). Each of these are represented by a different object type. */
         outputs?: (components["schemas"]["RunStepDeltaStepDetailsToolCallsCodeOutputLogsObject"] | components["schemas"]["RunStepDeltaStepDetailsToolCallsCodeOutputImageObject"])[];
+        [key: string]: unknown;
       };
+      [key: string]: unknown;
     };
     /**
      * Code interpreter log output
@@ -2399,6 +2564,7 @@ export interface components {
       type: "logs";
       /** @description The text output from the Code Interpreter tool call. */
       logs: string;
+      [key: string]: unknown;
     };
     /**
      * Code interpreter log output
@@ -2414,6 +2580,7 @@ export interface components {
       type: "logs";
       /** @description The text output from the Code Interpreter tool call. */
       logs?: string;
+      [key: string]: unknown;
     };
     /** Code interpreter image output */
     RunStepDetailsToolCallsCodeOutputImageObject: {
@@ -2425,7 +2592,9 @@ export interface components {
       image: {
         /** @description The [file](/docs/api-reference/files) ID of the image. */
         file_id: string;
+        [key: string]: unknown;
       };
+      [key: string]: unknown;
     };
     /** Code interpreter image output */
     RunStepDeltaStepDetailsToolCallsCodeOutputImageObject: {
@@ -2439,7 +2608,9 @@ export interface components {
       image?: {
         /** @description The [file](/docs/api-reference/files) ID of the image. */
         file_id?: string;
+        [key: string]: unknown;
       };
+      [key: string]: unknown;
     };
     /** Retrieval tool call */
     RunStepDetailsToolCallsRetrievalObject: {
@@ -2452,6 +2623,7 @@ export interface components {
       type: "retrieval";
       /** @description For now, this is always going to be an empty object. */
       retrieval: Record<string, never>;
+      [key: string]: unknown;
     };
     /** Retrieval tool call */
     RunStepDeltaStepDetailsToolCallsRetrievalObject: {
@@ -2466,6 +2638,7 @@ export interface components {
       type: "retrieval";
       /** @description For now, this is always going to be an empty object. */
       retrieval?: Record<string, never>;
+      [key: string]: unknown;
     };
     /** Function tool call */
     RunStepDetailsToolCallsFunctionObject: {
@@ -2484,7 +2657,9 @@ export interface components {
         arguments: string;
         /** @description The output of the function. This will be `null` if the outputs have not been [submitted](/docs/api-reference/runs/submitToolOutputs) yet. */
         output: string | null;
+        [key: string]: unknown;
       };
+      [key: string]: unknown;
     };
     /** Function tool call */
     RunStepDeltaStepDetailsToolCallsFunctionObject: {
@@ -2505,7 +2680,9 @@ export interface components {
         arguments?: string;
         /** @description The output of the function. This will be `null` if the outputs have not been [submitted](/docs/api-reference/runs/submitToolOutputs) yet. */
         output?: string | null;
+        [key: string]: unknown;
       };
+      [key: string]: unknown;
     };
     /**
      * Assistant files
@@ -2523,10 +2700,12 @@ export interface components {
       created_at: number;
       /** @description The assistant ID that the file is attached to. */
       assistant_id: string;
+      [key: string]: unknown;
     };
     CreateAssistantFileRequest: {
       /** @description A [File](/docs/api-reference/files) ID (with `purpose="assistants"`) that the assistant should use. Useful for tools like `retrieval` and `code_interpreter` that can access files. */
       file_id: string;
+      [key: string]: unknown;
     };
     /** @description Deletes the association between the assistant and the file, but does not delete the [File](/docs/api-reference/files) object itself. */
     DeleteAssistantFileResponse: {
@@ -2534,6 +2713,7 @@ export interface components {
       deleted: boolean;
       /** @enum {string} */
       object: "assistant.file.deleted";
+      [key: string]: unknown;
     };
     ListAssistantFilesResponse: {
       /** @example list */
@@ -2545,6 +2725,7 @@ export interface components {
       last_id: string;
       /** @example false */
       has_more: boolean;
+      [key: string]: unknown;
     };
     /**
      * Message files
@@ -2562,6 +2743,7 @@ export interface components {
       created_at: number;
       /** @description The ID of the [message](/docs/api-reference/messages) that the [File](/docs/api-reference/files) is attached to. */
       message_id: string;
+      [key: string]: unknown;
     };
     ListMessageFilesResponse: {
       /** @example list */
@@ -2573,6 +2755,7 @@ export interface components {
       last_id: string;
       /** @example false */
       has_more: boolean;
+      [key: string]: unknown;
     };
     /**
      * @description Represents an event emitted when streaming a Run.
@@ -2600,99 +2783,122 @@ export interface components {
       /** @enum {string} */
       event: "thread.created";
       data: components["schemas"]["ThreadObject"];
+      [key: string]: unknown;
     };
     RunStreamEvent: {
       /** @enum {string} */
       event: "thread.run.created";
       data: components["schemas"]["RunObject"];
+      [key: string]: unknown;
     } | {
       /** @enum {string} */
       event: "thread.run.queued";
       data: components["schemas"]["RunObject"];
+      [key: string]: unknown;
     } | {
       /** @enum {string} */
       event: "thread.run.in_progress";
       data: components["schemas"]["RunObject"];
+      [key: string]: unknown;
     } | {
       /** @enum {string} */
       event: "thread.run.requires_action";
       data: components["schemas"]["RunObject"];
+      [key: string]: unknown;
     } | {
       /** @enum {string} */
       event: "thread.run.completed";
       data: components["schemas"]["RunObject"];
+      [key: string]: unknown;
     } | {
       /** @enum {string} */
       event: "thread.run.failed";
       data: components["schemas"]["RunObject"];
+      [key: string]: unknown;
     } | {
       /** @enum {string} */
       event: "thread.run.cancelling";
       data: components["schemas"]["RunObject"];
+      [key: string]: unknown;
     } | {
       /** @enum {string} */
       event: "thread.run.cancelled";
       data: components["schemas"]["RunObject"];
+      [key: string]: unknown;
     } | {
       /** @enum {string} */
       event: "thread.run.expired";
       data: components["schemas"]["RunObject"];
+      [key: string]: unknown;
     };
     RunStepStreamEvent: {
       /** @enum {string} */
       event: "thread.run.step.created";
       data: components["schemas"]["RunStepObject"];
+      [key: string]: unknown;
     } | {
       /** @enum {string} */
       event: "thread.run.step.in_progress";
       data: components["schemas"]["RunStepObject"];
+      [key: string]: unknown;
     } | {
       /** @enum {string} */
       event: "thread.run.step.delta";
       data: components["schemas"]["RunStepDeltaObject"];
+      [key: string]: unknown;
     } | {
       /** @enum {string} */
       event: "thread.run.step.completed";
       data: components["schemas"]["RunStepObject"];
+      [key: string]: unknown;
     } | {
       /** @enum {string} */
       event: "thread.run.step.failed";
       data: components["schemas"]["RunStepObject"];
+      [key: string]: unknown;
     } | {
       /** @enum {string} */
       event: "thread.run.step.cancelled";
       data: components["schemas"]["RunStepObject"];
+      [key: string]: unknown;
     } | {
       /** @enum {string} */
       event: "thread.run.step.expired";
       data: components["schemas"]["RunStepObject"];
+      [key: string]: unknown;
     };
     MessageStreamEvent: OneOf<[{
       /** @enum {string} */
       event: "thread.message.created";
       data: components["schemas"]["MessageObject"];
+      [key: string]: unknown;
     }, {
       /** @enum {string} */
       event: "thread.message.in_progress";
       data: components["schemas"]["MessageObject"];
+      [key: string]: unknown;
     }, {
       /** @enum {string} */
       event: "thread.message.delta";
       data: components["schemas"]["MessageDeltaObject"];
+      [key: string]: unknown;
     }, {
       /** @enum {string} */
       event: "thread.message.completed";
       data: components["schemas"]["MessageObject"];
+      [key: string]: unknown;
     }, {
       /** @enum {string} */
       event: "thread.message.incomplete";
       data: components["schemas"]["MessageObject"];
+      [key: string]: unknown;
     }]>;
     /** @description Occurs when an [error](/docs/guides/error-codes/api-errors) occurs. This can happen due to an internal server error or a timeout. */
     ErrorEvent: {
       /** @enum {string} */
       event: "error";
       data: components["schemas"]["Error"];
+      [key: string]: unknown;
     };
     /** @description Occurs when a stream ends. */
     DoneEvent: {
@@ -2700,6 +2906,7 @@ export interface components {
       event: "done";
       /** @enum {string} */
       data: "[DONE]";
+      [key: string]: unknown;
     };
   };
   responses: never;
@@ -3295,6 +3502,8 @@ export interface operations {
         after?: string;
         /** @description A cursor for use in pagination. `before` is an object ID that defines your place in the list. For instance, if you make a list request and receive 100 objects, ending with obj_foo, your subsequent call can include before=obj_foo in order to fetch the previous page of the list. */
         before?: string;
+        /** @description Filter messages by the run ID that generated them. */
+        run_id?: string;
       };
       path: {
         /** @description The ID of the [thread](/docs/api-reference/threads) the messages belong to. */

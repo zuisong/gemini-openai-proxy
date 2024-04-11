@@ -33,7 +33,7 @@
     }
   },
   "files": {
-    "ignore": ["./cloudflare-workers/**", "./node_modules/**", "./dist/**", "coverage/", "src/openai-types.ts"],
+    "ignore": ["./cloudflare-workers/**", "./node_modules/**", "./dist/**", "coverage/", "src/generated-types/"],
     "ignoreUnknown": true
   }
 }

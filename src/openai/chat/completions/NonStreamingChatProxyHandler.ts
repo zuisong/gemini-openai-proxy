@@ -31,13 +31,15 @@ export async function nonStreamingChatProxyHandler(
         message: {
           role: "assistant",
           content: typeof geminiResp === "string" ? geminiResp : null,
-          function_call:
-            typeof geminiResp === "string"
-              ? undefined
-              : {
-                  name: geminiResp.name,
+
+          ...(typeof geminiResp === "string"
+            ? undefined
+            : {
+                function_call: {
+                  name: geminiResp.name ?? "",
                   arguments: JSON.stringify(geminiResp.args),
                 },
+              }),
         },
         logprobs: null,
         finish_reason: "stop",

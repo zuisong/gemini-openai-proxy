@@ -1,7 +1,7 @@
 import { assertFalse } from "jsr:@std/assert"
 import { expect } from "jsr:@std/expect"
 import { afterAll, beforeAll, describe, it } from "jsr:@std/testing/bdd"
-import { type ParseEvent, createParser } from "eventsource-parser"
+import { type ParseEvent, createParser } from "https://esm.sh/eventsource-parser@1.1.2"
 import { app } from "../src/app.ts"
 import type { OpenAI } from "../src/types.ts"
 import { fetchMock } from "./mock-fetch.ts"

@@ -7,23 +7,21 @@
   "type": "module",
   "license": "MIT",
   "scripts": {
-    "start:deno": "deno run --allow-net --allow-env main_deno.ts",
     "start:bun": "bun main_bun.ts",
+    "start:deno": "deno run --allow-net --allow-env main_deno.ts",
     "start:node": "npm run build:node && node dist/main_node.mjs",
+    "build:bun": "bun run build.mjs",
     "build:deno": "deno run --allow-read --allow-env --allow-run build.mjs",
     "build:node": "node build.mjs",
-    "build:bun": "bun run build.mjs",
     "test:deno": "deno test --allow-net --allow-env",
     "test-cov": "deno test --coverage -A --env && deno coverage coverage --lcov --output=coverage/lcov.info",
-    "generate-opeai-types": "deno run --allow-net --deny-env --allow-write=./src/openai-types.ts generate-opeai-types.ts"
+    "generate-openapi-types": "deno run --allow-net --no-prompt --allow-env=YOUR_GEMINI_API_KEY --allow-write=./src/openapi-types.ts generate-opeapi-types.ts"
   },
   "dependencies": {
-    "itty-router": "5.0.4",
-    "@hono/node-server": "1.9.1",
-    "eventsource-parser": "1.1.2"
+    "itty-router": "5.0.9",
+    "@hono/node-server": "1.9.1"
   },
   "devDependencies": {
-    "@types/node": "20.12.2",
     "esbuild": "0.20.2"
   }
 }
