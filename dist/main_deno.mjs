@@ -154,7 +154,7 @@ function genModel(req) {
       temperature: req.temperature ?? void 0,
       topP: req.top_p ?? void 0
     },
-    tools: [
+    tools: functions.length === 0 ? void 0 : [
       {
         functionDeclarations: functions
       }

@@ -1,8 +1,15 @@
 # changelog
 
-## 0.11.0 (Unreleased)
+## 0.12.0 (Unreleased)
 
 -
+
+## 0.11.0 (2024-04-11)
+
+- Resolve CORS error: Update server configurations to enable Cross-Origin access.
+- Add support for function calls in non-stream mode.
+- Migrate to [itty-router](https://github.com/kwhitley/itty-router) to reduce package size.
+- Utilize the official Deno Docker image for improved consistency.
 
 ## 0.10.0 (2024-02-28)
 

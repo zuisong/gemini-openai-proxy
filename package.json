@@ -11,7 +11,7 @@
     "start:deno": "deno run --allow-net --allow-env main_deno.ts",
     "start:node": "npm run build:node && node dist/main_node.mjs",
     "build:bun": "bun run build.mjs",
-    "build:deno": "deno run --allow-read --allow-env --allow-run build.mjs",
+    "build:deno": "deno run --allow-read --allow-env --allow-write=./dist --allow-run build.mjs",
     "build:node": "node build.mjs",
     "test:deno": "deno test --allow-net --allow-env",
     "test-cov": "deno test --coverage -A --env && deno coverage coverage --lcov --output=coverage/lcov.info",
