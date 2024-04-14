@@ -51,7 +51,7 @@ async function makeRequest(url: RequestUrl, body: string, requestOptions?: Reque
       throw new Error(`[${response.status} ${response.statusText}] ${message}`)
     }
   } catch (e) {
-    const err = new GoogleGenerativeAIError(`Error fetching from ${url.toURL()} -> ${e.message}`)
+    const err = new GoogleGenerativeAIError(`Error fetching from google -> ${e.message}`)
     err.stack = e.stack
     throw err
   }
