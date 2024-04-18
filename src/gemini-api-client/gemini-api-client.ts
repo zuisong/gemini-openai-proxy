@@ -66,7 +66,7 @@ export class RequestUrl {
     public apiParam: ApiParam,
   ) {}
   toURL(): URL {
-    const api_version = this.apiParam.useBeta ? API_VERSION.v1beta : API_VERSION.v1
+    const api_version = API_VERSION.v1beta
     const url = new URL(`${BASE_URL}/${api_version}/models/${this.model}:${this.task}`)
     url.searchParams.append("key", this.apiParam.apikey)
     if (this.stream) {

@@ -538,7 +538,12 @@ function hasImageMessage(messages) {
   });
 }
 function genModel(req) {
-  const model = hasImageMessage(req.messages) ? "gemini-pro-vision" : "gemini-pro";
+  let model = "gemini-1.0-pro-latest";
+  if (!hasImageMessage(req.messages)) {
+    model = ModelMapping[req.model] ?? "gemini-1.0-pro-latest";
+  } else {
+    model = "gemini-1.0-pro-vision-latest";
+  }
   let functions = req.tools?.filter((it) => it.type === "function")?.map((it) => it.function) ?? [];
   functions = functions.concat(req.functions ?? []);
   const generateContentRequest = {
@@ -565,6 +570,11 @@ function genModel(req) {
   };
   return [model, generateContentRequest];
 }
+var ModelMapping = {
+  "gpt-3.5-turbo": "gemini-1.0-pro-latest",
+  // "gpt-4": "gemini-1.0-ultra-latest",
+  "gpt-4-turbo-preview": "gemini-1.5-pro-latest"
+};
 function getRuntimeKey() {
   const global2 = globalThis;
   if (global2?.Deno !== void 0) {
@@ -758,7 +768,7 @@ var RequestUrl = class {
     this.apiParam = apiParam;
   }
   toURL() {
-    const api_version = this.apiParam.useBeta ? "v1beta" /* v1beta */ : "v1" /* v1 */;
+    const api_version = "v1beta" /* v1beta */;
     const url = new URL(`${BASE_URL}/${api_version}/models/${this.model}:${this.task}`);
     url.searchParams.append("key", this.apiParam.apikey);
     if (this.stream) {

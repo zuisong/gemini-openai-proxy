@@ -87,8 +87,12 @@ function hasImageMessage(messages: OpenAI.Chat.ChatCompletionMessageParam[]): bo
 }
 
 export function genModel(req: OpenAI.Chat.ChatCompletionCreateParams): [GeminiModel, GenerateContentRequest] {
-  const model: GeminiModel = hasImageMessage(req.messages) ? "gemini-pro-vision" : "gemini-pro"
-
+  let model: GeminiModel = "gemini-1.0-pro-latest"
+  if (!hasImageMessage(req.messages)) {
+    model = ModelMapping[req.model] ?? "gemini-1.0-pro-latest"
+  } else {
+    model = "gemini-1.0-pro-vision-latest"
+  }
   let functions = req.tools?.filter((it) => it.type === "function")?.map((it) => it.function) ?? []
 
   functions = functions.concat(req.functions ?? [])
@@ -122,7 +126,17 @@ export function genModel(req: OpenAI.Chat.ChatCompletionCreateParams): [GeminiMo
   }
   return [model, generateContentRequest]
 }
-export type GeminiModel = "gemini-pro" | "gemini-pro-vision"
+export type GeminiModel =
+  | "gemini-1.0-pro-vision-latest"
+  | "gemini-1.0-pro-latest"
+  | "gemini-1.0-ultra-latest"
+  | "gemini-1.5-pro-latest"
+
+export const ModelMapping: Record<string, GeminiModel> = {
+  "gpt-3.5-turbo": "gemini-1.0-pro-latest",
+  // "gpt-4": "gemini-1.0-ultra-latest",
+  "gpt-4-turbo-preview": "gemini-1.5-pro-latest",
+}
 
 export function getRuntimeKey() {
   const global = globalThis as typeof globalThis & Record<string, undefined | Any>
