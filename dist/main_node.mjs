@@ -1,4 +1,4 @@
-// node_modules/.deno/@hono+node-server@1.9.1/node_modules/@hono/node-server/dist/index.mjs
+// node_modules/.deno/@hono+node-server@1.10.1/node_modules/@hono/node-server/dist/index.mjs
 import { createServer as createServerHTTP } from "http";
 import { Http2ServerRequest } from "http2";
 import { Readable } from "stream";
@@ -16,9 +16,6 @@ var Request2 = class extends GlobalRequest {
     super(input, options);
   }
 };
-Object.defineProperty(global, "Request", {
-  value: Request2
-});
 var newRequestFromIncoming = (method, url, incoming, abortController) => {
   const headerRecord = [];
   const rawHeaders = incoming.rawHeaders;
@@ -220,9 +217,6 @@ var Response2 = class _Response {
 });
 Object.setPrototypeOf(Response2, GlobalResponse);
 Object.setPrototypeOf(Response2.prototype, GlobalResponse.prototype);
-Object.defineProperty(global, "Response", {
-  value: Response2
-});
 var stateKey = Reflect.ownKeys(new GlobalResponse()).find(
   (k) => typeof k === "symbol" && k.toString() === "Symbol(state)"
 );
@@ -342,15 +336,23 @@ var responseViaResponseObject = async (res, outgoing, options = {}) => {
   }
 };
 var getRequestListener = (fetchCallback, options = {}) => {
+  if (options.overrideGlobalObjects !== false && global.Request !== Request2) {
+    Object.defineProperty(global, "Request", {
+      value: Request2
+    });
+    Object.defineProperty(global, "Response", {
+      value: Response2
+    });
+  }
   return async (incoming, outgoing) => {
     let res;
-    const req = newRequest(incoming);
-    outgoing.on("close", () => {
-      if (incoming.destroyed) {
-        req[getAbortController]().abort();
-      }
-    });
     try {
+      const req = newRequest(incoming);
+      outgoing.on("close", () => {
+        if (incoming.destroyed) {
+          req[getAbortController]().abort();
+        }
+      });
       res = fetchCallback(req, { incoming, outgoing });
       if (cacheKey in res) {
         return responseViaCache(res, outgoing);
@@ -378,7 +380,9 @@ var getRequestListener = (fetchCallback, options = {}) => {
 };
 var createAdaptorServer = (options) => {
   const fetchCallback = options.fetch;
-  const requestListener = getRequestListener(fetchCallback);
+  const requestListener = getRequestListener(fetchCallback, {
+    overrideGlobalObjects: options.overrideGlobalObjects
+  });
   const createServer = options.createServer || createServerHTTP;
   const server = createServer(options.serverOptions || {}, requestListener);
   return server;
