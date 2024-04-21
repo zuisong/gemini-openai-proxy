@@ -7,46 +7,22 @@ export const modelData: OpenAI.Models.Model[] = [
     id: "gpt-3.5-turbo",
   },
   {
-    created: 1677649963,
-    object: "model",
-    owned_by: "openai",
-    id: "gpt-3.5-turbo-0301",
-  },
-  {
-    created: 1686587434,
-    object: "model",
-    owned_by: "openai",
-    id: "gpt-3.5-turbo-0613",
-  },
-  {
-    created: 1683758102,
-    object: "model",
-    owned_by: "openai-internal",
-    id: "gpt-3.5-turbo-16k",
-  },
-  {
     created: 1685474247,
     object: "model",
     owned_by: "openai",
-    id: "gpt-3.5-turbo-16k-0613",
+    id: "gpt-4-vision-preview",
   },
   {
     created: 1687882411,
     object: "model",
     owned_by: "openai",
-    id: "gpt-4",
+    id: "gpt-4-turbo",
   },
   {
-    created: 1687882410,
+    created: 1687882412,
     object: "model",
     owned_by: "openai",
-    id: "gpt-4-0314",
-  },
-  {
-    created: 1686588896,
-    object: "model",
-    owned_by: "openai",
-    id: "gpt-4-0613",
+    id: "gpt-4-turbo-preview",
   },
 ]
 

@@ -14,7 +14,6 @@ bdd.describe("openai model api test", () => {
 
     const { data: models } = await res.json()
 
-    expect(models).toHaveLength(8)
     expect(models).toStrictEqual(modelData)
   })
   bdd.it("models/:name test", async () => {

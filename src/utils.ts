@@ -73,26 +73,9 @@ export function openAiMessageToGeminiMessage(messages: OpenAI.Chat.ChatCompletio
   return result
 }
 
-function hasImageMessage(messages: OpenAI.Chat.ChatCompletionMessageParam[]): boolean {
-  return messages.some((msg) => {
-    const content = msg.content
-    if (content == null) {
-      return false
-    }
-    if (typeof content === "string") {
-      return false
-    }
-    return content.some((it) => it.type === "image_url")
-  })
-}
-
 export function genModel(req: OpenAI.Chat.ChatCompletionCreateParams): [GeminiModel, GenerateContentRequest] {
-  let model: GeminiModel = "gemini-1.0-pro-latest"
-  if (!hasImageMessage(req.messages)) {
-    model = ModelMapping[req.model] ?? "gemini-1.0-pro-latest"
-  } else {
-    model = "gemini-1.0-pro-vision-latest"
-  }
+  const model: GeminiModel = ModelMapping[req.model] ?? "gemini-1.0-pro-latest"
+
   let functions = req.tools?.filter((it) => it.type === "function")?.map((it) => it.function) ?? []
 
   functions = functions.concat(req.functions ?? [])
@@ -135,6 +118,8 @@ export type GeminiModel =
 export const ModelMapping: Record<string, GeminiModel> = {
   "gpt-3.5-turbo": "gemini-1.0-pro-latest",
   // "gpt-4": "gemini-1.0-ultra-latest",
+  "gpt-4-vision-preview": "gemini-1.0-pro-vision-latest",
+  "gpt-4-turbo": "gemini-1.5-pro-latest",
   "gpt-4-turbo-preview": "gemini-1.5-pro-latest",
 }
 
