@@ -1,4 +1,4 @@
-// node_modules/.deno/itty-router@5.0.9/node_modules/itty-router/index.mjs
+// node_modules/.deno/itty-router@5.0.16/node_modules/itty-router/index.mjs
 var t = ({ base: e = "", routes: t2 = [], ...r2 } = {}) => ({ __proto__: new Proxy({}, { get: (r3, o2, a2, s2) => (r4, ...c) => t2.push([o2.toUpperCase?.(), RegExp(`^${(s2 = (e + r4).replace(/\/+(\/|$)/g, "$1")).replace(/(\/?\.?):(\w+)\+/g, "($1(?<$2>*))").replace(/(\/?\.?):(\w+)/g, "($1(?<$2>[^$1/]+?))").replace(/\./g, "\\.").replace(/(\/?)\*/g, "($1.*)?")}/*$`), c, s2]) && a2 }), routes: t2, ...r2, async fetch(e2, ...o2) {
   let a2, s2, c = new URL(e2.url), n = e2.query = { __proto__: null };
   for (let [e3, t3] of c.searchParams)
@@ -31,10 +31,10 @@ var t = ({ base: e = "", routes: t2 = [], ...r2 } = {}) => ({ __proto__: new Pro
   }
   return a2;
 } });
-var r = (e = "text/plain; charset=utf-8", t2) => (r2, { ...o2 } = {}) => {
+var r = (e = "text/plain; charset=utf-8", t2) => (r2, o2 = {}) => {
   if (void 0 === r2 || r2 instanceof Response)
     return r2;
-  const a2 = new Response(t2?.(r2) ?? r2, o2);
+  const a2 = new Response(t2?.(r2) ?? r2, o2.url ? void 0 : o2);
   return a2.headers.set("content-type", e), a2;
 };
 var o = r("application/json; charset=utf-8", JSON.stringify);

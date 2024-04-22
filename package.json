@@ -18,8 +18,8 @@
     "generate-openapi-types": "deno run --allow-net --no-prompt --allow-env=YOUR_GEMINI_API_KEY --allow-write=./src/openapi-types.ts generate-opeapi-types.ts"
   },
   "dependencies": {
-    "itty-router": "5.0.9",
-    "@hono/node-server": "1.10.1"
+    "itty-router": "5.0.16",
+    "@hono/node-server": "1.11.0"
   },
   "devDependencies": {
     "esbuild": "0.20.2"
