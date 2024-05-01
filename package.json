@@ -19,7 +19,7 @@
   },
   "dependencies": {
     "itty-router": "5.0.16",
-    "@hono/node-server": "1.11.0"
+    "@hono/node-server": "1.11.1"
   },
   "devDependencies": {
     "esbuild": "0.20.2"
