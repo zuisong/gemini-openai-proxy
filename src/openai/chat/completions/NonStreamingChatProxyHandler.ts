@@ -21,31 +21,46 @@ export async function nonStreamingChatProxyHandler(
   log?.debug(req)
   log?.debug(geminiResp)
 
-  const resp: OpenAI.Chat.ChatCompletion = {
-    id: "chatcmpl-abc123",
-    object: "chat.completion",
-    created: Math.floor(Date.now() / 1000),
-    model: req.model,
-    choices: [
-      {
-        message: {
-          role: "assistant",
-          content: typeof geminiResp === "string" ? geminiResp : null,
+  function genOpenAiResp(content: string | FunctionCall): OpenAI.Chat.ChatCompletion {
+    if (typeof content === "string") {
+      return {
+        id: "chatcmpl-abc123",
+        object: "chat.completion",
+        created: Math.floor(Date.now() / 1000),
+        model: req.model,
+        choices: [
+          {
+            message: { role: "assistant", content: content },
+            finish_reason: "stop",
+            index: 0,
+            logprobs: null,
+          },
+        ],
+      }
+    }
 
-          ...(typeof geminiResp === "string"
-            ? undefined
-            : {
-                function_call: {
-                  name: geminiResp.name ?? "",
-                  arguments: JSON.stringify(geminiResp.args),
-                },
-              }),
+    return {
+      id: "chatcmpl-abc123",
+      object: "chat.completion",
+      created: Math.floor(Date.now() / 1000),
+      model: req.model,
+      choices: [
+        {
+          message: {
+            role: "assistant",
+            content: null,
+            function_call: {
+              name: content.name ?? "",
+              arguments: JSON.stringify(content.args),
+            },
+          },
+          finish_reason: "function_call",
+          index: 0,
+          logprobs: null,
         },
-        logprobs: null,
-        finish_reason: "stop",
-        index: 0,
-      },
-    ],
+      ],
+    }
   }
-  return resp
+
+  return genOpenAiResp(geminiResp)
 }
