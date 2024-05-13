@@ -98,6 +98,17 @@ Copy [`main_cloudflare-workers.mjs`](./dist/main_cloudflare-workers.mjs) to
 
 Copy [`main_deno.mjs`](./dist/main_deno.mjs) to `deno deploy`
 
+### [Vercel](https://vercel.com)
+
+> build command `npm run build:cf_worker`
+
+ [![Deploy with Vercel](https://vercel.com/button)](https://vercel.com/new/clone?repository-url=https://github.com/zuisong/gemini-openai-proxy&repository-name=gemini-openai-proxy)
+
+- Alternatively can be deployed with [cli](https://vercel.com/docs/cli):
+  `vercel deploy`
+- Serve locally: `vercel dev`
+- Vercel _Functions_ [limitations](https://vercel.com/docs/functions/limitations) (with _Edge_ runtime)
+
 ## Run On Local
 
 ### deno
