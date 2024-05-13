@@ -1,3 +1,30 @@
-import fetchMock from "https://esm.sh/fetch-mock@9.11.0/esm/client.js?target=denonext"
+export type RequestHandler = (req: Request) => Response | Promise<Response>
+export type RequestMatcher = (req: Request) => Promise<boolean> | boolean
 
-export { fetchMock }
+const originalFetch = globalThis.fetch
+
+export class MockFetch {
+  #store = new Array<[RequestMatcher, RequestHandler]>()
+
+  mock(request: RequestMatcher, response: RequestHandler) {
+    const store = this.#store
+    store.push([request, response])
+
+    globalThis.fetch = async (input: string | URL | Request, init?: RequestInit) => {
+      const originalRequest = new Request(input, init)
+
+      for (const [matcher, handler] of store) {
+        if (await matcher(originalRequest.clone())) {
+          return await handler(originalRequest.clone())
+        }
+      }
+
+      return originalFetch(input, init)
+    }
+  }
+
+  restore() {
+    this.#store.splice(0)
+    globalThis.fetch = originalFetch
+  }
+}
