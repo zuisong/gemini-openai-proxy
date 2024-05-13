@@ -4,32 +4,33 @@ import { afterEach, beforeEach, describe, it } from "jsr:@std/testing/bdd"
 import { type ParseEvent, createParser } from "https://esm.sh/eventsource-parser@1.1.2"
 import { app } from "../src/app.ts"
 import type { OpenAI } from "../src/types.ts"
-import { fetchMock } from "./mock-fetch.ts"
+import { MockFetch } from "./mock-fetch.ts"
 import { gemini_ok_resp } from "./test-data.ts"
 
 describe("openai to gemini test", () => {
   describe("success test", () => {
+    const fetchMocker = new MockFetch()
+
     for (const [geminiModel, openaiModel] of [
       ["gemini-1.0-pro-latest", "gpt-3.5-turbo"],
       ["gemini-1.0-pro-latest", "gpt-4"],
       ["gemini-1.5-pro-latest", "gpt-4-turbo-preview"],
     ]) {
-      const mockFetch = fetchMock
       beforeEach(() => {
-        mockFetch.mock(
-          (url) => url.includes(`generativelanguage.googleapis.com/v1beta/models/${geminiModel}:generateContent`),
-          {
-            body: JSON.stringify(gemini_ok_resp),
-            status: 200,
-            headers: {
-              "Content-Type": "application/json",
-            },
-          },
+        fetchMocker.mock(
+          (req) => req.url.includes(`generativelanguage.googleapis.com/v1beta/models/${geminiModel}:generateContent`),
+          () =>
+            new Response(JSON.stringify(gemini_ok_resp), {
+              status: 200,
+              headers: {
+                "Content-Type": "application/json",
+              },
+            }),
         )
       })
 
       afterEach(() => {
-        mockFetch.restore()
+        fetchMocker.restore()
       })
 
       it(`no streaming test with ${openaiModel}`, async () => {
