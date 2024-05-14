@@ -1,9 +1,9 @@
-import worker from "../dist/main_cloudflare-workers.mjs";
+import worker from "../dist/main_cloudflare-workers.mjs"
 
-export default worker.fetch;
+export default worker.fetch
 
 export const config = {
-  runtime: "edge", 
+  runtime: "edge",
   // Available languages and regions for Google AI Studio and Gemini API
   // https://ai.google.dev/available_regions#available_regions
   // https://vercel.com/docs/concepts/edge-network/regions
@@ -26,4 +26,4 @@ export const config = {
     "sin1",
     "syd1",
   ],
-};
+}
