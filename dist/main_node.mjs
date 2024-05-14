@@ -1,4 +1,4 @@
-// node_modules/.deno/@hono+node-server@1.11.0/node_modules/@hono/node-server/dist/index.mjs
+// node_modules/.deno/@hono+node-server@1.11.1/node_modules/@hono/node-server/dist/index.mjs
 import { createServer as createServerHTTP } from "http";
 import { Http2ServerRequest } from "http2";
 import { Readable } from "stream";
@@ -21,7 +21,7 @@ var Request2 = class extends GlobalRequest {
     if (typeof input === "object" && getRequestCache in input) {
       input = input[getRequestCache]();
     }
-    if (options?.body instanceof ReadableStream) {
+    if (typeof options?.body?.getReader !== "undefined") {
       ;
       options.duplex ??= "half";
     }
@@ -200,7 +200,7 @@ var Response2 = class _Response {
     } else {
       this.#init = init;
     }
-    if (typeof body === "string" || body instanceof ReadableStream) {
+    if (typeof body === "string" || typeof body?.getReader !== "undefined") {
       let headers = init?.headers || { "content-type": "text/plain; charset=UTF-8" };
       if (headers instanceof Headers) {
         headers = buildOutgoingHttpHeaders(headers);
@@ -422,42 +422,30 @@ var serve = (options, listeningListener) => {
   return server;
 };
 
-// node_modules/.deno/itty-router@5.0.16/node_modules/itty-router/index.mjs
+// node_modules/.deno/itty-router@5.0.17/node_modules/itty-router/index.mjs
 var t = ({ base: e = "", routes: t2 = [], ...r2 } = {}) => ({ __proto__: new Proxy({}, { get: (r3, o2, a2, s2) => (r4, ...c) => t2.push([o2.toUpperCase?.(), RegExp(`^${(s2 = (e + r4).replace(/\/+(\/|$)/g, "$1")).replace(/(\/?\.?):(\w+)\+/g, "($1(?<$2>*))").replace(/(\/?\.?):(\w+)/g, "($1(?<$2>[^$1/]+?))").replace(/\./g, "\\.").replace(/(\/?)\*/g, "($1.*)?")}/*$`), c, s2]) && a2 }), routes: t2, ...r2, async fetch(e2, ...o2) {
   let a2, s2, c = new URL(e2.url), n = e2.query = { __proto__: null };
-  for (let [e3, t3] of c.searchParams)
-    n[e3] = n[e3] ? [].concat(n[e3], t3) : t3;
-  e:
-    try {
-      for (let t3 of r2.before || [])
-        if (null != (a2 = await t3(e2.proxy ?? e2, ...o2)))
-          break e;
-      t:
-        for (let [r3, n2, l, i] of t2)
-          if ((r3 == e2.method || "ALL" == r3) && (s2 = c.pathname.match(n2))) {
-            e2.params = s2.groups || {}, e2.route = i;
-            for (let t3 of l)
-              if (null != (a2 = await t3(e2.proxy ?? e2, ...o2)))
-                break t;
-          }
-    } catch (t3) {
-      if (!r2.catch)
-        throw t3;
-      a2 = await r2.catch(t3, e2.proxy ?? e2, ...o2);
+  for (let [e3, t3] of c.searchParams) n[e3] = n[e3] ? [].concat(n[e3], t3) : t3;
+  e: try {
+    for (let t3 of r2.before || []) if (null != (a2 = await t3(e2.proxy ?? e2, ...o2))) break e;
+    t: for (let [r3, n2, l, i] of t2) if ((r3 == e2.method || "ALL" == r3) && (s2 = c.pathname.match(n2))) {
+      e2.params = s2.groups || {}, e2.route = i;
+      for (let t3 of l) if (null != (a2 = await t3(e2.proxy ?? e2, ...o2))) break t;
     }
-  try {
-    for (let t3 of r2.finally || [])
-      a2 = await t3(a2, e2.proxy ?? e2, ...o2) ?? a2;
   } catch (t3) {
-    if (!r2.catch)
-      throw t3;
+    if (!r2.catch) throw t3;
+    a2 = await r2.catch(t3, e2.proxy ?? e2, ...o2);
+  }
+  try {
+    for (let t3 of r2.finally || []) a2 = await t3(a2, e2.proxy ?? e2, ...o2) ?? a2;
+  } catch (t3) {
+    if (!r2.catch) throw t3;
     a2 = await r2.catch(t3, e2.proxy ?? e2, ...o2);
   }
   return a2;
 } });
 var r = (e = "text/plain; charset=utf-8", t2) => (r2, o2 = {}) => {
-  if (void 0 === r2 || r2 instanceof Response)
-    return r2;
+  if (void 0 === r2 || r2 instanceof Response) return r2;
   const a2 = new Response(t2?.(r2) ?? r2, o2.url ? void 0 : o2);
   return a2.headers.set("content-type", e), a2;
 };
@@ -480,11 +468,10 @@ var y = (e = {}) => {
     const o3 = e2?.headers.get("origin");
     return true === t2 ? o3 : t2 instanceof RegExp ? t2.test(o3) ? o3 : void 0 : Array.isArray(t2) ? t2.includes(o3) ? o3 : void 0 : t2 instanceof Function ? t2(o3) : "*" == t2 && r2 ? o3 : t2;
   }, l = (e2, t3) => {
-    for (const [r3, o3] of Object.entries(t3))
-      o3 && e2.headers.append(r3, o3);
+    for (const [r3, o3] of Object.entries(t3)) o3 && e2.headers.append(r3, o3);
     return e2;
   };
-  return { corsify: (e2, t3) => e2?.headers?.get("access-control-allow-origin") || 101 == e2.status ? e2 : l(e2, { "access-control-allow-origin": n(t3), "access-control-allow-credentials": r2 }), preflight: (e2) => {
+  return { corsify: (e2, t3) => e2?.headers?.get("access-control-allow-origin") || 101 == e2.status ? e2 : l(e2.clone(), { "access-control-allow-origin": n(t3), "access-control-allow-credentials": r2 }), preflight: (e2) => {
     if ("OPTIONS" == e2.method) {
       const t3 = new Response(null, { status: 204 });
       return l(t3, { "access-control-allow-origin": n(e2), "access-control-allow-methods": o2?.join?.(",") ?? o2, "access-control-expose-headers": s2?.join?.(",") ?? s2, "access-control-allow-headers": a2?.join?.(",") ?? a2 ?? e2.headers.get("access-control-request-headers"), "access-control-max-age": c, "access-control-allow-credentials": r2 });
@@ -506,8 +493,7 @@ async function geminiProxy(rawReq) {
 // src/utils.ts
 function getToken(headers) {
   for (const [k, v] of headers.entries()) {
-    if (k.toLowerCase() !== "authorization")
-      continue;
+    if (k.toLowerCase() !== "authorization") continue;
     const rawApikey = v.substring(v.indexOf(" ") + 1);
     if (!rawApikey.includes("#")) {
       return {
@@ -814,30 +800,46 @@ async function nonStreamingChatProxyHandler(req, apiParam, log) {
   });
   log?.debug(req);
   log?.debug(geminiResp);
-  const resp = {
-    id: "chatcmpl-abc123",
-    object: "chat.completion",
-    created: Math.floor(Date.now() / 1e3),
-    model: req.model,
-    choices: [
-      {
-        message: {
-          role: "assistant",
-          content: typeof geminiResp === "string" ? geminiResp : null,
-          ...typeof geminiResp === "string" ? void 0 : {
-            function_call: {
-              name: geminiResp.name ?? "",
-              arguments: JSON.stringify(geminiResp.args)
-            }
+  function genOpenAiResp(content) {
+    if (typeof content === "string") {
+      return {
+        id: "chatcmpl-abc123",
+        object: "chat.completion",
+        created: Math.floor(Date.now() / 1e3),
+        model: req.model,
+        choices: [
+          {
+            message: { role: "assistant", content },
+            finish_reason: "stop",
+            index: 0,
+            logprobs: null
           }
-        },
-        logprobs: null,
-        finish_reason: "stop",
-        index: 0
-      }
-    ]
-  };
-  return resp;
+        ]
+      };
+    }
+    return {
+      id: "chatcmpl-abc123",
+      object: "chat.completion",
+      created: Math.floor(Date.now() / 1e3),
+      model: req.model,
+      choices: [
+        {
+          message: {
+            role: "assistant",
+            content: null,
+            function_call: {
+              name: content.name ?? "",
+              arguments: JSON.stringify(content.args)
+            }
+          },
+          finish_reason: "function_call",
+          index: 0,
+          logprobs: null
+        }
+      ]
+    };
+  }
+  return genOpenAiResp(geminiResp);
 }
 
 // src/openai/chat/completions/StreamingChatProxyHandler.ts
@@ -845,6 +847,21 @@ async function* streamingChatProxyHandler(req, apiParam) {
   const [model, geminiReq] = genModel(req);
   const geminiResp = await generateContent(apiParam, model, geminiReq).then((it) => it.response.result()).catch((e) => e.message ?? e?.toString());
   function genOpenAiResp(content, stop) {
+    if (typeof content === "string") {
+      return {
+        id: "chatcmpl-abc123",
+        object: "chat.completion.chunk",
+        created: Math.floor(Date.now() / 1e3),
+        model: req.model,
+        choices: [
+          {
+            delta: { role: "assistant", content },
+            finish_reason: stop ? "stop" : null,
+            index: 0
+          }
+        ]
+      };
+    }
     return {
       id: "chatcmpl-abc123",
       object: "chat.completion.chunk",
@@ -852,8 +869,8 @@ async function* streamingChatProxyHandler(req, apiParam) {
       model: req.model,
       choices: [
         {
-          delta: { role: "assistant", content },
-          finish_reason: stop ? "stop" : null,
+          delta: { role: "assistant", function_call: content },
+          finish_reason: stop ? "function_call" : null,
           index: 0
         }
       ]
