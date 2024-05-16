@@ -1,14 +1,18 @@
 # changelog
 
-## 0.12.0 (Unreleased)
+## 0.13.0 (Unreleased)
 
--
+## 0.12.0 (2024-05-16)
+
+- add support for `gemini-1.5-pro-vision-latest` and `gemini-1.5-flash-latest`
 
 ## 0.11.0 (2024-04-11)
 
-- Resolve CORS error: Update server configurations to enable Cross-Origin access.
+- Resolve CORS error: Update server configurations to enable Cross-Origin
+  access.
 - Add support for function calls in non-stream mode.
-- Migrate to [itty-router](https://github.com/kwhitley/itty-router) to reduce package size.
+- Migrate to [itty-router](https://github.com/kwhitley/itty-router) to reduce
+  package size.
 - Utilize the official Deno Docker image for improved consistency.
 
 ## 0.10.0 (2024-02-28)
