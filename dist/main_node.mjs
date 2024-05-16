@@ -571,7 +571,8 @@ function genModel(req) {
 }
 var ModelMapping = {
   "gpt-3.5-turbo": "gemini-1.0-pro-latest",
-  // "gpt-4": "gemini-1.0-ultra-latest",
+  "gpt-4": "gemini-1.5-pro-latest",
+  "gpt-4o": "gemini-1.5-flash-latest",
   "gpt-4-vision-preview": "gemini-1.0-pro-vision-latest",
   "gpt-4-turbo": "gemini-1.5-pro-latest",
   "gpt-4-turbo-preview": "gemini-1.5-pro-latest"
@@ -945,32 +946,12 @@ function toSseMsg(sseEvent) {
 }
 
 // src/openai/models.ts
-var modelData = [
-  {
-    created: 1677610602,
-    object: "model",
-    owned_by: "openai",
-    id: "gpt-3.5-turbo"
-  },
-  {
-    created: 1685474247,
-    object: "model",
-    owned_by: "openai",
-    id: "gpt-4-vision-preview"
-  },
-  {
-    created: 1687882411,
-    object: "model",
-    owned_by: "openai",
-    id: "gpt-4-turbo"
-  },
-  {
-    created: 1687882412,
-    object: "model",
-    owned_by: "openai",
-    id: "gpt-4-turbo-preview"
-  }
-];
+var modelData = Object.keys(ModelMapping).map((model) => ({
+  created: 1677610602,
+  object: "model",
+  owned_by: "openai",
+  id: model
+}));
 var models = () => {
   return {
     object: "list",

@@ -78,8 +78,10 @@ curl -s http://localhost:8000/v1/chat/completions \
 | OpenAI Model         | Gemini Model                 |
 | -------------------- | ---------------------------- |
 | gpt-3.5-turbo        | gemini-1.0-pro-latest        |
+| gpt-4                | gemini-1.5-pro-latest        |
 | gpt-4-vision-preview | gemini-1.0-pro-vision-latest |
 | gpt-4-turbo          | gemini-1.5-pro-latest        |
+| gpt-4o               | gemini-1.5-flash-latest      |
 | gpt-4-turbo-preview  | gemini-1.5-pro-latest        |
 | ...others            | gemini-1.0-pro-latest        |
 
@@ -102,12 +104,14 @@ Copy [`main_deno.mjs`](./dist/main_deno.mjs) to `deno deploy`
 
 > build command `npm run build:cf_worker`
 
- [![Deploy with Vercel](https://vercel.com/button)](https://vercel.com/new/clone?repository-url=https://github.com/zuisong/gemini-openai-proxy&repository-name=gemini-openai-proxy)
+[![Deploy with Vercel](https://vercel.com/button)](https://vercel.com/new/clone?repository-url=https://github.com/zuisong/gemini-openai-proxy&repository-name=gemini-openai-proxy)
 
 - Alternatively can be deployed with [cli](https://vercel.com/docs/cli):
   `vercel deploy`
 - Serve locally: `vercel dev`
-- Vercel _Functions_ [limitations](https://vercel.com/docs/functions/limitations) (with _Edge_ runtime)
+- Vercel _Functions_
+  [limitations](https://vercel.com/docs/functions/limitations) (with _Edge_
+  runtime)
 
 ## Run On Local
 

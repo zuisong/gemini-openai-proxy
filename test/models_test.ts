@@ -13,6 +13,7 @@ bdd.describe("openai model api test", () => {
     )
 
     const { data: models } = await res.json()
+    console.log(models)
 
     expect(models).toStrictEqual(modelData)
   })

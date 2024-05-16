@@ -1,30 +1,11 @@
 import type { OpenAI } from "../types.ts"
-export const modelData: OpenAI.Models.Model[] = [
-  {
-    created: 1677610602,
-    object: "model",
-    owned_by: "openai",
-    id: "gpt-3.5-turbo",
-  },
-  {
-    created: 1685474247,
-    object: "model",
-    owned_by: "openai",
-    id: "gpt-4-vision-preview",
-  },
-  {
-    created: 1687882411,
-    object: "model",
-    owned_by: "openai",
-    id: "gpt-4-turbo",
-  },
-  {
-    created: 1687882412,
-    object: "model",
-    owned_by: "openai",
-    id: "gpt-4-turbo-preview",
-  },
-]
+import { ModelMapping } from "../utils.ts"
+export const modelData: OpenAI.Models.Model[] = Object.keys(ModelMapping).map((model) => ({
+  created: 1677610602,
+  object: "model",
+  owned_by: "openai",
+  id: model,
+}))
 
 export const models = () => {
   return {
