@@ -80,12 +80,15 @@ export function genModel(req: OpenAI.Chat.ChatCompletionCreateParams): [GeminiMo
 
   functions = functions.concat(req.functions ?? [])
 
+  const responseMimeType = req.response_format?.type === "json_object" ? "application/json" : "text/plain"
+
   const generateContentRequest: GenerateContentRequest = {
     contents: openAiMessageToGeminiMessage(req.messages),
     generationConfig: {
       maxOutputTokens: req.max_tokens ?? undefined,
       temperature: req.temperature ?? undefined,
       topP: req.top_p ?? undefined,
+      responseMimeType: responseMimeType,
     },
     tools:
       functions.length === 0
