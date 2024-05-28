@@ -362,7 +362,7 @@ export interface paths {
     };
   };
   "/v1beta/{+model}:generateContent": {
-    /** @description Generates a response from the model given an input `GenerateContentRequest`. */
+    /** @description Generates a response from the model given an input `GenerateContentRequest`. Input capabilities differ between models, including tuned models. See the [model guide](https://ai.google.dev/models/gemini) and [tuning guide](https://ai.google.dev/docs/model_tuning_guidance) for details. */
     post: operations["generativelanguage.tunedModels.generateContent"];
     parameters: {
       query?: {
@@ -571,7 +571,7 @@ export interface components {
        * @description Raw bytes for media formats.
        */
       data?: string;
-      /** @description The IANA standard MIME type of the source data. Accepted types include: "image/png", "image/jpeg", "image/heic", "image/heif", "image/webp". */
+      /** @description The IANA standard MIME type of the source data. Examples: - image/png - image/jpeg If an unsupported MIME type is provided, an error will be returned. For a complete list of supported types, see [Supported file formats](https://ai.google.dev/gemini-api/docs/prompting_with_media#supported_file_formats). */
       mimeType?: string;
       [key: string]: unknown;
     };
@@ -743,8 +743,9 @@ export interface components {
     };
     /** @description Counts the number of tokens in the `prompt` sent to a model. Models may tokenize text differently, so each model may return a different `token_count`. */
     CountTokensRequest: {
-      /** @description Required. The input given to the model as a prompt. */
+      /** @description Optional. The input given to the model as a prompt. This field is ignored when `generate_content_request` is set. */
       contents?: components["schemas"]["Content"][];
+      generateContentRequest?: components["schemas"]["GenerateContentRequest"];
       [key: string]: unknown;
     };
     /** @description A response from `CountTokens`. It returns the model's `token_count` for the `prompt`. */
@@ -824,10 +825,15 @@ export interface components {
       /** @description Required. The model's resource name. This serves as an ID for the Model to use. This name should match a model name returned by the `ListModels` method. Format: `models/{model}` */
       model?: string;
       /**
+       * Format: int32
+       * @description Optional. Optional reduced dimension for the output embedding. If set, excessive values in the output embedding are truncated from the end. Supported by newer models since 2024, and the earlier model (`models/embedding-001`) cannot specify this value.
+       */
+      outputDimensionality?: number;
+      /**
        * @description Optional. Optional task type for which the embeddings will be used. Can only be set for `models/embedding-001`.
        * @enum {string}
        */
-      taskType?: "TASK_TYPE_UNSPECIFIED" | "RETRIEVAL_QUERY" | "RETRIEVAL_DOCUMENT" | "SEMANTIC_SIMILARITY" | "CLASSIFICATION" | "CLUSTERING";
+      taskType?: "TASK_TYPE_UNSPECIFIED" | "RETRIEVAL_QUERY" | "RETRIEVAL_DOCUMENT" | "SEMANTIC_SIMILARITY" | "CLASSIFICATION" | "CLUSTERING" | "QUESTION_ANSWERING" | "FACT_VERIFICATION";
       /** @description Optional. An optional title for the text. Only applicable when TaskType is `RETRIEVAL_DOCUMENT`. Note: Specifying a `title` for `RETRIEVAL_DOCUMENT` provides better quality embeddings for retrieval. */
       title?: string;
       [key: string]: unknown;
@@ -873,6 +879,7 @@ export interface components {
       createTime?: string;
       /** @description Optional. The human-readable display name for the `File`. The display name must be no more than 512 characters in length, including spaces. Example: "Welcome Image" */
       displayName?: string;
+      error?: components["schemas"]["Status"];
       /**
        * Format: google-datetime
        * @description Output only. The timestamp of when the `File` will be deleted. Only set if the `File` is scheduled to expire.
@@ -893,12 +900,18 @@ export interface components {
        */
       sizeBytes?: string;
       /**
+       * @description Output only. Processing state of the File.
+       * @enum {string}
+       */
+      state?: "STATE_UNSPECIFIED" | "PROCESSING" | "ACTIVE" | "FAILED";
+      /**
        * Format: google-datetime
        * @description Output only. The timestamp of when the `File` was last updated.
        */
       updateTime?: string;
       /** @description Output only. The uri of the `File`. */
       uri?: string;
+      videoMetadata?: components["schemas"]["VideoMetadata"];
       [key: string]: unknown;
     };
     /** @description URI based data. */
@@ -917,6 +930,17 @@ export interface components {
       };
       /** @description Required. The name of the function to call. Must be a-z, A-Z, 0-9, or contain underscores and dashes, with a maximum length of 63. */
       name?: string;
+      [key: string]: unknown;
+    };
+    /** @description Configuration for specifying function calling behavior. */
+    FunctionCallingConfig: {
+      /** @description Optional. A set of function names that, when provided, limits the functions the model will call. This should only be set when the Mode is ANY. Function names should match [FunctionDeclaration.name]. With mode set to ANY, model will predict a function call from the set of function names provided. */
+      allowedFunctionNames?: string[];
+      /**
+       * @description Optional. Specifies the mode in which function calling should execute. If unspecified, the default value will be set to AUTO.
+       * @enum {string}
+       */
+      mode?: "MODE_UNSPECIFIED" | "AUTO" | "ANY" | "NONE";
       [key: string]: unknown;
     };
     /** @description Structured representation of a function declaration as defined by the [OpenAPI 3.03 specification](https://spec.openapis.org/oas/v3.0.3). Included in this declaration are the function name and parameters. This FunctionDeclaration is a representation of a block of code that can be used as a `Tool` by the model and executed by the client. */
@@ -974,8 +998,12 @@ export interface components {
       /** @description Required. The content of the current conversation with the model. For single-turn queries, this is a single instance. For multi-turn queries, this is a repeated field that contains conversation history + latest request. */
       contents?: components["schemas"]["Content"][];
       generationConfig?: components["schemas"]["GenerationConfig"];
+      /** @description Required. The name of the `Model` to use for generating the completion. Format: `name=models/{model}`. */
+      model?: string;
       /** @description Optional. A list of unique `SafetySetting` instances for blocking unsafe content. This will be enforced on the `GenerateContentRequest.contents` and `GenerateContentResponse.candidates`. There should not be more than one setting for each `SafetyCategory` type. The API will block any contents and responses that fail to meet the thresholds set by these settings. This list overrides the default settings for each `SafetyCategory` specified in the safety_settings. If there is no `SafetySetting` for a given `SafetyCategory` provided in the list, the API will use the default safety setting for that category. Harm categories HARM_CATEGORY_HATE_SPEECH, HARM_CATEGORY_SEXUALLY_EXPLICIT, HARM_CATEGORY_DANGEROUS_CONTENT, HARM_CATEGORY_HARASSMENT are supported. */
       safetySettings?: components["schemas"]["SafetySetting"][];
+      systemInstruction?: components["schemas"]["Content"];
+      toolConfig?: components["schemas"]["ToolConfig"];
       /** @description Optional. A list of `Tools` the model may use to generate the next response. A `Tool` is a piece of code that enables the system to interact with external systems to perform an action, or set of actions, outside of knowledge and scope of the model. The only supported tool is currently `Function`. */
       tools?: components["schemas"]["Tool"][];
       [key: string]: unknown;
@@ -985,6 +1013,7 @@ export interface components {
       /** @description Candidate responses from the model. */
       candidates?: components["schemas"]["Candidate"][];
       promptFeedback?: components["schemas"]["PromptFeedback"];
+      usageMetadata?: components["schemas"]["UsageMetadata"];
       [key: string]: unknown;
     };
     /** @description Request to generate a message response from the model. */
@@ -1078,16 +1107,19 @@ export interface components {
        * @description Optional. The maximum number of tokens to include in a candidate. Note: The default value varies by model, see the `Model.output_token_limit` attribute of the `Model` returned from the `getModel` function.
        */
       maxOutputTokens?: number;
+      /** @description Optional. Output response mimetype of the generated candidate text. Supported mimetype: `text/plain`: (default) Text output. `application/json`: JSON response in the candidates. */
+      responseMimeType?: string;
+      responseSchema?: components["schemas"]["Schema"];
       /** @description Optional. The set of character sequences (up to 5) that will stop output generation. If specified, the API will stop at the first appearance of a stop sequence. The stop sequence will not be included as part of the response. */
       stopSequences?: string[];
       /**
        * Format: float
-       * @description Optional. Controls the randomness of the output. Note: The default value varies by model, see the `Model.temperature` attribute of the `Model` returned from the `getModel` function. Values can range from [0.0, infinity).
+       * @description Optional. Controls the randomness of the output. Note: The default value varies by model, see the `Model.temperature` attribute of the `Model` returned from the `getModel` function. Values can range from [0.0, 2.0].
        */
       temperature?: number;
       /**
        * Format: int32
-       * @description Optional. The maximum number of tokens to consider when sampling. The model uses combined Top-k and nucleus sampling. Top-k sampling considers the set of `top_k` most probable tokens. Note: The default value varies by model, see the `Model.top_k` attribute of the `Model` returned from the `getModel` function.
+       * @description Optional. The maximum number of tokens to consider when sampling. Models use nucleus sampling or combined Top-k and nucleus sampling. Top-k sampling considers the set of `top_k` most probable tokens. Models running with nucleus sampling don't allow top_k setting. Note: The default value varies by model, see the `Model.top_k` attribute of the `Model` returned from the `getModel` function. Empty `top_k` field in `Model` indicates the model doesn't apply top-k sampling and doesn't allow setting `top_k` on requests.
        */
       topK?: number;
       /**
@@ -1274,7 +1306,7 @@ export interface components {
       temperature?: number;
       /**
        * Format: int32
-       * @description For Top-k sampling. Top-k sampling considers the set of `top_k` most probable tokens. This value specifies default to be used by the backend while making the call to the model.
+       * @description For Top-k sampling. Top-k sampling considers the set of `top_k` most probable tokens. This value specifies default to be used by the backend while making the call to the model. If empty, indicates the model doesn't use top-k sampling, and `top_k` isn't allowed as a generation parameter.
        */
       topK?: number;
       /**
@@ -1412,7 +1444,7 @@ export interface components {
       probability?: "HARM_PROBABILITY_UNSPECIFIED" | "NEGLIGIBLE" | "LOW" | "MEDIUM" | "HIGH";
       [key: string]: unknown;
     };
-    /** @description Safety setting, affecting the safety-blocking behavior. Passing a safety setting for a category changes the allowed proability that content is blocked. */
+    /** @description Safety setting, affecting the safety-blocking behavior. Passing a safety setting for a category changes the allowed probability that content is blocked. */
     SafetySetting: {
       /**
        * @description Required. The category for this setting.
@@ -1517,6 +1549,11 @@ export interface components {
     Tool: {
       /** @description Optional. A list of `FunctionDeclarations` available to the model that can be used for function calling. The model or system does not execute the function. Instead the defined function may be returned as a FunctionCall with arguments to the client side for execution. The model may decide to call a subset of these functions by populating FunctionCall in the response. The next conversation turn may contain a FunctionResponse with the [content.role] "function" generation context for the next model turn. */
       functionDeclarations?: components["schemas"]["FunctionDeclaration"][];
+      [key: string]: unknown;
+    };
+    /** @description The Tool configuration containing parameters for specifying `Tool` use in the request. */
+    ToolConfig: {
+      functionCallingConfig?: components["schemas"]["FunctionCallingConfig"];
       [key: string]: unknown;
     };
     /** @description Request to transfer the ownership of the tuned model. */
@@ -1643,6 +1680,34 @@ export interface components {
        * @description Required. The list of fields to update. Currently, this only supports updating `custom_metadata` and `data`.
        */
       updateMask?: string;
+      [key: string]: unknown;
+    };
+    /** @description Metadata on the generation request's token usage. */
+    UsageMetadata: {
+      /**
+       * Format: int32
+       * @description Total number of tokens across the generated candidates.
+       */
+      candidatesTokenCount?: number;
+      /**
+       * Format: int32
+       * @description Number of tokens in the prompt.
+       */
+      promptTokenCount?: number;
+      /**
+       * Format: int32
+       * @description Total token count for the generation request (prompt + candidates).
+       */
+      totalTokenCount?: number;
+      [key: string]: unknown;
+    };
+    /** @description Metadata for a video `File`. */
+    VideoMetadata: {
+      /**
+       * Format: google-duration
+       * @description Duration of the video.
+       */
+      videoDuration?: string;
       [key: string]: unknown;
     };
   };
@@ -2533,7 +2598,7 @@ export interface operations {
       };
     };
   };
-  /** @description Generates a response from the model given an input `GenerateContentRequest`. */
+  /** @description Generates a response from the model given an input `GenerateContentRequest`. Input capabilities differ between models, including tuned models. See the [model guide](https://ai.google.dev/models/gemini) and [tuning guide](https://ai.google.dev/docs/model_tuning_guidance) for details. */
   "generativelanguage.tunedModels.generateContent": {
     parameters: {
       query?: {

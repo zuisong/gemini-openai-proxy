@@ -50,9 +50,13 @@ export interface paths {
     /** Returns a list of files that belong to the user's organization. */
     get: operations["listFiles"];
     /**
-     * Upload a file that can be used across various endpoints. The size of all the files uploaded by one organization can be up to 100 GB.
+     * Upload a file that can be used across various endpoints. Individual files can be up to 512 MB, and the size of all files uploaded by one organization can be up to 100 GB.
      *
-     * The size of individual files can be a maximum of 512 MB or 2 million tokens for Assistants. See the [Assistants Tools guide](/docs/assistants/tools) to learn more about the types of files supported. The Fine-tuning API only supports `.jsonl` files.
+     * The Assistants API supports files up to 2 million tokens and of specific file types. See the [Assistants Tools guide](/docs/assistants/tools) for details.
+     *
+     * The Fine-tuning API only supports `.jsonl` files.
+     *
+     * The Batch API only supports `.jsonl` files up to 100 MB in size.
      *
      * Please [contact us](https://help.openai.com/) if you need to increase these storage limits.
      */
@@ -95,6 +99,10 @@ export interface paths {
   "/fine_tuning/jobs/{fine_tuning_job_id}/cancel": {
     /** Immediately cancel a fine-tune job. */
     post: operations["cancelFineTuningJob"];
+  };
+  "/fine_tuning/jobs/{fine_tuning_job_id}/checkpoints": {
+    /** List checkpoints for a fine-tuning job. */
+    get: operations["listFineTuningJobCheckpoints"];
   };
   "/models": {
     /** Lists the currently available models, and provides basic information about each one such as the owner and availability. */
@@ -147,6 +155,8 @@ export interface paths {
     get: operations["getMessage"];
     /** Modifies a message. */
     post: operations["modifyMessage"];
+    /** Deletes a message. */
+    delete: operations["deleteMessage"];
   };
   "/threads/runs": {
     /** Create a thread and run it in one request. */
@@ -180,25 +190,61 @@ export interface paths {
     /** Retrieves a run step. */
     get: operations["getRunStep"];
   };
-  "/assistants/{assistant_id}/files": {
-    /** Returns a list of assistant files. */
-    get: operations["listAssistantFiles"];
-    /** Create an assistant file by attaching a [File](/docs/api-reference/files) to an [assistant](/docs/api-reference/assistants). */
-    post: operations["createAssistantFile"];
+  "/vector_stores": {
+    /** Returns a list of vector stores. */
+    get: operations["listVectorStores"];
+    /** Create a vector store. */
+    post: operations["createVectorStore"];
   };
-  "/assistants/{assistant_id}/files/{file_id}": {
-    /** Retrieves an AssistantFile. */
-    get: operations["getAssistantFile"];
-    /** Delete an assistant file. */
-    delete: operations["deleteAssistantFile"];
+  "/vector_stores/{vector_store_id}": {
+    /** Retrieves a vector store. */
+    get: operations["getVectorStore"];
+    /** Modifies a vector store. */
+    post: operations["modifyVectorStore"];
+    /** Delete a vector store. */
+    delete: operations["deleteVectorStore"];
   };
-  "/threads/{thread_id}/messages/{message_id}/files": {
-    /** Returns a list of message files. */
-    get: operations["listMessageFiles"];
+  "/vector_stores/{vector_store_id}/files": {
+    /** Returns a list of vector store files. */
+    get: operations["listVectorStoreFiles"];
+    /** Create a vector store file by attaching a [File](/docs/api-reference/files) to a [vector store](/docs/api-reference/vector-stores/object). */
+    post: operations["createVectorStoreFile"];
   };
-  "/threads/{thread_id}/messages/{message_id}/files/{file_id}": {
-    /** Retrieves a message file. */
-    get: operations["getMessageFile"];
+  "/vector_stores/{vector_store_id}/files/{file_id}": {
+    /** Retrieves a vector store file. */
+    get: operations["getVectorStoreFile"];
+    /** Delete a vector store file. This will remove the file from the vector store but the file itself will not be deleted. To delete the file, use the [delete file](/docs/api-reference/files/delete) endpoint. */
+    delete: operations["deleteVectorStoreFile"];
+  };
+  "/vector_stores/{vector_store_id}/file_batches": {
+    /** Create a vector store file batch. */
+    post: operations["createVectorStoreFileBatch"];
+  };
+  "/vector_stores/{vector_store_id}/file_batches/{batch_id}": {
+    /** Retrieves a vector store file batch. */
+    get: operations["getVectorStoreFileBatch"];
+  };
+  "/vector_stores/{vector_store_id}/file_batches/{batch_id}/cancel": {
+    /** Cancel a vector store file batch. This attempts to cancel the processing of files in this batch as soon as possible. */
+    post: operations["cancelVectorStoreFileBatch"];
+  };
+  "/vector_stores/{vector_store_id}/file_batches/{batch_id}/files": {
+    /** Returns a list of vector store files in a batch. */
+    get: operations["listFilesInVectorStoreBatch"];
+  };
+  "/batches": {
+    /** List your organization's batches. */
+    get: operations["listBatches"];
+    /** Creates and executes a batch from an uploaded file of requests */
+    post: operations["createBatch"];
+  };
+  "/batches/{batch_id}": {
+    /** Retrieves a batch. */
+    get: operations["retrieveBatch"];
+  };
+  "/batches/{batch_id}/cancel": {
+    /** Cancels an in-progress batch. */
+    post: operations["cancelBatch"];
   };
 }
 
@@ -328,6 +374,7 @@ export interface components {
        * @default false
        */
       stream?: boolean | null;
+      stream_options?: components["schemas"]["ChatCompletionStreamOptions"];
       /**
        * @description The suffix that comes after a completion of inserted text.
        *
@@ -565,14 +612,15 @@ export interface components {
       [key: string]: unknown;
     };
     /**
-     * @description Controls which (if any) function is called by the model.
-     * `none` means the model will not call a function and instead generates a message.
-     * `auto` means the model can pick between generating a message or calling a function.
-     * Specifying a particular function via `{"type": "function", "function": {"name": "my_function"}}` forces the model to call that function.
+     * @description Controls which (if any) tool is called by the model.
+     * `none` means the model will not call any tool and instead generates a message.
+     * `auto` means the model can pick between generating a message or calling one or more tools.
+     * `required` means the model must call one or more tools.
+     * Specifying a particular tool via `{"type": "function", "function": {"name": "my_function"}}` forces the model to call that tool.
      *
-     * `none` is the default when no functions are present. `auto` is the default if functions are present.
+     * `none` is the default when no tools are present. `auto` is the default if tools are present.
      */
-    ChatCompletionToolChoiceOption: ("none" | "auto") | components["schemas"]["ChatCompletionNamedToolChoice"];
+    ChatCompletionToolChoiceOption: ("none" | "auto" | "required") | components["schemas"]["ChatCompletionNamedToolChoice"];
     /** @description Specifies a tool the model should use. Use to force the model to call a specific function. */
     ChatCompletionNamedToolChoice: {
       /**
@@ -630,6 +678,16 @@ export interface components {
      * @enum {string}
      */
     ChatCompletionRole: "system" | "user" | "assistant" | "tool" | "function";
+    /**
+     * @description Options for streaming response. Only set this when you set `stream: true`.
+     *
+     * @default null
+     */
+    ChatCompletionStreamOptions: {
+      /** @description If set, an additional chunk will be streamed before the `data: [DONE]` message. The `usage` field on this chunk shows the token usage statistics for the entire request, and the `choices` field will always be an empty array. All other chunks will also include a `usage` field, but with a null value. */
+      include_usage?: boolean;
+      [key: string]: unknown;
+    } | null;
     /** @description A chat completion message generated by the model. */
     ChatCompletionResponseMessage: {
       /** @description The contents of the message. */
@@ -681,9 +739,9 @@ export interface components {
       messages: components["schemas"]["ChatCompletionRequestMessage"][];
       /**
        * @description ID of the model to use. See the [model endpoint compatibility](/docs/models/model-endpoint-compatibility) table for details on which models work with the Chat API.
-       * @example gpt-3.5-turbo
+       * @example gpt-4-turbo
        */
-      model: string | ("gpt-4-0125-preview" | "gpt-4-turbo-preview" | "gpt-4-1106-preview" | "gpt-4-vision-preview" | "gpt-4" | "gpt-4-0314" | "gpt-4-0613" | "gpt-4-32k" | "gpt-4-32k-0314" | "gpt-4-32k-0613" | "gpt-3.5-turbo" | "gpt-3.5-turbo-16k" | "gpt-3.5-turbo-0301" | "gpt-3.5-turbo-0613" | "gpt-3.5-turbo-1106" | "gpt-3.5-turbo-0125" | "gpt-3.5-turbo-16k-0613");
+      model: string | ("gpt-4o" | "gpt-4o-2024-05-13" | "gpt-4-turbo" | "gpt-4-turbo-2024-04-09" | "gpt-4-0125-preview" | "gpt-4-turbo-preview" | "gpt-4-1106-preview" | "gpt-4-vision-preview" | "gpt-4" | "gpt-4-0314" | "gpt-4-0613" | "gpt-4-32k" | "gpt-4-32k-0314" | "gpt-4-32k-0613" | "gpt-3.5-turbo" | "gpt-3.5-turbo-16k" | "gpt-3.5-turbo-0301" | "gpt-3.5-turbo-0613" | "gpt-3.5-turbo-1106" | "gpt-3.5-turbo-0125" | "gpt-3.5-turbo-16k-0613");
       /**
        * @description Number between -2.0 and 2.0. Positive values penalize new tokens based on their existing frequency in the text so far, decreasing the model's likelihood to repeat the same line verbatim.
        *
@@ -703,7 +761,7 @@ export interface components {
         [key: string]: number;
       } | null;
       /**
-       * @description Whether to return log probabilities of the output tokens or not. If true, returns the log probabilities of each output token returned in the `content` of `message`. This option is currently not available on the `gpt-4-vision-preview` model.
+       * @description Whether to return log probabilities of the output tokens or not. If true, returns the log probabilities of each output token returned in the `content` of `message`.
        * @default false
        */
       logprobs?: boolean | null;
@@ -764,6 +822,7 @@ export interface components {
        * @default false
        */
       stream?: boolean | null;
+      stream_options?: components["schemas"]["ChatCompletionStreamOptions"];
       /**
        * @description What sampling temperature to use, between 0 and 2. Higher values like 0.8 will make the output more random, while lower values like 0.2 will make it more focused and deterministic.
        *
@@ -921,7 +980,10 @@ export interface components {
     CreateChatCompletionStreamResponse: {
       /** @description A unique identifier for the chat completion. Each chunk has the same ID. */
       id: string;
-      /** @description A list of chat completion choices. Can be more than one if `n` is greater than 1. */
+      /**
+       * @description A list of chat completion choices. Can contain more than one elements if `n` is greater than 1. Can also be empty for the
+       * last chunk if you set `stream_options: {"include_usage": true}`.
+       */
       choices: ({
           delta: components["schemas"]["ChatCompletionStreamResponseDelta"];
           /** @description Log probability information for the choice. */
@@ -957,6 +1019,19 @@ export interface components {
        * @enum {string}
        */
       object: "chat.completion.chunk";
+      /**
+       * @description An optional field that will only be present when you set `stream_options: {"include_usage": true}` in your request.
+       * When present, it contains a null value except for the last chunk which contains the token usage statistics for the entire request.
+       */
+      usage?: {
+        /** @description Number of tokens in the generated completion. */
+        completion_tokens: number;
+        /** @description Number of tokens in the prompt. */
+        prompt_tokens: number;
+        /** @description Total number of tokens used in the request (prompt + completion). */
+        total_tokens: number;
+        [key: string]: unknown;
+      };
       [key: string]: unknown;
     };
     /** @description Represents a streamed chunk of a chat completion response returned by model, based on the provided input. */
@@ -1215,11 +1290,11 @@ export interface components {
       /**
        * @description The intended purpose of the uploaded file.
        *
-       * Use "fine-tune" for [Fine-tuning](/docs/api-reference/fine-tuning) and "assistants" for [Assistants](/docs/api-reference/assistants) and [Messages](/docs/api-reference/messages). This allows us to validate the format of the uploaded file is correct for fine-tuning.
+       * Use "assistants" for [Assistants](/docs/api-reference/assistants) and [Message](/docs/api-reference/messages) files, "vision" for Assistants image file inputs, "batch" for [Batch API](/docs/guides/batch), and "fine-tune" for [Fine-tuning](/docs/api-reference/fine-tuning).
        *
        * @enum {string}
        */
-      purpose: "fine-tune" | "assistants";
+      purpose: "assistants" | "batch" | "fine-tune";
       [key: string]: unknown;
     };
     DeleteFileResponse: {
@@ -1240,7 +1315,7 @@ export interface components {
       /**
        * @description The ID of an uploaded file that contains training data.
        *
-       * See [upload file](/docs/api-reference/files/upload) for how to upload a file.
+       * See [upload file](/docs/api-reference/files/create) for how to upload a file.
        *
        * Your dataset must be formatted as a JSONL file. Additionally, you must upload your file with the purpose `fine-tune`.
        *
@@ -1297,12 +1372,60 @@ export interface components {
        * @example file-abc123
        */
       validation_file?: string | null;
+      /** @description A list of integrations to enable for your fine-tuning job. */
+      integrations?: (({
+          /** @description The type of integration to enable. Currently, only "wandb" (Weights and Biases) is supported. */
+          type: "wandb";
+          /**
+           * @description The settings for your integration with Weights and Biases. This payload specifies the project that
+           * metrics will be sent to. Optionally, you can set an explicit display name for your run, add tags
+           * to your run, and set a default entity (team, username, etc) to be associated with your run.
+           */
+          wandb: {
+            /**
+             * @description The name of the project that the new run will be created under.
+             *
+             * @example my-wandb-project
+             */
+            project: string;
+            /** @description A display name to set for the run. If not set, we will use the Job ID as the name. */
+            name?: string | null;
+            /**
+             * @description The entity to use for the run. This allows you to set the team or username of the WandB user that you would
+             * like associated with the run. If not set, the default entity for the registered WandB API key is used.
+             */
+            entity?: string | null;
+            /**
+             * @description A list of tags to be attached to the newly created run. These tags are passed through directly to WandB. Some
+             * default tags are generated by OpenAI: "openai/finetune", "openai/{base-model}", "openai/{ftjob-abcdef}".
+             */
+            tags?: string[];
+            [key: string]: unknown;
+          };
+          [key: string]: unknown;
+        })[]) | null;
+      /**
+       * @description The seed controls the reproducibility of the job. Passing in the same seed and job parameters should produce the same results, but may differ in rare cases.
+       * If a seed is not specified, one will be generated for you.
+       *
+       * @example 42
+       */
+      seed?: number | null;
       [key: string]: unknown;
     };
     ListFineTuningJobEventsResponse: {
       data: components["schemas"]["FineTuningJobEvent"][];
       /** @enum {string} */
       object: "list";
+      [key: string]: unknown;
+    };
+    ListFineTuningJobCheckpointsResponse: {
+      data: components["schemas"]["FineTuningJobCheckpoint"][];
+      /** @enum {string} */
+      object: "list";
+      first_id?: string | null;
+      last_id?: string | null;
+      has_more: boolean;
       [key: string]: unknown;
     };
     CreateEmbeddingRequest: {
@@ -1573,10 +1696,10 @@ export interface components {
        */
       object: "file";
       /**
-       * @description The intended purpose of the file. Supported values are `fine-tune`, `fine-tune-results`, `assistants`, and `assistants_output`.
+       * @description The intended purpose of the file. Supported values are `assistants`, `assistants_output`, `batch`, `batch_output`, `fine-tune`, `fine-tune-results` and `vision`.
        * @enum {string}
        */
-      purpose: "fine-tune" | "fine-tune-results" | "assistants" | "assistants_output";
+      purpose: "assistants" | "assistants_output" | "batch" | "batch_output" | "fine-tune" | "fine-tune-results" | "vision";
       /**
        * @deprecated
        * @description Deprecated. The current status of the file, which can be either `uploaded`, `processed`, or `error`.
@@ -1658,6 +1781,47 @@ export interface components {
       training_file: string;
       /** @description The file ID used for validation. You can retrieve the validation results with the [Files API](/docs/api-reference/files/retrieve-contents). */
       validation_file: string | null;
+      /** @description A list of integrations to enable for this fine-tuning job. */
+      integrations?: components["schemas"]["FineTuningIntegration"][] | null;
+      /** @description The seed used for the fine-tuning job. */
+      seed: number;
+      /** @description The Unix timestamp (in seconds) for when the fine-tuning job is estimated to finish. The value will be null if the fine-tuning job is not running. */
+      estimated_finish?: number | null;
+      [key: string]: unknown;
+    };
+    /** Fine-Tuning Job Integration */
+    FineTuningIntegration: {
+      /**
+       * @description The type of the integration being enabled for the fine-tuning job
+       * @enum {string}
+       */
+      type: "wandb";
+      /**
+       * @description The settings for your integration with Weights and Biases. This payload specifies the project that
+       * metrics will be sent to. Optionally, you can set an explicit display name for your run, add tags
+       * to your run, and set a default entity (team, username, etc) to be associated with your run.
+       */
+      wandb: {
+        /**
+         * @description The name of the project that the new run will be created under.
+         *
+         * @example my-wandb-project
+         */
+        project: string;
+        /** @description A display name to set for the run. If not set, we will use the Job ID as the name. */
+        name?: string | null;
+        /**
+         * @description The entity to use for the run. This allows you to set the team or username of the WandB user that you would
+         * like associated with the run. If not set, the default entity for the registered WandB API key is used.
+         */
+        entity?: string | null;
+        /**
+         * @description A list of tags to be attached to the newly created run. These tags are passed through directly to WandB. Some
+         * default tags are generated by OpenAI: "openai/finetune", "openai/{base-model}", "openai/{ftjob-abcdef}".
+         */
+        tags?: string[];
+        [key: string]: unknown;
+      };
       [key: string]: unknown;
     };
     /** @description Fine-tuning job event object */
@@ -1669,6 +1833,39 @@ export interface components {
       message: string;
       /** @enum {string} */
       object: "fine_tuning.job.event";
+      [key: string]: unknown;
+    };
+    /**
+     * FineTuningJobCheckpoint
+     * @description The `fine_tuning.job.checkpoint` object represents a model checkpoint for a fine-tuning job that is ready to use.
+     */
+    FineTuningJobCheckpoint: {
+      /** @description The checkpoint identifier, which can be referenced in the API endpoints. */
+      id: string;
+      /** @description The Unix timestamp (in seconds) for when the checkpoint was created. */
+      created_at: number;
+      /** @description The name of the fine-tuned checkpoint model that is created. */
+      fine_tuned_model_checkpoint: string;
+      /** @description The step number that the checkpoint was created at. */
+      step_number: number;
+      /** @description Metrics at the step number during the fine-tuning job. */
+      metrics: {
+        step?: number;
+        train_loss?: number;
+        train_mean_token_accuracy?: number;
+        valid_loss?: number;
+        valid_mean_token_accuracy?: number;
+        full_valid_loss?: number;
+        full_valid_mean_token_accuracy?: number;
+        [key: string]: unknown;
+      };
+      /** @description The name of the fine-tuning job that this checkpoint was created from. */
+      fine_tuning_job_id: string;
+      /**
+       * @description The object type, which is always "fine_tuning.job.checkpoint".
+       * @enum {string}
+       */
+      object: "fine_tuning.job.checkpoint";
       [key: string]: unknown;
     };
     /** @description Usage statistics for the completion request. */
@@ -1702,6 +1899,25 @@ export interface components {
       [key: string]: unknown;
     } | null;
     /**
+     * @description Specifies the format that the model must output. Compatible with [GPT-4o](/docs/models/gpt-4o), [GPT-4 Turbo](/docs/models/gpt-4-turbo-and-gpt-4), and all GPT-3.5 Turbo models since `gpt-3.5-turbo-1106`.
+     *
+     * Setting to `{ "type": "json_object" }` enables JSON mode, which guarantees the message the model generates is valid JSON.
+     *
+     * **Important:** when using JSON mode, you **must** also instruct the model to produce JSON yourself via a system or user message. Without this, the model may generate an unending stream of whitespace until the generation reaches the token limit, resulting in a long-running and seemingly "stuck" request. Also note that the message content may be partially cut off if `finish_reason="length"`, which indicates the generation exceeded `max_tokens` or the conversation exceeded the max context length.
+     */
+    AssistantsApiResponseFormatOption: ("none" | "auto") | components["schemas"]["AssistantsApiResponseFormat"];
+    /** @description An object describing the expected output of the model. If `json_object` only `function` type `tools` are allowed to be passed to the Run. If `text` the model can return text or any value needed. */
+    AssistantsApiResponseFormat: {
+      /**
+       * @description Must be one of `text` or `json_object`.
+       * @default text
+       * @example json_object
+       * @enum {string}
+       */
+      type?: "text" | "json_object";
+      [key: string]: unknown;
+    };
+    /**
      * Assistant
      * @description Represents an `assistant` that can call the model and use tools.
      */
@@ -1721,47 +1937,117 @@ export interface components {
       description: string | null;
       /** @description ID of the model to use. You can use the [List models](/docs/api-reference/models/list) API to see all of your available models, or see our [Model overview](/docs/models/overview) for descriptions of them. */
       model: string;
-      /** @description The system instructions that the assistant uses. The maximum length is 32768 characters. */
+      /** @description The system instructions that the assistant uses. The maximum length is 256,000 characters. */
       instructions: string | null;
       /**
-       * @description A list of tool enabled on the assistant. There can be a maximum of 128 tools per assistant. Tools can be of types `code_interpreter`, `retrieval`, or `function`.
+       * @description A list of tool enabled on the assistant. There can be a maximum of 128 tools per assistant. Tools can be of types `code_interpreter`, `file_search`, or `function`.
        *
        * @default []
        */
-      tools: (components["schemas"]["AssistantToolsCode"] | components["schemas"]["AssistantToolsRetrieval"] | components["schemas"]["AssistantToolsFunction"])[];
-      /**
-       * @description A list of [file](/docs/api-reference/files) IDs attached to this assistant. There can be a maximum of 20 files attached to the assistant. Files are ordered by their creation date in ascending order.
-       *
-       * @default []
-       */
-      file_ids: string[];
+      tools: (components["schemas"]["AssistantToolsCode"] | components["schemas"]["AssistantToolsFileSearch"] | components["schemas"]["AssistantToolsFunction"])[];
+      /** @description A set of resources that are used by the assistant's tools. The resources are specific to the type of tool. For example, the `code_interpreter` tool requires a list of file IDs, while the `file_search` tool requires a list of vector store IDs. */
+      tool_resources?: {
+        code_interpreter?: {
+          /**
+           * @description A list of [file](/docs/api-reference/files) IDs made available to the `code_interpreter`` tool. There can be a maximum of 20 files associated with the tool.
+           *
+           * @default []
+           */
+          file_ids?: string[];
+          [key: string]: unknown;
+        };
+        file_search?: {
+          /** @description The ID of the [vector store](/docs/api-reference/vector-stores/object) attached to this assistant. There can be a maximum of 1 vector store attached to the assistant. */
+          vector_store_ids?: string[];
+          [key: string]: unknown;
+        };
+        [key: string]: unknown;
+      } | null;
       /** @description Set of 16 key-value pairs that can be attached to an object. This can be useful for storing additional information about the object in a structured format. Keys can be a maximum of 64 characters long and values can be a maxium of 512 characters long. */
       metadata: Record<string, unknown> | null;
+      /**
+       * @description What sampling temperature to use, between 0 and 2. Higher values like 0.8 will make the output more random, while lower values like 0.2 will make it more focused and deterministic.
+       *
+       * @default 1
+       * @example 1
+       */
+      temperature?: number | null;
+      /**
+       * @description An alternative to sampling with temperature, called nucleus sampling, where the model considers the results of the tokens with top_p probability mass. So 0.1 means only the tokens comprising the top 10% probability mass are considered.
+       *
+       * We generally recommend altering this or temperature but not both.
+       *
+       * @default 1
+       * @example 1
+       */
+      top_p?: number | null;
+      response_format?: components["schemas"]["AssistantsApiResponseFormatOption"];
       [key: string]: unknown;
     };
     CreateAssistantRequest: {
-      /** @description ID of the model to use. You can use the [List models](/docs/api-reference/models/list) API to see all of your available models, or see our [Model overview](/docs/models/overview) for descriptions of them. */
-      model: string;
+      /**
+       * @description ID of the model to use. You can use the [List models](/docs/api-reference/models/list) API to see all of your available models, or see our [Model overview](/docs/models/overview) for descriptions of them.
+       *
+       * @example gpt-4-turbo
+       */
+      model: string | ("gpt-4o" | "gpt-4o-2024-05-13" | "gpt-4-turbo" | "gpt-4-turbo-2024-04-09" | "gpt-4-0125-preview" | "gpt-4-turbo-preview" | "gpt-4-1106-preview" | "gpt-4-vision-preview" | "gpt-4" | "gpt-4-0314" | "gpt-4-0613" | "gpt-4-32k" | "gpt-4-32k-0314" | "gpt-4-32k-0613" | "gpt-3.5-turbo" | "gpt-3.5-turbo-16k" | "gpt-3.5-turbo-0613" | "gpt-3.5-turbo-1106" | "gpt-3.5-turbo-0125" | "gpt-3.5-turbo-16k-0613");
       /** @description The name of the assistant. The maximum length is 256 characters. */
       name?: string | null;
       /** @description The description of the assistant. The maximum length is 512 characters. */
       description?: string | null;
-      /** @description The system instructions that the assistant uses. The maximum length is 32768 characters. */
+      /** @description The system instructions that the assistant uses. The maximum length is 256,000 characters. */
       instructions?: string | null;
       /**
-       * @description A list of tool enabled on the assistant. There can be a maximum of 128 tools per assistant. Tools can be of types `code_interpreter`, `retrieval`, or `function`.
+       * @description A list of tool enabled on the assistant. There can be a maximum of 128 tools per assistant. Tools can be of types `code_interpreter`, `file_search`, or `function`.
        *
        * @default []
        */
-      tools?: (components["schemas"]["AssistantToolsCode"] | components["schemas"]["AssistantToolsRetrieval"] | components["schemas"]["AssistantToolsFunction"])[];
-      /**
-       * @description A list of [file](/docs/api-reference/files) IDs attached to this assistant. There can be a maximum of 20 files attached to the assistant. Files are ordered by their creation date in ascending order.
-       *
-       * @default []
-       */
-      file_ids?: string[];
+      tools?: (components["schemas"]["AssistantToolsCode"] | components["schemas"]["AssistantToolsFileSearch"] | components["schemas"]["AssistantToolsFunction"])[];
+      /** @description A set of resources that are used by the assistant's tools. The resources are specific to the type of tool. For example, the `code_interpreter` tool requires a list of file IDs, while the `file_search` tool requires a list of vector store IDs. */
+      tool_resources?: {
+        code_interpreter?: {
+          /**
+           * @description A list of [file](/docs/api-reference/files) IDs made available to the `code_interpreter` tool. There can be a maximum of 20 files associated with the tool.
+           *
+           * @default []
+           */
+          file_ids?: string[];
+          [key: string]: unknown;
+        };
+        file_search?: {
+          /** @description The [vector store](/docs/api-reference/vector-stores/object) attached to this assistant. There can be a maximum of 1 vector store attached to the assistant. */
+          vector_store_ids?: string[];
+          /** @description A helper to create a [vector store](/docs/api-reference/vector-stores/object) with file_ids and attach it to this assistant. There can be a maximum of 1 vector store attached to the assistant. */
+          vector_stores?: {
+              /** @description A list of [file](/docs/api-reference/files) IDs to add to the vector store. There can be a maximum of 10000 files in a vector store. */
+              file_ids?: string[];
+              /** @description Set of 16 key-value pairs that can be attached to a vector store. This can be useful for storing additional information about the vector store in a structured format. Keys can be a maximum of 64 characters long and values can be a maxium of 512 characters long. */
+              metadata?: Record<string, never>;
+              [key: string]: unknown;
+            }[];
+          [key: string]: unknown;
+        };
+        [key: string]: unknown;
+      } | null;
       /** @description Set of 16 key-value pairs that can be attached to an object. This can be useful for storing additional information about the object in a structured format. Keys can be a maximum of 64 characters long and values can be a maxium of 512 characters long. */
       metadata?: Record<string, unknown> | null;
+      /**
+       * @description What sampling temperature to use, between 0 and 2. Higher values like 0.8 will make the output more random, while lower values like 0.2 will make it more focused and deterministic.
+       *
+       * @default 1
+       * @example 1
+       */
+      temperature?: number | null;
+      /**
+       * @description An alternative to sampling with temperature, called nucleus sampling, where the model considers the results of the tokens with top_p probability mass. So 0.1 means only the tokens comprising the top 10% probability mass are considered.
+       *
+       * We generally recommend altering this or temperature but not both.
+       *
+       * @default 1
+       * @example 1
+       */
+      top_p?: number | null;
+      response_format?: components["schemas"]["AssistantsApiResponseFormatOption"];
       [key: string]: unknown;
     };
     ModifyAssistantRequest: {
@@ -1771,22 +2057,51 @@ export interface components {
       name?: string | null;
       /** @description The description of the assistant. The maximum length is 512 characters. */
       description?: string | null;
-      /** @description The system instructions that the assistant uses. The maximum length is 32768 characters. */
+      /** @description The system instructions that the assistant uses. The maximum length is 256,000 characters. */
       instructions?: string | null;
       /**
-       * @description A list of tool enabled on the assistant. There can be a maximum of 128 tools per assistant. Tools can be of types `code_interpreter`, `retrieval`, or `function`.
+       * @description A list of tool enabled on the assistant. There can be a maximum of 128 tools per assistant. Tools can be of types `code_interpreter`, `file_search`, or `function`.
        *
        * @default []
        */
-      tools?: (components["schemas"]["AssistantToolsCode"] | components["schemas"]["AssistantToolsRetrieval"] | components["schemas"]["AssistantToolsFunction"])[];
-      /**
-       * @description A list of [File](/docs/api-reference/files) IDs attached to this assistant. There can be a maximum of 20 files attached to the assistant. Files are ordered by their creation date in ascending order. If a file was previously attached to the list but does not show up in the list, it will be deleted from the assistant.
-       *
-       * @default []
-       */
-      file_ids?: string[];
+      tools?: (components["schemas"]["AssistantToolsCode"] | components["schemas"]["AssistantToolsFileSearch"] | components["schemas"]["AssistantToolsFunction"])[];
+      /** @description A set of resources that are used by the assistant's tools. The resources are specific to the type of tool. For example, the `code_interpreter` tool requires a list of file IDs, while the `file_search` tool requires a list of vector store IDs. */
+      tool_resources?: {
+        code_interpreter?: {
+          /**
+           * @description Overrides the list of [file](/docs/api-reference/files) IDs made available to the `code_interpreter` tool. There can be a maximum of 20 files associated with the tool.
+           *
+           * @default []
+           */
+          file_ids?: string[];
+          [key: string]: unknown;
+        };
+        file_search?: {
+          /** @description Overrides the [vector store](/docs/api-reference/vector-stores/object) attached to this assistant. There can be a maximum of 1 vector store attached to the assistant. */
+          vector_store_ids?: string[];
+          [key: string]: unknown;
+        };
+        [key: string]: unknown;
+      } | null;
       /** @description Set of 16 key-value pairs that can be attached to an object. This can be useful for storing additional information about the object in a structured format. Keys can be a maximum of 64 characters long and values can be a maxium of 512 characters long. */
       metadata?: Record<string, unknown> | null;
+      /**
+       * @description What sampling temperature to use, between 0 and 2. Higher values like 0.8 will make the output more random, while lower values like 0.2 will make it more focused and deterministic.
+       *
+       * @default 1
+       * @example 1
+       */
+      temperature?: number | null;
+      /**
+       * @description An alternative to sampling with temperature, called nucleus sampling, where the model considers the results of the tokens with top_p probability mass. So 0.1 means only the tokens comprising the top 10% probability mass are considered.
+       *
+       * We generally recommend altering this or temperature but not both.
+       *
+       * @default 1
+       * @example 1
+       */
+      top_p?: number | null;
+      response_format?: components["schemas"]["AssistantsApiResponseFormatOption"];
       [key: string]: unknown;
     };
     DeleteAssistantResponse: {
@@ -1817,13 +2132,13 @@ export interface components {
       type: "code_interpreter";
       [key: string]: unknown;
     };
-    /** Retrieval tool */
-    AssistantToolsRetrieval: {
+    /** FileSearch tool */
+    AssistantToolsFileSearch: {
       /**
-       * @description The type of tool being defined: `retrieval`
+       * @description The type of tool being defined: `file_search`
        * @enum {string}
        */
-      type: "retrieval";
+      type: "file_search";
       [key: string]: unknown;
     };
     /** Function tool */
@@ -1834,6 +2149,42 @@ export interface components {
        */
       type: "function";
       function: components["schemas"]["FunctionObject"];
+      [key: string]: unknown;
+    };
+    /**
+     * Thread Truncation Controls
+     * @description Controls for how a thread will be truncated prior to the run. Use this to control the intial context window of the run.
+     */
+    TruncationObject: {
+      /**
+       * @description The truncation strategy to use for the thread. The default is `auto`. If set to `last_messages`, the thread will be truncated to the n most recent messages in the thread. When set to `auto`, messages in the middle of the thread will be dropped to fit the context length of the model, `max_prompt_tokens`.
+       * @enum {string}
+       */
+      type: "auto" | "last_messages";
+      /** @description The number of most recent messages from the thread when constructing the context for the run. */
+      last_messages?: number | null;
+      [key: string]: unknown;
+    };
+    /**
+     * @description Controls which (if any) tool is called by the model.
+     * `none` means the model will not call any tools and instead generates a message.
+     * `auto` is the default value and means the model can pick between generating a message or calling one or more tools.
+     * `required` means the model must call one or more tools before responding to the user.
+     * Specifying a particular tool like `{"type": "file_search"}` or `{"type": "function", "function": {"name": "my_function"}}` forces the model to call that tool.
+     */
+    AssistantsApiToolChoiceOption: ("none" | "auto" | "required") | components["schemas"]["AssistantsNamedToolChoice"];
+    /** @description Specifies a tool the model should use. Use to force the model to call a specific tool. */
+    AssistantsNamedToolChoice: {
+      /**
+       * @description The type of the tool. If type is `function`, the function name must be set
+       * @enum {string}
+       */
+      type: "function" | "code_interpreter" | "file_search";
+      function?: {
+        /** @description The name of the function to call. */
+        name: string;
+        [key: string]: unknown;
+      };
       [key: string]: unknown;
     };
     /**
@@ -1855,10 +2206,10 @@ export interface components {
       /** @description The ID of the [assistant](/docs/api-reference/assistants) used for execution of this run. */
       assistant_id: string;
       /**
-       * @description The status of the run, which can be either `queued`, `in_progress`, `requires_action`, `cancelling`, `cancelled`, `failed`, `completed`, or `expired`.
+       * @description The status of the run, which can be either `queued`, `in_progress`, `requires_action`, `cancelling`, `cancelled`, `failed`, `completed`, `incomplete`, or `expired`.
        * @enum {string}
        */
-      status: "queued" | "in_progress" | "requires_action" | "cancelling" | "cancelled" | "failed" | "completed" | "expired";
+      status: "queued" | "in_progress" | "requires_action" | "cancelling" | "cancelled" | "failed" | "completed" | "incomplete" | "expired";
       /** @description Details on the action required to continue the run. Will be `null` if no action is required. */
       required_action: {
         /**
@@ -1895,6 +2246,15 @@ export interface components {
       failed_at: number | null;
       /** @description The Unix timestamp (in seconds) for when the run was completed. */
       completed_at: number | null;
+      /** @description Details on why the run is incomplete. Will be `null` if the run is not incomplete. */
+      incomplete_details: ({
+        /**
+         * @description The reason why the run is incomplete. This will point to which specific token limit was reached over the course of the run.
+         * @enum {string}
+         */
+        reason?: "max_completion_tokens" | "max_prompt_tokens";
+        [key: string]: unknown;
+      }) | null;
       /** @description The model that the [assistant](/docs/api-reference/assistants) used for this run. */
       model: string;
       /** @description The instructions that the [assistant](/docs/api-reference/assistants) used for this run. */
@@ -1903,30 +2263,39 @@ export interface components {
        * @description The list of tools that the [assistant](/docs/api-reference/assistants) used for this run.
        * @default []
        */
-      tools: (components["schemas"]["AssistantToolsCode"] | components["schemas"]["AssistantToolsRetrieval"] | components["schemas"]["AssistantToolsFunction"])[];
-      /**
-       * @description The list of [File](/docs/api-reference/files) IDs the [assistant](/docs/api-reference/assistants) used for this run.
-       * @default []
-       */
-      file_ids: string[];
+      tools: (components["schemas"]["AssistantToolsCode"] | components["schemas"]["AssistantToolsFileSearch"] | components["schemas"]["AssistantToolsFunction"])[];
       /** @description Set of 16 key-value pairs that can be attached to an object. This can be useful for storing additional information about the object in a structured format. Keys can be a maximum of 64 characters long and values can be a maxium of 512 characters long. */
       metadata: Record<string, unknown> | null;
       usage: components["schemas"]["RunCompletionUsage"];
       /** @description The sampling temperature used for this run. If not set, defaults to 1. */
       temperature?: number | null;
+      /** @description The nucleus sampling value used for this run. If not set, defaults to 1. */
+      top_p?: number | null;
+      /** @description The maximum number of prompt tokens specified to have been used over the course of the run. */
+      max_prompt_tokens: number | null;
+      /** @description The maximum number of completion tokens specified to have been used over the course of the run. */
+      max_completion_tokens: number | null;
+      truncation_strategy: components["schemas"]["TruncationObject"];
+      tool_choice: components["schemas"]["AssistantsApiToolChoiceOption"];
+      response_format: components["schemas"]["AssistantsApiResponseFormatOption"];
       [key: string]: unknown;
     };
     CreateRunRequest: {
       /** @description The ID of the [assistant](/docs/api-reference/assistants) to use to execute this run. */
       assistant_id: string;
-      /** @description The ID of the [Model](/docs/api-reference/models) to be used to execute this run. If a value is provided here, it will override the model associated with the assistant. If not, the model associated with the assistant will be used. */
-      model?: string | null;
+      /**
+       * @description The ID of the [Model](/docs/api-reference/models) to be used to execute this run. If a value is provided here, it will override the model associated with the assistant. If not, the model associated with the assistant will be used.
+       * @example gpt-4-turbo
+       */
+      model?: (string | ("gpt-4o" | "gpt-4o-2024-05-13" | "gpt-4-turbo" | "gpt-4-turbo-2024-04-09" | "gpt-4-0125-preview" | "gpt-4-turbo-preview" | "gpt-4-1106-preview" | "gpt-4-vision-preview" | "gpt-4" | "gpt-4-0314" | "gpt-4-0613" | "gpt-4-32k" | "gpt-4-32k-0314" | "gpt-4-32k-0613" | "gpt-3.5-turbo" | "gpt-3.5-turbo-16k" | "gpt-3.5-turbo-0613" | "gpt-3.5-turbo-1106" | "gpt-3.5-turbo-0125" | "gpt-3.5-turbo-16k-0613")) | null;
       /** @description Overrides the [instructions](/docs/api-reference/assistants/createAssistant) of the assistant. This is useful for modifying the behavior on a per-run basis. */
       instructions?: string | null;
       /** @description Appends additional instructions at the end of the instructions for the run. This is useful for modifying the behavior on a per-run basis without overriding other instructions. */
       additional_instructions?: string | null;
+      /** @description Adds additional messages to the thread before creating the run. */
+      additional_messages?: components["schemas"]["CreateMessageRequest"][] | null;
       /** @description Override the tools the assistant can use for this run. This is useful for modifying the behavior on a per-run basis. */
-      tools?: ((components["schemas"]["AssistantToolsCode"] | components["schemas"]["AssistantToolsRetrieval"] | components["schemas"]["AssistantToolsFunction"])[]) | null;
+      tools?: ((components["schemas"]["AssistantToolsCode"] | components["schemas"]["AssistantToolsFileSearch"] | components["schemas"]["AssistantToolsFunction"])[]) | null;
       /** @description Set of 16 key-value pairs that can be attached to an object. This can be useful for storing additional information about the object in a structured format. Keys can be a maximum of 64 characters long and values can be a maxium of 512 characters long. */
       metadata?: Record<string, unknown> | null;
       /**
@@ -1936,8 +2305,24 @@ export interface components {
        * @example 1
        */
       temperature?: number | null;
+      /**
+       * @description An alternative to sampling with temperature, called nucleus sampling, where the model considers the results of the tokens with top_p probability mass. So 0.1 means only the tokens comprising the top 10% probability mass are considered.
+       *
+       * We generally recommend altering this or temperature but not both.
+       *
+       * @default 1
+       * @example 1
+       */
+      top_p?: number | null;
       /** @description If `true`, returns a stream of events that happen during the Run as server-sent events, terminating when the Run enters a terminal state with a `data: [DONE]` message. */
       stream?: boolean | null;
+      /** @description The maximum number of prompt tokens that may be used over the course of the run. The run will make a best effort to use only the number of prompt tokens specified, across multiple turns of the run. If the run exceeds the number of prompt tokens specified, the run will end with status `incomplete`. See `incomplete_details` for more info. */
+      max_prompt_tokens?: number | null;
+      /** @description The maximum number of completion tokens that may be used over the course of the run. The run will make a best effort to use only the number of completion tokens specified, across multiple turns of the run. If the run exceeds the number of completion tokens specified, the run will end with status `incomplete`. See `incomplete_details` for more info. */
+      max_completion_tokens?: number | null;
+      truncation_strategy?: components["schemas"]["TruncationObject"];
+      tool_choice?: components["schemas"]["AssistantsApiToolChoiceOption"];
+      response_format?: components["schemas"]["AssistantsApiResponseFormatOption"];
       [key: string]: unknown;
     };
     ListRunsResponse: {
@@ -1994,12 +2379,33 @@ export interface components {
       assistant_id: string;
       /** @description If no thread is provided, an empty thread will be created. */
       thread?: components["schemas"]["CreateThreadRequest"];
-      /** @description The ID of the [Model](/docs/api-reference/models) to be used to execute this run. If a value is provided here, it will override the model associated with the assistant. If not, the model associated with the assistant will be used. */
-      model?: string | null;
+      /**
+       * @description The ID of the [Model](/docs/api-reference/models) to be used to execute this run. If a value is provided here, it will override the model associated with the assistant. If not, the model associated with the assistant will be used.
+       * @example gpt-4-turbo
+       */
+      model?: (string | ("gpt-4o" | "gpt-4o-2024-05-13" | "gpt-4-turbo" | "gpt-4-turbo-2024-04-09" | "gpt-4-0125-preview" | "gpt-4-turbo-preview" | "gpt-4-1106-preview" | "gpt-4-vision-preview" | "gpt-4" | "gpt-4-0314" | "gpt-4-0613" | "gpt-4-32k" | "gpt-4-32k-0314" | "gpt-4-32k-0613" | "gpt-3.5-turbo" | "gpt-3.5-turbo-16k" | "gpt-3.5-turbo-0613" | "gpt-3.5-turbo-1106" | "gpt-3.5-turbo-0125" | "gpt-3.5-turbo-16k-0613")) | null;
       /** @description Override the default system message of the assistant. This is useful for modifying the behavior on a per-run basis. */
       instructions?: string | null;
       /** @description Override the tools the assistant can use for this run. This is useful for modifying the behavior on a per-run basis. */
-      tools?: ((components["schemas"]["AssistantToolsCode"] | components["schemas"]["AssistantToolsRetrieval"] | components["schemas"]["AssistantToolsFunction"])[]) | null;
+      tools?: ((components["schemas"]["AssistantToolsCode"] | components["schemas"]["AssistantToolsFileSearch"] | components["schemas"]["AssistantToolsFunction"])[]) | null;
+      /** @description A set of resources that are used by the assistant's tools. The resources are specific to the type of tool. For example, the `code_interpreter` tool requires a list of file IDs, while the `file_search` tool requires a list of vector store IDs. */
+      tool_resources?: {
+        code_interpreter?: {
+          /**
+           * @description A list of [file](/docs/api-reference/files) IDs made available to the `code_interpreter` tool. There can be a maximum of 20 files associated with the tool.
+           *
+           * @default []
+           */
+          file_ids?: string[];
+          [key: string]: unknown;
+        };
+        file_search?: {
+          /** @description The ID of the [vector store](/docs/api-reference/vector-stores/object) attached to this assistant. There can be a maximum of 1 vector store attached to the assistant. */
+          vector_store_ids?: string[];
+          [key: string]: unknown;
+        };
+        [key: string]: unknown;
+      } | null;
       /** @description Set of 16 key-value pairs that can be attached to an object. This can be useful for storing additional information about the object in a structured format. Keys can be a maximum of 64 characters long and values can be a maxium of 512 characters long. */
       metadata?: Record<string, unknown> | null;
       /**
@@ -2009,8 +2415,24 @@ export interface components {
        * @example 1
        */
       temperature?: number | null;
+      /**
+       * @description An alternative to sampling with temperature, called nucleus sampling, where the model considers the results of the tokens with top_p probability mass. So 0.1 means only the tokens comprising the top 10% probability mass are considered.
+       *
+       * We generally recommend altering this or temperature but not both.
+       *
+       * @default 1
+       * @example 1
+       */
+      top_p?: number | null;
       /** @description If `true`, returns a stream of events that happen during the Run as server-sent events, terminating when the Run enters a terminal state with a `data: [DONE]` message. */
       stream?: boolean | null;
+      /** @description The maximum number of prompt tokens that may be used over the course of the run. The run will make a best effort to use only the number of prompt tokens specified, across multiple turns of the run. If the run exceeds the number of prompt tokens specified, the run will end with status `incomplete`. See `incomplete_details` for more info. */
+      max_prompt_tokens?: number | null;
+      /** @description The maximum number of completion tokens that may be used over the course of the run. The run will make a best effort to use only the number of completion tokens specified, across multiple turns of the run. If the run exceeds the number of completion tokens specified, the run will end with status `incomplete`. See `incomplete_details` for more info. */
+      max_completion_tokens?: number | null;
+      truncation_strategy?: components["schemas"]["TruncationObject"];
+      tool_choice?: components["schemas"]["AssistantsApiToolChoiceOption"];
+      response_format?: components["schemas"]["AssistantsApiResponseFormatOption"];
       [key: string]: unknown;
     };
     /**
@@ -2027,6 +2449,24 @@ export interface components {
       object: "thread";
       /** @description The Unix timestamp (in seconds) for when the thread was created. */
       created_at: number;
+      /** @description A set of resources that are made available to the assistant's tools in this thread. The resources are specific to the type of tool. For example, the `code_interpreter` tool requires a list of file IDs, while the `file_search` tool requires a list of vector store IDs. */
+      tool_resources: {
+        code_interpreter?: {
+          /**
+           * @description A list of [file](/docs/api-reference/files) IDs made available to the `code_interpreter` tool. There can be a maximum of 20 files associated with the tool.
+           *
+           * @default []
+           */
+          file_ids?: string[];
+          [key: string]: unknown;
+        };
+        file_search?: {
+          /** @description The [vector store](/docs/api-reference/vector-stores/object) attached to this thread. There can be a maximum of 1 vector store attached to the thread. */
+          vector_store_ids?: string[];
+          [key: string]: unknown;
+        };
+        [key: string]: unknown;
+      } | null;
       /** @description Set of 16 key-value pairs that can be attached to an object. This can be useful for storing additional information about the object in a structured format. Keys can be a maximum of 64 characters long and values can be a maxium of 512 characters long. */
       metadata: Record<string, unknown> | null;
       [key: string]: unknown;
@@ -2034,11 +2474,55 @@ export interface components {
     CreateThreadRequest: {
       /** @description A list of [messages](/docs/api-reference/messages) to start the thread with. */
       messages?: components["schemas"]["CreateMessageRequest"][];
+      /** @description A set of resources that are made available to the assistant's tools in this thread. The resources are specific to the type of tool. For example, the `code_interpreter` tool requires a list of file IDs, while the `file_search` tool requires a list of vector store IDs. */
+      tool_resources?: {
+        code_interpreter?: {
+          /**
+           * @description A list of [file](/docs/api-reference/files) IDs made available to the `code_interpreter` tool. There can be a maximum of 20 files associated with the tool.
+           *
+           * @default []
+           */
+          file_ids?: string[];
+          [key: string]: unknown;
+        };
+        file_search?: {
+          /** @description The [vector store](/docs/api-reference/vector-stores/object) attached to this thread. There can be a maximum of 1 vector store attached to the thread. */
+          vector_store_ids?: string[];
+          /** @description A helper to create a [vector store](/docs/api-reference/vector-stores/object) with file_ids and attach it to this thread. There can be a maximum of 1 vector store attached to the thread. */
+          vector_stores?: {
+              /** @description A list of [file](/docs/api-reference/files) IDs to add to the vector store. There can be a maximum of 10000 files in a vector store. */
+              file_ids?: string[];
+              /** @description Set of 16 key-value pairs that can be attached to a vector store. This can be useful for storing additional information about the vector store in a structured format. Keys can be a maximum of 64 characters long and values can be a maxium of 512 characters long. */
+              metadata?: Record<string, never>;
+              [key: string]: unknown;
+            }[];
+          [key: string]: unknown;
+        };
+        [key: string]: unknown;
+      } | null;
       /** @description Set of 16 key-value pairs that can be attached to an object. This can be useful for storing additional information about the object in a structured format. Keys can be a maximum of 64 characters long and values can be a maxium of 512 characters long. */
       metadata?: Record<string, unknown> | null;
       [key: string]: unknown;
     };
     ModifyThreadRequest: {
+      /** @description A set of resources that are made available to the assistant's tools in this thread. The resources are specific to the type of tool. For example, the `code_interpreter` tool requires a list of file IDs, while the `file_search` tool requires a list of vector store IDs. */
+      tool_resources?: {
+        code_interpreter?: {
+          /**
+           * @description A list of [file](/docs/api-reference/files) IDs made available to the `code_interpreter` tool. There can be a maximum of 20 files associated with the tool.
+           *
+           * @default []
+           */
+          file_ids?: string[];
+          [key: string]: unknown;
+        };
+        file_search?: {
+          /** @description The [vector store](/docs/api-reference/vector-stores/object) attached to this thread. There can be a maximum of 1 vector store attached to the thread. */
+          vector_store_ids?: string[];
+          [key: string]: unknown;
+        };
+        [key: string]: unknown;
+      } | null;
       /** @description Set of 16 key-value pairs that can be attached to an object. This can be useful for storing additional information about the object in a structured format. Keys can be a maximum of 64 characters long and values can be a maxium of 512 characters long. */
       metadata?: Record<string, unknown> | null;
       [key: string]: unknown;
@@ -2102,16 +2586,19 @@ export interface components {
        */
       role: "user" | "assistant";
       /** @description The content of the message in array of text and/or images. */
-      content: (components["schemas"]["MessageContentImageFileObject"] | components["schemas"]["MessageContentTextObject"])[];
+      content: (components["schemas"]["MessageContentImageFileObject"] | components["schemas"]["MessageContentImageUrlObject"] | components["schemas"]["MessageContentTextObject"])[];
       /** @description If applicable, the ID of the [assistant](/docs/api-reference/assistants) that authored this message. */
       assistant_id: string | null;
       /** @description The ID of the [run](/docs/api-reference/runs) associated with the creation of this message. Value is `null` when messages are created manually using the create message or create thread endpoints. */
       run_id: string | null;
-      /**
-       * @description A list of [file](/docs/api-reference/files) IDs that the assistant should use. Useful for tools like retrieval and code_interpreter that can access files. A maximum of 10 files can be attached to a message.
-       * @default []
-       */
-      file_ids: string[];
+      /** @description A list of files attached to the message, and the tools they were added to. */
+      attachments: (({
+          /** @description The ID of the file to attach to the message. */
+          file_id?: string;
+          /** @description The tools to add this file to. */
+          tools?: (components["schemas"]["AssistantToolsCode"] | components["schemas"]["AssistantToolsFileSearch"])[];
+          [key: string]: unknown;
+        })[]) | null;
       /** @description Set of 16 key-value pairs that can be attached to an object. This can be useful for storing additional information about the object in a structured format. Keys can be a maximum of 64 characters long and values can be a maxium of 512 characters long. */
       metadata: Record<string, unknown> | null;
       [key: string]: unknown;
@@ -2136,12 +2623,7 @@ export interface components {
          */
         role?: "user" | "assistant";
         /** @description The content of the message in array of text and/or images. */
-        content?: (components["schemas"]["MessageDeltaContentImageFileObject"] | components["schemas"]["MessageDeltaContentTextObject"])[];
-        /**
-         * @description A list of [file](/docs/api-reference/files) IDs that the assistant should use. Useful for tools like retrieval and code_interpreter that can access files. A maximum of 10 files can be attached to a message.
-         * @default []
-         */
-        file_ids?: string[];
+        content?: (components["schemas"]["MessageDeltaContentImageFileObject"] | components["schemas"]["MessageDeltaContentTextObject"] | components["schemas"]["MessageDeltaContentImageUrlObject"])[];
         [key: string]: unknown;
       };
       [key: string]: unknown;
@@ -2155,13 +2637,15 @@ export interface components {
        * @enum {string}
        */
       role: "user" | "assistant";
-      /** @description The content of the message. */
-      content: string;
-      /**
-       * @description A list of [File](/docs/api-reference/files) IDs that the message should use. There can be a maximum of 10 files attached to a message. Useful for tools like `retrieval` and `code_interpreter` that can access and use files.
-       * @default []
-       */
-      file_ids?: string[];
+      content: string | ((components["schemas"]["MessageContentImageFileObject"] | components["schemas"]["MessageContentImageUrlObject"] | components["schemas"]["MessageRequestContentTextObject"])[]);
+      /** @description A list of files attached to the message, and the tools they should be added to. */
+      attachments?: (({
+          /** @description The ID of the file to attach to the message. */
+          file_id?: string;
+          /** @description The tools to add this file to. */
+          tools?: (components["schemas"]["AssistantToolsCode"] | components["schemas"]["AssistantToolsFileSearch"])[];
+          [key: string]: unknown;
+        })[]) | null;
       /** @description Set of 16 key-value pairs that can be attached to an object. This can be useful for storing additional information about the object in a structured format. Keys can be a maximum of 64 characters long and values can be a maxium of 512 characters long. */
       metadata?: Record<string, unknown> | null;
       [key: string]: unknown;
@@ -2201,8 +2685,14 @@ export interface components {
        */
       type: "image_file";
       image_file: {
-        /** @description The [File](/docs/api-reference/files) ID of the image in the message content. */
+        /** @description The [File](/docs/api-reference/files) ID of the image in the message content. Set `purpose="vision"` when uploading the File if you need to later display the file content. */
         file_id: string;
+        /**
+         * @description Specifies the detail level of the image if specified by the user. `low` uses fewer tokens, you can opt in to high resolution using `high`.
+         * @default auto
+         * @enum {string}
+         */
+        detail?: "auto" | "low" | "high";
         [key: string]: unknown;
       };
       [key: string]: unknown;
@@ -2220,8 +2710,65 @@ export interface components {
        */
       type: "image_file";
       image_file?: {
-        /** @description The [File](/docs/api-reference/files) ID of the image in the message content. */
+        /** @description The [File](/docs/api-reference/files) ID of the image in the message content. Set `purpose="vision"` when uploading the File if you need to later display the file content. */
         file_id?: string;
+        /**
+         * @description Specifies the detail level of the image if specified by the user. `low` uses fewer tokens, you can opt in to high resolution using `high`.
+         * @default auto
+         * @enum {string}
+         */
+        detail?: "auto" | "low" | "high";
+        [key: string]: unknown;
+      };
+      [key: string]: unknown;
+    };
+    /**
+     * Image URL
+     * @description References an image URL in the content of a message.
+     */
+    MessageContentImageUrlObject: {
+      /**
+       * @description The type of the content part.
+       * @enum {string}
+       */
+      type: "image_url";
+      image_url: {
+        /**
+         * Format: uri
+         * @description The external URL of the image, must be a supported image types: jpeg, jpg, png, gif, webp.
+         */
+        url: string;
+        /**
+         * @description Specifies the detail level of the image. `low` uses fewer tokens, you can opt in to high resolution using `high`. Default value is `auto`
+         * @default auto
+         * @enum {string}
+         */
+        detail?: "auto" | "low" | "high";
+        [key: string]: unknown;
+      };
+      [key: string]: unknown;
+    };
+    /**
+     * Image URL
+     * @description References an image URL in the content of a message.
+     */
+    MessageDeltaContentImageUrlObject: {
+      /** @description The index of the content part in the message. */
+      index: number;
+      /**
+       * @description Always `image_url`.
+       * @enum {string}
+       */
+      type: "image_url";
+      image_url?: {
+        /** @description The URL of the image, must be a supported image types: jpeg, jpg, png, gif, webp. */
+        url?: string;
+        /**
+         * @description Specifies the detail level of the image. `low` uses fewer tokens, you can opt in to high resolution using `high`.
+         * @default auto
+         * @enum {string}
+         */
+        detail?: "auto" | "low" | "high";
         [key: string]: unknown;
       };
       [key: string]: unknown;
@@ -2245,8 +2792,22 @@ export interface components {
       [key: string]: unknown;
     };
     /**
+     * Text
+     * @description The text content that is part of a message.
+     */
+    MessageRequestContentTextObject: {
+      /**
+       * @description Always `text`.
+       * @enum {string}
+       */
+      type: "text";
+      /** @description Text content to be sent to the model */
+      text: string;
+      [key: string]: unknown;
+    };
+    /**
      * File citation
-     * @description A citation within the message that points to a specific quote from a specific File associated with the assistant or the message. Generated when the assistant uses the "retrieval" tool to search files.
+     * @description A citation within the message that points to a specific quote from a specific File associated with the assistant or the message. Generated when the assistant uses the "file_search" tool to search files.
      */
     MessageContentTextAnnotationsFileCitationObject: {
       /**
@@ -2310,7 +2871,7 @@ export interface components {
     };
     /**
      * File citation
-     * @description A citation within the message that points to a specific quote from a specific File associated with the assistant or the message. Generated when the assistant uses the "retrieval" tool to search files.
+     * @description A citation within the message that points to a specific quote from a specific File associated with the assistant or the message. Generated when the assistant uses the "file_search" tool to search files.
      */
     MessageDeltaContentTextAnnotationsFileCitationObject: {
       /** @description The index of the annotation in the text content part. */
@@ -2488,8 +3049,8 @@ export interface components {
        * @enum {string}
        */
       type: "tool_calls";
-      /** @description An array of tool calls the run step was involved in. These can be associated with one of three types of tools: `code_interpreter`, `retrieval`, or `function`. */
-      tool_calls: (components["schemas"]["RunStepDetailsToolCallsCodeObject"] | components["schemas"]["RunStepDetailsToolCallsRetrievalObject"] | components["schemas"]["RunStepDetailsToolCallsFunctionObject"])[];
+      /** @description An array of tool calls the run step was involved in. These can be associated with one of three types of tools: `code_interpreter`, `file_search`, or `function`. */
+      tool_calls: (components["schemas"]["RunStepDetailsToolCallsCodeObject"] | components["schemas"]["RunStepDetailsToolCallsFileSearchObject"] | components["schemas"]["RunStepDetailsToolCallsFunctionObject"])[];
       [key: string]: unknown;
     };
     /**
@@ -2502,12 +3063,12 @@ export interface components {
        * @enum {string}
        */
       type: "tool_calls";
-      /** @description An array of tool calls the run step was involved in. These can be associated with one of three types of tools: `code_interpreter`, `retrieval`, or `function`. */
-      tool_calls?: (components["schemas"]["RunStepDeltaStepDetailsToolCallsCodeObject"] | components["schemas"]["RunStepDeltaStepDetailsToolCallsRetrievalObject"] | components["schemas"]["RunStepDeltaStepDetailsToolCallsFunctionObject"])[];
+      /** @description An array of tool calls the run step was involved in. These can be associated with one of three types of tools: `code_interpreter`, `file_search`, or `function`. */
+      tool_calls?: (components["schemas"]["RunStepDeltaStepDetailsToolCallsCodeObject"] | components["schemas"]["RunStepDeltaStepDetailsToolCallsFileSearchObject"] | components["schemas"]["RunStepDeltaStepDetailsToolCallsFunctionObject"])[];
       [key: string]: unknown;
     };
     /**
-     * Code interpreter tool call
+     * Code Interpreter tool call
      * @description Details of the Code Interpreter tool call the run step was involved in.
      */
     RunStepDetailsToolCallsCodeObject: {
@@ -2553,7 +3114,7 @@ export interface components {
       [key: string]: unknown;
     };
     /**
-     * Code interpreter log output
+     * Code Interpreter log output
      * @description Text output from the Code Interpreter tool call as part of a run step.
      */
     RunStepDetailsToolCallsCodeOutputLogsObject: {
@@ -2582,7 +3143,7 @@ export interface components {
       logs?: string;
       [key: string]: unknown;
     };
-    /** Code interpreter image output */
+    /** Code Interpreter image output */
     RunStepDetailsToolCallsCodeOutputImageObject: {
       /**
        * @description Always `image`.
@@ -2612,32 +3173,32 @@ export interface components {
       };
       [key: string]: unknown;
     };
-    /** Retrieval tool call */
-    RunStepDetailsToolCallsRetrievalObject: {
+    /** File search tool call */
+    RunStepDetailsToolCallsFileSearchObject: {
       /** @description The ID of the tool call object. */
       id: string;
       /**
-       * @description The type of tool call. This is always going to be `retrieval` for this type of tool call.
+       * @description The type of tool call. This is always going to be `file_search` for this type of tool call.
        * @enum {string}
        */
-      type: "retrieval";
+      type: "file_search";
       /** @description For now, this is always going to be an empty object. */
-      retrieval: Record<string, never>;
+      file_search: Record<string, never>;
       [key: string]: unknown;
     };
-    /** Retrieval tool call */
-    RunStepDeltaStepDetailsToolCallsRetrievalObject: {
+    /** File search tool call */
+    RunStepDeltaStepDetailsToolCallsFileSearchObject: {
       /** @description The index of the tool call in the tool calls array. */
       index: number;
       /** @description The ID of the tool call object. */
       id?: string;
       /**
-       * @description The type of tool call. This is always going to be `retrieval` for this type of tool call.
+       * @description The type of tool call. This is always going to be `file_search` for this type of tool call.
        * @enum {string}
        */
-      type: "retrieval";
+      type: "file_search";
       /** @description For now, this is always going to be an empty object. */
-      retrieval?: Record<string, never>;
+      file_search: Record<string, never>;
       [key: string]: unknown;
     };
     /** Function tool call */
@@ -2685,76 +3246,200 @@ export interface components {
       [key: string]: unknown;
     };
     /**
-     * Assistant files
-     * @description A list of [Files](/docs/api-reference/files) attached to an `assistant`.
+     * Vector store expiration policy
+     * @description The expiration policy for a vector store.
      */
-    AssistantFileObject: {
-      /** @description The identifier, which can be referenced in API endpoints. */
-      id: string;
+    VectorStoreExpirationAfter: {
       /**
-       * @description The object type, which is always `assistant.file`.
+       * @description Anchor timestamp after which the expiration policy applies. Supported anchors: `last_active_at`.
        * @enum {string}
        */
-      object: "assistant.file";
-      /** @description The Unix timestamp (in seconds) for when the assistant file was created. */
-      created_at: number;
-      /** @description The assistant ID that the file is attached to. */
-      assistant_id: string;
-      [key: string]: unknown;
-    };
-    CreateAssistantFileRequest: {
-      /** @description A [File](/docs/api-reference/files) ID (with `purpose="assistants"`) that the assistant should use. Useful for tools like `retrieval` and `code_interpreter` that can access files. */
-      file_id: string;
-      [key: string]: unknown;
-    };
-    /** @description Deletes the association between the assistant and the file, but does not delete the [File](/docs/api-reference/files) object itself. */
-    DeleteAssistantFileResponse: {
-      id: string;
-      deleted: boolean;
-      /** @enum {string} */
-      object: "assistant.file.deleted";
-      [key: string]: unknown;
-    };
-    ListAssistantFilesResponse: {
-      /** @example list */
-      object: string;
-      data: components["schemas"]["AssistantFileObject"][];
-      /** @example file-abc123 */
-      first_id: string;
-      /** @example file-abc456 */
-      last_id: string;
-      /** @example false */
-      has_more: boolean;
+      anchor: "last_active_at";
+      /** @description The number of days after the anchor time that the vector store will expire. */
+      days: number;
       [key: string]: unknown;
     };
     /**
-     * Message files
-     * @description A list of files attached to a `message`.
+     * Vector store
+     * @description A vector store is a collection of processed files can be used by the `file_search` tool.
      */
-    MessageFileObject: {
+    VectorStoreObject: {
       /** @description The identifier, which can be referenced in API endpoints. */
       id: string;
       /**
-       * @description The object type, which is always `thread.message.file`.
+       * @description The object type, which is always `vector_store`.
        * @enum {string}
        */
-      object: "thread.message.file";
-      /** @description The Unix timestamp (in seconds) for when the message file was created. */
+      object: "vector_store";
+      /** @description The Unix timestamp (in seconds) for when the vector store was created. */
       created_at: number;
-      /** @description The ID of the [message](/docs/api-reference/messages) that the [File](/docs/api-reference/files) is attached to. */
-      message_id: string;
+      /** @description The name of the vector store. */
+      name: string;
+      /** @description The total number of bytes used by the files in the vector store. */
+      usage_bytes: number;
+      file_counts: {
+        /** @description The number of files that are currently being processed. */
+        in_progress: number;
+        /** @description The number of files that have been successfully processed. */
+        completed: number;
+        /** @description The number of files that have failed to process. */
+        failed: number;
+        /** @description The number of files that were cancelled. */
+        cancelled: number;
+        /** @description The total number of files. */
+        total: number;
+        [key: string]: unknown;
+      };
+      /**
+       * @description The status of the vector store, which can be either `expired`, `in_progress`, or `completed`. A status of `completed` indicates that the vector store is ready for use.
+       * @enum {string}
+       */
+      status: "expired" | "in_progress" | "completed";
+      expires_after?: components["schemas"]["VectorStoreExpirationAfter"];
+      /** @description The Unix timestamp (in seconds) for when the vector store will expire. */
+      expires_at?: number | null;
+      /** @description The Unix timestamp (in seconds) for when the vector store was last active. */
+      last_active_at: number | null;
+      /** @description Set of 16 key-value pairs that can be attached to an object. This can be useful for storing additional information about the object in a structured format. Keys can be a maximum of 64 characters long and values can be a maxium of 512 characters long. */
+      metadata: Record<string, unknown> | null;
       [key: string]: unknown;
     };
-    ListMessageFilesResponse: {
+    CreateVectorStoreRequest: {
+      /** @description A list of [File](/docs/api-reference/files) IDs that the vector store should use. Useful for tools like `file_search` that can access files. */
+      file_ids?: string[];
+      /** @description The name of the vector store. */
+      name?: string;
+      expires_after?: components["schemas"]["VectorStoreExpirationAfter"];
+      /** @description Set of 16 key-value pairs that can be attached to an object. This can be useful for storing additional information about the object in a structured format. Keys can be a maximum of 64 characters long and values can be a maxium of 512 characters long. */
+      metadata?: Record<string, unknown> | null;
+      [key: string]: unknown;
+    };
+    UpdateVectorStoreRequest: {
+      /** @description The name of the vector store. */
+      name?: string | null;
+      expires_after?: components["schemas"]["VectorStoreExpirationAfter"];
+      /** @description Set of 16 key-value pairs that can be attached to an object. This can be useful for storing additional information about the object in a structured format. Keys can be a maximum of 64 characters long and values can be a maxium of 512 characters long. */
+      metadata?: Record<string, unknown> | null;
+      [key: string]: unknown;
+    };
+    ListVectorStoresResponse: {
       /** @example list */
       object: string;
-      data: components["schemas"]["MessageFileObject"][];
+      data: components["schemas"]["VectorStoreObject"][];
+      /** @example vs_abc123 */
+      first_id: string;
+      /** @example vs_abc456 */
+      last_id: string;
+      /** @example false */
+      has_more: boolean;
+      [key: string]: unknown;
+    };
+    DeleteVectorStoreResponse: {
+      id: string;
+      deleted: boolean;
+      /** @enum {string} */
+      object: "vector_store.deleted";
+      [key: string]: unknown;
+    };
+    /**
+     * Vector store files
+     * @description A list of files attached to a vector store.
+     */
+    VectorStoreFileObject: {
+      /** @description The identifier, which can be referenced in API endpoints. */
+      id: string;
+      /**
+       * @description The object type, which is always `vector_store.file`.
+       * @enum {string}
+       */
+      object: "vector_store.file";
+      /** @description The total vector store usage in bytes. Note that this may be different from the original file size. */
+      usage_bytes: number;
+      /** @description The Unix timestamp (in seconds) for when the vector store file was created. */
+      created_at: number;
+      /** @description The ID of the [vector store](/docs/api-reference/vector-stores/object) that the [File](/docs/api-reference/files) is attached to. */
+      vector_store_id: string;
+      /**
+       * @description The status of the vector store file, which can be either `in_progress`, `completed`, `cancelled`, or `failed`. The status `completed` indicates that the vector store file is ready for use.
+       * @enum {string}
+       */
+      status: "in_progress" | "completed" | "cancelled" | "failed";
+      /** @description The last error associated with this vector store file. Will be `null` if there are no errors. */
+      last_error: ({
+        /**
+         * @description One of `server_error` or `rate_limit_exceeded`.
+         * @enum {string}
+         */
+        code: "internal_error" | "file_not_found" | "parsing_error" | "unhandled_mime_type";
+        /** @description A human-readable description of the error. */
+        message: string;
+        [key: string]: unknown;
+      }) | null;
+      [key: string]: unknown;
+    };
+    CreateVectorStoreFileRequest: {
+      /** @description A [File](/docs/api-reference/files) ID that the vector store should use. Useful for tools like `file_search` that can access files. */
+      file_id: string;
+      [key: string]: unknown;
+    };
+    ListVectorStoreFilesResponse: {
+      /** @example list */
+      object: string;
+      data: components["schemas"]["VectorStoreFileObject"][];
       /** @example file-abc123 */
       first_id: string;
       /** @example file-abc456 */
       last_id: string;
       /** @example false */
       has_more: boolean;
+      [key: string]: unknown;
+    };
+    DeleteVectorStoreFileResponse: {
+      id: string;
+      deleted: boolean;
+      /** @enum {string} */
+      object: "vector_store.file.deleted";
+      [key: string]: unknown;
+    };
+    /**
+     * Vector store file batch
+     * @description A batch of files attached to a vector store.
+     */
+    VectorStoreFileBatchObject: {
+      /** @description The identifier, which can be referenced in API endpoints. */
+      id: string;
+      /**
+       * @description The object type, which is always `vector_store.file_batch`.
+       * @enum {string}
+       */
+      object: "vector_store.files_batch";
+      /** @description The Unix timestamp (in seconds) for when the vector store files batch was created. */
+      created_at: number;
+      /** @description The ID of the [vector store](/docs/api-reference/vector-stores/object) that the [File](/docs/api-reference/files) is attached to. */
+      vector_store_id: string;
+      /**
+       * @description The status of the vector store files batch, which can be either `in_progress`, `completed`, `cancelled` or `failed`.
+       * @enum {string}
+       */
+      status: "in_progress" | "completed" | "cancelled" | "failed";
+      file_counts: {
+        /** @description The number of files that are currently being processed. */
+        in_progress: number;
+        /** @description The number of files that have been processed. */
+        completed: number;
+        /** @description The number of files that have failed to process. */
+        failed: number;
+        /** @description The number of files that where cancelled. */
+        cancelled: number;
+        /** @description The total number of files. */
+        total: number;
+        [key: string]: unknown;
+      };
+      [key: string]: unknown;
+    };
+    CreateVectorStoreFileBatchRequest: {
+      /** @description A list of [File](/docs/api-reference/files) IDs that the vector store should use. Useful for tools like `file_search` that can access files. */
+      file_ids: string[];
       [key: string]: unknown;
     };
     /**
@@ -2906,6 +3591,124 @@ export interface components {
       event: "done";
       /** @enum {string} */
       data: "[DONE]";
+      [key: string]: unknown;
+    };
+    Batch: {
+      id: string;
+      /**
+       * @description The object type, which is always `batch`.
+       * @enum {string}
+       */
+      object: "batch";
+      /** @description The OpenAI API endpoint used by the batch. */
+      endpoint: string;
+      errors?: {
+        /** @description The object type, which is always `list`. */
+        object?: string;
+        data?: ({
+            /** @description An error code identifying the error type. */
+            code?: string;
+            /** @description A human-readable message providing more details about the error. */
+            message?: string;
+            /** @description The name of the parameter that caused the error, if applicable. */
+            param?: string | null;
+            /** @description The line number of the input file where the error occurred, if applicable. */
+            line?: number | null;
+            [key: string]: unknown;
+          })[];
+        [key: string]: unknown;
+      };
+      /** @description The ID of the input file for the batch. */
+      input_file_id: string;
+      /** @description The time frame within which the batch should be processed. */
+      completion_window: string;
+      /**
+       * @description The current status of the batch.
+       * @enum {string}
+       */
+      status: "validating" | "failed" | "in_progress" | "finalizing" | "completed" | "expired" | "cancelling" | "cancelled";
+      /** @description The ID of the file containing the outputs of successfully executed requests. */
+      output_file_id?: string;
+      /** @description The ID of the file containing the outputs of requests with errors. */
+      error_file_id?: string;
+      /** @description The Unix timestamp (in seconds) for when the batch was created. */
+      created_at: number;
+      /** @description The Unix timestamp (in seconds) for when the batch started processing. */
+      in_progress_at?: number;
+      /** @description The Unix timestamp (in seconds) for when the batch will expire. */
+      expires_at?: number;
+      /** @description The Unix timestamp (in seconds) for when the batch started finalizing. */
+      finalizing_at?: number;
+      /** @description The Unix timestamp (in seconds) for when the batch was completed. */
+      completed_at?: number;
+      /** @description The Unix timestamp (in seconds) for when the batch failed. */
+      failed_at?: number;
+      /** @description The Unix timestamp (in seconds) for when the batch expired. */
+      expired_at?: number;
+      /** @description The Unix timestamp (in seconds) for when the batch started cancelling. */
+      cancelling_at?: number;
+      /** @description The Unix timestamp (in seconds) for when the batch was cancelled. */
+      cancelled_at?: number;
+      /** @description The request counts for different statuses within the batch. */
+      request_counts?: {
+        /** @description Total number of requests in the batch. */
+        total: number;
+        /** @description Number of requests that have been completed successfully. */
+        completed: number;
+        /** @description Number of requests that have failed. */
+        failed: number;
+        [key: string]: unknown;
+      };
+      /** @description Set of 16 key-value pairs that can be attached to an object. This can be useful for storing additional information about the object in a structured format. Keys can be a maximum of 64 characters long and values can be a maxium of 512 characters long. */
+      metadata?: Record<string, unknown> | null;
+      [key: string]: unknown;
+    };
+    /** @description The per-line object of the batch input file */
+    BatchRequestInput: {
+      /** @description A developer-provided per-request id that will be used to match outputs to inputs. Must be unique for each request in a batch. */
+      custom_id?: string;
+      /**
+       * @description The HTTP method to be used for the request. Currently only `POST` is supported.
+       * @enum {string}
+       */
+      method?: "POST";
+      /** @description The OpenAI API relative URL to be used for the request. Currently `/v1/chat/completions`, `/v1/embeddings`, and `/v1/completions` are supported. */
+      url?: string;
+      [key: string]: unknown;
+    };
+    /** @description The per-line object of the batch output and error files */
+    BatchRequestOutput: {
+      id?: string;
+      /** @description A developer-provided per-request id that will be used to match outputs to inputs. */
+      custom_id?: string;
+      response?: {
+        /** @description The HTTP status code of the response */
+        status_code?: number;
+        /** @description An unique identifier for the OpenAI API request. Please include this request ID when contacting support. */
+        request_id?: string;
+        /** @description The JSON body of the response */
+        body?: Record<string, never>;
+        [key: string]: unknown;
+      } | null;
+      /** @description For requests that failed with a non-HTTP error, this will contain more information on the cause of the failure. */
+      error?: {
+        /** @description A machine-readable error code. */
+        code?: string;
+        /** @description A human-readable error message. */
+        message?: string;
+        [key: string]: unknown;
+      } | null;
+      [key: string]: unknown;
+    };
+    ListBatchesResponse: {
+      data: components["schemas"]["Batch"][];
+      /** @example batch_abc123 */
+      first_id?: string;
+      /** @example batch_abc456 */
+      last_id?: string;
+      has_more: boolean;
+      /** @enum {string} */
+      object: "list";
       [key: string]: unknown;
     };
   };
@@ -3088,9 +3891,13 @@ export interface operations {
     };
   };
   /**
-   * Upload a file that can be used across various endpoints. The size of all the files uploaded by one organization can be up to 100 GB.
+   * Upload a file that can be used across various endpoints. Individual files can be up to 512 MB, and the size of all files uploaded by one organization can be up to 100 GB.
    *
-   * The size of individual files can be a maximum of 512 MB or 2 million tokens for Assistants. See the [Assistants Tools guide](/docs/assistants/tools) to learn more about the types of files supported. The Fine-tuning API only supports `.jsonl` files.
+   * The Assistants API supports files up to 2 million tokens and of specific file types. See the [Assistants Tools guide](/docs/assistants/tools) for details.
+   *
+   * The Fine-tuning API only supports `.jsonl` files.
+   *
+   * The Batch API only supports `.jsonl` files up to 100 MB in size.
    *
    * Please [contact us](https://help.openai.com/) if you need to increase these storage limits.
    */
@@ -3258,6 +4065,29 @@ export interface operations {
       200: {
         content: {
           "application/json": components["schemas"]["FineTuningJob"];
+        };
+      };
+    };
+  };
+  /** List checkpoints for a fine-tuning job. */
+  listFineTuningJobCheckpoints: {
+    parameters: {
+      query?: {
+        /** @description Identifier for the last checkpoint ID from the previous pagination request. */
+        after?: string;
+        /** @description Number of checkpoints to retrieve. */
+        limit?: number;
+      };
+      path: {
+        /** @description The ID of the fine-tuning job to get checkpoints for. */
+        fine_tuning_job_id: string;
+      };
+    };
+    responses: {
+      /** @description OK */
+      200: {
+        content: {
+          "application/json": components["schemas"]["ListFineTuningJobCheckpointsResponse"];
         };
       };
     };
@@ -3584,6 +4414,25 @@ export interface operations {
       };
     };
   };
+  /** Deletes a message. */
+  deleteMessage: {
+    parameters: {
+      path: {
+        /** @description The ID of the thread to which this message belongs. */
+        thread_id: string;
+        /** @description The ID of the message to delete. */
+        message_id: string;
+      };
+    };
+    responses: {
+      /** @description OK */
+      200: {
+        content: {
+          "application/json": components["schemas"]["DeleteMessageResponse"];
+        };
+      };
+    };
+  };
   /** Create a thread and run it in one request. */
   createThreadAndRun: {
     requestBody: {
@@ -3785,8 +4634,8 @@ export interface operations {
       };
     };
   };
-  /** Returns a list of assistant files. */
-  listAssistantFiles: {
+  /** Returns a list of vector stores. */
+  listVectorStores: {
     parameters: {
       query?: {
         /** @description A limit on the number of objects to be returned. Limit can range between 1 and 100, and the default is 20. */
@@ -3798,82 +4647,90 @@ export interface operations {
         /** @description A cursor for use in pagination. `before` is an object ID that defines your place in the list. For instance, if you make a list request and receive 100 objects, ending with obj_foo, your subsequent call can include before=obj_foo in order to fetch the previous page of the list. */
         before?: string;
       };
-      path: {
-        /** @description The ID of the assistant the file belongs to. */
-        assistant_id: string;
+    };
+    responses: {
+      /** @description OK */
+      200: {
+        content: {
+          "application/json": components["schemas"]["ListVectorStoresResponse"];
+        };
+      };
+    };
+  };
+  /** Create a vector store. */
+  createVectorStore: {
+    requestBody: {
+      content: {
+        "application/json": components["schemas"]["CreateVectorStoreRequest"];
       };
     };
     responses: {
       /** @description OK */
       200: {
         content: {
-          "application/json": components["schemas"]["ListAssistantFilesResponse"];
+          "application/json": components["schemas"]["VectorStoreObject"];
         };
       };
     };
   };
-  /** Create an assistant file by attaching a [File](/docs/api-reference/files) to an [assistant](/docs/api-reference/assistants). */
-  createAssistantFile: {
+  /** Retrieves a vector store. */
+  getVectorStore: {
     parameters: {
       path: {
-        /** @description The ID of the assistant for which to create a File. */
-        assistant_id: string;
+        /** @description The ID of the vector store to retrieve. */
+        vector_store_id: string;
+      };
+    };
+    responses: {
+      /** @description OK */
+      200: {
+        content: {
+          "application/json": components["schemas"]["VectorStoreObject"];
+        };
+      };
+    };
+  };
+  /** Modifies a vector store. */
+  modifyVectorStore: {
+    parameters: {
+      path: {
+        /** @description The ID of the vector store to modify. */
+        vector_store_id: string;
       };
     };
     requestBody: {
       content: {
-        "application/json": components["schemas"]["CreateAssistantFileRequest"];
+        "application/json": components["schemas"]["UpdateVectorStoreRequest"];
       };
     };
     responses: {
       /** @description OK */
       200: {
         content: {
-          "application/json": components["schemas"]["AssistantFileObject"];
+          "application/json": components["schemas"]["VectorStoreObject"];
         };
       };
     };
   };
-  /** Retrieves an AssistantFile. */
-  getAssistantFile: {
+  /** Delete a vector store. */
+  deleteVectorStore: {
     parameters: {
       path: {
-        /** @description The ID of the assistant who the file belongs to. */
-        assistant_id: string;
-        /** @description The ID of the file we're getting. */
-        file_id: string;
+        /** @description The ID of the vector store to delete. */
+        vector_store_id: string;
       };
     };
     responses: {
       /** @description OK */
       200: {
         content: {
-          "application/json": components["schemas"]["AssistantFileObject"];
+          "application/json": components["schemas"]["DeleteVectorStoreResponse"];
         };
       };
     };
   };
-  /** Delete an assistant file. */
-  deleteAssistantFile: {
-    parameters: {
-      path: {
-        /** @description The ID of the assistant that the file belongs to. */
-        assistant_id: string;
-        /** @description The ID of the file to delete. */
-        file_id: string;
-      };
-    };
-    responses: {
-      /** @description OK */
-      200: {
-        content: {
-          "application/json": components["schemas"]["DeleteAssistantFileResponse"];
-        };
-      };
-    };
-  };
-  /** Returns a list of message files. */
-  listMessageFiles: {
+  /** Returns a list of vector store files. */
+  listVectorStoreFiles: {
     parameters: {
       query?: {
         /** @description A limit on the number of objects to be returned. Limit can range between 1 and 100, and the default is 20. */
@@ -3884,31 +4741,51 @@ export interface operations {
         after?: string;
         /** @description A cursor for use in pagination. `before` is an object ID that defines your place in the list. For instance, if you make a list request and receive 100 objects, ending with obj_foo, your subsequent call can include before=obj_foo in order to fetch the previous page of the list. */
         before?: string;
+        /** @description Filter by file status. One of `in_progress`, `completed`, `failed`, `cancelled`. */
+        filter?: "in_progress" | "completed" | "failed" | "cancelled";
       };
       path: {
-        /** @description The ID of the thread that the message and files belong to. */
-        thread_id: string;
-        /** @description The ID of the message that the files belongs to. */
-        message_id: string;
+        /** @description The ID of the vector store that the files belong to. */
+        vector_store_id: string;
       };
     };
     responses: {
       /** @description OK */
       200: {
         content: {
-          "application/json": components["schemas"]["ListMessageFilesResponse"];
+          "application/json": components["schemas"]["ListVectorStoreFilesResponse"];
         };
       };
     };
   };
-  /** Retrieves a message file. */
-  getMessageFile: {
+  /** Create a vector store file by attaching a [File](/docs/api-reference/files) to a [vector store](/docs/api-reference/vector-stores/object). */
+  createVectorStoreFile: {
     parameters: {
       path: {
-        /** @description The ID of the thread to which the message and File belong. */
-        thread_id: string;
-        /** @description The ID of the message the file belongs to. */
-        message_id: string;
+        /** @description The ID of the vector store for which to create a File. */
+        vector_store_id: string;
+      };
+    };
+    requestBody: {
+      content: {
+        "application/json": components["schemas"]["CreateVectorStoreFileRequest"];
+      };
+    };
+    responses: {
+      /** @description OK */
+      200: {
+        content: {
+          "application/json": components["schemas"]["VectorStoreFileObject"];
+        };
+      };
+    };
+  };
+  /** Retrieves a vector store file. */
+  getVectorStoreFile: {
+    parameters: {
+      path: {
+        /** @description The ID of the vector store that the file belongs to. */
+        vector_store_id: string;
         /** @description The ID of the file being retrieved. */
         file_id: string;
       };
@@ -3917,7 +4794,210 @@ export interface operations {
       /** @description OK */
       200: {
         content: {
-          "application/json": components["schemas"]["MessageFileObject"];
+          "application/json": components["schemas"]["VectorStoreFileObject"];
+        };
+      };
+    };
+  };
+  /** Delete a vector store file. This will remove the file from the vector store but the file itself will not be deleted. To delete the file, use the [delete file](/docs/api-reference/files/delete) endpoint. */
+  deleteVectorStoreFile: {
+    parameters: {
+      path: {
+        /** @description The ID of the vector store that the file belongs to. */
+        vector_store_id: string;
+        /** @description The ID of the file to delete. */
+        file_id: string;
+      };
+    };
+    responses: {
+      /** @description OK */
+      200: {
+        content: {
+          "application/json": components["schemas"]["DeleteVectorStoreFileResponse"];
+        };
+      };
+    };
+  };
+  /** Create a vector store file batch. */
+  createVectorStoreFileBatch: {
+    parameters: {
+      path: {
+        /** @description The ID of the vector store for which to create a File Batch. */
+        vector_store_id: string;
+      };
+    };
+    requestBody: {
+      content: {
+        "application/json": components["schemas"]["CreateVectorStoreFileBatchRequest"];
+      };
+    };
+    responses: {
+      /** @description OK */
+      200: {
+        content: {
+          "application/json": components["schemas"]["VectorStoreFileBatchObject"];
+        };
+      };
+    };
+  };
+  /** Retrieves a vector store file batch. */
+  getVectorStoreFileBatch: {
+    parameters: {
+      path: {
+        /** @description The ID of the vector store that the file batch belongs to. */
+        vector_store_id: string;
+        /** @description The ID of the file batch being retrieved. */
+        batch_id: string;
+      };
+    };
+    responses: {
+      /** @description OK */
+      200: {
+        content: {
+          "application/json": components["schemas"]["VectorStoreFileBatchObject"];
+        };
+      };
+    };
+  };
+  /** Cancel a vector store file batch. This attempts to cancel the processing of files in this batch as soon as possible. */
+  cancelVectorStoreFileBatch: {
+    parameters: {
+      path: {
+        /** @description The ID of the vector store that the file batch belongs to. */
+        vector_store_id: string;
+        /** @description The ID of the file batch to cancel. */
+        batch_id: string;
+      };
+    };
+    responses: {
+      /** @description OK */
+      200: {
+        content: {
+          "application/json": components["schemas"]["VectorStoreFileBatchObject"];
+        };
+      };
+    };
+  };
+  /** Returns a list of vector store files in a batch. */
+  listFilesInVectorStoreBatch: {
+    parameters: {
+      query?: {
+        /** @description A limit on the number of objects to be returned. Limit can range between 1 and 100, and the default is 20. */
+        limit?: number;
+        /** @description Sort order by the `created_at` timestamp of the objects. `asc` for ascending order and `desc` for descending order. */
+        order?: "asc" | "desc";
+        /** @description A cursor for use in pagination. `after` is an object ID that defines your place in the list. For instance, if you make a list request and receive 100 objects, ending with obj_foo, your subsequent call can include after=obj_foo in order to fetch the next page of the list. */
+        after?: string;
+        /** @description A cursor for use in pagination. `before` is an object ID that defines your place in the list. For instance, if you make a list request and receive 100 objects, ending with obj_foo, your subsequent call can include before=obj_foo in order to fetch the previous page of the list. */
+        before?: string;
+        /** @description Filter by file status. One of `in_progress`, `completed`, `failed`, `cancelled`. */
+        filter?: "in_progress" | "completed" | "failed" | "cancelled";
+      };
+      path: {
+        /** @description The ID of the vector store that the files belong to. */
+        vector_store_id: string;
+        /** @description The ID of the file batch that the files belong to. */
+        batch_id: string;
+      };
+    };
+    responses: {
+      /** @description OK */
+      200: {
+        content: {
+          "application/json": components["schemas"]["ListVectorStoreFilesResponse"];
+        };
+      };
+    };
+  };
+  /** List your organization's batches. */
+  listBatches: {
+    parameters: {
+      query?: {
+        /** @description A cursor for use in pagination. `after` is an object ID that defines your place in the list. For instance, if you make a list request and receive 100 objects, ending with obj_foo, your subsequent call can include after=obj_foo in order to fetch the next page of the list. */
+        after?: string;
+        /** @description A limit on the number of objects to be returned. Limit can range between 1 and 100, and the default is 20. */
+        limit?: number;
+      };
+    };
+    responses: {
+      /** @description Batch listed successfully. */
+      200: {
+        content: {
+          "application/json": components["schemas"]["ListBatchesResponse"];
+        };
+      };
+    };
+  };
+  /** Creates and executes a batch from an uploaded file of requests */
+  createBatch: {
+    requestBody: {
+      content: {
+        "application/json": {
+          /**
+           * @description The ID of an uploaded file that contains requests for the new batch.
+           *
+           * See [upload file](/docs/api-reference/files/create) for how to upload a file.
+           *
+           * Your input file must be formatted as a [JSONL file](/docs/api-reference/batch/requestInput), and must be uploaded with the purpose `batch`. The file can contain up to 50,000 requests, and can be up to 100 MB in size.
+           */
+          input_file_id: string;
+          /**
+           * @description The endpoint to be used for all requests in the batch. Currently `/v1/chat/completions`, `/v1/embeddings`, and `/v1/completions` are supported. Note that `/v1/embeddings` batches are also restricted to a maximum of 50,000 embedding inputs across all requests in the batch.
+           * @enum {string}
+           */
+          endpoint: "/v1/chat/completions" | "/v1/embeddings" | "/v1/completions";
+          /**
+           * @description The time frame within which the batch should be processed. Currently only `24h` is supported.
+           * @enum {string}
+           */
+          completion_window: "24h";
+          /** @description Optional custom metadata for the batch. */
+          metadata?: {
+            [key: string]: string;
+          } | null;
+          [key: string]: unknown;
+        };
+      };
+    };
+    responses: {
+      /** @description Batch created successfully. */
+      200: {
+        content: {
+          "application/json": components["schemas"]["Batch"];
+        };
+      };
+    };
+  };
+  /** Retrieves a batch. */
+  retrieveBatch: {
+    parameters: {
+      path: {
+        /** @description The ID of the batch to retrieve. */
+        batch_id: string;
+      };
+    };
+    responses: {
+      /** @description Batch retrieved successfully. */
+      200: {
+        content: {
+          "application/json": components["schemas"]["Batch"];
+        };
+      };
+    };
+  };
+  /** Cancels an in-progress batch. */
+  cancelBatch: {
+    parameters: {
+      path: {
+        /** @description The ID of the batch to cancel. */
+        batch_id: string;
+      };
+    };
+    responses: {
+      /** @description Batch is cancelling. Returns the cancelling batch's details. */
+      200: {
+        content: {
+          "application/json": components["schemas"]["Batch"];
         };
       };
     };
