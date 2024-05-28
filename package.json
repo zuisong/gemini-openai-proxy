@@ -22,6 +22,6 @@
     "@hono/node-server": "1.11.1"
   },
   "devDependencies": {
-    "esbuild": "0.21.3"
+    "esbuild": "0.21.4"
   }
 }

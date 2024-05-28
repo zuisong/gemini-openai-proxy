@@ -10,6 +10,8 @@ export class MockFetch {
     const store = this.#store
     store.push([request, response])
 
+    if (globalThis.fetch !== originalFetch) return
+
     globalThis.fetch = async (input: string | URL | Request, init?: RequestInit) => {
       const originalRequest = new Request(input, init)
 
@@ -24,7 +26,7 @@ export class MockFetch {
   }
 
   restore() {
-    this.#store.splice(0)
+    this.#store.length = 0
     globalThis.fetch = originalFetch
   }
 }
