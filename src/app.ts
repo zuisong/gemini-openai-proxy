@@ -26,7 +26,7 @@ const app: IttyRouterType = Router<IRequest>({
   ],
 })
 
-app.get("/", (c) => hello(c))
+app.get("/", hello)
 app.post("/v1/chat/completions", chatProxyHandler)
 app.get("/v1/models", () => Response.json(models()))
 app.get("/v1/models/:model", (c) => Response.json(modelDetail(c.params.model)))

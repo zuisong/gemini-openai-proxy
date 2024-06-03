@@ -1,4 +1,4 @@
-// node_modules/.deno/@hono+node-server@1.11.1/node_modules/@hono/node-server/dist/index.mjs
+// node_modules/.deno/@hono+node-server@1.11.2/node_modules/@hono/node-server/dist/index.mjs
 import { createServer as createServerHTTP } from "http";
 import { Http2ServerRequest } from "http2";
 import { Readable } from "stream";
@@ -372,8 +372,8 @@ var getRequestListener = (fetchCallback, options = {}) => {
     try {
       req = newRequest(incoming, options.hostname);
       outgoing.on("close", () => {
-        if (incoming.destroyed) {
-          req[getAbortController]().abort();
+        if (incoming.errored) {
+          req[getAbortController]().abort(incoming.errored.toString());
         }
       });
       res = fetchCallback(req, { incoming, outgoing });
@@ -983,7 +983,7 @@ var app = t({
     o
   ]
 });
-app.get("/", (c) => hello(c));
+app.get("/", hello);
 app.post("/v1/chat/completions", chatProxyHandler);
 app.get("/v1/models", () => Response.json(models()));
 app.get("/v1/models/:model", (c) => Response.json(modelDetail(c.params.model)));
