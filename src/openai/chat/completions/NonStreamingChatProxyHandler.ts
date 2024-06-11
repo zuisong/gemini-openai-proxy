@@ -10,14 +10,25 @@ export async function nonStreamingChatProxyHandler(
   log?: Logger,
 ) {
   const [model, geminiReq] = genModel(req)
-  const geminiResp: string | FunctionCall = await generateContent(apiParam, model, geminiReq)
-    .then((it) => it.response.result())
-    .catch((err) => {
-      // 出现异常时打印请求参数和响应，以便调试
-      log?.error(req)
-      log?.error(err?.message ?? err.toString())
-      return err?.message ?? err.toString()
-    })
+  let geminiResp: string | FunctionCall = ""
+
+  try {
+    for await (const it of generateContent(apiParam, model, geminiReq)) {
+      const data = it.response.result()
+      if (typeof data === "string") {
+        geminiResp += data
+      } else {
+        geminiResp = data
+        break
+      }
+    }
+  } catch (err) {
+    // 出现异常时打印请求参数和响应，以便调试
+    log?.error(req)
+    log?.error(err?.message ?? err.toString())
+    geminiResp = err?.message ?? err.toString()
+  }
+
   log?.debug(req)
   log?.debug(geminiResp)
 
