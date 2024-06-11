@@ -164,7 +164,7 @@ function hello(req) {
 }
 
 // src/itty-router/cors.ts
-var cors = (options = {}) => {
+function cors(options = {}) {
   const { origin = "*", credentials = false, allowMethods = "*", allowHeaders, exposeHeaders, maxAge } = options;
   const getAccessControlOrigin = (request) => {
     const requestOrigin = request?.headers.get("origin");
@@ -186,16 +186,11 @@ var cors = (options = {}) => {
       const response = new Response(null, { status: 204 });
       return appendHeadersAndReturn(response, {
         "access-control-allow-origin": getAccessControlOrigin(request),
-        // @ts-ignore
-        "access-control-allow-methods": allowMethods?.join?.(",") ?? allowMethods,
+        "access-control-allow-methods": [allowMethods].flat().join(","),
         // include allowed methods
-        // @ts-ignore
-        "access-control-expose-headers": exposeHeaders?.join?.(",") ?? exposeHeaders,
+        "access-control-expose-headers": [exposeHeaders].flat().join(","),
         // include allowed headers
-        "access-control-allow-headers": (
-          // @ts-ignore
-          allowHeaders?.join?.(",") ?? allowHeaders ?? request.headers.get("access-control-request-headers")
-        ),
+        "access-control-allow-headers": [allowHeaders].flat().join?.(",") || request.headers.get("access-control-request-headers") || "",
         // include allowed headers
         "access-control-max-age": maxAge?.toString(),
         "access-control-allow-credentials": credentials.toString()
@@ -210,7 +205,7 @@ var cors = (options = {}) => {
     });
   };
   return { corsify: corsify2, preflight: preflight2 };
-};
+}
 
 // src/log.ts
 var LEVEL = ["debug", "info", "warn", "error"];
@@ -483,7 +478,6 @@ async function makeRequest(url, body, requestOptions) {
       body
     });
     if (!response.ok) {
-      console.error(response);
       let message = "";
       try {
         const errResp = await response.json();

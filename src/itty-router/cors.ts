@@ -18,7 +18,7 @@ export type CorsPair = {
 }
 
 // Create CORS function with default options.
-export const cors = (options: CorsOptions = {}) => {
+export function cors(options: CorsOptions = {}): CorsPair {
   // Destructure and set defaults for options.
   const { origin = "*", credentials = false, allowMethods = "*", allowHeaders, exposeHeaders, maxAge } = options
 
@@ -45,13 +45,10 @@ export const cors = (options: CorsOptions = {}) => {
 
       return appendHeadersAndReturn(response, {
         "access-control-allow-origin": getAccessControlOrigin(request),
-        // @ts-ignore
-        "access-control-allow-methods": allowMethods?.join?.(",") ?? allowMethods, // include allowed methods
-        // @ts-ignore
-        "access-control-expose-headers": exposeHeaders?.join?.(",") ?? exposeHeaders, // include allowed headers
+        "access-control-allow-methods": [allowMethods].flat().join(","), // include allowed methods
+        "access-control-expose-headers": [exposeHeaders].flat().join(","), // include allowed headers
         "access-control-allow-headers":
-          // @ts-ignore
-          allowHeaders?.join?.(",") ?? allowHeaders ?? request.headers.get("access-control-request-headers"), // include allowed headers
+          [allowHeaders].flat().join?.(",") || request.headers.get("access-control-request-headers") || "", // include allowed headers
         "access-control-max-age": maxAge?.toString(),
         "access-control-allow-credentials": credentials.toString(),
       })

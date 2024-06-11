@@ -46,7 +46,6 @@ async function makeRequest(url: RequestUrl, body: string, requestOptions?: Reque
       body,
     })
     if (!response.ok) {
-      console.error(response)
       let message = ""
       try {
         const errResp = await response.json()
