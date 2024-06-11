@@ -1,7 +1,7 @@
 import { assertFalse } from "jsr:@std/assert"
 import { expect } from "jsr:@std/expect"
 import { afterEach, beforeEach, describe, it } from "jsr:@std/testing/bdd"
-import { type ParseEvent, createParser } from "https://esm.sh/eventsource-parser@1.1.2"
+import { type ParseEvent, createParser } from "eventsource-parser"
 import { app } from "../src/app.ts"
 import type { OpenAI } from "../src/types.ts"
 import { MockFetch } from "./mock-fetch.ts"
@@ -26,6 +26,23 @@ describe("openai to gemini test", () => {
                 "Content-Type": "application/json",
               },
             }),
+        )
+
+        fetchMocker.mock(
+          (req) =>
+            req.url.includes(`generativelanguage.googleapis.com/v1beta/models/${geminiModel}:streamGenerateContent`),
+          () =>
+            new Response(
+              `data: ${JSON.stringify(gemini_ok_resp)}
+
+`,
+              {
+                status: 200,
+                headers: {
+                  "Content-Type": "application/json",
+                },
+              },
+            ),
         )
       })
 

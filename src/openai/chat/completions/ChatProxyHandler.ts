@@ -3,7 +3,7 @@ import { getToken } from "../../../utils.ts"
 import { nonStreamingChatProxyHandler } from "./NonStreamingChatProxyHandler.ts"
 import { streamingChatProxyHandler } from "./StreamingChatProxyHandler.ts"
 
-export async function chatProxyHandler(rawReq: Request) {
+export async function chatProxyHandler(rawReq: Request): Promise<Response> {
   const req = (await rawReq.json()) as OpenAI.Chat.ChatCompletionCreateParams
   const headers = rawReq.headers
   const apiParam = getToken(headers)
@@ -23,37 +23,35 @@ export async function chatProxyHandler(rawReq: Request) {
   return sseResponse(
     (async function* () {
       for await (const data of respArr) {
-        rawReq.logger?.debug(data)
+        rawReq.logger?.debug("streamingChatProxyHandler", data)
         yield JSON.stringify(data)
       }
       yield "[DONE]"
+      return undefined
     })(),
   )
 }
 
-export function sseResponse(dataStream: AsyncGenerator<string>): Response {
-  const { readable, writable } = new TransformStream<Uint8Array, Uint8Array>()
+const encoder = new TextEncoder()
 
-  const response = new Response(readable, {
+export function sseResponse(dataStream: AsyncGenerator<string, undefined>): Response {
+  const s = new ReadableStream({
+    async pull(controller) {
+      const { value, done } = await dataStream.next()
+      if (done) {
+        controller.close()
+      } else {
+        controller.enqueue(encoder.encode(toSseMsg({ data: value })))
+      }
+    },
+  })
+
+  const response = new Response(s, {
     status: 200,
     headers: new Headers({
       "Content-Type": "text/event-stream",
     }),
   })
-
-  const encoder = new TextEncoder()
-
-  async function writer(data: string) {
-    const w = writable.getWriter()
-    await w.write(encoder.encode(data))
-    w.releaseLock()
-  }
-  ;(async () => {
-    for await (const data of dataStream) {
-      await writer(toSseMsg({ data }))
-    }
-    await writable.close()
-  })()
 
   return response
 }

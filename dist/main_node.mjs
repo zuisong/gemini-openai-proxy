@@ -422,62 +422,28 @@ var serve = (options, listeningListener) => {
   return server;
 };
 
-// node_modules/.deno/itty-router@5.0.17/node_modules/itty-router/index.mjs
-var t = ({ base: e = "", routes: t2 = [], ...r2 } = {}) => ({ __proto__: new Proxy({}, { get: (r3, o2, a2, s2) => (r4, ...c) => t2.push([o2.toUpperCase?.(), RegExp(`^${(s2 = (e + r4).replace(/\/+(\/|$)/g, "$1")).replace(/(\/?\.?):(\w+)\+/g, "($1(?<$2>*))").replace(/(\/?\.?):(\w+)/g, "($1(?<$2>[^$1/]+?))").replace(/\./g, "\\.").replace(/(\/?)\*/g, "($1.*)?")}/*$`), c, s2]) && a2 }), routes: t2, ...r2, async fetch(e2, ...o2) {
-  let a2, s2, c = new URL(e2.url), n = e2.query = { __proto__: null };
-  for (let [e3, t3] of c.searchParams) n[e3] = n[e3] ? [].concat(n[e3], t3) : t3;
-  e: try {
-    for (let t3 of r2.before || []) if (null != (a2 = await t3(e2.proxy ?? e2, ...o2))) break e;
-    t: for (let [r3, n2, l, i] of t2) if ((r3 == e2.method || "ALL" == r3) && (s2 = c.pathname.match(n2))) {
-      e2.params = s2.groups || {}, e2.route = i;
-      for (let t3 of l) if (null != (a2 = await t3(e2.proxy ?? e2, ...o2))) break t;
+// node_modules/.deno/itty-router@5.0.17/node_modules/itty-router/Router.mjs
+var r = ({ base: r2 = "", routes: e = [], ...a } = {}) => ({ __proto__: new Proxy({}, { get: (a2, t, o, c) => (a3, ...l) => e.push([t.toUpperCase?.(), RegExp(`^${(c = (r2 + a3).replace(/\/+(\/|$)/g, "$1")).replace(/(\/?\.?):(\w+)\+/g, "($1(?<$2>*))").replace(/(\/?\.?):(\w+)/g, "($1(?<$2>[^$1/]+?))").replace(/\./g, "\\.").replace(/(\/?)\*/g, "($1.*)?")}/*$`), l, c]) && o }), routes: e, ...a, async fetch(r3, ...t) {
+  let o, c, l = new URL(r3.url), p = r3.query = { __proto__: null };
+  for (let [r4, e2] of l.searchParams) p[r4] = p[r4] ? [].concat(p[r4], e2) : e2;
+  r: try {
+    for (let e2 of a.before || []) if (null != (o = await e2(r3.proxy ?? r3, ...t))) break r;
+    e: for (let [a2, p2, f, h] of e) if ((a2 == r3.method || "ALL" == a2) && (c = l.pathname.match(p2))) {
+      r3.params = c.groups || {}, r3.route = h;
+      for (let e2 of f) if (null != (o = await e2(r3.proxy ?? r3, ...t))) break e;
     }
-  } catch (t3) {
-    if (!r2.catch) throw t3;
-    a2 = await r2.catch(t3, e2.proxy ?? e2, ...o2);
+  } catch (e2) {
+    if (!a.catch) throw e2;
+    o = await a.catch(e2, r3.proxy ?? r3, ...t);
   }
   try {
-    for (let t3 of r2.finally || []) a2 = await t3(a2, e2.proxy ?? e2, ...o2) ?? a2;
-  } catch (t3) {
-    if (!r2.catch) throw t3;
-    a2 = await r2.catch(t3, e2.proxy ?? e2, ...o2);
+    for (let e2 of a.finally || []) o = await e2(o, r3.proxy ?? r3, ...t) ?? o;
+  } catch (e2) {
+    if (!a.catch) throw e2;
+    o = await a.catch(e2, r3.proxy ?? r3, ...t);
   }
-  return a2;
+  return o;
 } });
-var r = (e = "text/plain; charset=utf-8", t2) => (r2, o2 = {}) => {
-  if (void 0 === r2 || r2 instanceof Response) return r2;
-  const a2 = new Response(t2?.(r2) ?? r2, o2.url ? void 0 : o2);
-  return a2.headers.set("content-type", e), a2;
-};
-var o = r("application/json; charset=utf-8", JSON.stringify);
-var a = (e) => ({ 400: "Bad Request", 401: "Unauthorized", 403: "Forbidden", 404: "Not Found", 500: "Internal Server Error" })[e] || "Unknown Error";
-var s = (e = 500, t2) => {
-  if (e instanceof Error) {
-    const { message: r2, ...o2 } = e;
-    e = e.status || 500, t2 = { error: r2 || a(e), ...o2 };
-  }
-  return t2 = { status: e, ..."object" == typeof t2 ? t2 : { error: t2 || a(e) } }, o(t2, { status: e });
-};
-var p = r("text/plain; charset=utf-8", String);
-var f = r("text/html");
-var u = r("image/jpeg");
-var h = r("image/png");
-var g = r("image/webp");
-var y = (e = {}) => {
-  const { origin: t2 = "*", credentials: r2 = false, allowMethods: o2 = "*", allowHeaders: a2, exposeHeaders: s2, maxAge: c } = e, n = (e2) => {
-    const o3 = e2?.headers.get("origin");
-    return true === t2 ? o3 : t2 instanceof RegExp ? t2.test(o3) ? o3 : void 0 : Array.isArray(t2) ? t2.includes(o3) ? o3 : void 0 : t2 instanceof Function ? t2(o3) : "*" == t2 && r2 ? o3 : t2;
-  }, l = (e2, t3) => {
-    for (const [r3, o3] of Object.entries(t3)) o3 && e2.headers.append(r3, o3);
-    return e2;
-  };
-  return { corsify: (e2, t3) => e2?.headers?.get("access-control-allow-origin") || 101 == e2.status ? e2 : l(e2.clone(), { "access-control-allow-origin": n(t3), "access-control-allow-credentials": r2 }), preflight: (e2) => {
-    if ("OPTIONS" == e2.method) {
-      const t3 = new Response(null, { status: 204 });
-      return l(t3, { "access-control-allow-origin": n(e2), "access-control-allow-methods": o2?.join?.(",") ?? o2, "access-control-expose-headers": s2?.join?.(",") ?? s2, "access-control-allow-headers": a2?.join?.(",") ?? a2 ?? e2.headers.get("access-control-request-headers"), "access-control-max-age": c, "access-control-allow-credentials": r2 });
-    }
-  } };
-};
 
 // src/gemini-proxy.ts
 async function geminiProxy(rawReq) {
@@ -621,6 +587,55 @@ function hello(req) {
     `);
 }
 
+// src/itty-router/cors.ts
+var cors = (options = {}) => {
+  const { origin = "*", credentials = false, allowMethods = "*", allowHeaders, exposeHeaders, maxAge } = options;
+  const getAccessControlOrigin = (request) => {
+    const requestOrigin = request?.headers.get("origin");
+    if (!requestOrigin) return void 0;
+    if (origin === true) return requestOrigin;
+    if (origin instanceof RegExp) return origin.test(requestOrigin) ? requestOrigin : void 0;
+    if (Array.isArray(origin)) return origin.includes(requestOrigin) ? requestOrigin : void 0;
+    if (origin instanceof Function) return origin(requestOrigin);
+    return origin === "*" && credentials ? requestOrigin : origin;
+  };
+  const appendHeadersAndReturn = (response, headers) => {
+    for (const [key, value] of Object.entries(headers)) {
+      if (value) response.headers.append(key, value);
+    }
+    return response;
+  };
+  const preflight2 = (request) => {
+    if (request.method === "OPTIONS") {
+      const response = new Response(null, { status: 204 });
+      return appendHeadersAndReturn(response, {
+        "access-control-allow-origin": getAccessControlOrigin(request),
+        // @ts-ignore
+        "access-control-allow-methods": allowMethods?.join?.(",") ?? allowMethods,
+        // include allowed methods
+        // @ts-ignore
+        "access-control-expose-headers": exposeHeaders?.join?.(",") ?? exposeHeaders,
+        // include allowed headers
+        "access-control-allow-headers": (
+          // @ts-ignore
+          allowHeaders?.join?.(",") ?? allowHeaders ?? request.headers.get("access-control-request-headers")
+        ),
+        // include allowed headers
+        "access-control-max-age": maxAge?.toString(),
+        "access-control-allow-credentials": credentials.toString()
+      });
+    }
+  };
+  const corsify2 = (response, request) => {
+    if (response?.headers?.get("access-control-allow-origin") || response.status === 101) return response;
+    return appendHeadersAndReturn(response, {
+      "access-control-allow-origin": getAccessControlOrigin(request),
+      "access-control-allow-credentials": credentials.toString()
+    });
+  };
+  return { corsify: corsify2, preflight: preflight2 };
+};
+
 // src/log.ts
 var LEVEL = ["debug", "info", "warn", "error"];
 var Logger = class {
@@ -645,6 +660,146 @@ var Logger = class {
       return;
     }
     console[level](`${(/* @__PURE__ */ new Date()).toISOString()} ${level.toUpperCase()}${prefix ? ` ${prefix}` : ""}`, ...data);
+  }
+};
+
+// node_modules/.deno/eventsource-parser@1.1.2/node_modules/eventsource-parser/dist/index.js
+function createParser(onParse) {
+  let isFirstChunk;
+  let buffer;
+  let startingPosition;
+  let startingFieldLength;
+  let eventId;
+  let eventName;
+  let data;
+  reset();
+  return {
+    feed,
+    reset
+  };
+  function reset() {
+    isFirstChunk = true;
+    buffer = "";
+    startingPosition = 0;
+    startingFieldLength = -1;
+    eventId = void 0;
+    eventName = void 0;
+    data = "";
+  }
+  function feed(chunk) {
+    buffer = buffer ? buffer + chunk : chunk;
+    if (isFirstChunk && hasBom(buffer)) {
+      buffer = buffer.slice(BOM.length);
+    }
+    isFirstChunk = false;
+    const length = buffer.length;
+    let position = 0;
+    let discardTrailingNewline = false;
+    while (position < length) {
+      if (discardTrailingNewline) {
+        if (buffer[position] === "\n") {
+          ++position;
+        }
+        discardTrailingNewline = false;
+      }
+      let lineLength = -1;
+      let fieldLength = startingFieldLength;
+      let character;
+      for (let index = startingPosition; lineLength < 0 && index < length; ++index) {
+        character = buffer[index];
+        if (character === ":" && fieldLength < 0) {
+          fieldLength = index - position;
+        } else if (character === "\r") {
+          discardTrailingNewline = true;
+          lineLength = index - position;
+        } else if (character === "\n") {
+          lineLength = index - position;
+        }
+      }
+      if (lineLength < 0) {
+        startingPosition = length - position;
+        startingFieldLength = fieldLength;
+        break;
+      } else {
+        startingPosition = 0;
+        startingFieldLength = -1;
+      }
+      parseEventStreamLine(buffer, position, fieldLength, lineLength);
+      position += lineLength + 1;
+    }
+    if (position === length) {
+      buffer = "";
+    } else if (position > 0) {
+      buffer = buffer.slice(position);
+    }
+  }
+  function parseEventStreamLine(lineBuffer, index, fieldLength, lineLength) {
+    if (lineLength === 0) {
+      if (data.length > 0) {
+        onParse({
+          type: "event",
+          id: eventId,
+          event: eventName || void 0,
+          data: data.slice(0, -1)
+          // remove trailing newline
+        });
+        data = "";
+        eventId = void 0;
+      }
+      eventName = void 0;
+      return;
+    }
+    const noValue = fieldLength < 0;
+    const field = lineBuffer.slice(index, index + (noValue ? lineLength : fieldLength));
+    let step = 0;
+    if (noValue) {
+      step = lineLength;
+    } else if (lineBuffer[index + fieldLength + 1] === " ") {
+      step = fieldLength + 2;
+    } else {
+      step = fieldLength + 1;
+    }
+    const position = index + step;
+    const valueLength = lineLength - step;
+    const value = lineBuffer.slice(position, position + valueLength).toString();
+    if (field === "data") {
+      data += value ? "".concat(value, "\n") : "\n";
+    } else if (field === "event") {
+      eventName = value;
+    } else if (field === "id" && !value.includes("\0")) {
+      eventId = value;
+    } else if (field === "retry") {
+      const retry = parseInt(value, 10);
+      if (!Number.isNaN(retry)) {
+        onParse({
+          type: "reconnect-interval",
+          value: retry
+        });
+      }
+    }
+  }
+}
+var BOM = [239, 187, 191];
+function hasBom(buffer) {
+  return BOM.every((charCode, index) => buffer.charCodeAt(index) === charCode);
+}
+
+// node_modules/.deno/eventsource-parser@1.1.2/node_modules/eventsource-parser/dist/stream.js
+var EventSourceParserStream = class extends TransformStream {
+  constructor() {
+    let parser;
+    super({
+      start(controller) {
+        parser = createParser((event) => {
+          if (event.type === "event") {
+            controller.enqueue(event);
+          }
+        });
+      },
+      transform(chunk) {
+        parser.feed(chunk);
+      }
+    });
   }
 };
 
@@ -725,14 +880,20 @@ function formatBlockErrorMessage(response) {
 }
 
 // src/gemini-api-client/gemini-api-client.ts
-async function generateContent(apiParam, model, params, requestOptions) {
-  const url = new RequestUrl(model, "generateContent" /* GENERATE_CONTENT */, false, apiParam);
+async function* generateContent(apiParam, model, params, requestOptions) {
+  const url = new RequestUrl(model, "streamGenerateContent" /* STREAM_GENERATE_CONTENT */, true, apiParam);
   const response = await makeRequest(url, JSON.stringify(params), requestOptions);
-  const responseJson = await response.json();
-  const enhancedResponse = addHelpers(responseJson);
-  return {
-    response: enhancedResponse
-  };
+  const body = response.body;
+  if (body == null) {
+    return;
+  }
+  for await (const event of body.pipeThrough(new TextDecoderStream()).pipeThrough(new EventSourceParserStream())) {
+    const responseJson = JSON.parse(event.data);
+    const enhancedResponse = addHelpers(responseJson);
+    yield {
+      response: enhancedResponse
+    };
+  }
 }
 async function makeRequest(url, body, requestOptions) {
   let response;
@@ -746,18 +907,20 @@ async function makeRequest(url, body, requestOptions) {
       body
     });
     if (!response.ok) {
+      console.error(response);
       let message = "";
       try {
-        const json = await response.json();
-        message = json.error.message;
-        if (json.error.details) {
-          message += ` ${JSON.stringify(json.error.details)}`;
+        const errResp = await response.json();
+        message = errResp.error.message;
+        if (errResp.error.details) {
+          message += ` ${JSON.stringify(errResp.error.details)}`;
         }
       } catch (_e) {
       }
       throw new Error(`[${response.status} ${response.statusText}] ${message}`);
     }
   } catch (e) {
+    console.log(e);
     const err = new GoogleGenerativeAIError(`Error fetching from google -> ${e.message}`);
     err.stack = e.stack;
     throw err;
@@ -796,11 +959,22 @@ function buildFetchOptions(requestOptions) {
 // src/openai/chat/completions/NonStreamingChatProxyHandler.ts
 async function nonStreamingChatProxyHandler(req, apiParam, log) {
   const [model, geminiReq] = genModel(req);
-  const geminiResp = await generateContent(apiParam, model, geminiReq).then((it) => it.response.result()).catch((err) => {
+  let geminiResp = "";
+  try {
+    for await (const it of generateContent(apiParam, model, geminiReq)) {
+      const data = it.response.result();
+      if (typeof data === "string") {
+        geminiResp += data;
+      } else {
+        geminiResp = data;
+        break;
+      }
+    }
+  } catch (err) {
     log?.error(req);
     log?.error(err?.message ?? err.toString());
-    return err?.message ?? err.toString();
-  });
+    geminiResp = err?.message ?? err.toString();
+  }
   log?.debug(req);
   log?.debug(geminiResp);
   function genOpenAiResp(content) {
@@ -848,7 +1022,16 @@ async function nonStreamingChatProxyHandler(req, apiParam, log) {
 // src/openai/chat/completions/StreamingChatProxyHandler.ts
 async function* streamingChatProxyHandler(req, apiParam) {
   const [model, geminiReq] = genModel(req);
-  const geminiResp = await generateContent(apiParam, model, geminiReq).then((it) => it.response.result()).catch((e) => e.message ?? e?.toString());
+  try {
+    for await (const it of generateContent(apiParam, model, geminiReq)) {
+      const data = it.response.result();
+      yield genOpenAiResp(data, false);
+    }
+  } catch (error) {
+    yield genOpenAiResp(error?.message ?? error.toString(), true);
+  }
+  yield genOpenAiResp("", true);
+  return void 0;
   function genOpenAiResp(content, stop) {
     if (typeof content === "string") {
       return {
@@ -879,8 +1062,6 @@ async function* streamingChatProxyHandler(req, apiParam) {
       ]
     };
   }
-  yield genOpenAiResp(geminiResp, false);
-  yield genOpenAiResp("", true);
 }
 
 // src/openai/chat/completions/ChatProxyHandler.ts
@@ -901,34 +1082,32 @@ async function chatProxyHandler(rawReq) {
   return sseResponse(
     async function* () {
       for await (const data of respArr) {
-        rawReq.logger?.debug(data);
+        rawReq.logger?.debug("streamingChatProxyHandler", data);
         yield JSON.stringify(data);
       }
       yield "[DONE]";
+      return void 0;
     }()
   );
 }
+var encoder = new TextEncoder();
 function sseResponse(dataStream) {
-  const { readable, writable } = new TransformStream();
-  const response = new Response(readable, {
+  const s = new ReadableStream({
+    async pull(controller) {
+      const { value, done } = await dataStream.next();
+      if (done) {
+        controller.close();
+      } else {
+        controller.enqueue(encoder.encode(toSseMsg({ data: value })));
+      }
+    }
+  });
+  const response = new Response(s, {
     status: 200,
     headers: new Headers({
       "Content-Type": "text/event-stream"
     })
   });
-  const encoder = new TextEncoder();
-  async function writer(data) {
-    const w = writable.getWriter();
-    await w.write(encoder.encode(data));
-    w.releaseLock();
-  }
-  ;
-  (async () => {
-    for await (const data of dataStream) {
-      await writer(toSseMsg({ data }));
-    }
-    await writable.close();
-  })();
   return response;
 }
 function toSseMsg(sseEvent) {
@@ -965,8 +1144,8 @@ var modelDetail = (model) => {
 };
 
 // src/app.ts
-var { preflight, corsify } = y({ allowHeaders: "*" });
-var app = t({
+var { preflight, corsify } = cors({ allowHeaders: "*" });
+var app = r({
   before: [
     preflight,
     (req) => {
@@ -974,13 +1153,11 @@ var app = t({
       req.logger.warn(`--> ${req.method} ${req.url}`);
     }
   ],
-  catch: s,
   finally: [
     corsify,
     (_, req) => {
       req.logger?.warn(`<-- ${req.method} ${req.url}`);
-    },
-    o
+    }
   ]
 });
 app.get("/", hello);

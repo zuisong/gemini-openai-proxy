@@ -1,20 +1,28 @@
+import { EventSourceParserStream } from "eventsource-parser/stream"
 import type { ApiParam, GeminiModel } from "../utils.ts"
 import { GoogleGenerativeAIError } from "./errors.ts"
 import { addHelpers } from "./response-helper.ts"
 import type { GenerateContentRequest, GenerateContentResponse, GenerateContentResult, RequestOptions } from "./types.ts"
 
-export async function generateContent(
+export async function* generateContent(
   apiParam: ApiParam,
   model: GeminiModel,
   params: GenerateContentRequest,
   requestOptions?: RequestOptions,
-): Promise<GenerateContentResult> {
-  const url = new RequestUrl(model, Task.GENERATE_CONTENT, false, apiParam)
+): AsyncGenerator<GenerateContentResult> {
+  const url = new RequestUrl(model, Task.STREAM_GENERATE_CONTENT, true, apiParam)
   const response = await makeRequest(url, JSON.stringify(params), requestOptions)
-  const responseJson: GenerateContentResponse = await response.json()
-  const enhancedResponse = addHelpers(responseJson)
-  return {
-    response: enhancedResponse,
+  const body = response.body
+  if (body == null) {
+    return
+  }
+
+  for await (const event of body.pipeThrough(new TextDecoderStream()).pipeThrough(new EventSourceParserStream())) {
+    const responseJson: GenerateContentResponse = JSON.parse(event.data)
+    const enhancedResponse = addHelpers(responseJson)
+    yield {
+      response: enhancedResponse,
+    }
   }
 }
 export enum TaskType {
@@ -38,12 +46,13 @@ async function makeRequest(url: RequestUrl, body: string, requestOptions?: Reque
       body,
     })
     if (!response.ok) {
+      console.error(response)
       let message = ""
       try {
-        const json = await response.json()
-        message = json.error.message
-        if (json.error.details) {
-          message += ` ${JSON.stringify(json.error.details)}`
+        const errResp = await response.json()
+        message = errResp.error.message
+        if (errResp.error.details) {
+          message += ` ${JSON.stringify(errResp.error.details)}`
         }
       } catch (_e) {
         // ignored
@@ -51,6 +60,7 @@ async function makeRequest(url: RequestUrl, body: string, requestOptions?: Reque
       throw new Error(`[${response.status} ${response.statusText}] ${message}`)
     }
   } catch (e) {
+    console.log(e)
     const err = new GoogleGenerativeAIError(`Error fetching from google -> ${e.message}`)
     err.stack = e.stack
     throw err
