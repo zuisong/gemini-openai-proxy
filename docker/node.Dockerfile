@@ -5,7 +5,7 @@ COPY . .
 RUN deno task build:deno
 
 #----------------
-FROM node:21-alpine
+FROM node:latest
 WORKDIR /data
 COPY  --from=builder /data/dist/main_node.mjs app.mjs
 CMD ["node", "app.mjs"]

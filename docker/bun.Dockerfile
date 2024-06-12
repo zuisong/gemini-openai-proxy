@@ -6,7 +6,7 @@ RUN deno task build:deno
 
 #----------------
 
-FROM oven/bun:1-alpine
+FROM oven/bun:latest
 WORKDIR /data
 COPY  --from=builder /data/dist/main_bun.mjs app.mjs
-CMD ["bun", "app.mjs"]
+CMD ["bun", "run", "app.mjs"]
