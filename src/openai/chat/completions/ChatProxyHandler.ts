@@ -35,7 +35,7 @@ export async function chatProxyHandler(rawReq: Request): Promise<Response> {
 const encoder = new TextEncoder()
 
 export function sseResponse(dataStream: AsyncGenerator<string, undefined>): Response {
-  const s = new ReadableStream({
+  const s = new ReadableStream<Uint8Array>({
     async pull(controller) {
       const { value, done } = await dataStream.next()
       if (done) {
