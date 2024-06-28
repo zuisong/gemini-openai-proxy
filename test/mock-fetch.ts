@@ -4,10 +4,10 @@ export type RequestMatcher = (req: Request) => Promise<boolean> | boolean
 const originalFetch = globalThis.fetch
 
 export class MockFetch {
-  #store = new Array<[RequestMatcher, RequestHandler]>()
+  private store: [RequestMatcher, RequestHandler][] = []
 
   mock(request: RequestMatcher, response: RequestHandler) {
-    const store = this.#store
+    const store = this.store
     store.push([request, response])
 
     if (globalThis.fetch !== originalFetch) return
@@ -26,7 +26,7 @@ export class MockFetch {
   }
 
   restore() {
-    this.#store.length = 0
+    this.store.length = 0
     globalThis.fetch = originalFetch
   }
 }

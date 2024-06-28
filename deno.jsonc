@@ -1,4 +1,11 @@
 {
-  "exclude": ["./dist", "./coverage"],
-  "lock": false
+  "exclude": ["./dist", "./coverage", "**/node_modules"],
+  "lock": true,
+  "deploy": {
+    "project": "0aa25cb3-02dd-43c3-84e0-c94d221f802a",
+    "exclude": ["./coverage", "**/node_modules"],
+    "include": [],
+    "entrypoint": "dist/main_deno.mjs"
+  },
+  "imports": {}
 }

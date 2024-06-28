@@ -10,6 +10,7 @@
       //
       "ESNext.Array",
       "DOM",
+      "DOM.Iterable",
       "ESNext",
       "ESNext.Disposable",
       "ESNext.AsyncIterable"

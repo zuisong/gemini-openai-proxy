@@ -34,7 +34,7 @@ async function geminiProxy(rawReq) {
 
 // src/utils.ts
 function getToken(headers) {
-  for (const [k, v] of headers.entries()) {
+  for (const [k, v] of headers) {
     if (k.toLowerCase() !== "authorization") continue;
     const rawApikey = v.substring(v.indexOf(" ") + 1);
     if (!rawApikey.includes("#")) {

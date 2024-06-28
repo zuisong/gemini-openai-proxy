@@ -5,11 +5,9 @@
 
 
 export interface paths {
-  "/v1beta/corpora": {
-    /** @description Lists all `Corpora` owned by the user. */
-    get: operations["generativelanguage.corpora.list"];
-    /** @description Creates an empty `Corpus`. */
-    post: operations["generativelanguage.corpora.create"];
+  "/v1beta/{model}:batchEmbedContents": {
+    /** @description Generates multiple embeddings from the model given input text in a synchronous call. */
+    post: operations["generativelanguage.models.batchEmbedContents"];
     parameters: {
       query?: {
         "$.xgafv"?: components["parameters"]["_.xgafv"];
@@ -21,12 +19,221 @@ export interface paths {
         oauth_token?: components["parameters"]["oauth_token"];
         prettyPrint?: components["parameters"]["prettyPrint"];
         quotaUser?: components["parameters"]["quotaUser"];
-        uploadType?: components["parameters"]["uploadType"];
         upload_protocol?: components["parameters"]["upload_protocol"];
+        uploadType?: components["parameters"]["uploadType"];
       };
     };
   };
-  "/v1beta/{+name}": {
+  "/v1beta/{model}:batchEmbedText": {
+    /** @description Generates multiple embeddings from the model given input text in a synchronous call. */
+    post: operations["generativelanguage.models.batchEmbedText"];
+    parameters: {
+      query?: {
+        "$.xgafv"?: components["parameters"]["_.xgafv"];
+        access_token?: components["parameters"]["access_token"];
+        alt?: components["parameters"]["alt"];
+        callback?: components["parameters"]["callback"];
+        fields?: components["parameters"]["fields"];
+        key?: components["parameters"]["key"];
+        oauth_token?: components["parameters"]["oauth_token"];
+        prettyPrint?: components["parameters"]["prettyPrint"];
+        quotaUser?: components["parameters"]["quotaUser"];
+        upload_protocol?: components["parameters"]["upload_protocol"];
+        uploadType?: components["parameters"]["uploadType"];
+      };
+    };
+  };
+  "/v1beta/{model}:countMessageTokens": {
+    /** @description Runs a model's tokenizer on a string and returns the token count. */
+    post: operations["generativelanguage.models.countMessageTokens"];
+    parameters: {
+      query?: {
+        "$.xgafv"?: components["parameters"]["_.xgafv"];
+        access_token?: components["parameters"]["access_token"];
+        alt?: components["parameters"]["alt"];
+        callback?: components["parameters"]["callback"];
+        fields?: components["parameters"]["fields"];
+        key?: components["parameters"]["key"];
+        oauth_token?: components["parameters"]["oauth_token"];
+        prettyPrint?: components["parameters"]["prettyPrint"];
+        quotaUser?: components["parameters"]["quotaUser"];
+        upload_protocol?: components["parameters"]["upload_protocol"];
+        uploadType?: components["parameters"]["uploadType"];
+      };
+    };
+  };
+  "/v1beta/{model}:countTextTokens": {
+    /** @description Runs a model's tokenizer on a text and returns the token count. */
+    post: operations["generativelanguage.models.countTextTokens"];
+    parameters: {
+      query?: {
+        "$.xgafv"?: components["parameters"]["_.xgafv"];
+        access_token?: components["parameters"]["access_token"];
+        alt?: components["parameters"]["alt"];
+        callback?: components["parameters"]["callback"];
+        fields?: components["parameters"]["fields"];
+        key?: components["parameters"]["key"];
+        oauth_token?: components["parameters"]["oauth_token"];
+        prettyPrint?: components["parameters"]["prettyPrint"];
+        quotaUser?: components["parameters"]["quotaUser"];
+        upload_protocol?: components["parameters"]["upload_protocol"];
+        uploadType?: components["parameters"]["uploadType"];
+      };
+    };
+  };
+  "/v1beta/{model}:countTokens": {
+    /** @description Runs a model's tokenizer on input content and returns the token count. */
+    post: operations["generativelanguage.models.countTokens"];
+    parameters: {
+      query?: {
+        "$.xgafv"?: components["parameters"]["_.xgafv"];
+        access_token?: components["parameters"]["access_token"];
+        alt?: components["parameters"]["alt"];
+        callback?: components["parameters"]["callback"];
+        fields?: components["parameters"]["fields"];
+        key?: components["parameters"]["key"];
+        oauth_token?: components["parameters"]["oauth_token"];
+        prettyPrint?: components["parameters"]["prettyPrint"];
+        quotaUser?: components["parameters"]["quotaUser"];
+        upload_protocol?: components["parameters"]["upload_protocol"];
+        uploadType?: components["parameters"]["uploadType"];
+      };
+    };
+  };
+  "/v1beta/{model}:embedContent": {
+    /** @description Generates an embedding from the model given an input `Content`. */
+    post: operations["generativelanguage.models.embedContent"];
+    parameters: {
+      query?: {
+        "$.xgafv"?: components["parameters"]["_.xgafv"];
+        access_token?: components["parameters"]["access_token"];
+        alt?: components["parameters"]["alt"];
+        callback?: components["parameters"]["callback"];
+        fields?: components["parameters"]["fields"];
+        key?: components["parameters"]["key"];
+        oauth_token?: components["parameters"]["oauth_token"];
+        prettyPrint?: components["parameters"]["prettyPrint"];
+        quotaUser?: components["parameters"]["quotaUser"];
+        upload_protocol?: components["parameters"]["upload_protocol"];
+        uploadType?: components["parameters"]["uploadType"];
+      };
+    };
+  };
+  "/v1beta/{model}:embedText": {
+    /** @description Generates an embedding from the model given an input message. */
+    post: operations["generativelanguage.models.embedText"];
+    parameters: {
+      query?: {
+        "$.xgafv"?: components["parameters"]["_.xgafv"];
+        access_token?: components["parameters"]["access_token"];
+        alt?: components["parameters"]["alt"];
+        callback?: components["parameters"]["callback"];
+        fields?: components["parameters"]["fields"];
+        key?: components["parameters"]["key"];
+        oauth_token?: components["parameters"]["oauth_token"];
+        prettyPrint?: components["parameters"]["prettyPrint"];
+        quotaUser?: components["parameters"]["quotaUser"];
+        upload_protocol?: components["parameters"]["upload_protocol"];
+        uploadType?: components["parameters"]["uploadType"];
+      };
+    };
+  };
+  "/v1beta/{model}:generateAnswer": {
+    /** @description Generates a grounded answer from the model given an input `GenerateAnswerRequest`. */
+    post: operations["generativelanguage.models.generateAnswer"];
+    parameters: {
+      query?: {
+        "$.xgafv"?: components["parameters"]["_.xgafv"];
+        access_token?: components["parameters"]["access_token"];
+        alt?: components["parameters"]["alt"];
+        callback?: components["parameters"]["callback"];
+        fields?: components["parameters"]["fields"];
+        key?: components["parameters"]["key"];
+        oauth_token?: components["parameters"]["oauth_token"];
+        prettyPrint?: components["parameters"]["prettyPrint"];
+        quotaUser?: components["parameters"]["quotaUser"];
+        upload_protocol?: components["parameters"]["upload_protocol"];
+        uploadType?: components["parameters"]["uploadType"];
+      };
+    };
+  };
+  "/v1beta/{model}:generateContent": {
+    /** @description Generates a response from the model given an input `GenerateContentRequest`. Input capabilities differ between models, including tuned models. See the [model guide](https://ai.google.dev/models/gemini) and [tuning guide](https://ai.google.dev/docs/model_tuning_guidance) for details. */
+    post: operations["generativelanguage.tunedModels.generateContent"];
+    parameters: {
+      query?: {
+        "$.xgafv"?: components["parameters"]["_.xgafv"];
+        access_token?: components["parameters"]["access_token"];
+        alt?: components["parameters"]["alt"];
+        callback?: components["parameters"]["callback"];
+        fields?: components["parameters"]["fields"];
+        key?: components["parameters"]["key"];
+        oauth_token?: components["parameters"]["oauth_token"];
+        prettyPrint?: components["parameters"]["prettyPrint"];
+        quotaUser?: components["parameters"]["quotaUser"];
+        upload_protocol?: components["parameters"]["upload_protocol"];
+        uploadType?: components["parameters"]["uploadType"];
+      };
+    };
+  };
+  "/v1beta/{model}:generateMessage": {
+    /** @description Generates a response from the model given an input `MessagePrompt`. */
+    post: operations["generativelanguage.models.generateMessage"];
+    parameters: {
+      query?: {
+        "$.xgafv"?: components["parameters"]["_.xgafv"];
+        access_token?: components["parameters"]["access_token"];
+        alt?: components["parameters"]["alt"];
+        callback?: components["parameters"]["callback"];
+        fields?: components["parameters"]["fields"];
+        key?: components["parameters"]["key"];
+        oauth_token?: components["parameters"]["oauth_token"];
+        prettyPrint?: components["parameters"]["prettyPrint"];
+        quotaUser?: components["parameters"]["quotaUser"];
+        upload_protocol?: components["parameters"]["upload_protocol"];
+        uploadType?: components["parameters"]["uploadType"];
+      };
+    };
+  };
+  "/v1beta/{model}:generateText": {
+    /** @description Generates a response from the model given an input message. */
+    post: operations["generativelanguage.tunedModels.generateText"];
+    parameters: {
+      query?: {
+        "$.xgafv"?: components["parameters"]["_.xgafv"];
+        access_token?: components["parameters"]["access_token"];
+        alt?: components["parameters"]["alt"];
+        callback?: components["parameters"]["callback"];
+        fields?: components["parameters"]["fields"];
+        key?: components["parameters"]["key"];
+        oauth_token?: components["parameters"]["oauth_token"];
+        prettyPrint?: components["parameters"]["prettyPrint"];
+        quotaUser?: components["parameters"]["quotaUser"];
+        upload_protocol?: components["parameters"]["upload_protocol"];
+        uploadType?: components["parameters"]["uploadType"];
+      };
+    };
+  };
+  "/v1beta/{model}:streamGenerateContent": {
+    /** @description Generates a streamed response from the model given an input `GenerateContentRequest`. */
+    post: operations["generativelanguage.models.streamGenerateContent"];
+    parameters: {
+      query?: {
+        "$.xgafv"?: components["parameters"]["_.xgafv"];
+        access_token?: components["parameters"]["access_token"];
+        alt?: components["parameters"]["alt"];
+        callback?: components["parameters"]["callback"];
+        fields?: components["parameters"]["fields"];
+        key?: components["parameters"]["key"];
+        oauth_token?: components["parameters"]["oauth_token"];
+        prettyPrint?: components["parameters"]["prettyPrint"];
+        quotaUser?: components["parameters"]["quotaUser"];
+        upload_protocol?: components["parameters"]["upload_protocol"];
+        uploadType?: components["parameters"]["uploadType"];
+      };
+    };
+  };
+  "/v1beta/{name}": {
     /** @description Gets information about a specific Permission. */
     get: operations["generativelanguage.tunedModels.permissions.get"];
     /** @description Deletes the permission. */
@@ -44,12 +251,12 @@ export interface paths {
         oauth_token?: components["parameters"]["oauth_token"];
         prettyPrint?: components["parameters"]["prettyPrint"];
         quotaUser?: components["parameters"]["quotaUser"];
-        uploadType?: components["parameters"]["uploadType"];
         upload_protocol?: components["parameters"]["upload_protocol"];
+        uploadType?: components["parameters"]["uploadType"];
       };
     };
   };
-  "/v1beta/{+name}:query": {
+  "/v1beta/{name}:query": {
     /** @description Performs semantic search over a `Document`. */
     post: operations["generativelanguage.corpora.documents.query"];
     parameters: {
@@ -63,16 +270,14 @@ export interface paths {
         oauth_token?: components["parameters"]["oauth_token"];
         prettyPrint?: components["parameters"]["prettyPrint"];
         quotaUser?: components["parameters"]["quotaUser"];
-        uploadType?: components["parameters"]["uploadType"];
         upload_protocol?: components["parameters"]["upload_protocol"];
+        uploadType?: components["parameters"]["uploadType"];
       };
     };
   };
-  "/v1beta/{+parent}/documents": {
-    /** @description Lists all `Document`s in a `Corpus`. */
-    get: operations["generativelanguage.corpora.documents.list"];
-    /** @description Creates an empty `Document`. */
-    post: operations["generativelanguage.corpora.documents.create"];
+  "/v1beta/{name}:transferOwnership": {
+    /** @description Transfers ownership of the tuned model. This is the only way to change ownership of the tuned model. The current owner will be downgraded to writer role. */
+    post: operations["generativelanguage.tunedModels.transferOwnership"];
     parameters: {
       query?: {
         "$.xgafv"?: components["parameters"]["_.xgafv"];
@@ -84,69 +289,12 @@ export interface paths {
         oauth_token?: components["parameters"]["oauth_token"];
         prettyPrint?: components["parameters"]["prettyPrint"];
         quotaUser?: components["parameters"]["quotaUser"];
-        uploadType?: components["parameters"]["uploadType"];
         upload_protocol?: components["parameters"]["upload_protocol"];
+        uploadType?: components["parameters"]["uploadType"];
       };
     };
   };
-  "/v1beta/{+parent}/chunks:batchCreate": {
-    /** @description Batch create `Chunk`s. */
-    post: operations["generativelanguage.corpora.documents.chunks.batchCreate"];
-    parameters: {
-      query?: {
-        "$.xgafv"?: components["parameters"]["_.xgafv"];
-        access_token?: components["parameters"]["access_token"];
-        alt?: components["parameters"]["alt"];
-        callback?: components["parameters"]["callback"];
-        fields?: components["parameters"]["fields"];
-        key?: components["parameters"]["key"];
-        oauth_token?: components["parameters"]["oauth_token"];
-        prettyPrint?: components["parameters"]["prettyPrint"];
-        quotaUser?: components["parameters"]["quotaUser"];
-        uploadType?: components["parameters"]["uploadType"];
-        upload_protocol?: components["parameters"]["upload_protocol"];
-      };
-    };
-  };
-  "/v1beta/{+parent}/chunks:batchDelete": {
-    /** @description Batch delete `Chunk`s. */
-    post: operations["generativelanguage.corpora.documents.chunks.batchDelete"];
-    parameters: {
-      query?: {
-        "$.xgafv"?: components["parameters"]["_.xgafv"];
-        access_token?: components["parameters"]["access_token"];
-        alt?: components["parameters"]["alt"];
-        callback?: components["parameters"]["callback"];
-        fields?: components["parameters"]["fields"];
-        key?: components["parameters"]["key"];
-        oauth_token?: components["parameters"]["oauth_token"];
-        prettyPrint?: components["parameters"]["prettyPrint"];
-        quotaUser?: components["parameters"]["quotaUser"];
-        uploadType?: components["parameters"]["uploadType"];
-        upload_protocol?: components["parameters"]["upload_protocol"];
-      };
-    };
-  };
-  "/v1beta/{+parent}/chunks:batchUpdate": {
-    /** @description Batch update `Chunk`s. */
-    post: operations["generativelanguage.corpora.documents.chunks.batchUpdate"];
-    parameters: {
-      query?: {
-        "$.xgafv"?: components["parameters"]["_.xgafv"];
-        access_token?: components["parameters"]["access_token"];
-        alt?: components["parameters"]["alt"];
-        callback?: components["parameters"]["callback"];
-        fields?: components["parameters"]["fields"];
-        key?: components["parameters"]["key"];
-        oauth_token?: components["parameters"]["oauth_token"];
-        prettyPrint?: components["parameters"]["prettyPrint"];
-        quotaUser?: components["parameters"]["quotaUser"];
-        uploadType?: components["parameters"]["uploadType"];
-        upload_protocol?: components["parameters"]["upload_protocol"];
-      };
-    };
-  };
-  "/v1beta/{+parent}/chunks": {
+  "/v1beta/{parent}/chunks": {
     /** @description Lists all `Chunk`s in a `Document`. */
     get: operations["generativelanguage.corpora.documents.chunks.list"];
     /** @description Creates a `Chunk`. */
@@ -162,12 +310,90 @@ export interface paths {
         oauth_token?: components["parameters"]["oauth_token"];
         prettyPrint?: components["parameters"]["prettyPrint"];
         quotaUser?: components["parameters"]["quotaUser"];
-        uploadType?: components["parameters"]["uploadType"];
         upload_protocol?: components["parameters"]["upload_protocol"];
+        uploadType?: components["parameters"]["uploadType"];
       };
     };
   };
-  "/v1beta/{+parent}/permissions": {
+  "/v1beta/{parent}/chunks:batchCreate": {
+    /** @description Batch create `Chunk`s. */
+    post: operations["generativelanguage.corpora.documents.chunks.batchCreate"];
+    parameters: {
+      query?: {
+        "$.xgafv"?: components["parameters"]["_.xgafv"];
+        access_token?: components["parameters"]["access_token"];
+        alt?: components["parameters"]["alt"];
+        callback?: components["parameters"]["callback"];
+        fields?: components["parameters"]["fields"];
+        key?: components["parameters"]["key"];
+        oauth_token?: components["parameters"]["oauth_token"];
+        prettyPrint?: components["parameters"]["prettyPrint"];
+        quotaUser?: components["parameters"]["quotaUser"];
+        upload_protocol?: components["parameters"]["upload_protocol"];
+        uploadType?: components["parameters"]["uploadType"];
+      };
+    };
+  };
+  "/v1beta/{parent}/chunks:batchDelete": {
+    /** @description Batch delete `Chunk`s. */
+    post: operations["generativelanguage.corpora.documents.chunks.batchDelete"];
+    parameters: {
+      query?: {
+        "$.xgafv"?: components["parameters"]["_.xgafv"];
+        access_token?: components["parameters"]["access_token"];
+        alt?: components["parameters"]["alt"];
+        callback?: components["parameters"]["callback"];
+        fields?: components["parameters"]["fields"];
+        key?: components["parameters"]["key"];
+        oauth_token?: components["parameters"]["oauth_token"];
+        prettyPrint?: components["parameters"]["prettyPrint"];
+        quotaUser?: components["parameters"]["quotaUser"];
+        upload_protocol?: components["parameters"]["upload_protocol"];
+        uploadType?: components["parameters"]["uploadType"];
+      };
+    };
+  };
+  "/v1beta/{parent}/chunks:batchUpdate": {
+    /** @description Batch update `Chunk`s. */
+    post: operations["generativelanguage.corpora.documents.chunks.batchUpdate"];
+    parameters: {
+      query?: {
+        "$.xgafv"?: components["parameters"]["_.xgafv"];
+        access_token?: components["parameters"]["access_token"];
+        alt?: components["parameters"]["alt"];
+        callback?: components["parameters"]["callback"];
+        fields?: components["parameters"]["fields"];
+        key?: components["parameters"]["key"];
+        oauth_token?: components["parameters"]["oauth_token"];
+        prettyPrint?: components["parameters"]["prettyPrint"];
+        quotaUser?: components["parameters"]["quotaUser"];
+        upload_protocol?: components["parameters"]["upload_protocol"];
+        uploadType?: components["parameters"]["uploadType"];
+      };
+    };
+  };
+  "/v1beta/{parent}/documents": {
+    /** @description Lists all `Document`s in a `Corpus`. */
+    get: operations["generativelanguage.corpora.documents.list"];
+    /** @description Creates an empty `Document`. */
+    post: operations["generativelanguage.corpora.documents.create"];
+    parameters: {
+      query?: {
+        "$.xgafv"?: components["parameters"]["_.xgafv"];
+        access_token?: components["parameters"]["access_token"];
+        alt?: components["parameters"]["alt"];
+        callback?: components["parameters"]["callback"];
+        fields?: components["parameters"]["fields"];
+        key?: components["parameters"]["key"];
+        oauth_token?: components["parameters"]["oauth_token"];
+        prettyPrint?: components["parameters"]["prettyPrint"];
+        quotaUser?: components["parameters"]["quotaUser"];
+        upload_protocol?: components["parameters"]["upload_protocol"];
+        uploadType?: components["parameters"]["uploadType"];
+      };
+    };
+  };
+  "/v1beta/{parent}/permissions": {
     /** @description Lists permissions for the specific resource. */
     get: operations["generativelanguage.tunedModels.permissions.list"];
     /** @description Create a permission to a specific resource. */
@@ -183,8 +409,50 @@ export interface paths {
         oauth_token?: components["parameters"]["oauth_token"];
         prettyPrint?: components["parameters"]["prettyPrint"];
         quotaUser?: components["parameters"]["quotaUser"];
-        uploadType?: components["parameters"]["uploadType"];
         upload_protocol?: components["parameters"]["upload_protocol"];
+        uploadType?: components["parameters"]["uploadType"];
+      };
+    };
+  };
+  "/v1beta/cachedContents": {
+    /** @description Lists CachedContents. */
+    get: operations["generativelanguage.cachedContents.list"];
+    /** @description Creates CachedContent resource. */
+    post: operations["generativelanguage.cachedContents.create"];
+    parameters: {
+      query?: {
+        "$.xgafv"?: components["parameters"]["_.xgafv"];
+        access_token?: components["parameters"]["access_token"];
+        alt?: components["parameters"]["alt"];
+        callback?: components["parameters"]["callback"];
+        fields?: components["parameters"]["fields"];
+        key?: components["parameters"]["key"];
+        oauth_token?: components["parameters"]["oauth_token"];
+        prettyPrint?: components["parameters"]["prettyPrint"];
+        quotaUser?: components["parameters"]["quotaUser"];
+        upload_protocol?: components["parameters"]["upload_protocol"];
+        uploadType?: components["parameters"]["uploadType"];
+      };
+    };
+  };
+  "/v1beta/corpora": {
+    /** @description Lists all `Corpora` owned by the user. */
+    get: operations["generativelanguage.corpora.list"];
+    /** @description Creates an empty `Corpus`. */
+    post: operations["generativelanguage.corpora.create"];
+    parameters: {
+      query?: {
+        "$.xgafv"?: components["parameters"]["_.xgafv"];
+        access_token?: components["parameters"]["access_token"];
+        alt?: components["parameters"]["alt"];
+        callback?: components["parameters"]["callback"];
+        fields?: components["parameters"]["fields"];
+        key?: components["parameters"]["key"];
+        oauth_token?: components["parameters"]["oauth_token"];
+        prettyPrint?: components["parameters"]["prettyPrint"];
+        quotaUser?: components["parameters"]["quotaUser"];
+        upload_protocol?: components["parameters"]["upload_protocol"];
+        uploadType?: components["parameters"]["uploadType"];
       };
     };
   };
@@ -204,217 +472,8 @@ export interface paths {
         oauth_token?: components["parameters"]["oauth_token"];
         prettyPrint?: components["parameters"]["prettyPrint"];
         quotaUser?: components["parameters"]["quotaUser"];
-        uploadType?: components["parameters"]["uploadType"];
         upload_protocol?: components["parameters"]["upload_protocol"];
-      };
-    };
-  };
-  "/v1beta/{+model}:batchEmbedContents": {
-    /** @description Generates multiple embeddings from the model given input text in a synchronous call. */
-    post: operations["generativelanguage.models.batchEmbedContents"];
-    parameters: {
-      query?: {
-        "$.xgafv"?: components["parameters"]["_.xgafv"];
-        access_token?: components["parameters"]["access_token"];
-        alt?: components["parameters"]["alt"];
-        callback?: components["parameters"]["callback"];
-        fields?: components["parameters"]["fields"];
-        key?: components["parameters"]["key"];
-        oauth_token?: components["parameters"]["oauth_token"];
-        prettyPrint?: components["parameters"]["prettyPrint"];
-        quotaUser?: components["parameters"]["quotaUser"];
         uploadType?: components["parameters"]["uploadType"];
-        upload_protocol?: components["parameters"]["upload_protocol"];
-      };
-    };
-  };
-  "/v1beta/{+model}:batchEmbedText": {
-    /** @description Generates multiple embeddings from the model given input text in a synchronous call. */
-    post: operations["generativelanguage.models.batchEmbedText"];
-    parameters: {
-      query?: {
-        "$.xgafv"?: components["parameters"]["_.xgafv"];
-        access_token?: components["parameters"]["access_token"];
-        alt?: components["parameters"]["alt"];
-        callback?: components["parameters"]["callback"];
-        fields?: components["parameters"]["fields"];
-        key?: components["parameters"]["key"];
-        oauth_token?: components["parameters"]["oauth_token"];
-        prettyPrint?: components["parameters"]["prettyPrint"];
-        quotaUser?: components["parameters"]["quotaUser"];
-        uploadType?: components["parameters"]["uploadType"];
-        upload_protocol?: components["parameters"]["upload_protocol"];
-      };
-    };
-  };
-  "/v1beta/{+model}:countMessageTokens": {
-    /** @description Runs a model's tokenizer on a string and returns the token count. */
-    post: operations["generativelanguage.models.countMessageTokens"];
-    parameters: {
-      query?: {
-        "$.xgafv"?: components["parameters"]["_.xgafv"];
-        access_token?: components["parameters"]["access_token"];
-        alt?: components["parameters"]["alt"];
-        callback?: components["parameters"]["callback"];
-        fields?: components["parameters"]["fields"];
-        key?: components["parameters"]["key"];
-        oauth_token?: components["parameters"]["oauth_token"];
-        prettyPrint?: components["parameters"]["prettyPrint"];
-        quotaUser?: components["parameters"]["quotaUser"];
-        uploadType?: components["parameters"]["uploadType"];
-        upload_protocol?: components["parameters"]["upload_protocol"];
-      };
-    };
-  };
-  "/v1beta/{+model}:countTextTokens": {
-    /** @description Runs a model's tokenizer on a text and returns the token count. */
-    post: operations["generativelanguage.models.countTextTokens"];
-    parameters: {
-      query?: {
-        "$.xgafv"?: components["parameters"]["_.xgafv"];
-        access_token?: components["parameters"]["access_token"];
-        alt?: components["parameters"]["alt"];
-        callback?: components["parameters"]["callback"];
-        fields?: components["parameters"]["fields"];
-        key?: components["parameters"]["key"];
-        oauth_token?: components["parameters"]["oauth_token"];
-        prettyPrint?: components["parameters"]["prettyPrint"];
-        quotaUser?: components["parameters"]["quotaUser"];
-        uploadType?: components["parameters"]["uploadType"];
-        upload_protocol?: components["parameters"]["upload_protocol"];
-      };
-    };
-  };
-  "/v1beta/{+model}:countTokens": {
-    /** @description Runs a model's tokenizer on input content and returns the token count. */
-    post: operations["generativelanguage.models.countTokens"];
-    parameters: {
-      query?: {
-        "$.xgafv"?: components["parameters"]["_.xgafv"];
-        access_token?: components["parameters"]["access_token"];
-        alt?: components["parameters"]["alt"];
-        callback?: components["parameters"]["callback"];
-        fields?: components["parameters"]["fields"];
-        key?: components["parameters"]["key"];
-        oauth_token?: components["parameters"]["oauth_token"];
-        prettyPrint?: components["parameters"]["prettyPrint"];
-        quotaUser?: components["parameters"]["quotaUser"];
-        uploadType?: components["parameters"]["uploadType"];
-        upload_protocol?: components["parameters"]["upload_protocol"];
-      };
-    };
-  };
-  "/v1beta/{+model}:embedContent": {
-    /** @description Generates an embedding from the model given an input `Content`. */
-    post: operations["generativelanguage.models.embedContent"];
-    parameters: {
-      query?: {
-        "$.xgafv"?: components["parameters"]["_.xgafv"];
-        access_token?: components["parameters"]["access_token"];
-        alt?: components["parameters"]["alt"];
-        callback?: components["parameters"]["callback"];
-        fields?: components["parameters"]["fields"];
-        key?: components["parameters"]["key"];
-        oauth_token?: components["parameters"]["oauth_token"];
-        prettyPrint?: components["parameters"]["prettyPrint"];
-        quotaUser?: components["parameters"]["quotaUser"];
-        uploadType?: components["parameters"]["uploadType"];
-        upload_protocol?: components["parameters"]["upload_protocol"];
-      };
-    };
-  };
-  "/v1beta/{+model}:embedText": {
-    /** @description Generates an embedding from the model given an input message. */
-    post: operations["generativelanguage.models.embedText"];
-    parameters: {
-      query?: {
-        "$.xgafv"?: components["parameters"]["_.xgafv"];
-        access_token?: components["parameters"]["access_token"];
-        alt?: components["parameters"]["alt"];
-        callback?: components["parameters"]["callback"];
-        fields?: components["parameters"]["fields"];
-        key?: components["parameters"]["key"];
-        oauth_token?: components["parameters"]["oauth_token"];
-        prettyPrint?: components["parameters"]["prettyPrint"];
-        quotaUser?: components["parameters"]["quotaUser"];
-        uploadType?: components["parameters"]["uploadType"];
-        upload_protocol?: components["parameters"]["upload_protocol"];
-      };
-    };
-  };
-  "/v1beta/{+model}:generateAnswer": {
-    /** @description Generates a grounded answer from the model given an input `GenerateAnswerRequest`. */
-    post: operations["generativelanguage.models.generateAnswer"];
-    parameters: {
-      query?: {
-        "$.xgafv"?: components["parameters"]["_.xgafv"];
-        access_token?: components["parameters"]["access_token"];
-        alt?: components["parameters"]["alt"];
-        callback?: components["parameters"]["callback"];
-        fields?: components["parameters"]["fields"];
-        key?: components["parameters"]["key"];
-        oauth_token?: components["parameters"]["oauth_token"];
-        prettyPrint?: components["parameters"]["prettyPrint"];
-        quotaUser?: components["parameters"]["quotaUser"];
-        uploadType?: components["parameters"]["uploadType"];
-        upload_protocol?: components["parameters"]["upload_protocol"];
-      };
-    };
-  };
-  "/v1beta/{+model}:generateContent": {
-    /** @description Generates a response from the model given an input `GenerateContentRequest`. Input capabilities differ between models, including tuned models. See the [model guide](https://ai.google.dev/models/gemini) and [tuning guide](https://ai.google.dev/docs/model_tuning_guidance) for details. */
-    post: operations["generativelanguage.tunedModels.generateContent"];
-    parameters: {
-      query?: {
-        "$.xgafv"?: components["parameters"]["_.xgafv"];
-        access_token?: components["parameters"]["access_token"];
-        alt?: components["parameters"]["alt"];
-        callback?: components["parameters"]["callback"];
-        fields?: components["parameters"]["fields"];
-        key?: components["parameters"]["key"];
-        oauth_token?: components["parameters"]["oauth_token"];
-        prettyPrint?: components["parameters"]["prettyPrint"];
-        quotaUser?: components["parameters"]["quotaUser"];
-        uploadType?: components["parameters"]["uploadType"];
-        upload_protocol?: components["parameters"]["upload_protocol"];
-      };
-    };
-  };
-  "/v1beta/{+model}:generateMessage": {
-    /** @description Generates a response from the model given an input `MessagePrompt`. */
-    post: operations["generativelanguage.models.generateMessage"];
-    parameters: {
-      query?: {
-        "$.xgafv"?: components["parameters"]["_.xgafv"];
-        access_token?: components["parameters"]["access_token"];
-        alt?: components["parameters"]["alt"];
-        callback?: components["parameters"]["callback"];
-        fields?: components["parameters"]["fields"];
-        key?: components["parameters"]["key"];
-        oauth_token?: components["parameters"]["oauth_token"];
-        prettyPrint?: components["parameters"]["prettyPrint"];
-        quotaUser?: components["parameters"]["quotaUser"];
-        uploadType?: components["parameters"]["uploadType"];
-        upload_protocol?: components["parameters"]["upload_protocol"];
-      };
-    };
-  };
-  "/v1beta/{+model}:generateText": {
-    /** @description Generates a response from the model given an input message. */
-    post: operations["generativelanguage.tunedModels.generateText"];
-    parameters: {
-      query?: {
-        "$.xgafv"?: components["parameters"]["_.xgafv"];
-        access_token?: components["parameters"]["access_token"];
-        alt?: components["parameters"]["alt"];
-        callback?: components["parameters"]["callback"];
-        fields?: components["parameters"]["fields"];
-        key?: components["parameters"]["key"];
-        oauth_token?: components["parameters"]["oauth_token"];
-        prettyPrint?: components["parameters"]["prettyPrint"];
-        quotaUser?: components["parameters"]["quotaUser"];
-        uploadType?: components["parameters"]["uploadType"];
-        upload_protocol?: components["parameters"]["upload_protocol"];
       };
     };
   };
@@ -432,27 +491,8 @@ export interface paths {
         oauth_token?: components["parameters"]["oauth_token"];
         prettyPrint?: components["parameters"]["prettyPrint"];
         quotaUser?: components["parameters"]["quotaUser"];
-        uploadType?: components["parameters"]["uploadType"];
         upload_protocol?: components["parameters"]["upload_protocol"];
-      };
-    };
-  };
-  "/v1beta/{+model}:streamGenerateContent": {
-    /** @description Generates a streamed response from the model given an input `GenerateContentRequest`. */
-    post: operations["generativelanguage.models.streamGenerateContent"];
-    parameters: {
-      query?: {
-        "$.xgafv"?: components["parameters"]["_.xgafv"];
-        access_token?: components["parameters"]["access_token"];
-        alt?: components["parameters"]["alt"];
-        callback?: components["parameters"]["callback"];
-        fields?: components["parameters"]["fields"];
-        key?: components["parameters"]["key"];
-        oauth_token?: components["parameters"]["oauth_token"];
-        prettyPrint?: components["parameters"]["prettyPrint"];
-        quotaUser?: components["parameters"]["quotaUser"];
         uploadType?: components["parameters"]["uploadType"];
-        upload_protocol?: components["parameters"]["upload_protocol"];
       };
     };
   };
@@ -472,27 +512,8 @@ export interface paths {
         oauth_token?: components["parameters"]["oauth_token"];
         prettyPrint?: components["parameters"]["prettyPrint"];
         quotaUser?: components["parameters"]["quotaUser"];
-        uploadType?: components["parameters"]["uploadType"];
         upload_protocol?: components["parameters"]["upload_protocol"];
-      };
-    };
-  };
-  "/v1beta/{+name}:transferOwnership": {
-    /** @description Transfers ownership of the tuned model. This is the only way to change ownership of the tuned model. The current owner will be downgraded to writer role. */
-    post: operations["generativelanguage.tunedModels.transferOwnership"];
-    parameters: {
-      query?: {
-        "$.xgafv"?: components["parameters"]["_.xgafv"];
-        access_token?: components["parameters"]["access_token"];
-        alt?: components["parameters"]["alt"];
-        callback?: components["parameters"]["callback"];
-        fields?: components["parameters"]["fields"];
-        key?: components["parameters"]["key"];
-        oauth_token?: components["parameters"]["oauth_token"];
-        prettyPrint?: components["parameters"]["prettyPrint"];
-        quotaUser?: components["parameters"]["quotaUser"];
         uploadType?: components["parameters"]["uploadType"];
-        upload_protocol?: components["parameters"]["upload_protocol"];
       };
     };
   };
@@ -504,7 +525,9 @@ export interface components {
   schemas: {
     /** @description Identifier for the source contributing to this attribution. */
     AttributionSourceId: {
+      /** @description Identifier for an inline passage. */
       groundingPassage?: components["schemas"]["GroundingPassageId"];
+      /** @description Identifier for a `Chunk` fetched via Semantic Retriever. */
       semanticRetrieverChunk?: components["schemas"]["SemanticRetrieverChunk"];
       [key: string]: unknown;
     };
@@ -575,9 +598,60 @@ export interface components {
       mimeType?: string;
       [key: string]: unknown;
     };
+    /** @description Content that has been preprocessed and can be used in subsequent request to GenerativeService. Cached content can be only used with model it was created for. */
+    CachedContent: {
+      /** @description Optional. Input only. Immutable. The content to cache. */
+      contents?: components["schemas"]["Content"][];
+      /**
+       * Format: google-datetime
+       * @description Output only. Creation time of the cache entry.
+       */
+      createTime?: string;
+      /** @description Optional. Immutable. The user-generated meaningful display name of the cached content. Maximum 128 Unicode characters. */
+      displayName?: string;
+      /**
+       * Format: google-datetime
+       * @description Timestamp in UTC of when this resource is considered expired. This is *always* provided on output, regardless of what was sent on input.
+       */
+      expireTime?: string;
+      /** @description Required. Immutable. The name of the `Model` to use for cached content Format: `models/{model}` */
+      model?: string;
+      /** @description Optional. Identifier. The resource name referring to the cached content. Format: `cachedContents/{id}` */
+      name?: string;
+      /** @description Optional. Input only. Immutable. Developer set system instruction. Currently text only. */
+      systemInstruction?: components["schemas"]["Content"];
+      /** @description Optional. Input only. Immutable. Tool config. This config is shared for all tools. */
+      toolConfig?: components["schemas"]["ToolConfig"];
+      /** @description Optional. Input only. Immutable. A list of `Tools` the model may use to generate the next response */
+      tools?: components["schemas"]["Tool"][];
+      /**
+       * Format: google-duration
+       * @description Input only. New TTL for this resource, input only.
+       */
+      ttl?: string;
+      /**
+       * Format: google-datetime
+       * @description Output only. When the cache entry was last updated in UTC time.
+       */
+      updateTime?: string;
+      /** @description Output only. Metadata on the usage of the cached content. */
+      usageMetadata?: components["schemas"]["CachedContentUsageMetadata"];
+      [key: string]: unknown;
+    };
+    /** @description Metadata on the usage of the cached content. */
+    CachedContentUsageMetadata: {
+      /**
+       * Format: int32
+       * @description Total number of tokens that the cached content consumes.
+       */
+      totalTokenCount?: number;
+      [key: string]: unknown;
+    };
     /** @description A response candidate generated from the model. */
     Candidate: {
+      /** @description Output only. Citation information for model-generated candidate. This field may be populated with recitation information for any text included in the `content`. These are passages that are "recited" from copyrighted material in the foundational LLM's training data. */
       citationMetadata?: components["schemas"]["CitationMetadata"];
+      /** @description Output only. Generated content returned from the model. */
       content?: components["schemas"]["Content"];
       /**
        * @description Optional. Output only. The reason why the model stopped generating tokens. If empty, the model has not stopped generating the tokens.
@@ -609,6 +683,7 @@ export interface components {
       createTime?: string;
       /** @description Optional. User provided custom metadata stored as key-value pairs. The maximum number of `CustomMetadata` per chunk is 20. */
       customMetadata?: components["schemas"]["CustomMetadata"][];
+      /** @description Required. The content for the `Chunk`, such as the text string. The maximum number of tokens per chunk is 2043. */
       data?: components["schemas"]["ChunkData"];
       /** @description Immutable. Identifier. The `Chunk` resource name. The ID (name excluding the "corpora/*\/documents/*\/chunks/" prefix) can contain up to 40 characters that are lowercase alphanumeric or dashes (-). The ID cannot start or end with a dash. If the name is empty on create, a random 12-character unique ID will be generated. Example: `corpora/{corpus_id}/documents/{document_id}/chunks/123a456b789c` */
       name?: string;
@@ -715,6 +790,7 @@ export interface components {
     };
     /** @description Counts the number of tokens in the `prompt` sent to a model. Models may tokenize text differently, so each model may return a different `token_count`. */
     CountMessageTokensRequest: {
+      /** @description Required. The prompt, whose token count is to be returned. */
       prompt?: components["schemas"]["MessagePrompt"];
       [key: string]: unknown;
     };
@@ -729,6 +805,7 @@ export interface components {
     };
     /** @description Counts the number of tokens in the `prompt` sent to a model. Models may tokenize text differently, so each model may return a different `token_count`. */
     CountTextTokensRequest: {
+      /** @description Required. The free-form input text given to the model as a prompt. */
       prompt?: components["schemas"]["TextPrompt"];
       [key: string]: unknown;
     };
@@ -745,6 +822,7 @@ export interface components {
     CountTokensRequest: {
       /** @description Optional. The input given to the model as a prompt. This field is ignored when `generate_content_request` is set. */
       contents?: components["schemas"]["Content"][];
+      /** @description Optional. The overall input given to the model. CountTokens will count prompt, function calling, etc. */
       generateContentRequest?: components["schemas"]["GenerateContentRequest"];
       [key: string]: unknown;
     };
@@ -752,13 +830,14 @@ export interface components {
     CountTokensResponse: {
       /**
        * Format: int32
-       * @description The number of tokens that the `model` tokenizes the `prompt` into. Always non-negative.
+       * @description The number of tokens that the `model` tokenizes the `prompt` into. Always non-negative. When cached_content is set, this is still the total effective prompt size. I.e. this includes the number of tokens in the cached content.
        */
       totalTokens?: number;
       [key: string]: unknown;
     };
     /** @description Request to create a `Chunk`. */
     CreateChunkRequest: {
+      /** @description Required. The `Chunk` to create. */
       chunk?: components["schemas"]["Chunk"];
       /** @description Required. The name of the `Document` where this `Chunk` will be created. Example: `corpora/my-corpus-123/documents/the-doc-abc` */
       parent?: string;
@@ -766,11 +845,13 @@ export interface components {
     };
     /** @description Request for `CreateFile`. */
     CreateFileRequest: {
+      /** @description Optional. Metadata for the file to create. */
       file?: components["schemas"]["File"];
       [key: string]: unknown;
     };
     /** @description Response for `CreateFile`. */
     CreateFileResponse: {
+      /** @description Metadata for the created file. */
       file?: components["schemas"]["File"];
       [key: string]: unknown;
     };
@@ -783,6 +864,7 @@ export interface components {
        * @description The numeric value of the metadata to store.
        */
       numericValue?: number;
+      /** @description The StringList value of the metadata to store. */
       stringListValue?: components["schemas"]["StringList"];
       /** @description The string value of the metadata to store. */
       stringValue?: string;
@@ -790,6 +872,7 @@ export interface components {
     };
     /** @description Dataset for training or validation. */
     Dataset: {
+      /** @description Optional. Inline examples. */
       examples?: components["schemas"]["TuningExamples"];
       [key: string]: unknown;
     };
@@ -821,6 +904,7 @@ export interface components {
     };
     /** @description Request containing the `Content` for the model to embed. */
     EmbedContentRequest: {
+      /** @description Required. The content to embed. Only the `parts.text` fields will be counted. */
       content?: components["schemas"]["Content"];
       /** @description Required. The model's resource name. This serves as an ID for the Model to use. This name should match a model name returned by the `ListModels` method. Format: `models/{model}` */
       model?: string;
@@ -840,7 +924,14 @@ export interface components {
     };
     /** @description The response to an `EmbedContentRequest`. */
     EmbedContentResponse: {
+      /** @description Output only. The embedding generated from the input content. */
       embedding?: components["schemas"]["ContentEmbedding"];
+      [key: string]: unknown;
+    };
+    /** @description A list of floats representing the embedding. */
+    Embedding: {
+      /** @description The embedding values. */
+      value?: number[];
       [key: string]: unknown;
     };
     /** @description Request to get a text embedding from the model. */
@@ -853,20 +944,17 @@ export interface components {
     };
     /** @description The response to a EmbedTextRequest. */
     EmbedTextResponse: {
+      /** @description Output only. The embedding generated from the input text. */
       embedding?: components["schemas"]["Embedding"];
-      [key: string]: unknown;
-    };
-    /** @description A list of floats representing the embedding. */
-    Embedding: {
-      /** @description The embedding values. */
-      value?: number[];
       [key: string]: unknown;
     };
     /** @description A generic empty message that you can re-use to avoid defining duplicated empty messages in your APIs. A typical example is to use it as the request or the response type of an API method. For instance: service Foo { rpc Bar(google.protobuf.Empty) returns (google.protobuf.Empty); } */
     Empty: Record<string, never>;
     /** @description An input/output example used to instruct the Model. It demonstrates how the model should respond or format its response. */
     Example: {
+      /** @description Required. An example of an input `Message` from the user. */
       input?: components["schemas"]["Message"];
+      /** @description Required. An example of what the model should output given the input. */
       output?: components["schemas"]["Message"];
       [key: string]: unknown;
     };
@@ -879,6 +967,7 @@ export interface components {
       createTime?: string;
       /** @description Optional. The human-readable display name for the `File`. The display name must be no more than 512 characters in length, including spaces. Example: "Welcome Image" */
       displayName?: string;
+      /** @description Output only. Error status if File processing failed. */
       error?: components["schemas"]["Status"];
       /**
        * Format: google-datetime
@@ -911,6 +1000,7 @@ export interface components {
       updateTime?: string;
       /** @description Output only. The uri of the `File`. */
       uri?: string;
+      /** @description Output only. Metadata for a video. */
       videoMetadata?: components["schemas"]["VideoMetadata"];
       [key: string]: unknown;
     };
@@ -949,6 +1039,7 @@ export interface components {
       description?: string;
       /** @description Required. The name of the function. Must be a-z, A-Z, 0-9, or contain underscores and dashes, with a maximum length of 63. */
       name?: string;
+      /** @description Optional. Describes the parameters to this function. Reflects the Open API 3.03 Parameter Object string Key: the name of the parameter. Parameter names are case sensitive. Schema Value: the Schema defining the type used for the parameter. */
       parameters?: components["schemas"]["Schema"];
       [key: string]: unknown;
     };
@@ -971,9 +1062,11 @@ export interface components {
       answerStyle?: "ANSWER_STYLE_UNSPECIFIED" | "ABSTRACTIVE" | "EXTRACTIVE" | "VERBOSE";
       /** @description Required. The content of the current conversation with the model. For single-turn queries, this is a single question to answer. For multi-turn queries, this is a repeated field that contains conversation history and the last `Content` in the list containing the question. Note: GenerateAnswer currently only supports queries in English. */
       contents?: components["schemas"]["Content"][];
+      /** @description Passages provided inline with the request. */
       inlinePassages?: components["schemas"]["GroundingPassages"];
       /** @description Optional. A list of unique `SafetySetting` instances for blocking unsafe content. This will be enforced on the `GenerateAnswerRequest.contents` and `GenerateAnswerResponse.candidate`. There should not be more than one setting for each `SafetyCategory` type. The API will block any contents and responses that fail to meet the thresholds set by these settings. This list overrides the default settings for each `SafetyCategory` specified in the safety_settings. If there is no `SafetySetting` for a given `SafetyCategory` provided in the list, the API will use the default safety setting for that category. Harm categories HARM_CATEGORY_HATE_SPEECH, HARM_CATEGORY_SEXUALLY_EXPLICIT, HARM_CATEGORY_DANGEROUS_CONTENT, HARM_CATEGORY_HARASSMENT are supported. */
       safetySettings?: components["schemas"]["SafetySetting"][];
+      /** @description Content retrieved from resources created via the Semantic Retriever API. */
       semanticRetriever?: components["schemas"]["SemanticRetrieverConfig"];
       /**
        * Format: float
@@ -984,25 +1077,32 @@ export interface components {
     };
     /** @description Response from the model for a grounded answer. */
     GenerateAnswerResponse: {
+      /** @description Candidate answer from the model. Note: The model *always* attempts to provide a grounded answer, even when the answer is unlikely to be answerable from the given passages. In that case, a low-quality or ungrounded answer may be provided, along with a low `answerable_probability`. */
       answer?: components["schemas"]["Candidate"];
       /**
        * Format: float
        * @description Output only. The model's estimate of the probability that its answer is correct and grounded in the input passages. A low answerable_probability indicates that the answer might not be grounded in the sources. When `answerable_probability` is low, some clients may wish to: * Display a message to the effect of "We couldn’t answer that question" to the user. * Fall back to a general-purpose LLM that answers the question from world knowledge. The threshold and nature of such fallbacks will depend on individual clients’ use cases. 0.5 is a good starting threshold.
        */
       answerableProbability?: number;
+      /** @description Output only. Feedback related to the input data used to answer the question, as opposed to model-generated response to the question. "Input data" can be one or more of the following: - Question specified by the last entry in `GenerateAnswerRequest.content` - Conversation history specified by the other entries in `GenerateAnswerRequest.content` - Grounding sources (`GenerateAnswerRequest.semantic_retriever` or `GenerateAnswerRequest.inline_passages`) */
       inputFeedback?: components["schemas"]["InputFeedback"];
       [key: string]: unknown;
     };
     /** @description Request to generate a completion from the model. */
     GenerateContentRequest: {
+      /** @description Optional. The name of the cached content used as context to serve the prediction. Note: only used in explicit caching, where users can have control over caching (e.g. what content to cache) and enjoy guaranteed cost savings. Format: `cachedContents/{cachedContent}` */
+      cachedContent?: string;
       /** @description Required. The content of the current conversation with the model. For single-turn queries, this is a single instance. For multi-turn queries, this is a repeated field that contains conversation history + latest request. */
       contents?: components["schemas"]["Content"][];
+      /** @description Optional. Configuration options for model generation and outputs. */
       generationConfig?: components["schemas"]["GenerationConfig"];
       /** @description Required. The name of the `Model` to use for generating the completion. Format: `name=models/{model}`. */
       model?: string;
       /** @description Optional. A list of unique `SafetySetting` instances for blocking unsafe content. This will be enforced on the `GenerateContentRequest.contents` and `GenerateContentResponse.candidates`. There should not be more than one setting for each `SafetyCategory` type. The API will block any contents and responses that fail to meet the thresholds set by these settings. This list overrides the default settings for each `SafetyCategory` specified in the safety_settings. If there is no `SafetySetting` for a given `SafetyCategory` provided in the list, the API will use the default safety setting for that category. Harm categories HARM_CATEGORY_HATE_SPEECH, HARM_CATEGORY_SEXUALLY_EXPLICIT, HARM_CATEGORY_DANGEROUS_CONTENT, HARM_CATEGORY_HARASSMENT are supported. */
       safetySettings?: components["schemas"]["SafetySetting"][];
+      /** @description Optional. Developer set system instruction. Currently, text only. */
       systemInstruction?: components["schemas"]["Content"];
+      /** @description Optional. Tool configuration for any `Tool` specified in the request. */
       toolConfig?: components["schemas"]["ToolConfig"];
       /** @description Optional. A list of `Tools` the model may use to generate the next response. A `Tool` is a piece of code that enables the system to interact with external systems to perform an action, or set of actions, outside of knowledge and scope of the model. The only supported tool is currently `Function`. */
       tools?: components["schemas"]["Tool"][];
@@ -1012,7 +1112,9 @@ export interface components {
     GenerateContentResponse: {
       /** @description Candidate responses from the model. */
       candidates?: components["schemas"]["Candidate"][];
+      /** @description Returns the prompt's feedback related to the content filters. */
       promptFeedback?: components["schemas"]["PromptFeedback"];
+      /** @description Output only. Metadata on the generation requests' token usage. */
       usageMetadata?: components["schemas"]["UsageMetadata"];
       [key: string]: unknown;
     };
@@ -1023,6 +1125,7 @@ export interface components {
        * @description Optional. The number of generated response messages to return. This value must be between `[1, 8]`, inclusive. If unset, this will default to `1`.
        */
       candidateCount?: number;
+      /** @description Required. The structured textual input given to the model as a prompt. Given a prompt, the model will return what it predicts is the next message in the discussion. */
       prompt?: components["schemas"]["MessagePrompt"];
       /**
        * Format: float
@@ -1063,6 +1166,7 @@ export interface components {
        * @description Optional. The maximum number of tokens to include in a candidate. If unset, this will default to output_token_limit specified in the `Model` specification.
        */
       maxOutputTokens?: number;
+      /** @description Required. The free-form input text given to the model as a prompt. Given a prompt, the model will generate a TextCompletion response it predicts as the completion of the input text. */
       prompt?: components["schemas"]["TextPrompt"];
       /** @description Optional. A list of unique `SafetySetting` instances for blocking unsafe content. that will be enforced on the `GenerateTextRequest.prompt` and `GenerateTextResponse.candidates`. There should not be more than one setting for each `SafetyCategory` type. The API will block any prompts and responses that fail to meet the thresholds set by these settings. This list overrides the default settings for each `SafetyCategory` specified in the safety_settings. If there is no `SafetySetting` for a given `SafetyCategory` provided in the list, the API will use the default safety setting for that category. Harm categories HARM_CATEGORY_DEROGATORY, HARM_CATEGORY_TOXICITY, HARM_CATEGORY_VIOLENCE, HARM_CATEGORY_SEXUAL, HARM_CATEGORY_MEDICAL, HARM_CATEGORY_DANGEROUS are supported in text service. */
       safetySettings?: components["schemas"]["SafetySetting"][];
@@ -1109,6 +1213,7 @@ export interface components {
       maxOutputTokens?: number;
       /** @description Optional. Output response mimetype of the generated candidate text. Supported mimetype: `text/plain`: (default) Text output. `application/json`: JSON response in the candidates. */
       responseMimeType?: string;
+      /** @description Optional. Output response schema of the generated candidate text when response mime type can have schema. Schema can be objects, primitives or arrays and is a subset of [OpenAPI schema](https://spec.openapis.org/oas/v3.0.3#schema). If set, a compatible response_mime_type must also be set. Compatible mimetypes: `application/json`: Schema for JSON response. */
       responseSchema?: components["schemas"]["Schema"];
       /** @description Optional. The set of character sequences (up to 5) that will stop output generation. If specified, the API will stop at the first appearance of a stop sequence. The stop sequence will not be included as part of the response. */
       stopSequences?: string[];
@@ -1131,12 +1236,15 @@ export interface components {
     };
     /** @description Attribution for a source that contributed to an answer. */
     GroundingAttribution: {
+      /** @description Grounding source content that makes up this attribution. */
       content?: components["schemas"]["Content"];
+      /** @description Output only. Identifier for the source contributing to this attribution. */
       sourceId?: components["schemas"]["AttributionSourceId"];
       [key: string]: unknown;
     };
     /** @description Passage included inline with a grounding configuration. */
     GroundingPassage: {
+      /** @description Content of the passage. */
       content?: components["schemas"]["Content"];
       /** @description Identifier for the passage for attributing this passage in grounded answers. */
       id?: string;
@@ -1192,6 +1300,14 @@ export interface components {
       blockReason?: "BLOCK_REASON_UNSPECIFIED" | "SAFETY" | "OTHER";
       /** @description Ratings for safety of the input. There is at most one rating per category. */
       safetyRatings?: components["schemas"]["SafetyRating"][];
+      [key: string]: unknown;
+    };
+    /** @description Response with CachedContents list. */
+    ListCachedContentsResponse: {
+      /** @description List of cached contents. */
+      cachedContents?: components["schemas"]["CachedContent"][];
+      /** @description A token, which can be sent as `page_token` to retrieve the next page. If this field is omitted, there are no subsequent pages. */
+      nextPageToken?: string;
       [key: string]: unknown;
     };
     /** @description Response from `ListChunks` containing a paginated list of `Chunk`s. The `Chunk`s are sorted by ascending `chunk.create_time`. */
@@ -1254,6 +1370,7 @@ export interface components {
     Message: {
       /** @description Optional. The author of this Message. This serves as a key for tagging the content of this Message when it is fed to the model as text. The author can be any alphanumeric string. */
       author?: string;
+      /** @description Output only. Citation information for model-generated `content` in this `Message`. If this `Message` was generated as output from the model, this field may be populated with attribution information for any text included in the `content`. This field is used only on output. */
       citationMetadata?: components["schemas"]["CitationMetadata"];
       /** @description Required. The text content of the structured `Message`. */
       content?: string;
@@ -1290,6 +1407,11 @@ export interface components {
        * @description Maximum number of input tokens allowed for this model.
        */
       inputTokenLimit?: number;
+      /**
+       * Format: float
+       * @description The maximum temperature this model can use.
+       */
+      maxTemperature?: number;
       /** @description Required. The resource name of the `Model`. Format: `models/{model}` with a `{model}` naming convention of: * "{base_model_id}-{version}" Examples: * `models/chat-bison-001` */
       name?: string;
       /**
@@ -1301,7 +1423,7 @@ export interface components {
       supportedGenerationMethods?: string[];
       /**
        * Format: float
-       * @description Controls the randomness of the output. Values can range over `[0.0,2.0]`, inclusive. A higher value will produce responses that are more varied, while a value closer to `0.0` will typically result in less surprising responses from the model. This value specifies default to be used by the backend while making the call to the model.
+       * @description Controls the randomness of the output. Values can range over `[0.0,max_temperature]`, inclusive. A higher value will produce responses that are more varied, while a value closer to `0.0` will typically result in less surprising responses from the model. This value specifies default to be used by the backend while making the call to the model.
        */
       temperature?: number;
       /**
@@ -1322,6 +1444,7 @@ export interface components {
     Operation: {
       /** @description If the value is `false`, it means the operation is still in progress. If `true`, the operation is completed, and either `error` or `response` is available. */
       done?: boolean;
+      /** @description The error result of the operation in case of failure or cancellation. */
       error?: components["schemas"]["Status"];
       /** @description Service-specific metadata associated with the operation. It typically contains progress information and common metadata such as create time. Some services might not provide such metadata. Any method that returns a long-running operation should document the metadata type, if any. */
       metadata?: {
@@ -1337,9 +1460,13 @@ export interface components {
     };
     /** @description A datatype containing media that is part of a multi-part `Content` message. A `Part` consists of data which has an associated datatype. A `Part` can only contain one of the accepted types in `Part.data`. A `Part` must have a fixed IANA MIME type identifying the type and subtype of the media if the `inline_data` field is filled with raw bytes. */
     Part: {
+      /** @description URI based data. */
       fileData?: components["schemas"]["FileData"];
+      /** @description A predicted `FunctionCall` returned from the model that contains a string representing the `FunctionDeclaration.name` with the arguments and their values. */
       functionCall?: components["schemas"]["FunctionCall"];
+      /** @description The result output of a `FunctionCall` that contains a string representing the `FunctionDeclaration.name` and a structured JSON object containing any output from the function is used as context to the model. */
       functionResponse?: components["schemas"]["FunctionResponse"];
+      /** @description Inline media bytes. */
       inlineData?: components["schemas"]["Blob"];
       /** @description Inline text. */
       text?: string;
@@ -1414,6 +1541,7 @@ export interface components {
     };
     /** @description The information for a chunk relevant to a query. */
     RelevantChunk: {
+      /** @description `Chunk` associated with the query. */
       chunk?: components["schemas"]["Chunk"];
       /**
        * Format: float
@@ -1424,7 +1552,9 @@ export interface components {
     };
     /** @description Safety feedback for an entire request. This field is populated if content in the input and/or response is blocked due to safety settings. SafetyFeedback may not exist for every HarmCategory. Each SafetyFeedback will return the safety settings used by the request as well as the lowest HarmProbability that should be allowed in order to return a result. */
     SafetyFeedback: {
+      /** @description Safety rating evaluated from content. */
       rating?: components["schemas"]["SafetyRating"];
+      /** @description Safety settings applied to the request. */
       setting?: components["schemas"]["SafetySetting"];
       [key: string]: unknown;
     };
@@ -1466,6 +1596,7 @@ export interface components {
       enum?: string[];
       /** @description Optional. The format of the data. This is used only for primitive datatypes. Supported formats: for NUMBER type: float, double for INTEGER type: int32, int64 */
       format?: string;
+      /** @description Optional. Schema of the elements of Type.ARRAY. */
       items?: components["schemas"]["Schema"];
       /** @description Optional. Indicates if the value may be null. */
       nullable?: boolean;
@@ -1504,6 +1635,7 @@ export interface components {
        * @description Optional. Minimum relevance score for retrieved relevant `Chunk`s.
        */
       minimumRelevanceScore?: number;
+      /** @description Required. Query to use for similarity matching `Chunk`s in the given resource. */
       query?: components["schemas"]["Content"];
       /** @description Required. Name of the resource for retrieval, e.g. corpora/123 or corpora/123/documents/abc. */
       source?: string;
@@ -1532,6 +1664,7 @@ export interface components {
     };
     /** @description Output text returned from a model. */
     TextCompletion: {
+      /** @description Output only. Citation information for model-generated `output` in this `TextCompletion`. This field may be populated with attribution information for any text included in the `output`. */
       citationMetadata?: components["schemas"]["CitationMetadata"];
       /** @description Output only. The generated text returned from the model. */
       output?: string;
@@ -1553,6 +1686,7 @@ export interface components {
     };
     /** @description The Tool configuration containing parameters for specifying `Tool` use in the request. */
     ToolConfig: {
+      /** @description Optional. Function calling config. */
       functionCallingConfig?: components["schemas"]["FunctionCallingConfig"];
       [key: string]: unknown;
     };
@@ -1599,7 +1733,9 @@ export interface components {
        * @description Optional. For Nucleus sampling. Nucleus sampling considers the smallest set of tokens whose probability sum is at least `top_p`. This value specifies default to be the one used by the base model while creating the model.
        */
       topP?: number;
+      /** @description Optional. TunedModel to use as the starting point for training the new model. */
       tunedModelSource?: components["schemas"]["TunedModelSource"];
+      /** @description Required. The tuning task that creates the tuned model. */
       tuningTask?: components["schemas"]["TuningTask"];
       /**
        * Format: google-datetime
@@ -1661,6 +1797,7 @@ export interface components {
        * @description Output only. The timestamp when tuning this model completed.
        */
       completeTime?: string;
+      /** @description Immutable. Hyperparameters controlling the tuning process. If not provided, default values will be used. */
       hyperparameters?: components["schemas"]["Hyperparameters"];
       /** @description Output only. Metrics collected during tuning. */
       snapshots?: readonly components["schemas"]["TuningSnapshot"][];
@@ -1669,11 +1806,13 @@ export interface components {
        * @description Output only. The timestamp when tuning this model started.
        */
       startTime?: string;
+      /** @description Required. Input only. Immutable. The model training data. */
       trainingData?: components["schemas"]["Dataset"];
       [key: string]: unknown;
     };
     /** @description Request to update a `Chunk`. */
     UpdateChunkRequest: {
+      /** @description Required. The `Chunk` to update. */
       chunk?: components["schemas"]["Chunk"];
       /**
        * Format: google-fieldmask
@@ -1684,6 +1823,11 @@ export interface components {
     };
     /** @description Metadata on the generation request's token usage. */
     UsageMetadata: {
+      /**
+       * Format: int32
+       * @description Number of tokens in the cached part of the prompt, i.e. in the cached content.
+       */
+      cachedContentTokenCount?: number;
       /**
        * Format: int32
        * @description Total number of tokens across the generated candidates.
@@ -1713,6 +1857,8 @@ export interface components {
   };
   responses: never;
   parameters: {
+    /** @description V1 error format. */
+    "_.xgafv"?: "1" | "2";
     /** @description OAuth access token. */
     access_token?: string;
     /** @description Data format for response. */
@@ -1729,25 +1875,12 @@ export interface components {
     prettyPrint?: boolean;
     /** @description Available to use for quota purposes for server-side applications. Can be any arbitrary string assigned to a user, but should not exceed 40 characters. */
     quotaUser?: string;
-    /** @description Legacy upload protocol for media (e.g. "media", "multipart"). */
-    uploadType?: string;
     /** @description Upload protocol for media (e.g. "raw", "multipart"). */
     upload_protocol?: string;
-    /** @description V1 error format. */
-    "_.xgafv"?: "1" | "2";
+    /** @description Legacy upload protocol for media (e.g. "media", "multipart"). */
+    uploadType?: string;
   };
-  requestBodies: {
-    Permission?: {
-      content: {
-        "application/json": components["schemas"]["Permission"];
-      };
-    };
-    GenerateContentRequest?: {
-      content: {
-        "application/json": components["schemas"]["GenerateContentRequest"];
-      };
-    };
-  };
+  requestBodies: never;
   headers: never;
   pathItems: never;
 }
@@ -1758,566 +1891,6 @@ export type external = Record<string, never>;
 
 export interface operations {
 
-  /** @description Lists all `Corpora` owned by the user. */
-  "generativelanguage.corpora.list": {
-    parameters: {
-      query?: {
-        "$.xgafv"?: components["parameters"]["_.xgafv"];
-        access_token?: components["parameters"]["access_token"];
-        alt?: components["parameters"]["alt"];
-        callback?: components["parameters"]["callback"];
-        fields?: components["parameters"]["fields"];
-        key?: components["parameters"]["key"];
-        oauth_token?: components["parameters"]["oauth_token"];
-        prettyPrint?: components["parameters"]["prettyPrint"];
-        quotaUser?: components["parameters"]["quotaUser"];
-        uploadType?: components["parameters"]["uploadType"];
-        upload_protocol?: components["parameters"]["upload_protocol"];
-        /** @description Optional. The maximum number of `Corpora` to return (per page). The service may return fewer `Corpora`. If unspecified, at most 10 `Corpora` will be returned. The maximum size limit is 20 `Corpora` per page. */
-        pageSize?: number;
-        /** @description Optional. A page token, received from a previous `ListCorpora` call. Provide the `next_page_token` returned in the response as an argument to the next request to retrieve the next page. When paginating, all other parameters provided to `ListCorpora` must match the call that provided the page token. */
-        pageToken?: string;
-      };
-    };
-    responses: {
-      /** @description Successful response */
-      200: {
-        content: {
-          "*/*": components["schemas"]["ListCorporaResponse"];
-        };
-      };
-    };
-  };
-  /** @description Creates an empty `Corpus`. */
-  "generativelanguage.corpora.create": {
-    parameters: {
-      query?: {
-        "$.xgafv"?: components["parameters"]["_.xgafv"];
-        access_token?: components["parameters"]["access_token"];
-        alt?: components["parameters"]["alt"];
-        callback?: components["parameters"]["callback"];
-        fields?: components["parameters"]["fields"];
-        key?: components["parameters"]["key"];
-        oauth_token?: components["parameters"]["oauth_token"];
-        prettyPrint?: components["parameters"]["prettyPrint"];
-        quotaUser?: components["parameters"]["quotaUser"];
-        uploadType?: components["parameters"]["uploadType"];
-        upload_protocol?: components["parameters"]["upload_protocol"];
-      };
-    };
-    requestBody?: {
-      content: {
-        "application/json": components["schemas"]["Corpus"];
-      };
-    };
-    responses: {
-      /** @description Successful response */
-      200: {
-        content: {
-          "*/*": components["schemas"]["Corpus"];
-        };
-      };
-    };
-  };
-  /** @description Gets information about a specific Permission. */
-  "generativelanguage.tunedModels.permissions.get": {
-    parameters: {
-      query?: {
-        "$.xgafv"?: components["parameters"]["_.xgafv"];
-        access_token?: components["parameters"]["access_token"];
-        alt?: components["parameters"]["alt"];
-        callback?: components["parameters"]["callback"];
-        fields?: components["parameters"]["fields"];
-        key?: components["parameters"]["key"];
-        oauth_token?: components["parameters"]["oauth_token"];
-        prettyPrint?: components["parameters"]["prettyPrint"];
-        quotaUser?: components["parameters"]["quotaUser"];
-        uploadType?: components["parameters"]["uploadType"];
-        upload_protocol?: components["parameters"]["upload_protocol"];
-      };
-      path: {
-        /** @description Required. The resource name of the permission. Formats: `tunedModels/{tuned_model}/permissions/{permission}` `corpora/{corpus}/permissions/{permission}` */
-        name: string;
-      };
-    };
-    responses: {
-      /** @description Successful response */
-      200: {
-        content: {
-          "*/*": components["schemas"]["Permission"];
-        };
-      };
-    };
-  };
-  /** @description Deletes the permission. */
-  "generativelanguage.tunedModels.permissions.delete": {
-    parameters: {
-      query?: {
-        "$.xgafv"?: components["parameters"]["_.xgafv"];
-        access_token?: components["parameters"]["access_token"];
-        alt?: components["parameters"]["alt"];
-        callback?: components["parameters"]["callback"];
-        fields?: components["parameters"]["fields"];
-        key?: components["parameters"]["key"];
-        oauth_token?: components["parameters"]["oauth_token"];
-        prettyPrint?: components["parameters"]["prettyPrint"];
-        quotaUser?: components["parameters"]["quotaUser"];
-        uploadType?: components["parameters"]["uploadType"];
-        upload_protocol?: components["parameters"]["upload_protocol"];
-        /** @description Optional. If set to true, any `Chunk`s and objects related to this `Document` will also be deleted. If false (the default), a `FAILED_PRECONDITION` error will be returned if `Document` contains any `Chunk`s. */
-        force?: boolean;
-      };
-      path: {
-        /** @description Required. The resource name of the permission. Formats: `tunedModels/{tuned_model}/permissions/{permission}` `corpora/{corpus}/permissions/{permission}` */
-        name: string;
-      };
-    };
-    responses: {
-      /** @description Successful response */
-      200: {
-        content: {
-          "*/*": components["schemas"]["Empty"];
-        };
-      };
-    };
-  };
-  /** @description Updates the permission. */
-  "generativelanguage.tunedModels.permissions.patch": {
-    parameters: {
-      query?: {
-        "$.xgafv"?: components["parameters"]["_.xgafv"];
-        access_token?: components["parameters"]["access_token"];
-        alt?: components["parameters"]["alt"];
-        callback?: components["parameters"]["callback"];
-        fields?: components["parameters"]["fields"];
-        key?: components["parameters"]["key"];
-        oauth_token?: components["parameters"]["oauth_token"];
-        prettyPrint?: components["parameters"]["prettyPrint"];
-        quotaUser?: components["parameters"]["quotaUser"];
-        uploadType?: components["parameters"]["uploadType"];
-        upload_protocol?: components["parameters"]["upload_protocol"];
-        /** @description Required. The list of fields to update. Accepted ones: - role (`Permission.role` field) */
-        updateMask?: string;
-      };
-      path: {
-        /** @description Output only. Identifier. The permission name. A unique name will be generated on create. Examples: tunedModels/{tuned_model}/permissions/{permission} corpora/{corpus}/permissions/{permission} Output only. */
-        name: string;
-      };
-    };
-    requestBody: components["requestBodies"]["Permission"];
-    responses: {
-      /** @description Successful response */
-      200: {
-        content: {
-          "*/*": components["schemas"]["Permission"];
-        };
-      };
-    };
-  };
-  /** @description Performs semantic search over a `Document`. */
-  "generativelanguage.corpora.documents.query": {
-    parameters: {
-      query?: {
-        "$.xgafv"?: components["parameters"]["_.xgafv"];
-        access_token?: components["parameters"]["access_token"];
-        alt?: components["parameters"]["alt"];
-        callback?: components["parameters"]["callback"];
-        fields?: components["parameters"]["fields"];
-        key?: components["parameters"]["key"];
-        oauth_token?: components["parameters"]["oauth_token"];
-        prettyPrint?: components["parameters"]["prettyPrint"];
-        quotaUser?: components["parameters"]["quotaUser"];
-        uploadType?: components["parameters"]["uploadType"];
-        upload_protocol?: components["parameters"]["upload_protocol"];
-      };
-      path: {
-        /** @description Required. The name of the `Document` to query. Example: `corpora/my-corpus-123/documents/the-doc-abc` */
-        name: string;
-      };
-    };
-    requestBody?: {
-      content: {
-        "application/json": components["schemas"]["QueryDocumentRequest"];
-      };
-    };
-    responses: {
-      /** @description Successful response */
-      200: {
-        content: {
-          "*/*": components["schemas"]["QueryDocumentResponse"];
-        };
-      };
-    };
-  };
-  /** @description Lists all `Document`s in a `Corpus`. */
-  "generativelanguage.corpora.documents.list": {
-    parameters: {
-      query?: {
-        "$.xgafv"?: components["parameters"]["_.xgafv"];
-        access_token?: components["parameters"]["access_token"];
-        alt?: components["parameters"]["alt"];
-        callback?: components["parameters"]["callback"];
-        fields?: components["parameters"]["fields"];
-        key?: components["parameters"]["key"];
-        oauth_token?: components["parameters"]["oauth_token"];
-        prettyPrint?: components["parameters"]["prettyPrint"];
-        quotaUser?: components["parameters"]["quotaUser"];
-        uploadType?: components["parameters"]["uploadType"];
-        upload_protocol?: components["parameters"]["upload_protocol"];
-        /** @description Optional. The maximum number of `Document`s to return (per page). The service may return fewer `Document`s. If unspecified, at most 10 `Document`s will be returned. The maximum size limit is 20 `Document`s per page. */
-        pageSize?: number;
-        /** @description Optional. A page token, received from a previous `ListDocuments` call. Provide the `next_page_token` returned in the response as an argument to the next request to retrieve the next page. When paginating, all other parameters provided to `ListDocuments` must match the call that provided the page token. */
-        pageToken?: string;
-      };
-      path: {
-        /** @description Required. The name of the `Corpus` containing `Document`s. Example: `corpora/my-corpus-123` */
-        parent: string;
-      };
-    };
-    responses: {
-      /** @description Successful response */
-      200: {
-        content: {
-          "*/*": components["schemas"]["ListDocumentsResponse"];
-        };
-      };
-    };
-  };
-  /** @description Creates an empty `Document`. */
-  "generativelanguage.corpora.documents.create": {
-    parameters: {
-      query?: {
-        "$.xgafv"?: components["parameters"]["_.xgafv"];
-        access_token?: components["parameters"]["access_token"];
-        alt?: components["parameters"]["alt"];
-        callback?: components["parameters"]["callback"];
-        fields?: components["parameters"]["fields"];
-        key?: components["parameters"]["key"];
-        oauth_token?: components["parameters"]["oauth_token"];
-        prettyPrint?: components["parameters"]["prettyPrint"];
-        quotaUser?: components["parameters"]["quotaUser"];
-        uploadType?: components["parameters"]["uploadType"];
-        upload_protocol?: components["parameters"]["upload_protocol"];
-      };
-      path: {
-        /** @description Required. The name of the `Corpus` where this `Document` will be created. Example: `corpora/my-corpus-123` */
-        parent: string;
-      };
-    };
-    requestBody?: {
-      content: {
-        "application/json": components["schemas"]["Document"];
-      };
-    };
-    responses: {
-      /** @description Successful response */
-      200: {
-        content: {
-          "*/*": components["schemas"]["Document"];
-        };
-      };
-    };
-  };
-  /** @description Batch create `Chunk`s. */
-  "generativelanguage.corpora.documents.chunks.batchCreate": {
-    parameters: {
-      query?: {
-        "$.xgafv"?: components["parameters"]["_.xgafv"];
-        access_token?: components["parameters"]["access_token"];
-        alt?: components["parameters"]["alt"];
-        callback?: components["parameters"]["callback"];
-        fields?: components["parameters"]["fields"];
-        key?: components["parameters"]["key"];
-        oauth_token?: components["parameters"]["oauth_token"];
-        prettyPrint?: components["parameters"]["prettyPrint"];
-        quotaUser?: components["parameters"]["quotaUser"];
-        uploadType?: components["parameters"]["uploadType"];
-        upload_protocol?: components["parameters"]["upload_protocol"];
-      };
-      path: {
-        /** @description Optional. The name of the `Document` where this batch of `Chunk`s will be created. The parent field in every `CreateChunkRequest` must match this value. Example: `corpora/my-corpus-123/documents/the-doc-abc` */
-        parent: string;
-      };
-    };
-    requestBody?: {
-      content: {
-        "application/json": components["schemas"]["BatchCreateChunksRequest"];
-      };
-    };
-    responses: {
-      /** @description Successful response */
-      200: {
-        content: {
-          "*/*": components["schemas"]["BatchCreateChunksResponse"];
-        };
-      };
-    };
-  };
-  /** @description Batch delete `Chunk`s. */
-  "generativelanguage.corpora.documents.chunks.batchDelete": {
-    parameters: {
-      query?: {
-        "$.xgafv"?: components["parameters"]["_.xgafv"];
-        access_token?: components["parameters"]["access_token"];
-        alt?: components["parameters"]["alt"];
-        callback?: components["parameters"]["callback"];
-        fields?: components["parameters"]["fields"];
-        key?: components["parameters"]["key"];
-        oauth_token?: components["parameters"]["oauth_token"];
-        prettyPrint?: components["parameters"]["prettyPrint"];
-        quotaUser?: components["parameters"]["quotaUser"];
-        uploadType?: components["parameters"]["uploadType"];
-        upload_protocol?: components["parameters"]["upload_protocol"];
-      };
-      path: {
-        /** @description Optional. The name of the `Document` containing the `Chunk`s to delete. The parent field in every `DeleteChunkRequest` must match this value. Example: `corpora/my-corpus-123/documents/the-doc-abc` */
-        parent: string;
-      };
-    };
-    requestBody?: {
-      content: {
-        "application/json": components["schemas"]["BatchDeleteChunksRequest"];
-      };
-    };
-    responses: {
-      /** @description Successful response */
-      200: {
-        content: {
-          "*/*": components["schemas"]["Empty"];
-        };
-      };
-    };
-  };
-  /** @description Batch update `Chunk`s. */
-  "generativelanguage.corpora.documents.chunks.batchUpdate": {
-    parameters: {
-      query?: {
-        "$.xgafv"?: components["parameters"]["_.xgafv"];
-        access_token?: components["parameters"]["access_token"];
-        alt?: components["parameters"]["alt"];
-        callback?: components["parameters"]["callback"];
-        fields?: components["parameters"]["fields"];
-        key?: components["parameters"]["key"];
-        oauth_token?: components["parameters"]["oauth_token"];
-        prettyPrint?: components["parameters"]["prettyPrint"];
-        quotaUser?: components["parameters"]["quotaUser"];
-        uploadType?: components["parameters"]["uploadType"];
-        upload_protocol?: components["parameters"]["upload_protocol"];
-      };
-      path: {
-        /** @description Optional. The name of the `Document` containing the `Chunk`s to update. The parent field in every `UpdateChunkRequest` must match this value. Example: `corpora/my-corpus-123/documents/the-doc-abc` */
-        parent: string;
-      };
-    };
-    requestBody?: {
-      content: {
-        "application/json": components["schemas"]["BatchUpdateChunksRequest"];
-      };
-    };
-    responses: {
-      /** @description Successful response */
-      200: {
-        content: {
-          "*/*": components["schemas"]["BatchUpdateChunksResponse"];
-        };
-      };
-    };
-  };
-  /** @description Lists all `Chunk`s in a `Document`. */
-  "generativelanguage.corpora.documents.chunks.list": {
-    parameters: {
-      query?: {
-        "$.xgafv"?: components["parameters"]["_.xgafv"];
-        access_token?: components["parameters"]["access_token"];
-        alt?: components["parameters"]["alt"];
-        callback?: components["parameters"]["callback"];
-        fields?: components["parameters"]["fields"];
-        key?: components["parameters"]["key"];
-        oauth_token?: components["parameters"]["oauth_token"];
-        prettyPrint?: components["parameters"]["prettyPrint"];
-        quotaUser?: components["parameters"]["quotaUser"];
-        uploadType?: components["parameters"]["uploadType"];
-        upload_protocol?: components["parameters"]["upload_protocol"];
-        /** @description Optional. The maximum number of `Chunk`s to return (per page). The service may return fewer `Chunk`s. If unspecified, at most 10 `Chunk`s will be returned. The maximum size limit is 100 `Chunk`s per page. */
-        pageSize?: number;
-        /** @description Optional. A page token, received from a previous `ListChunks` call. Provide the `next_page_token` returned in the response as an argument to the next request to retrieve the next page. When paginating, all other parameters provided to `ListChunks` must match the call that provided the page token. */
-        pageToken?: string;
-      };
-      path: {
-        /** @description Required. The name of the `Document` containing `Chunk`s. Example: `corpora/my-corpus-123/documents/the-doc-abc` */
-        parent: string;
-      };
-    };
-    responses: {
-      /** @description Successful response */
-      200: {
-        content: {
-          "*/*": components["schemas"]["ListChunksResponse"];
-        };
-      };
-    };
-  };
-  /** @description Creates a `Chunk`. */
-  "generativelanguage.corpora.documents.chunks.create": {
-    parameters: {
-      query?: {
-        "$.xgafv"?: components["parameters"]["_.xgafv"];
-        access_token?: components["parameters"]["access_token"];
-        alt?: components["parameters"]["alt"];
-        callback?: components["parameters"]["callback"];
-        fields?: components["parameters"]["fields"];
-        key?: components["parameters"]["key"];
-        oauth_token?: components["parameters"]["oauth_token"];
-        prettyPrint?: components["parameters"]["prettyPrint"];
-        quotaUser?: components["parameters"]["quotaUser"];
-        uploadType?: components["parameters"]["uploadType"];
-        upload_protocol?: components["parameters"]["upload_protocol"];
-      };
-      path: {
-        /** @description Required. The name of the `Document` where this `Chunk` will be created. Example: `corpora/my-corpus-123/documents/the-doc-abc` */
-        parent: string;
-      };
-    };
-    requestBody?: {
-      content: {
-        "application/json": components["schemas"]["Chunk"];
-      };
-    };
-    responses: {
-      /** @description Successful response */
-      200: {
-        content: {
-          "*/*": components["schemas"]["Chunk"];
-        };
-      };
-    };
-  };
-  /** @description Lists permissions for the specific resource. */
-  "generativelanguage.tunedModels.permissions.list": {
-    parameters: {
-      query?: {
-        "$.xgafv"?: components["parameters"]["_.xgafv"];
-        access_token?: components["parameters"]["access_token"];
-        alt?: components["parameters"]["alt"];
-        callback?: components["parameters"]["callback"];
-        fields?: components["parameters"]["fields"];
-        key?: components["parameters"]["key"];
-        oauth_token?: components["parameters"]["oauth_token"];
-        prettyPrint?: components["parameters"]["prettyPrint"];
-        quotaUser?: components["parameters"]["quotaUser"];
-        uploadType?: components["parameters"]["uploadType"];
-        upload_protocol?: components["parameters"]["upload_protocol"];
-        /** @description Optional. The maximum number of `Permission`s to return (per page). The service may return fewer permissions. If unspecified, at most 10 permissions will be returned. This method returns at most 1000 permissions per page, even if you pass larger page_size. */
-        pageSize?: number;
-        /** @description Optional. A page token, received from a previous `ListPermissions` call. Provide the `page_token` returned by one request as an argument to the next request to retrieve the next page. When paginating, all other parameters provided to `ListPermissions` must match the call that provided the page token. */
-        pageToken?: string;
-      };
-      path: {
-        /** @description Required. The parent resource of the permissions. Formats: `tunedModels/{tuned_model}` `corpora/{corpus}` */
-        parent: string;
-      };
-    };
-    responses: {
-      /** @description Successful response */
-      200: {
-        content: {
-          "*/*": components["schemas"]["ListPermissionsResponse"];
-        };
-      };
-    };
-  };
-  /** @description Create a permission to a specific resource. */
-  "generativelanguage.tunedModels.permissions.create": {
-    parameters: {
-      query?: {
-        "$.xgafv"?: components["parameters"]["_.xgafv"];
-        access_token?: components["parameters"]["access_token"];
-        alt?: components["parameters"]["alt"];
-        callback?: components["parameters"]["callback"];
-        fields?: components["parameters"]["fields"];
-        key?: components["parameters"]["key"];
-        oauth_token?: components["parameters"]["oauth_token"];
-        prettyPrint?: components["parameters"]["prettyPrint"];
-        quotaUser?: components["parameters"]["quotaUser"];
-        uploadType?: components["parameters"]["uploadType"];
-        upload_protocol?: components["parameters"]["upload_protocol"];
-      };
-      path: {
-        /** @description Required. The parent resource of the `Permission`. Formats: `tunedModels/{tuned_model}` `corpora/{corpus}` */
-        parent: string;
-      };
-    };
-    requestBody: components["requestBodies"]["Permission"];
-    responses: {
-      /** @description Successful response */
-      200: {
-        content: {
-          "*/*": components["schemas"]["Permission"];
-        };
-      };
-    };
-  };
-  /** @description Lists the metadata for `File`s owned by the requesting project. */
-  "generativelanguage.files.list": {
-    parameters: {
-      query?: {
-        "$.xgafv"?: components["parameters"]["_.xgafv"];
-        access_token?: components["parameters"]["access_token"];
-        alt?: components["parameters"]["alt"];
-        callback?: components["parameters"]["callback"];
-        fields?: components["parameters"]["fields"];
-        key?: components["parameters"]["key"];
-        oauth_token?: components["parameters"]["oauth_token"];
-        prettyPrint?: components["parameters"]["prettyPrint"];
-        quotaUser?: components["parameters"]["quotaUser"];
-        uploadType?: components["parameters"]["uploadType"];
-        upload_protocol?: components["parameters"]["upload_protocol"];
-        /** @description Optional. Maximum number of `File`s to return per page. If unspecified, defaults to 10. Maximum `page_size` is 100. */
-        pageSize?: number;
-        /** @description Optional. A page token from a previous `ListFiles` call. */
-        pageToken?: string;
-      };
-    };
-    responses: {
-      /** @description Successful response */
-      200: {
-        content: {
-          "*/*": components["schemas"]["ListFilesResponse"];
-        };
-      };
-    };
-  };
-  /** @description Creates a `File`. */
-  "generativelanguage.media.upload": {
-    parameters: {
-      query?: {
-        "$.xgafv"?: components["parameters"]["_.xgafv"];
-        access_token?: components["parameters"]["access_token"];
-        alt?: components["parameters"]["alt"];
-        callback?: components["parameters"]["callback"];
-        fields?: components["parameters"]["fields"];
-        key?: components["parameters"]["key"];
-        oauth_token?: components["parameters"]["oauth_token"];
-        prettyPrint?: components["parameters"]["prettyPrint"];
-        quotaUser?: components["parameters"]["quotaUser"];
-        uploadType?: components["parameters"]["uploadType"];
-        upload_protocol?: components["parameters"]["upload_protocol"];
-      };
-    };
-    requestBody?: {
-      content: {
-        "application/octet-stream": components["schemas"]["CreateFileRequest"];
-      };
-    };
-    responses: {
-      /** @description Successful response */
-      200: {
-        content: {
-          "*/*": components["schemas"]["CreateFileResponse"];
-        };
-      };
-    };
-  };
   /** @description Generates multiple embeddings from the model given input text in a synchronous call. */
   "generativelanguage.models.batchEmbedContents": {
     parameters: {
@@ -2331,8 +1904,8 @@ export interface operations {
         oauth_token?: components["parameters"]["oauth_token"];
         prettyPrint?: components["parameters"]["prettyPrint"];
         quotaUser?: components["parameters"]["quotaUser"];
-        uploadType?: components["parameters"]["uploadType"];
         upload_protocol?: components["parameters"]["upload_protocol"];
+        uploadType?: components["parameters"]["uploadType"];
       };
       path: {
         /** @description Required. The model's resource name. This serves as an ID for the Model to use. This name should match a model name returned by the `ListModels` method. Format: `models/{model}` */
@@ -2348,7 +1921,7 @@ export interface operations {
       /** @description Successful response */
       200: {
         content: {
-          "*/*": components["schemas"]["BatchEmbedContentsResponse"];
+          "application/json": components["schemas"]["BatchEmbedContentsResponse"];
         };
       };
     };
@@ -2366,8 +1939,8 @@ export interface operations {
         oauth_token?: components["parameters"]["oauth_token"];
         prettyPrint?: components["parameters"]["prettyPrint"];
         quotaUser?: components["parameters"]["quotaUser"];
-        uploadType?: components["parameters"]["uploadType"];
         upload_protocol?: components["parameters"]["upload_protocol"];
+        uploadType?: components["parameters"]["uploadType"];
       };
       path: {
         /** @description Required. The name of the `Model` to use for generating the embedding. Examples: models/embedding-gecko-001 */
@@ -2383,7 +1956,7 @@ export interface operations {
       /** @description Successful response */
       200: {
         content: {
-          "*/*": components["schemas"]["BatchEmbedTextResponse"];
+          "application/json": components["schemas"]["BatchEmbedTextResponse"];
         };
       };
     };
@@ -2401,8 +1974,8 @@ export interface operations {
         oauth_token?: components["parameters"]["oauth_token"];
         prettyPrint?: components["parameters"]["prettyPrint"];
         quotaUser?: components["parameters"]["quotaUser"];
-        uploadType?: components["parameters"]["uploadType"];
         upload_protocol?: components["parameters"]["upload_protocol"];
+        uploadType?: components["parameters"]["uploadType"];
       };
       path: {
         /** @description Required. The model's resource name. This serves as an ID for the Model to use. This name should match a model name returned by the `ListModels` method. Format: `models/{model}` */
@@ -2418,7 +1991,7 @@ export interface operations {
       /** @description Successful response */
       200: {
         content: {
-          "*/*": components["schemas"]["CountMessageTokensResponse"];
+          "application/json": components["schemas"]["CountMessageTokensResponse"];
         };
       };
     };
@@ -2436,8 +2009,8 @@ export interface operations {
         oauth_token?: components["parameters"]["oauth_token"];
         prettyPrint?: components["parameters"]["prettyPrint"];
         quotaUser?: components["parameters"]["quotaUser"];
-        uploadType?: components["parameters"]["uploadType"];
         upload_protocol?: components["parameters"]["upload_protocol"];
+        uploadType?: components["parameters"]["uploadType"];
       };
       path: {
         /** @description Required. The model's resource name. This serves as an ID for the Model to use. This name should match a model name returned by the `ListModels` method. Format: `models/{model}` */
@@ -2453,7 +2026,7 @@ export interface operations {
       /** @description Successful response */
       200: {
         content: {
-          "*/*": components["schemas"]["CountTextTokensResponse"];
+          "application/json": components["schemas"]["CountTextTokensResponse"];
         };
       };
     };
@@ -2471,8 +2044,8 @@ export interface operations {
         oauth_token?: components["parameters"]["oauth_token"];
         prettyPrint?: components["parameters"]["prettyPrint"];
         quotaUser?: components["parameters"]["quotaUser"];
-        uploadType?: components["parameters"]["uploadType"];
         upload_protocol?: components["parameters"]["upload_protocol"];
+        uploadType?: components["parameters"]["uploadType"];
       };
       path: {
         /** @description Required. The model's resource name. This serves as an ID for the Model to use. This name should match a model name returned by the `ListModels` method. Format: `models/{model}` */
@@ -2488,7 +2061,7 @@ export interface operations {
       /** @description Successful response */
       200: {
         content: {
-          "*/*": components["schemas"]["CountTokensResponse"];
+          "application/json": components["schemas"]["CountTokensResponse"];
         };
       };
     };
@@ -2506,8 +2079,8 @@ export interface operations {
         oauth_token?: components["parameters"]["oauth_token"];
         prettyPrint?: components["parameters"]["prettyPrint"];
         quotaUser?: components["parameters"]["quotaUser"];
-        uploadType?: components["parameters"]["uploadType"];
         upload_protocol?: components["parameters"]["upload_protocol"];
+        uploadType?: components["parameters"]["uploadType"];
       };
       path: {
         /** @description Required. The model's resource name. This serves as an ID for the Model to use. This name should match a model name returned by the `ListModels` method. Format: `models/{model}` */
@@ -2523,7 +2096,7 @@ export interface operations {
       /** @description Successful response */
       200: {
         content: {
-          "*/*": components["schemas"]["EmbedContentResponse"];
+          "application/json": components["schemas"]["EmbedContentResponse"];
         };
       };
     };
@@ -2541,8 +2114,8 @@ export interface operations {
         oauth_token?: components["parameters"]["oauth_token"];
         prettyPrint?: components["parameters"]["prettyPrint"];
         quotaUser?: components["parameters"]["quotaUser"];
-        uploadType?: components["parameters"]["uploadType"];
         upload_protocol?: components["parameters"]["upload_protocol"];
+        uploadType?: components["parameters"]["uploadType"];
       };
       path: {
         /** @description Required. The model name to use with the format model=models/{model}. */
@@ -2558,7 +2131,7 @@ export interface operations {
       /** @description Successful response */
       200: {
         content: {
-          "*/*": components["schemas"]["EmbedTextResponse"];
+          "application/json": components["schemas"]["EmbedTextResponse"];
         };
       };
     };
@@ -2576,8 +2149,8 @@ export interface operations {
         oauth_token?: components["parameters"]["oauth_token"];
         prettyPrint?: components["parameters"]["prettyPrint"];
         quotaUser?: components["parameters"]["quotaUser"];
-        uploadType?: components["parameters"]["uploadType"];
         upload_protocol?: components["parameters"]["upload_protocol"];
+        uploadType?: components["parameters"]["uploadType"];
       };
       path: {
         /** @description Required. The name of the `Model` to use for generating the grounded response. Format: `model=models/{model}`. */
@@ -2593,7 +2166,7 @@ export interface operations {
       /** @description Successful response */
       200: {
         content: {
-          "*/*": components["schemas"]["GenerateAnswerResponse"];
+          "application/json": components["schemas"]["GenerateAnswerResponse"];
         };
       };
     };
@@ -2611,20 +2184,24 @@ export interface operations {
         oauth_token?: components["parameters"]["oauth_token"];
         prettyPrint?: components["parameters"]["prettyPrint"];
         quotaUser?: components["parameters"]["quotaUser"];
-        uploadType?: components["parameters"]["uploadType"];
         upload_protocol?: components["parameters"]["upload_protocol"];
+        uploadType?: components["parameters"]["uploadType"];
       };
       path: {
         /** @description Required. The name of the `Model` to use for generating the completion. Format: `name=models/{model}`. */
         model: string;
       };
     };
-    requestBody: components["requestBodies"]["GenerateContentRequest"];
+    requestBody?: {
+      content: {
+        "application/json": components["schemas"]["GenerateContentRequest"];
+      };
+    };
     responses: {
       /** @description Successful response */
       200: {
         content: {
-          "*/*": components["schemas"]["GenerateContentResponse"];
+          "application/json": components["schemas"]["GenerateContentResponse"];
         };
       };
     };
@@ -2642,8 +2219,8 @@ export interface operations {
         oauth_token?: components["parameters"]["oauth_token"];
         prettyPrint?: components["parameters"]["prettyPrint"];
         quotaUser?: components["parameters"]["quotaUser"];
-        uploadType?: components["parameters"]["uploadType"];
         upload_protocol?: components["parameters"]["upload_protocol"];
+        uploadType?: components["parameters"]["uploadType"];
       };
       path: {
         /** @description Required. The name of the model to use. Format: `name=models/{model}`. */
@@ -2659,7 +2236,7 @@ export interface operations {
       /** @description Successful response */
       200: {
         content: {
-          "*/*": components["schemas"]["GenerateMessageResponse"];
+          "application/json": components["schemas"]["GenerateMessageResponse"];
         };
       };
     };
@@ -2677,8 +2254,8 @@ export interface operations {
         oauth_token?: components["parameters"]["oauth_token"];
         prettyPrint?: components["parameters"]["prettyPrint"];
         quotaUser?: components["parameters"]["quotaUser"];
-        uploadType?: components["parameters"]["uploadType"];
         upload_protocol?: components["parameters"]["upload_protocol"];
+        uploadType?: components["parameters"]["uploadType"];
       };
       path: {
         /** @description Required. The name of the `Model` or `TunedModel` to use for generating the completion. Examples: models/text-bison-001 tunedModels/sentence-translator-u3b7m */
@@ -2694,37 +2271,7 @@ export interface operations {
       /** @description Successful response */
       200: {
         content: {
-          "*/*": components["schemas"]["GenerateTextResponse"];
-        };
-      };
-    };
-  };
-  /** @description Lists models available through the API. */
-  "generativelanguage.models.list": {
-    parameters: {
-      query?: {
-        "$.xgafv"?: components["parameters"]["_.xgafv"];
-        access_token?: components["parameters"]["access_token"];
-        alt?: components["parameters"]["alt"];
-        callback?: components["parameters"]["callback"];
-        fields?: components["parameters"]["fields"];
-        key?: components["parameters"]["key"];
-        oauth_token?: components["parameters"]["oauth_token"];
-        prettyPrint?: components["parameters"]["prettyPrint"];
-        quotaUser?: components["parameters"]["quotaUser"];
-        uploadType?: components["parameters"]["uploadType"];
-        upload_protocol?: components["parameters"]["upload_protocol"];
-        /** @description The maximum number of `Models` to return (per page). The service may return fewer models. If unspecified, at most 50 models will be returned per page. This method returns at most 1000 models per page, even if you pass a larger page_size. */
-        pageSize?: number;
-        /** @description A page token, received from a previous `ListModels` call. Provide the `page_token` returned by one request as an argument to the next request to retrieve the next page. When paginating, all other parameters provided to `ListModels` must match the call that provided the page token. */
-        pageToken?: string;
-      };
-    };
-    responses: {
-      /** @description Successful response */
-      200: {
-        content: {
-          "*/*": components["schemas"]["ListModelsResponse"];
+          "application/json": components["schemas"]["GenerateTextResponse"];
         };
       };
     };
@@ -2742,26 +2289,30 @@ export interface operations {
         oauth_token?: components["parameters"]["oauth_token"];
         prettyPrint?: components["parameters"]["prettyPrint"];
         quotaUser?: components["parameters"]["quotaUser"];
-        uploadType?: components["parameters"]["uploadType"];
         upload_protocol?: components["parameters"]["upload_protocol"];
+        uploadType?: components["parameters"]["uploadType"];
       };
       path: {
         /** @description Required. The name of the `Model` to use for generating the completion. Format: `name=models/{model}`. */
         model: string;
       };
     };
-    requestBody: components["requestBodies"]["GenerateContentRequest"];
+    requestBody?: {
+      content: {
+        "application/json": components["schemas"]["GenerateContentRequest"];
+      };
+    };
     responses: {
       /** @description Successful response */
       200: {
         content: {
-          "*/*": components["schemas"]["GenerateContentResponse"];
+          "application/json": components["schemas"]["GenerateContentResponse"];
         };
       };
     };
   };
-  /** @description Lists tuned models owned by the user. */
-  "generativelanguage.tunedModels.list": {
+  /** @description Gets information about a specific Permission. */
+  "generativelanguage.tunedModels.permissions.get": {
     parameters: {
       query?: {
         "$.xgafv"?: components["parameters"]["_.xgafv"];
@@ -2773,27 +2324,25 @@ export interface operations {
         oauth_token?: components["parameters"]["oauth_token"];
         prettyPrint?: components["parameters"]["prettyPrint"];
         quotaUser?: components["parameters"]["quotaUser"];
-        uploadType?: components["parameters"]["uploadType"];
         upload_protocol?: components["parameters"]["upload_protocol"];
-        /** @description Optional. A filter is a full text search over the tuned model's description and display name. By default, results will not include tuned models shared with everyone. Additional operators: - owner:me - writers:me - readers:me - readers:everyone Examples: "owner:me" returns all tuned models to which caller has owner role "readers:me" returns all tuned models to which caller has reader role "readers:everyone" returns all tuned models that are shared with everyone */
-        filter?: string;
-        /** @description Optional. The maximum number of `TunedModels` to return (per page). The service may return fewer tuned models. If unspecified, at most 10 tuned models will be returned. This method returns at most 1000 models per page, even if you pass a larger page_size. */
-        pageSize?: number;
-        /** @description Optional. A page token, received from a previous `ListTunedModels` call. Provide the `page_token` returned by one request as an argument to the next request to retrieve the next page. When paginating, all other parameters provided to `ListTunedModels` must match the call that provided the page token. */
-        pageToken?: string;
+        uploadType?: components["parameters"]["uploadType"];
+      };
+      path: {
+        /** @description Required. The resource name of the permission. Formats: `tunedModels/{tuned_model}/permissions/{permission}` `corpora/{corpus}/permissions/{permission}` */
+        name: string;
       };
     };
     responses: {
       /** @description Successful response */
       200: {
         content: {
-          "*/*": components["schemas"]["ListTunedModelsResponse"];
+          "application/json": components["schemas"]["Permission"];
         };
       };
     };
   };
-  /** @description Creates a tuned model. Intermediate tuning progress (if any) is accessed through the [google.longrunning.Operations] service. Status and results can be accessed through the Operations service. Example: GET /v1/tunedModels/az2mb0bpw6i/operations/000-111-222 */
-  "generativelanguage.tunedModels.create": {
+  /** @description Deletes the permission. */
+  "generativelanguage.tunedModels.permissions.delete": {
     parameters: {
       query?: {
         "$.xgafv"?: components["parameters"]["_.xgafv"];
@@ -2805,22 +2354,93 @@ export interface operations {
         oauth_token?: components["parameters"]["oauth_token"];
         prettyPrint?: components["parameters"]["prettyPrint"];
         quotaUser?: components["parameters"]["quotaUser"];
-        uploadType?: components["parameters"]["uploadType"];
         upload_protocol?: components["parameters"]["upload_protocol"];
-        /** @description Optional. The unique id for the tuned model if specified. This value should be up to 40 characters, the first character must be a letter, the last could be a letter or a number. The id must match the regular expression: [a-z]([a-z0-9-]{0,38}[a-z0-9])?. */
-        tunedModelId?: string;
+        uploadType?: components["parameters"]["uploadType"];
+        /** @description Optional. If set to true, any `Chunk`s and objects related to this `Document` will also be deleted. If false (the default), a `FAILED_PRECONDITION` error will be returned if `Document` contains any `Chunk`s. */
+        force?: boolean;
+      };
+      path: {
+        /** @description Required. The resource name of the permission. Formats: `tunedModels/{tuned_model}/permissions/{permission}` `corpora/{corpus}/permissions/{permission}` */
+        name: string;
+      };
+    };
+    responses: {
+      /** @description Successful response */
+      200: {
+        content: {
+          "application/json": components["schemas"]["Empty"];
+        };
+      };
+    };
+  };
+  /** @description Updates the permission. */
+  "generativelanguage.tunedModels.permissions.patch": {
+    parameters: {
+      query?: {
+        "$.xgafv"?: components["parameters"]["_.xgafv"];
+        access_token?: components["parameters"]["access_token"];
+        alt?: components["parameters"]["alt"];
+        callback?: components["parameters"]["callback"];
+        fields?: components["parameters"]["fields"];
+        key?: components["parameters"]["key"];
+        oauth_token?: components["parameters"]["oauth_token"];
+        prettyPrint?: components["parameters"]["prettyPrint"];
+        quotaUser?: components["parameters"]["quotaUser"];
+        upload_protocol?: components["parameters"]["upload_protocol"];
+        uploadType?: components["parameters"]["uploadType"];
+        /** @description Required. The list of fields to update. Accepted ones: - role (`Permission.role` field) */
+        updateMask?: string;
+      };
+      path: {
+        /** @description Output only. Identifier. The permission name. A unique name will be generated on create. Examples: tunedModels/{tuned_model}/permissions/{permission} corpora/{corpus}/permissions/{permission} Output only. */
+        name: string;
       };
     };
     requestBody?: {
       content: {
-        "application/json": components["schemas"]["TunedModel"];
+        "application/json": components["schemas"]["Permission"];
       };
     };
     responses: {
       /** @description Successful response */
       200: {
         content: {
-          "*/*": components["schemas"]["Operation"];
+          "application/json": components["schemas"]["Permission"];
+        };
+      };
+    };
+  };
+  /** @description Performs semantic search over a `Document`. */
+  "generativelanguage.corpora.documents.query": {
+    parameters: {
+      query?: {
+        "$.xgafv"?: components["parameters"]["_.xgafv"];
+        access_token?: components["parameters"]["access_token"];
+        alt?: components["parameters"]["alt"];
+        callback?: components["parameters"]["callback"];
+        fields?: components["parameters"]["fields"];
+        key?: components["parameters"]["key"];
+        oauth_token?: components["parameters"]["oauth_token"];
+        prettyPrint?: components["parameters"]["prettyPrint"];
+        quotaUser?: components["parameters"]["quotaUser"];
+        upload_protocol?: components["parameters"]["upload_protocol"];
+        uploadType?: components["parameters"]["uploadType"];
+      };
+      path: {
+        /** @description Required. The name of the `Document` to query. Example: `corpora/my-corpus-123/documents/the-doc-abc` */
+        name: string;
+      };
+    };
+    requestBody?: {
+      content: {
+        "application/json": components["schemas"]["QueryDocumentRequest"];
+      };
+    };
+    responses: {
+      /** @description Successful response */
+      200: {
+        content: {
+          "application/json": components["schemas"]["QueryDocumentResponse"];
         };
       };
     };
@@ -2838,8 +2458,8 @@ export interface operations {
         oauth_token?: components["parameters"]["oauth_token"];
         prettyPrint?: components["parameters"]["prettyPrint"];
         quotaUser?: components["parameters"]["quotaUser"];
-        uploadType?: components["parameters"]["uploadType"];
         upload_protocol?: components["parameters"]["upload_protocol"];
+        uploadType?: components["parameters"]["uploadType"];
       };
       path: {
         /** @description Required. The resource name of the tuned model to transfer ownership. Format: `tunedModels/my-model-id` */
@@ -2855,7 +2475,597 @@ export interface operations {
       /** @description Successful response */
       200: {
         content: {
-          "*/*": components["schemas"]["TransferOwnershipResponse"];
+          "application/json": components["schemas"]["TransferOwnershipResponse"];
+        };
+      };
+    };
+  };
+  /** @description Lists all `Chunk`s in a `Document`. */
+  "generativelanguage.corpora.documents.chunks.list": {
+    parameters: {
+      query?: {
+        "$.xgafv"?: components["parameters"]["_.xgafv"];
+        access_token?: components["parameters"]["access_token"];
+        alt?: components["parameters"]["alt"];
+        callback?: components["parameters"]["callback"];
+        fields?: components["parameters"]["fields"];
+        key?: components["parameters"]["key"];
+        oauth_token?: components["parameters"]["oauth_token"];
+        prettyPrint?: components["parameters"]["prettyPrint"];
+        quotaUser?: components["parameters"]["quotaUser"];
+        upload_protocol?: components["parameters"]["upload_protocol"];
+        uploadType?: components["parameters"]["uploadType"];
+        /** @description Optional. The maximum number of `Chunk`s to return (per page). The service may return fewer `Chunk`s. If unspecified, at most 10 `Chunk`s will be returned. The maximum size limit is 100 `Chunk`s per page. */
+        pageSize?: number;
+        /** @description Optional. A page token, received from a previous `ListChunks` call. Provide the `next_page_token` returned in the response as an argument to the next request to retrieve the next page. When paginating, all other parameters provided to `ListChunks` must match the call that provided the page token. */
+        pageToken?: string;
+      };
+      path: {
+        /** @description Required. The name of the `Document` containing `Chunk`s. Example: `corpora/my-corpus-123/documents/the-doc-abc` */
+        parent: string;
+      };
+    };
+    responses: {
+      /** @description Successful response */
+      200: {
+        content: {
+          "application/json": components["schemas"]["ListChunksResponse"];
+        };
+      };
+    };
+  };
+  /** @description Creates a `Chunk`. */
+  "generativelanguage.corpora.documents.chunks.create": {
+    parameters: {
+      query?: {
+        "$.xgafv"?: components["parameters"]["_.xgafv"];
+        access_token?: components["parameters"]["access_token"];
+        alt?: components["parameters"]["alt"];
+        callback?: components["parameters"]["callback"];
+        fields?: components["parameters"]["fields"];
+        key?: components["parameters"]["key"];
+        oauth_token?: components["parameters"]["oauth_token"];
+        prettyPrint?: components["parameters"]["prettyPrint"];
+        quotaUser?: components["parameters"]["quotaUser"];
+        upload_protocol?: components["parameters"]["upload_protocol"];
+        uploadType?: components["parameters"]["uploadType"];
+      };
+      path: {
+        /** @description Required. The name of the `Document` where this `Chunk` will be created. Example: `corpora/my-corpus-123/documents/the-doc-abc` */
+        parent: string;
+      };
+    };
+    requestBody?: {
+      content: {
+        "application/json": components["schemas"]["Chunk"];
+      };
+    };
+    responses: {
+      /** @description Successful response */
+      200: {
+        content: {
+          "application/json": components["schemas"]["Chunk"];
+        };
+      };
+    };
+  };
+  /** @description Batch create `Chunk`s. */
+  "generativelanguage.corpora.documents.chunks.batchCreate": {
+    parameters: {
+      query?: {
+        "$.xgafv"?: components["parameters"]["_.xgafv"];
+        access_token?: components["parameters"]["access_token"];
+        alt?: components["parameters"]["alt"];
+        callback?: components["parameters"]["callback"];
+        fields?: components["parameters"]["fields"];
+        key?: components["parameters"]["key"];
+        oauth_token?: components["parameters"]["oauth_token"];
+        prettyPrint?: components["parameters"]["prettyPrint"];
+        quotaUser?: components["parameters"]["quotaUser"];
+        upload_protocol?: components["parameters"]["upload_protocol"];
+        uploadType?: components["parameters"]["uploadType"];
+      };
+      path: {
+        /** @description Optional. The name of the `Document` where this batch of `Chunk`s will be created. The parent field in every `CreateChunkRequest` must match this value. Example: `corpora/my-corpus-123/documents/the-doc-abc` */
+        parent: string;
+      };
+    };
+    requestBody?: {
+      content: {
+        "application/json": components["schemas"]["BatchCreateChunksRequest"];
+      };
+    };
+    responses: {
+      /** @description Successful response */
+      200: {
+        content: {
+          "application/json": components["schemas"]["BatchCreateChunksResponse"];
+        };
+      };
+    };
+  };
+  /** @description Batch delete `Chunk`s. */
+  "generativelanguage.corpora.documents.chunks.batchDelete": {
+    parameters: {
+      query?: {
+        "$.xgafv"?: components["parameters"]["_.xgafv"];
+        access_token?: components["parameters"]["access_token"];
+        alt?: components["parameters"]["alt"];
+        callback?: components["parameters"]["callback"];
+        fields?: components["parameters"]["fields"];
+        key?: components["parameters"]["key"];
+        oauth_token?: components["parameters"]["oauth_token"];
+        prettyPrint?: components["parameters"]["prettyPrint"];
+        quotaUser?: components["parameters"]["quotaUser"];
+        upload_protocol?: components["parameters"]["upload_protocol"];
+        uploadType?: components["parameters"]["uploadType"];
+      };
+      path: {
+        /** @description Optional. The name of the `Document` containing the `Chunk`s to delete. The parent field in every `DeleteChunkRequest` must match this value. Example: `corpora/my-corpus-123/documents/the-doc-abc` */
+        parent: string;
+      };
+    };
+    requestBody?: {
+      content: {
+        "application/json": components["schemas"]["BatchDeleteChunksRequest"];
+      };
+    };
+    responses: {
+      /** @description Successful response */
+      200: {
+        content: {
+          "application/json": components["schemas"]["Empty"];
+        };
+      };
+    };
+  };
+  /** @description Batch update `Chunk`s. */
+  "generativelanguage.corpora.documents.chunks.batchUpdate": {
+    parameters: {
+      query?: {
+        "$.xgafv"?: components["parameters"]["_.xgafv"];
+        access_token?: components["parameters"]["access_token"];
+        alt?: components["parameters"]["alt"];
+        callback?: components["parameters"]["callback"];
+        fields?: components["parameters"]["fields"];
+        key?: components["parameters"]["key"];
+        oauth_token?: components["parameters"]["oauth_token"];
+        prettyPrint?: components["parameters"]["prettyPrint"];
+        quotaUser?: components["parameters"]["quotaUser"];
+        upload_protocol?: components["parameters"]["upload_protocol"];
+        uploadType?: components["parameters"]["uploadType"];
+      };
+      path: {
+        /** @description Optional. The name of the `Document` containing the `Chunk`s to update. The parent field in every `UpdateChunkRequest` must match this value. Example: `corpora/my-corpus-123/documents/the-doc-abc` */
+        parent: string;
+      };
+    };
+    requestBody?: {
+      content: {
+        "application/json": components["schemas"]["BatchUpdateChunksRequest"];
+      };
+    };
+    responses: {
+      /** @description Successful response */
+      200: {
+        content: {
+          "application/json": components["schemas"]["BatchUpdateChunksResponse"];
+        };
+      };
+    };
+  };
+  /** @description Lists all `Document`s in a `Corpus`. */
+  "generativelanguage.corpora.documents.list": {
+    parameters: {
+      query?: {
+        "$.xgafv"?: components["parameters"]["_.xgafv"];
+        access_token?: components["parameters"]["access_token"];
+        alt?: components["parameters"]["alt"];
+        callback?: components["parameters"]["callback"];
+        fields?: components["parameters"]["fields"];
+        key?: components["parameters"]["key"];
+        oauth_token?: components["parameters"]["oauth_token"];
+        prettyPrint?: components["parameters"]["prettyPrint"];
+        quotaUser?: components["parameters"]["quotaUser"];
+        upload_protocol?: components["parameters"]["upload_protocol"];
+        uploadType?: components["parameters"]["uploadType"];
+        /** @description Optional. The maximum number of `Document`s to return (per page). The service may return fewer `Document`s. If unspecified, at most 10 `Document`s will be returned. The maximum size limit is 20 `Document`s per page. */
+        pageSize?: number;
+        /** @description Optional. A page token, received from a previous `ListDocuments` call. Provide the `next_page_token` returned in the response as an argument to the next request to retrieve the next page. When paginating, all other parameters provided to `ListDocuments` must match the call that provided the page token. */
+        pageToken?: string;
+      };
+      path: {
+        /** @description Required. The name of the `Corpus` containing `Document`s. Example: `corpora/my-corpus-123` */
+        parent: string;
+      };
+    };
+    responses: {
+      /** @description Successful response */
+      200: {
+        content: {
+          "application/json": components["schemas"]["ListDocumentsResponse"];
+        };
+      };
+    };
+  };
+  /** @description Creates an empty `Document`. */
+  "generativelanguage.corpora.documents.create": {
+    parameters: {
+      query?: {
+        "$.xgafv"?: components["parameters"]["_.xgafv"];
+        access_token?: components["parameters"]["access_token"];
+        alt?: components["parameters"]["alt"];
+        callback?: components["parameters"]["callback"];
+        fields?: components["parameters"]["fields"];
+        key?: components["parameters"]["key"];
+        oauth_token?: components["parameters"]["oauth_token"];
+        prettyPrint?: components["parameters"]["prettyPrint"];
+        quotaUser?: components["parameters"]["quotaUser"];
+        upload_protocol?: components["parameters"]["upload_protocol"];
+        uploadType?: components["parameters"]["uploadType"];
+      };
+      path: {
+        /** @description Required. The name of the `Corpus` where this `Document` will be created. Example: `corpora/my-corpus-123` */
+        parent: string;
+      };
+    };
+    requestBody?: {
+      content: {
+        "application/json": components["schemas"]["Document"];
+      };
+    };
+    responses: {
+      /** @description Successful response */
+      200: {
+        content: {
+          "application/json": components["schemas"]["Document"];
+        };
+      };
+    };
+  };
+  /** @description Lists permissions for the specific resource. */
+  "generativelanguage.tunedModels.permissions.list": {
+    parameters: {
+      query?: {
+        "$.xgafv"?: components["parameters"]["_.xgafv"];
+        access_token?: components["parameters"]["access_token"];
+        alt?: components["parameters"]["alt"];
+        callback?: components["parameters"]["callback"];
+        fields?: components["parameters"]["fields"];
+        key?: components["parameters"]["key"];
+        oauth_token?: components["parameters"]["oauth_token"];
+        prettyPrint?: components["parameters"]["prettyPrint"];
+        quotaUser?: components["parameters"]["quotaUser"];
+        upload_protocol?: components["parameters"]["upload_protocol"];
+        uploadType?: components["parameters"]["uploadType"];
+        /** @description Optional. The maximum number of `Permission`s to return (per page). The service may return fewer permissions. If unspecified, at most 10 permissions will be returned. This method returns at most 1000 permissions per page, even if you pass larger page_size. */
+        pageSize?: number;
+        /** @description Optional. A page token, received from a previous `ListPermissions` call. Provide the `page_token` returned by one request as an argument to the next request to retrieve the next page. When paginating, all other parameters provided to `ListPermissions` must match the call that provided the page token. */
+        pageToken?: string;
+      };
+      path: {
+        /** @description Required. The parent resource of the permissions. Formats: `tunedModels/{tuned_model}` `corpora/{corpus}` */
+        parent: string;
+      };
+    };
+    responses: {
+      /** @description Successful response */
+      200: {
+        content: {
+          "application/json": components["schemas"]["ListPermissionsResponse"];
+        };
+      };
+    };
+  };
+  /** @description Create a permission to a specific resource. */
+  "generativelanguage.tunedModels.permissions.create": {
+    parameters: {
+      query?: {
+        "$.xgafv"?: components["parameters"]["_.xgafv"];
+        access_token?: components["parameters"]["access_token"];
+        alt?: components["parameters"]["alt"];
+        callback?: components["parameters"]["callback"];
+        fields?: components["parameters"]["fields"];
+        key?: components["parameters"]["key"];
+        oauth_token?: components["parameters"]["oauth_token"];
+        prettyPrint?: components["parameters"]["prettyPrint"];
+        quotaUser?: components["parameters"]["quotaUser"];
+        upload_protocol?: components["parameters"]["upload_protocol"];
+        uploadType?: components["parameters"]["uploadType"];
+      };
+      path: {
+        /** @description Required. The parent resource of the `Permission`. Formats: `tunedModels/{tuned_model}` `corpora/{corpus}` */
+        parent: string;
+      };
+    };
+    requestBody?: {
+      content: {
+        "application/json": components["schemas"]["Permission"];
+      };
+    };
+    responses: {
+      /** @description Successful response */
+      200: {
+        content: {
+          "application/json": components["schemas"]["Permission"];
+        };
+      };
+    };
+  };
+  /** @description Lists CachedContents. */
+  "generativelanguage.cachedContents.list": {
+    parameters: {
+      query?: {
+        "$.xgafv"?: components["parameters"]["_.xgafv"];
+        access_token?: components["parameters"]["access_token"];
+        alt?: components["parameters"]["alt"];
+        callback?: components["parameters"]["callback"];
+        fields?: components["parameters"]["fields"];
+        key?: components["parameters"]["key"];
+        oauth_token?: components["parameters"]["oauth_token"];
+        prettyPrint?: components["parameters"]["prettyPrint"];
+        quotaUser?: components["parameters"]["quotaUser"];
+        upload_protocol?: components["parameters"]["upload_protocol"];
+        uploadType?: components["parameters"]["uploadType"];
+        /** @description Optional. The maximum number of cached contents to return. The service may return fewer than this value. If unspecified, some default (under maximum) number of items will be returned. The maximum value is 1000; values above 1000 will be coerced to 1000. */
+        pageSize?: number;
+        /** @description Optional. A page token, received from a previous `ListCachedContents` call. Provide this to retrieve the subsequent page. When paginating, all other parameters provided to `ListCachedContents` must match the call that provided the page token. */
+        pageToken?: string;
+      };
+    };
+    responses: {
+      /** @description Successful response */
+      200: {
+        content: {
+          "application/json": components["schemas"]["ListCachedContentsResponse"];
+        };
+      };
+    };
+  };
+  /** @description Creates CachedContent resource. */
+  "generativelanguage.cachedContents.create": {
+    parameters: {
+      query?: {
+        "$.xgafv"?: components["parameters"]["_.xgafv"];
+        access_token?: components["parameters"]["access_token"];
+        alt?: components["parameters"]["alt"];
+        callback?: components["parameters"]["callback"];
+        fields?: components["parameters"]["fields"];
+        key?: components["parameters"]["key"];
+        oauth_token?: components["parameters"]["oauth_token"];
+        prettyPrint?: components["parameters"]["prettyPrint"];
+        quotaUser?: components["parameters"]["quotaUser"];
+        upload_protocol?: components["parameters"]["upload_protocol"];
+        uploadType?: components["parameters"]["uploadType"];
+      };
+    };
+    requestBody?: {
+      content: {
+        "application/json": components["schemas"]["CachedContent"];
+      };
+    };
+    responses: {
+      /** @description Successful response */
+      200: {
+        content: {
+          "application/json": components["schemas"]["CachedContent"];
+        };
+      };
+    };
+  };
+  /** @description Lists all `Corpora` owned by the user. */
+  "generativelanguage.corpora.list": {
+    parameters: {
+      query?: {
+        "$.xgafv"?: components["parameters"]["_.xgafv"];
+        access_token?: components["parameters"]["access_token"];
+        alt?: components["parameters"]["alt"];
+        callback?: components["parameters"]["callback"];
+        fields?: components["parameters"]["fields"];
+        key?: components["parameters"]["key"];
+        oauth_token?: components["parameters"]["oauth_token"];
+        prettyPrint?: components["parameters"]["prettyPrint"];
+        quotaUser?: components["parameters"]["quotaUser"];
+        upload_protocol?: components["parameters"]["upload_protocol"];
+        uploadType?: components["parameters"]["uploadType"];
+        /** @description Optional. The maximum number of `Corpora` to return (per page). The service may return fewer `Corpora`. If unspecified, at most 10 `Corpora` will be returned. The maximum size limit is 20 `Corpora` per page. */
+        pageSize?: number;
+        /** @description Optional. A page token, received from a previous `ListCorpora` call. Provide the `next_page_token` returned in the response as an argument to the next request to retrieve the next page. When paginating, all other parameters provided to `ListCorpora` must match the call that provided the page token. */
+        pageToken?: string;
+      };
+    };
+    responses: {
+      /** @description Successful response */
+      200: {
+        content: {
+          "application/json": components["schemas"]["ListCorporaResponse"];
+        };
+      };
+    };
+  };
+  /** @description Creates an empty `Corpus`. */
+  "generativelanguage.corpora.create": {
+    parameters: {
+      query?: {
+        "$.xgafv"?: components["parameters"]["_.xgafv"];
+        access_token?: components["parameters"]["access_token"];
+        alt?: components["parameters"]["alt"];
+        callback?: components["parameters"]["callback"];
+        fields?: components["parameters"]["fields"];
+        key?: components["parameters"]["key"];
+        oauth_token?: components["parameters"]["oauth_token"];
+        prettyPrint?: components["parameters"]["prettyPrint"];
+        quotaUser?: components["parameters"]["quotaUser"];
+        upload_protocol?: components["parameters"]["upload_protocol"];
+        uploadType?: components["parameters"]["uploadType"];
+      };
+    };
+    requestBody?: {
+      content: {
+        "application/json": components["schemas"]["Corpus"];
+      };
+    };
+    responses: {
+      /** @description Successful response */
+      200: {
+        content: {
+          "application/json": components["schemas"]["Corpus"];
+        };
+      };
+    };
+  };
+  /** @description Lists the metadata for `File`s owned by the requesting project. */
+  "generativelanguage.files.list": {
+    parameters: {
+      query?: {
+        "$.xgafv"?: components["parameters"]["_.xgafv"];
+        access_token?: components["parameters"]["access_token"];
+        alt?: components["parameters"]["alt"];
+        callback?: components["parameters"]["callback"];
+        fields?: components["parameters"]["fields"];
+        key?: components["parameters"]["key"];
+        oauth_token?: components["parameters"]["oauth_token"];
+        prettyPrint?: components["parameters"]["prettyPrint"];
+        quotaUser?: components["parameters"]["quotaUser"];
+        upload_protocol?: components["parameters"]["upload_protocol"];
+        uploadType?: components["parameters"]["uploadType"];
+        /** @description Optional. Maximum number of `File`s to return per page. If unspecified, defaults to 10. Maximum `page_size` is 100. */
+        pageSize?: number;
+        /** @description Optional. A page token from a previous `ListFiles` call. */
+        pageToken?: string;
+      };
+    };
+    responses: {
+      /** @description Successful response */
+      200: {
+        content: {
+          "application/json": components["schemas"]["ListFilesResponse"];
+        };
+      };
+    };
+  };
+  /** @description Creates a `File`. */
+  "generativelanguage.media.upload": {
+    parameters: {
+      query?: {
+        "$.xgafv"?: components["parameters"]["_.xgafv"];
+        access_token?: components["parameters"]["access_token"];
+        alt?: components["parameters"]["alt"];
+        callback?: components["parameters"]["callback"];
+        fields?: components["parameters"]["fields"];
+        key?: components["parameters"]["key"];
+        oauth_token?: components["parameters"]["oauth_token"];
+        prettyPrint?: components["parameters"]["prettyPrint"];
+        quotaUser?: components["parameters"]["quotaUser"];
+        upload_protocol?: components["parameters"]["upload_protocol"];
+        uploadType?: components["parameters"]["uploadType"];
+      };
+    };
+    requestBody?: {
+      content: {
+        "application/octet-stream": components["schemas"]["CreateFileRequest"];
+      };
+    };
+    responses: {
+      /** @description Successful response */
+      200: {
+        content: {
+          "application/json": components["schemas"]["CreateFileResponse"];
+        };
+      };
+    };
+  };
+  /** @description Lists models available through the API. */
+  "generativelanguage.models.list": {
+    parameters: {
+      query?: {
+        "$.xgafv"?: components["parameters"]["_.xgafv"];
+        access_token?: components["parameters"]["access_token"];
+        alt?: components["parameters"]["alt"];
+        callback?: components["parameters"]["callback"];
+        fields?: components["parameters"]["fields"];
+        key?: components["parameters"]["key"];
+        oauth_token?: components["parameters"]["oauth_token"];
+        prettyPrint?: components["parameters"]["prettyPrint"];
+        quotaUser?: components["parameters"]["quotaUser"];
+        upload_protocol?: components["parameters"]["upload_protocol"];
+        uploadType?: components["parameters"]["uploadType"];
+        /** @description The maximum number of `Models` to return (per page). The service may return fewer models. If unspecified, at most 50 models will be returned per page. This method returns at most 1000 models per page, even if you pass a larger page_size. */
+        pageSize?: number;
+        /** @description A page token, received from a previous `ListModels` call. Provide the `page_token` returned by one request as an argument to the next request to retrieve the next page. When paginating, all other parameters provided to `ListModels` must match the call that provided the page token. */
+        pageToken?: string;
+      };
+    };
+    responses: {
+      /** @description Successful response */
+      200: {
+        content: {
+          "application/json": components["schemas"]["ListModelsResponse"];
+        };
+      };
+    };
+  };
+  /** @description Lists tuned models owned by the user. */
+  "generativelanguage.tunedModels.list": {
+    parameters: {
+      query?: {
+        "$.xgafv"?: components["parameters"]["_.xgafv"];
+        access_token?: components["parameters"]["access_token"];
+        alt?: components["parameters"]["alt"];
+        callback?: components["parameters"]["callback"];
+        fields?: components["parameters"]["fields"];
+        key?: components["parameters"]["key"];
+        oauth_token?: components["parameters"]["oauth_token"];
+        prettyPrint?: components["parameters"]["prettyPrint"];
+        quotaUser?: components["parameters"]["quotaUser"];
+        upload_protocol?: components["parameters"]["upload_protocol"];
+        uploadType?: components["parameters"]["uploadType"];
+        /** @description Optional. A filter is a full text search over the tuned model's description and display name. By default, results will not include tuned models shared with everyone. Additional operators: - owner:me - writers:me - readers:me - readers:everyone Examples: "owner:me" returns all tuned models to which caller has owner role "readers:me" returns all tuned models to which caller has reader role "readers:everyone" returns all tuned models that are shared with everyone */
+        filter?: string;
+        /** @description Optional. The maximum number of `TunedModels` to return (per page). The service may return fewer tuned models. If unspecified, at most 10 tuned models will be returned. This method returns at most 1000 models per page, even if you pass a larger page_size. */
+        pageSize?: number;
+        /** @description Optional. A page token, received from a previous `ListTunedModels` call. Provide the `page_token` returned by one request as an argument to the next request to retrieve the next page. When paginating, all other parameters provided to `ListTunedModels` must match the call that provided the page token. */
+        pageToken?: string;
+      };
+    };
+    responses: {
+      /** @description Successful response */
+      200: {
+        content: {
+          "application/json": components["schemas"]["ListTunedModelsResponse"];
+        };
+      };
+    };
+  };
+  /** @description Creates a tuned model. Intermediate tuning progress (if any) is accessed through the [google.longrunning.Operations] service. Status and results can be accessed through the Operations service. Example: GET /v1/tunedModels/az2mb0bpw6i/operations/000-111-222 */
+  "generativelanguage.tunedModels.create": {
+    parameters: {
+      query?: {
+        "$.xgafv"?: components["parameters"]["_.xgafv"];
+        access_token?: components["parameters"]["access_token"];
+        alt?: components["parameters"]["alt"];
+        callback?: components["parameters"]["callback"];
+        fields?: components["parameters"]["fields"];
+        key?: components["parameters"]["key"];
+        oauth_token?: components["parameters"]["oauth_token"];
+        prettyPrint?: components["parameters"]["prettyPrint"];
+        quotaUser?: components["parameters"]["quotaUser"];
+        upload_protocol?: components["parameters"]["upload_protocol"];
+        uploadType?: components["parameters"]["uploadType"];
+        /** @description Optional. The unique id for the tuned model if specified. This value should be up to 40 characters, the first character must be a letter, the last could be a letter or a number. The id must match the regular expression: [a-z]([a-z0-9-]{0,38}[a-z0-9])?. */
+        tunedModelId?: string;
+      };
+    };
+    requestBody?: {
+      content: {
+        "application/json": components["schemas"]["TunedModel"];
+      };
+    };
+    responses: {
+      /** @description Successful response */
+      200: {
+        content: {
+          "application/json": components["schemas"]["Operation"];
         };
       };
     };
