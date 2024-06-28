@@ -10,3 +10,4 @@ pnpm-lock.yaml
 .wrangler/
 
 coverage/
+vendor/

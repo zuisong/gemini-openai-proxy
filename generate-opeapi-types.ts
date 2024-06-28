@@ -1,43 +1,38 @@
-#!/usr/bin/env -S deno run --allow-net --allow-env --allow-write=./src --allow-read=.
-import { convert } from "https://esm.sh/google-discovery-to-swagger@2.1.0?dev"
-import openapiTS from "https://esm.sh/openapi-typescript@6.7.5?bundle"
-import converter from "https://esm.sh/swagger2openapi@7.0.8"
+#!/usr/bin/env -S deno run --allow-net  --allow-write=./src/generated-types --allow-read=./src/generated-types  --no-prompt --allow-env --unstable-unsafe-proto
+import { emptyDirSync } from "jsr:@std/fs"
+import { convert } from "https://esm.sh/gh/APIs-guru/google-discovery-to-swagger@openapi3/src/index.js?bundle&dev&a.js"
+import openapiTS, { astToString } from "https://esm.sh/openapi-typescript@7.1.2?bundle&dev"
 
-const url = new URL("https://generativelanguage.googleapis.com/$discovery/rest")
+const data = await fetch(
+  "https://github.com/google/generative-ai-go/raw/main/genai/internal/generativelanguage/v1beta/generativelanguage-api.json",
+)
 
-url.searchParams.set("key", Deno.env.get("YOUR_GEMINI_API_KEY") ?? "")
-url.searchParams.set("version", "v1beta")
-
-const data = await fetch(url).then((res) => res.json())
-
-import { stringify } from "https://esm.sh/safe-stable-stringify@2.4.3?dev"
-
-const res = convert(JSON.parse(stringify(data) ?? "{}"))
-
-const { openapi } = await converter.convert(res, {})
-
-import { Buffer } from "node:buffer"
-import { Readable } from "node:stream"
-import { stringify as yamlStringify } from "jsr:@std/yaml"
+const openapi = convert((await data.json()) ?? "{}")
 
 const openapis = [
   {
-    url: "https://raw.githubusercontent.com/openai/openai-openapi/master/openapi.yaml",
+    data: await fetch("https://raw.githubusercontent.com/openai/openai-openapi/master/openapi.yaml").then((res) =>
+      res.text(),
+    ),
     path: "./src/generated-types/openai-types.ts",
   },
   {
     path: "./src/generated-types/gemini-types.ts",
-    url: Readable.from(Buffer.from(yamlStringify(openapi), "utf-8")),
+    data: openapi,
   },
 ] as const
 
-for (const { url, path } of openapis) {
-  const code = await openapiTS(url, {
+emptyDirSync("./src/generated-types/")
+
+for (const { path, data } of openapis) {
+  const ast = await openapiTS(data, {
     excludeDeprecated: false,
-    cwd: ".",
-    alphabetize: false,
+    cwd: "",
+    alphabetize: true,
     additionalProperties: true,
   })
+
+  const code = astToString(ast)
 
   await Deno.writeTextFile(path, code)
 }

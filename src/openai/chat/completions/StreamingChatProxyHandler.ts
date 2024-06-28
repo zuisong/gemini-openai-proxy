@@ -26,7 +26,7 @@ export async function* streamingChatProxyHandler(req: OpenAI.Chat.ChatCompletion
         model: req.model,
         choices: [
           {
-            delta: { role: "assistant", content: content },
+            delta: { role: "assistant", content },
             finish_reason: stop ? "stop" : null,
             index: 0,
           },

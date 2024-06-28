@@ -7,8 +7,8 @@ export interface ApiParam {
   useBeta: boolean
 }
 
-export function getToken(headers: Headers): ApiParam | null {
-  for (const [k, v] of headers.entries()) {
+export function getToken(headers: Iterable<[string, string]>): ApiParam | null {
+  for (const [k, v] of headers) {
     if (k.toLowerCase() !== "authorization") continue
 
     const rawApikey = v.substring(v.indexOf(" ") + 1)
