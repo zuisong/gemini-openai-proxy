@@ -20,7 +20,7 @@
   "dependencies": {
     "itty-router": "5.0.17",
     "eventsource-parser": "1.1.2",
-    "@hono/node-server": "1.11.2"
+    "@hono/node-server": "1.11.4"
   },
   "devDependencies": {
     "esbuild": "0.21.5"
