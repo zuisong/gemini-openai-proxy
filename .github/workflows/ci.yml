@@ -43,7 +43,7 @@ jobs:
       - name: Get result
         run: echo "${{steps.set-tag-name.outputs.result}}"
       - name: Build and push
-        uses: docker/build-push-action@v5
+        uses: docker/build-push-action@v6
         with:
           context: .
           file: docker/${{ matrix.runtime }}.Dockerfile
