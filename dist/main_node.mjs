@@ -1,4 +1,4 @@
-// node_modules/.deno/@hono+node-server@1.11.2/node_modules/@hono/node-server/dist/index.mjs
+// node_modules/.deno/@hono+node-server@1.11.4/node_modules/@hono/node-server/dist/index.mjs
 import { createServer as createServerHTTP } from "http";
 import { Http2ServerRequest } from "http2";
 import { Readable } from "stream";
@@ -43,6 +43,16 @@ var newRequestFromIncoming = (method, url, incoming, abortController) => {
     headers: headerRecord,
     signal: abortController.signal
   };
+  if (method === "TRACE") {
+    init.method = "GET";
+    const req = new Request2(url, init);
+    Object.defineProperty(req, "method", {
+      get() {
+        return "TRACE";
+      }
+    });
+    return req;
+  }
   if (!(method === "GET" || method === "HEAD")) {
     init.body = Readable.toWeb(incoming);
   }
