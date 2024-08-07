@@ -1,4 +1,5 @@
 import { generateContent } from "../../../gemini-api-client/gemini-api-client.ts"
+import { resultHelper } from "../../../gemini-api-client/response-helper.ts"
 import type { FunctionCall } from "../../../gemini-api-client/types.ts"
 import type { OpenAI } from "../../../types.ts"
 import { type ApiParam, genModel } from "../../../utils.ts"
@@ -7,8 +8,8 @@ export async function* streamingChatProxyHandler(req: OpenAI.Chat.ChatCompletion
   const [model, geminiReq] = genModel(req)
 
   try {
-    for await (const it of generateContent(apiParam, model, geminiReq)) {
-      const data = it.response.result()
+    for await (const it of generateContent("streamGenerateContent", apiParam, model, geminiReq)) {
+      const data = resultHelper(it)
       yield genOpenAiResp(data, false)
     }
   } catch (error) {

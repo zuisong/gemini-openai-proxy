@@ -13,6 +13,9 @@ export type FinishReason = Candidate["finishReason"]
 
 export type Part = components["schemas"]["Part"]
 
+export type EmbedContentRequest = components["schemas"]["EmbedContentRequest"]
+export type EmbedContentResponse = components["schemas"]["EmbedContentResponse"]
+
 export interface RequestOptions {
   timeout: number
 }

@@ -8,10 +8,15 @@ export declare namespace OpenAI {
     type ChatCompletionChunk = components["schemas"]["CreateChatCompletionStreamResponse"]
     type ChatCompletion = components["schemas"]["CreateChatCompletionResponse"]
     type ChatCompletionMessageParam = components["schemas"]["ChatCompletionRequestMessage"]
+    type CreateEmbeddingRequest = components["schemas"]["CreateEmbeddingRequest"]
     type FunctionObject = components["schemas"]["FunctionObject"]
   }
   namespace Models {
     type Model = components["schemas"]["Model"]
+  }
+  namespace Embeddings {
+    type EmbeddingCreateParams = components["schemas"]["CreateEmbeddingRequest"]
+    type CreateEmbeddingResponse = components["schemas"]["CreateEmbeddingResponse"]
   }
 }
 

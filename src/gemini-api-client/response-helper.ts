@@ -1,36 +1,33 @@
 import { GoogleGenerativeAIResponseError } from "./errors.ts"
 import type { FunctionCall } from "./types.ts"
-import type { Candidate, EnhancedGenerateContentResponse, FinishReason, GenerateContentResponse } from "./types.ts"
+import type { Candidate, FinishReason, GenerateContentResponse } from "./types.ts"
 
 /**
  * Adds convenience helper methods to a response object, including stream
  * chunks (as long as each chunk is a complete GenerateContentResponse JSON).
  */
-export function addHelpers(response: GenerateContentResponse): EnhancedGenerateContentResponse {
-  ;(response as EnhancedGenerateContentResponse).result = () => {
-    if (response.candidates && response.candidates.length > 0) {
-      if (response.candidates.length > 1) {
-        console.warn(
-          `This response had ${response.candidates.length} candidates. Returning text from the first candidate only. Access response.candidates directly to use the other candidates.`,
-        )
-      }
-      if (hadBadFinishReason(response.candidates[0])) {
-        throw new GoogleGenerativeAIResponseError<GenerateContentResponse>(
-          `${formatBlockErrorMessage(response)}`,
-          response,
-        )
-      }
-      return getText(response)
+export function resultHelper(response: GenerateContentResponse): string | FunctionCall {
+  if (response.candidates && response.candidates.length > 0) {
+    if (response.candidates.length > 1) {
+      console.warn(
+        `This response had ${response.candidates.length} candidates. Returning text from the first candidate only. Access response.candidates directly to use the other candidates.`,
+      )
     }
-    if (response.promptFeedback) {
+    if (hadBadFinishReason(response.candidates[0])) {
       throw new GoogleGenerativeAIResponseError<GenerateContentResponse>(
-        `Text not available. ${formatBlockErrorMessage(response)}`,
+        `${formatBlockErrorMessage(response)}`,
         response,
       )
     }
-    return ""
+    return getText(response)
   }
-  return response as EnhancedGenerateContentResponse
+  if (response.promptFeedback) {
+    throw new GoogleGenerativeAIResponseError<GenerateContentResponse>(
+      `Text not available. ${formatBlockErrorMessage(response)}`,
+      response,
+    )
+  }
+  return ""
 }
 
 /**

@@ -821,72 +821,9 @@ var GoogleGenerativeAIResponseError = class extends GoogleGenerativeAIError {
   }
 };
 
-// src/gemini-api-client/response-helper.ts
-function addHelpers(response) {
-  ;
-  response.result = () => {
-    if (response.candidates && response.candidates.length > 0) {
-      if (response.candidates.length > 1) {
-        console.warn(
-          `This response had ${response.candidates.length} candidates. Returning text from the first candidate only. Access response.candidates directly to use the other candidates.`
-        );
-      }
-      if (hadBadFinishReason(response.candidates[0])) {
-        throw new GoogleGenerativeAIResponseError(
-          `${formatBlockErrorMessage(response)}`,
-          response
-        );
-      }
-      return getText(response);
-    }
-    if (response.promptFeedback) {
-      throw new GoogleGenerativeAIResponseError(
-        `Text not available. ${formatBlockErrorMessage(response)}`,
-        response
-      );
-    }
-    return "";
-  };
-  return response;
-}
-function getText(response) {
-  if (response.candidates?.[0].content?.parts?.[0]?.text) {
-    return response.candidates[0].content.parts[0].text;
-  }
-  if (response.candidates?.[0].content?.parts?.[0]?.functionCall) {
-    return response.candidates[0].content.parts[0].functionCall;
-  }
-  return "";
-}
-var badFinishReasons = ["RECITATION", "SAFETY"];
-function hadBadFinishReason(candidate) {
-  return !!candidate.finishReason && badFinishReasons.includes(candidate.finishReason);
-}
-function formatBlockErrorMessage(response) {
-  let message = "";
-  if ((!response.candidates || response.candidates.length === 0) && response.promptFeedback) {
-    message += "Response was blocked";
-    if (response.promptFeedback?.blockReason) {
-      message += ` due to ${response.promptFeedback.blockReason}`;
-    }
-    if (response.promptFeedback?.blockReasonMessage) {
-      message += `: ${response.promptFeedback.blockReasonMessage}`;
-    }
-  } else if (response.candidates?.[0]) {
-    const firstCandidate = response.candidates[0];
-    if (hadBadFinishReason(firstCandidate)) {
-      message += `Candidate was blocked due to ${firstCandidate.finishReason}`;
-      if (firstCandidate.finishMessage) {
-        message += `: ${firstCandidate.finishMessage}`;
-      }
-    }
-  }
-  return message;
-}
-
 // src/gemini-api-client/gemini-api-client.ts
-async function* generateContent(apiParam, model, params, requestOptions) {
-  const url = new RequestUrl(model, "streamGenerateContent" /* STREAM_GENERATE_CONTENT */, true, apiParam);
+async function* generateContent(task, apiParam, model, params, requestOptions) {
+  const url = new RequestUrl(model, task, true, apiParam);
   const response = await makeRequest(url, JSON.stringify(params), requestOptions);
   const body = response.body;
   if (body == null) {
@@ -894,10 +831,7 @@ async function* generateContent(apiParam, model, params, requestOptions) {
   }
   for await (const event of body.pipeThrough(new TextDecoderStream()).pipeThrough(new EventSourceParserStream())) {
     const responseJson = JSON.parse(event.data);
-    const enhancedResponse = addHelpers(responseJson);
-    yield {
-      response: enhancedResponse
-    };
+    yield responseJson;
   }
 }
 async function makeRequest(url, body, requestOptions) {
@@ -960,13 +894,72 @@ function buildFetchOptions(requestOptions) {
   return fetchOptions;
 }
 
+// src/gemini-api-client/response-helper.ts
+function resultHelper(response) {
+  if (response.candidates && response.candidates.length > 0) {
+    if (response.candidates.length > 1) {
+      console.warn(
+        `This response had ${response.candidates.length} candidates. Returning text from the first candidate only. Access response.candidates directly to use the other candidates.`
+      );
+    }
+    if (hadBadFinishReason(response.candidates[0])) {
+      throw new GoogleGenerativeAIResponseError(
+        `${formatBlockErrorMessage(response)}`,
+        response
+      );
+    }
+    return getText(response);
+  }
+  if (response.promptFeedback) {
+    throw new GoogleGenerativeAIResponseError(
+      `Text not available. ${formatBlockErrorMessage(response)}`,
+      response
+    );
+  }
+  return "";
+}
+function getText(response) {
+  if (response.candidates?.[0].content?.parts?.[0]?.text) {
+    return response.candidates[0].content.parts[0].text;
+  }
+  if (response.candidates?.[0].content?.parts?.[0]?.functionCall) {
+    return response.candidates[0].content.parts[0].functionCall;
+  }
+  return "";
+}
+var badFinishReasons = ["RECITATION", "SAFETY"];
+function hadBadFinishReason(candidate) {
+  return !!candidate.finishReason && badFinishReasons.includes(candidate.finishReason);
+}
+function formatBlockErrorMessage(response) {
+  let message = "";
+  if ((!response.candidates || response.candidates.length === 0) && response.promptFeedback) {
+    message += "Response was blocked";
+    if (response.promptFeedback?.blockReason) {
+      message += ` due to ${response.promptFeedback.blockReason}`;
+    }
+    if (response.promptFeedback?.blockReasonMessage) {
+      message += `: ${response.promptFeedback.blockReasonMessage}`;
+    }
+  } else if (response.candidates?.[0]) {
+    const firstCandidate = response.candidates[0];
+    if (hadBadFinishReason(firstCandidate)) {
+      message += `Candidate was blocked due to ${firstCandidate.finishReason}`;
+      if (firstCandidate.finishMessage) {
+        message += `: ${firstCandidate.finishMessage}`;
+      }
+    }
+  }
+  return message;
+}
+
 // src/openai/chat/completions/NonStreamingChatProxyHandler.ts
 async function nonStreamingChatProxyHandler(req, apiParam, log) {
   const [model, geminiReq] = genModel(req);
   let geminiResp = "";
   try {
-    for await (const it of generateContent(apiParam, model, geminiReq)) {
-      const data = it.response.result();
+    for await (const it of generateContent("streamGenerateContent", apiParam, model, geminiReq)) {
+      const data = resultHelper(it);
       if (typeof data === "string") {
         geminiResp += data;
       } else {
@@ -1027,8 +1020,8 @@ async function nonStreamingChatProxyHandler(req, apiParam, log) {
 async function* streamingChatProxyHandler(req, apiParam) {
   const [model, geminiReq] = genModel(req);
   try {
-    for await (const it of generateContent(apiParam, model, geminiReq)) {
-      const data = it.response.result();
+    for await (const it of generateContent("streamGenerateContent", apiParam, model, geminiReq)) {
+      const data = resultHelper(it);
       yield genOpenAiResp(data, false);
     }
   } catch (error) {
@@ -1130,6 +1123,54 @@ function toSseMsg(sseEvent) {
 `;
 }
 
+// src/openai/embeddingProxyHandler.ts
+async function embeddingProxyHandler(rawReq) {
+  const req = await rawReq.json();
+  const log = rawReq.logger;
+  const headers = rawReq.headers;
+  const apiParam = getToken(headers);
+  if (apiParam == null) {
+    return new Response("Unauthorized", { status: 401 });
+  }
+  const embedContentRequest = {
+    model: "models/text-embedding-004",
+    content: {
+      parts: [req.input].flat().map((it) => ({ text: it.toString() }))
+    }
+  };
+  log?.warn("request", embedContentRequest);
+  let geminiResp = [];
+  try {
+    for await (const it of generateContent("embedContent", apiParam, "text-embedding-004", embedContentRequest)) {
+      const data = it.embedding?.values;
+      geminiResp = data;
+      break;
+    }
+  } catch (err) {
+    log?.error(req);
+    log?.error(err?.message ?? err.toString());
+    geminiResp = err?.message ?? err.toString();
+  }
+  log?.debug(req);
+  log?.debug(geminiResp);
+  const resp = {
+    object: "list",
+    data: [
+      {
+        object: "embedding",
+        index: 0,
+        embedding: geminiResp ?? []
+      }
+    ],
+    model: req.model,
+    usage: {
+      prompt_tokens: 5,
+      total_tokens: 5
+    }
+  };
+  return Response.json(resp);
+}
+
 // src/openai/models.ts
 var modelData = Object.keys(ModelMapping).map((model) => ({
   created: 1677610602,
@@ -1166,6 +1207,7 @@ var app = r({
 });
 app.get("/", hello);
 app.post("/v1/chat/completions", chatProxyHandler);
+app.post("/v1/embeddings", embeddingProxyHandler);
 app.get("/v1/models", () => Response.json(models()));
 app.get("/v1/models/:model", (c) => Response.json(modelDetail(c.params.model)));
 app.post(":model_version/models/:model_and_action", geminiProxy);

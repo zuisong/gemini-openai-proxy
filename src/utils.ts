@@ -118,6 +118,7 @@ export type GeminiModel =
   | "gemini-1.0-ultra-latest"
   | "gemini-1.5-pro-latest"
   | "gemini-1.5-flash-latest"
+  | "text-embedding-004"
 
 export const ModelMapping: Record<string, GeminiModel> = {
   "gpt-3.5-turbo": "gemini-1.0-pro-latest",
