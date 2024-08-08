@@ -6,7 +6,6 @@ import type {
   EmbedContentResponse,
   GenerateContentRequest,
   GenerateContentResponse,
-  GenerateContentResult,
   RequestOptions,
 } from "./types.ts"
 
@@ -43,14 +42,6 @@ export async function* generateContent<T extends keyof Task>(
     const responseJson: Task[T]["response"] = JSON.parse(event.data)
     yield responseJson
   }
-}
-export enum TaskType {
-  TASK_TYPE_UNSPECIFIED = "TASK_TYPE_UNSPECIFIED",
-  RETRIEVAL_QUERY = "RETRIEVAL_QUERY",
-  RETRIEVAL_DOCUMENT = "RETRIEVAL_DOCUMENT",
-  SEMANTIC_SIMILARITY = "SEMANTIC_SIMILARITY",
-  CLASSIFICATION = "CLASSIFICATION",
-  CLUSTERING = "CLUSTERING",
 }
 
 async function makeRequest(url: RequestUrl, body: string, requestOptions?: RequestOptions): Promise<Response> {
@@ -94,7 +85,7 @@ export class RequestUrl {
     public apiParam: ApiParam,
   ) {}
   toURL(): URL {
-    const api_version = API_VERSION.v1beta
+    const api_version: API_VERSION = "v1beta"
     const url = new URL(`${BASE_URL}/${api_version}/models/${this.model}:${this.task}`)
     url.searchParams.append("key", this.apiParam.apikey)
     if (this.stream) {
@@ -106,10 +97,7 @@ export class RequestUrl {
 
 const BASE_URL = "https://generativelanguage.googleapis.com"
 
-enum API_VERSION {
-  v1beta = "v1beta",
-  v1 = "v1",
-}
+type API_VERSION = "v1beta" | "v1"
 
 /**
  * Generates the request options to be passed to the fetch API.

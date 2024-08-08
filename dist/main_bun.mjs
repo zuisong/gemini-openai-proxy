@@ -439,7 +439,7 @@ var RequestUrl = class {
     this.apiParam = apiParam;
   }
   toURL() {
-    const api_version = "v1beta" /* v1beta */;
+    const api_version = "v1beta";
     const url = new URL(`${BASE_URL}/${api_version}/models/${this.model}:${this.task}`);
     url.searchParams.append("key", this.apiParam.apikey);
     if (this.stream) {
@@ -579,79 +579,63 @@ async function nonStreamingChatProxyHandler(req, apiParam, log) {
       ]
     };
   }
-  return genOpenAiResp(geminiResp);
+  return Response.json(genOpenAiResp(geminiResp));
 }
 
 // src/openai/chat/completions/StreamingChatProxyHandler.ts
-async function* streamingChatProxyHandler(req, apiParam) {
+function streamingChatProxyHandler(req, apiParam, log) {
   const [model, geminiReq] = genModel(req);
-  try {
-    for await (const it of generateContent("streamGenerateContent", apiParam, model, geminiReq)) {
-      const data = resultHelper(it);
-      yield genOpenAiResp(data, false);
-    }
-  } catch (error) {
-    yield genOpenAiResp(error?.message ?? error.toString(), true);
-  }
-  yield genOpenAiResp("", true);
-  return void 0;
-  function genOpenAiResp(content, stop) {
-    if (typeof content === "string") {
-      return {
-        id: "chatcmpl-abc123",
-        object: "chat.completion.chunk",
-        created: Math.floor(Date.now() / 1e3),
-        model: req.model,
-        choices: [
-          {
-            delta: { role: "assistant", content },
-            finish_reason: stop ? "stop" : null,
-            index: 0
-          }
-        ]
-      };
-    }
+  log?.debug("streamGenerateContent request", req);
+  return sseResponse(
+    async function* () {
+      try {
+        for await (const it of generateContent("streamGenerateContent", apiParam, model, geminiReq)) {
+          log?.debug("streamGenerateContent resp", it);
+          const data = resultHelper(it);
+          yield genStreamResp({ model: req.model, content: data, stop: false });
+        }
+      } catch (error) {
+        yield genStreamResp({ model: req.model, content: error?.message ?? error.toString(), stop: true });
+      }
+      yield genStreamResp({ model: req.model, content: "", stop: true });
+      yield "[DONE]";
+      return void 0;
+    }()
+  );
+}
+function genStreamResp({
+  model,
+  content,
+  stop
+}) {
+  if (typeof content === "string") {
     return {
       id: "chatcmpl-abc123",
       object: "chat.completion.chunk",
       created: Math.floor(Date.now() / 1e3),
-      model: req.model,
+      model,
       choices: [
         {
-          delta: { role: "assistant", function_call: content },
-          finish_reason: stop ? "function_call" : null,
+          delta: { role: "assistant", content },
+          finish_reason: stop ? "stop" : null,
           index: 0
         }
       ]
     };
   }
-}
-
-// src/openai/chat/completions/ChatProxyHandler.ts
-async function chatProxyHandler(rawReq) {
-  const req = await rawReq.json();
-  const headers = rawReq.headers;
-  const apiParam = getToken(headers);
-  if (apiParam == null) {
-    return new Response("Unauthorized", { status: 401 });
-  }
-  rawReq.logger?.debug(req);
-  if (req.stream !== true) {
-    const resp = await nonStreamingChatProxyHandler(req, apiParam, rawReq.logger);
-    rawReq.logger?.debug(resp);
-    return Response.json(resp);
-  }
-  const respArr = streamingChatProxyHandler(req, apiParam);
-  return sseResponse(
-    async function* () {
-      for await (const data of respArr) {
-        rawReq.logger?.debug("streamingChatProxyHandler", data);
-        yield JSON.stringify(data);
+  return {
+    id: "chatcmpl-abc123",
+    object: "chat.completion.chunk",
+    created: Math.floor(Date.now() / 1e3),
+    model,
+    choices: [
+      {
+        delta: { role: "assistant", function_call: content },
+        finish_reason: stop ? "function_call" : null,
+        index: 0
       }
-      yield "[DONE]";
-      return void 0;
-    }()
-  );
+    ]
+  };
 }
 var encoder = new TextEncoder();
 function sseResponse(dataStream) {
@@ -661,7 +645,8 @@ function sseResponse(dataStream) {
       if (done) {
         controller.close();
       } else {
-        controller.enqueue(encoder.encode(toSseMsg({ data: value })));
+        const data = typeof value === "string" ? value : JSON.stringify(value);
+        controller.enqueue(encoder.encode(toSseMsg({ data })));
       }
     }
   });
@@ -687,6 +672,20 @@ function toSseMsg(sseEvent) {
   }
   return `${result}
 `;
+}
+
+// src/openai/chat/completions/ChatProxyHandler.ts
+async function chatProxyHandler(rawReq) {
+  const req = await rawReq.json();
+  const headers = rawReq.headers;
+  const apiParam = getToken(headers);
+  if (apiParam == null) {
+    return new Response("Unauthorized", { status: 401 });
+  }
+  if (req.stream !== true) {
+    return await nonStreamingChatProxyHandler(req, apiParam, rawReq.logger);
+  }
+  return streamingChatProxyHandler(req, apiParam, rawReq.logger);
 }
 
 // src/openai/embeddingProxyHandler.ts

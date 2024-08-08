@@ -9,7 +9,7 @@ export async function nonStreamingChatProxyHandler(
   req: OpenAI.Chat.ChatCompletionCreateParams,
   apiParam: ApiParam,
   log?: Logger,
-) {
+): Promise<Response> {
   const [model, geminiReq] = genModel(req)
   let geminiResp: string | FunctionCall = ""
 
@@ -74,5 +74,5 @@ export async function nonStreamingChatProxyHandler(
     }
   }
 
-  return genOpenAiResp(geminiResp)
+  return Response.json(genOpenAiResp(geminiResp))
 }

@@ -25,18 +25,7 @@ describe("openai to gemini test", () => {
         fetchMocker.mock(
           (req) =>
             req.url.includes(`generativelanguage.googleapis.com/v1beta/models/${geminiModel}:streamGenerateContent`),
-          () =>
-            new Response(
-              `data: ${JSON.stringify(gemini_ok_resp)}
-
-`,
-              {
-                status: 200,
-                headers: {
-                  "Content-Type": "application/json",
-                },
-              },
-            ),
+          () => new Response(`data: ${JSON.stringify(gemini_ok_resp)}\n\n`),
         )
       })
 
