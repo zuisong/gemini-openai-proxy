@@ -76,7 +76,8 @@ export function openAiMessageToGeminiMessage(messages: OpenAI.Chat.ChatCompletio
 export function genModel(req: OpenAI.Chat.ChatCompletionCreateParams): [GeminiModel, GenerateContentRequest] {
   const model: GeminiModel = ModelMapping[req.model] ?? "gemini-1.0-pro-latest"
 
-  let functions = req.tools?.filter((it) => it.type === "function")?.map((it) => it.function) ?? []
+  let functions: OpenAI.Chat.FunctionObject[] =
+    req.tools?.filter((it) => it.type === "function")?.map((it) => it.function) ?? []
 
   functions = functions.concat(req.functions ?? [])
 
