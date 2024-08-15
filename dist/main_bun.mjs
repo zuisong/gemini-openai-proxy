@@ -779,33 +779,6 @@ app.post(":model_version/models/:model_and_action", geminiProxy);
 app.all("*", () => new Response("Page Not Found", { status: 404 }));
 
 // main_bun.ts
-var PolyfillTextDecoderStream = class extends TransformStream {
-  encoding;
-  fatal;
-  ignoreBOM;
-  constructor(encoding = "utf-8", { fatal = false, ignoreBOM = false } = {}) {
-    const decoder = new TextDecoder(encoding, { fatal, ignoreBOM });
-    super({
-      transform(chunk, controller) {
-        const decoded = decoder.decode(chunk, { stream: true });
-        if (decoded.length > 0) {
-          controller.enqueue(decoded);
-        }
-      },
-      flush(controller) {
-        const output = decoder.decode();
-        if (output.length > 0) {
-          controller.enqueue(output);
-        }
-      }
-    });
-    this.encoding = encoding;
-    this.fatal = fatal;
-    this.ignoreBOM = ignoreBOM;
-  }
-  [Symbol.toStringTag] = "PolyfillTextDecoderStream";
-};
-globalThis.TextDecoderStream = PolyfillTextDecoderStream;
 console.log("Listening on http://localhost:8000/");
 Bun.serve({
   port: 8e3,
