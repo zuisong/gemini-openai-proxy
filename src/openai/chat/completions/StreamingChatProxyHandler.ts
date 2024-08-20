@@ -91,8 +91,7 @@ function sseResponse(dataStream: AsyncGenerator<string | OpenAI.Chat.ChatComplet
   return response
 }
 
-export function toSseMsg(sseEvent: SseEvent) {
-  const { event, data, id } = sseEvent
+export function toSseMsg({ event, data, id }: SseEvent) {
   let result = `data: ${data}\n`
   if (event) {
     result += `event: ${event ?? ""}\n`

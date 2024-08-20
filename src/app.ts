@@ -14,7 +14,7 @@ const app: IttyRouterType = Router<IRequest>({
   before: [
     preflight,
     (req) => {
-      req.logger = new Logger({ prefix: crypto.randomUUID().toString() })
+      req.logger = new Logger(crypto.randomUUID().toString())
       req.logger.warn(`--> ${req.method} ${req.url}`)
     },
   ],

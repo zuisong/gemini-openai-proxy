@@ -1,4 +1,5 @@
 import { EventSourceParserStream } from "eventsource-parser/stream"
+import type { components } from "../generated-types/gemini-types.ts"
 import type { ApiParam, GeminiModel } from "../utils.ts"
 import { GoogleGenerativeAIError } from "./errors.ts"
 import type {
@@ -30,7 +31,7 @@ export async function* generateContent<T extends keyof Task>(
   model: GeminiModel,
   params: Task[T]["request"],
   requestOptions?: RequestOptions,
-): AsyncGenerator<Task[T]["response"]> {
+) {
   const url = new RequestUrl(model, task, true, apiParam)
   const response = await makeRequest(url, JSON.stringify(params), requestOptions)
   const body = response.body
@@ -39,7 +40,7 @@ export async function* generateContent<T extends keyof Task>(
   }
 
   for await (const event of body.pipeThrough(new TextDecoderStream()).pipeThrough(new EventSourceParserStream())) {
-    const responseJson: Task[T]["response"] = JSON.parse(event.data)
+    const responseJson = JSON.parse(event.data) as Task[T]["response"]
     yield responseJson
   }
 }
@@ -56,11 +57,11 @@ async function makeRequest(url: RequestUrl, body: string, requestOptions?: Reque
       body,
     })
     if (!response.ok) {
-      let message = ""
+      let message: string | undefined = ""
       try {
-        const errResp = await response.json()
-        message = errResp.error.message
-        if (errResp.error.details) {
+        const errResp = (await response.json()) as components["schemas"]["Operation"]
+        message = errResp.error?.message
+        if (errResp?.error?.details) {
           message += ` ${JSON.stringify(errResp.error.details)}`
         }
       } catch (_e) {

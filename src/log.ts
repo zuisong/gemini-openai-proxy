@@ -22,10 +22,10 @@ export class Logger implements ILogger {
   warn!: Log
   error!: Log
 
-  constructor(config?: Omit<Partial<Config>, "level"> & { level?: string }) {
-    const level = LEVEL.find((it) => it === config?.level) ?? "warn"
+  constructor(prefix?: string, logLevel?: string) {
+    const level = LEVEL.find((it) => it === logLevel) ?? "warn"
     this.config = {
-      prefix: config?.prefix ?? "",
+      prefix: prefix ?? "",
       level,
     }
 

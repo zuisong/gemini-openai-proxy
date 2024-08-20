@@ -649,10 +649,10 @@ var Logger = class {
   info;
   warn;
   error;
-  constructor(config) {
-    const level = LEVEL.find((it) => it === config?.level) ?? "warn";
+  constructor(prefix, logLevel) {
+    const level = LEVEL.find((it) => it === logLevel) ?? "warn";
     this.config = {
-      prefix: config?.prefix ?? "",
+      prefix: prefix ?? "",
       level
     };
     for (const m of LEVEL) {
@@ -849,8 +849,8 @@ async function makeRequest(url, body, requestOptions) {
       let message = "";
       try {
         const errResp = await response.json();
-        message = errResp.error.message;
-        if (errResp.error.details) {
+        message = errResp.error?.message;
+        if (errResp?.error?.details) {
           message += ` ${JSON.stringify(errResp.error.details)}`;
         }
       } catch (_e) {
@@ -1092,8 +1092,7 @@ function sseResponse(dataStream) {
   });
   return response;
 }
-function toSseMsg(sseEvent) {
-  const { event, data, id } = sseEvent;
+function toSseMsg({ event, data, id }) {
   let result = `data: ${data}
 `;
   if (event) {
@@ -1193,7 +1192,7 @@ var app = r({
   before: [
     preflight,
     (req) => {
-      req.logger = new Logger({ prefix: crypto.randomUUID().toString() });
+      req.logger = new Logger(crypto.randomUUID().toString());
       req.logger.warn(`--> ${req.method} ${req.url}`);
     }
   ],
