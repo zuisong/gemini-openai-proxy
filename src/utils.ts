@@ -74,7 +74,14 @@ export function openAiMessageToGeminiMessage(messages: OpenAI.Chat.ChatCompletio
 }
 
 export function genModel(req: OpenAI.Chat.ChatCompletionCreateParams): [GeminiModel, GenerateContentRequest] {
-  const model: GeminiModel = ModelMapping[req.model] ?? "gemini-1.0-pro-latest"
+  const defaultModel = (m: string): GeminiModel => {
+    if (m.startsWith("gemini")) {
+      return m as GeminiModel
+    }
+    return "gemini-1.5-flash-latest"
+  }
+
+  const model: GeminiModel = ModelMapping[req.model] ?? defaultModel(req.model)
 
   let functions: OpenAI.Chat.FunctionObject[] =
     req.tools?.filter((it) => it.type === "function")?.map((it) => it.function) ?? []

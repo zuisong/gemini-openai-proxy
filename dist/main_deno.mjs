@@ -84,7 +84,13 @@ function openAiMessageToGeminiMessage(messages) {
   return result;
 }
 function genModel(req) {
-  const model = ModelMapping[req.model] ?? "gemini-1.0-pro-latest";
+  const defaultModel = (m) => {
+    if (m.startsWith("gemini")) {
+      return m;
+    }
+    return "gemini-1.5-flash-latest";
+  };
+  const model = ModelMapping[req.model] ?? defaultModel(req.model);
   let functions = req.tools?.filter((it) => it.type === "function")?.map((it) => it.function) ?? [];
   functions = functions.concat(req.functions ?? []);
   const responseMimeType = req.response_format?.type === "json_object" ? "application/json" : "text/plain";
