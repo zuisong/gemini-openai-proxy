@@ -23,7 +23,7 @@
     "itty-router": "5.0.17"
   },
   "devDependencies": {
-    "esbuild": "0.23.0",
+    "esbuild": "0.23.1",
     "@total-typescript/ts-reset": "^0.5.1"
   },
   "engines": {
