@@ -1,4 +1,5 @@
 {
   "exclude": ["./dist", "./coverage"],
-  "lock": false
+  "lock": false,
+  "nodeModulesDir": true
 }
