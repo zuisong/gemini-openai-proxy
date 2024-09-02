@@ -1,4 +1,4 @@
-// node_modules/.deno/itty-router@5.0.17/node_modules/itty-router/Router.mjs
+// node_modules/.deno/itty-router@5.0.18/node_modules/itty-router/Router.mjs
 var r = ({ base: r2 = "", routes: e = [], ...a } = {}) => ({ __proto__: new Proxy({}, { get: (a2, t, o, c) => (a3, ...l) => e.push([t.toUpperCase?.(), RegExp(`^${(c = (r2 + a3).replace(/\/+(\/|$)/g, "$1")).replace(/(\/?\.?):(\w+)\+/g, "($1(?<$2>*))").replace(/(\/?\.?):(\w+)/g, "($1(?<$2>[^$1/]+?))").replace(/\./g, "\\.").replace(/(\/?)\*/g, "($1.*)?")}/*$`), l, c]) && o }), routes: e, ...a, async fetch(r3, ...t) {
   let o, c, l = new URL(r3.url), p = r3.query = { __proto__: null };
   for (let [r4, e2] of l.searchParams) p[r4] = p[r4] ? [].concat(p[r4], e2) : e2;
@@ -234,119 +234,59 @@ var Logger = class {
   }
 };
 
-// node_modules/.deno/eventsource-parser@1.1.2/node_modules/eventsource-parser/dist/index.js
+// node_modules/.deno/eventsource-parser@2.0.1/node_modules/eventsource-parser/dist/index.js
 function createParser(onParse) {
-  let isFirstChunk;
-  let buffer;
-  let startingPosition;
-  let startingFieldLength;
-  let eventId;
-  let eventName;
-  let data;
-  reset();
-  return {
-    feed,
-    reset
-  };
+  let isFirstChunk, buffer, startingPosition, startingFieldLength, eventId, eventName, data;
+  return reset(), { feed, reset };
   function reset() {
-    isFirstChunk = true;
-    buffer = "";
-    startingPosition = 0;
-    startingFieldLength = -1;
-    eventId = void 0;
-    eventName = void 0;
-    data = "";
+    isFirstChunk = true, buffer = "", startingPosition = 0, startingFieldLength = -1, eventId = void 0, eventName = void 0, data = "";
   }
   function feed(chunk) {
-    buffer = buffer ? buffer + chunk : chunk;
-    if (isFirstChunk && hasBom(buffer)) {
-      buffer = buffer.slice(BOM.length);
-    }
-    isFirstChunk = false;
+    buffer = buffer ? buffer + chunk : chunk, isFirstChunk && hasBom(buffer) && (buffer = buffer.slice(BOM.length)), isFirstChunk = false;
     const length = buffer.length;
-    let position = 0;
-    let discardTrailingNewline = false;
-    while (position < length) {
-      if (discardTrailingNewline) {
-        if (buffer[position] === "\n") {
-          ++position;
-        }
-        discardTrailingNewline = false;
-      }
-      let lineLength = -1;
-      let fieldLength = startingFieldLength;
-      let character;
-      for (let index = startingPosition; lineLength < 0 && index < length; ++index) {
-        character = buffer[index];
-        if (character === ":" && fieldLength < 0) {
-          fieldLength = index - position;
-        } else if (character === "\r") {
-          discardTrailingNewline = true;
-          lineLength = index - position;
-        } else if (character === "\n") {
-          lineLength = index - position;
-        }
-      }
+    let position = 0, discardTrailingNewline = false;
+    for (; position < length; ) {
+      discardTrailingNewline && (buffer[position] === `
+` && ++position, discardTrailingNewline = false);
+      let lineLength = -1, fieldLength = startingFieldLength, character;
+      for (let index = startingPosition; lineLength < 0 && index < length; ++index)
+        character = buffer[index], character === ":" && fieldLength < 0 ? fieldLength = index - position : character === "\r" ? (discardTrailingNewline = true, lineLength = index - position) : character === `
+` && (lineLength = index - position);
       if (lineLength < 0) {
-        startingPosition = length - position;
-        startingFieldLength = fieldLength;
+        startingPosition = length - position, startingFieldLength = fieldLength;
         break;
-      } else {
-        startingPosition = 0;
-        startingFieldLength = -1;
-      }
-      parseEventStreamLine(buffer, position, fieldLength, lineLength);
-      position += lineLength + 1;
+      } else
+        startingPosition = 0, startingFieldLength = -1;
+      parseEventStreamLine(buffer, position, fieldLength, lineLength), position += lineLength + 1;
     }
-    if (position === length) {
-      buffer = "";
-    } else if (position > 0) {
-      buffer = buffer.slice(position);
-    }
+    position === length ? buffer = "" : position > 0 && (buffer = buffer.slice(position));
   }
   function parseEventStreamLine(lineBuffer, index, fieldLength, lineLength) {
     if (lineLength === 0) {
-      if (data.length > 0) {
-        onParse({
-          type: "event",
-          id: eventId,
-          event: eventName || void 0,
-          data: data.slice(0, -1)
-          // remove trailing newline
-        });
-        data = "";
-        eventId = void 0;
-      }
-      eventName = void 0;
+      data.length > 0 && (onParse({
+        type: "event",
+        id: eventId,
+        event: eventName || void 0,
+        data: data.slice(0, -1)
+        // remove trailing newline
+      }), data = "", eventId = void 0), eventName = void 0;
       return;
     }
-    const noValue = fieldLength < 0;
-    const field = lineBuffer.slice(index, index + (noValue ? lineLength : fieldLength));
+    const noValue = fieldLength < 0, field = lineBuffer.slice(index, index + (noValue ? lineLength : fieldLength));
     let step = 0;
-    if (noValue) {
-      step = lineLength;
-    } else if (lineBuffer[index + fieldLength + 1] === " ") {
-      step = fieldLength + 2;
-    } else {
-      step = fieldLength + 1;
-    }
-    const position = index + step;
-    const valueLength = lineLength - step;
-    const value = lineBuffer.slice(position, position + valueLength).toString();
-    if (field === "data") {
-      data += value ? "".concat(value, "\n") : "\n";
-    } else if (field === "event") {
+    noValue ? step = lineLength : lineBuffer[index + fieldLength + 1] === " " ? step = fieldLength + 2 : step = fieldLength + 1;
+    const position = index + step, valueLength = lineLength - step, value = lineBuffer.slice(position, position + valueLength).toString();
+    if (field === "data")
+      data += value ? `${value}
+` : `
+`;
+    else if (field === "event")
       eventName = value;
-    } else if (field === "id" && !value.includes("\0")) {
+    else if (field === "id" && !value.includes("\0"))
       eventId = value;
-    } else if (field === "retry") {
+    else if (field === "retry") {
       const retry = parseInt(value, 10);
-      if (!Number.isNaN(retry)) {
-        onParse({
-          type: "reconnect-interval",
-          value: retry
-        });
-      }
+      Number.isNaN(retry) || onParse({ type: "reconnect-interval", value: retry });
     }
   }
 }
@@ -355,16 +295,14 @@ function hasBom(buffer) {
   return BOM.every((charCode, index) => buffer.charCodeAt(index) === charCode);
 }
 
-// node_modules/.deno/eventsource-parser@1.1.2/node_modules/eventsource-parser/dist/stream.js
+// node_modules/.deno/eventsource-parser@2.0.1/node_modules/eventsource-parser/dist/stream.js
 var EventSourceParserStream = class extends TransformStream {
   constructor() {
     let parser;
     super({
       start(controller) {
         parser = createParser((event) => {
-          if (event.type === "event") {
-            controller.enqueue(event);
-          }
+          event.type === "event" && controller.enqueue(event);
         });
       },
       transform(chunk) {
