@@ -326,6 +326,7 @@ var GoogleGenerativeAIError = class extends Error {
   }
 };
 var GoogleGenerativeAIResponseError = class extends GoogleGenerativeAIError {
+  response;
   constructor(message, response) {
     super(message);
     this.response = response;
@@ -377,6 +378,10 @@ async function makeRequest(url, body, requestOptions) {
   return response;
 }
 var RequestUrl = class {
+  model;
+  task;
+  stream;
+  apiParam;
   constructor(model, task, stream, apiParam) {
     this.model = model;
     this.task = task;

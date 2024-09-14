@@ -79,12 +79,16 @@ async function makeRequest(url: RequestUrl, body: string, requestOptions?: Reque
 }
 
 export class RequestUrl {
-  constructor(
-    public model: GeminiModel,
-    public task: keyof Task,
-    public stream: boolean,
-    public apiParam: ApiParam,
-  ) {}
+  public model: GeminiModel
+  public task: keyof Task
+  public stream: boolean
+  public apiParam: ApiParam
+  constructor(model: GeminiModel, task: keyof Task, stream: boolean, apiParam: ApiParam) {
+    this.model = model
+    this.task = task
+    this.stream = stream
+    this.apiParam = apiParam
+  }
   toURL(): URL {
     const api_version: API_VERSION = "v1beta"
     const url = new URL(`${BASE_URL}/${api_version}/models/${this.model}:${this.task}`)
