@@ -1,4 +1,4 @@
-// node_modules/.deno/@hono+node-server@1.12.2/node_modules/@hono/node-server/dist/index.mjs
+// node_modules/.deno/@hono+node-server@1.13.1/node_modules/@hono/node-server/dist/index.mjs
 import { createServer as createServerHTTP } from "http";
 import { Http2ServerRequest } from "http2";
 import { Readable } from "stream";
