@@ -19,11 +19,11 @@ jobs:
     strategy:
       matrix:
         os: [
-            #
-            ubuntu-latest,
-            # windows-latest,
-            # macOS-latest,
-          ]
+          #
+          ubuntu-latest,
+          # windows-latest,
+          # macOS-latest,
+        ]
 
     steps:
       - run: git config --global core.autocrlf false

@@ -21,7 +21,11 @@ export function streamingChatProxyHandler(
           yield genStreamResp({ model: req.model, content: data, stop: false })
         }
       } catch (error) {
-        yield genStreamResp({ model: req.model, content: error?.message ?? error.toString(), stop: true })
+        yield genStreamResp({
+          model: req.model,
+          content: error?.message ?? error.toString(),
+          stop: true,
+        })
       }
       yield genStreamResp({ model: req.model, content: "", stop: true })
       yield "[DONE]"
@@ -34,7 +38,11 @@ function genStreamResp({
   model,
   content,
   stop,
-}: { model: string; content: string | FunctionCall; stop: boolean }): OpenAI.Chat.ChatCompletionChunk {
+}: {
+  model: string
+  content: string | FunctionCall
+  stop: boolean
+}): OpenAI.Chat.ChatCompletionChunk {
   if (typeof content === "string") {
     return {
       id: "chatcmpl-abc123",

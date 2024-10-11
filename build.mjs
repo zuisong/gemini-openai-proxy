@@ -1,5 +1,6 @@
 import { rmdir } from "node:fs/promises"
-import { build } from "esbuild"
+import * as esbuild from "esbuild"
+
 await rmdir("./dist").catch((_) => {})
 
 for (const f of ["main_bun", "main_cloudflare-workers", "main_deno", "main_node"]) {
@@ -20,5 +21,5 @@ for (const f of ["main_bun", "main_cloudflare-workers", "main_deno", "main_node"
     target: ["chrome100", "node18"],
     external: ["node:*"],
   }
-  await build(config)
+  await esbuild.build(config)
 }

@@ -1,25 +1,42 @@
 // node_modules/.deno/itty-router@5.0.18/node_modules/itty-router/Router.mjs
-var r = ({ base: r2 = "", routes: e = [], ...a } = {}) => ({ __proto__: new Proxy({}, { get: (a2, t, o, c) => (a3, ...l) => e.push([t.toUpperCase?.(), RegExp(`^${(c = (r2 + a3).replace(/\/+(\/|$)/g, "$1")).replace(/(\/?\.?):(\w+)\+/g, "($1(?<$2>*))").replace(/(\/?\.?):(\w+)/g, "($1(?<$2>[^$1/]+?))").replace(/\./g, "\\.").replace(/(\/?)\*/g, "($1.*)?")}/*$`), l, c]) && o }), routes: e, ...a, async fetch(r3, ...t) {
+var r = ({ base: r2 = "", routes: e2 = [], ...a } = {}) => ({ __proto__: new Proxy({}, { get: (a2, t, o, c) => (a3, ...l) => e2.push([t.toUpperCase?.(), RegExp(`^${(c = (r2 + a3).replace(/\/+(\/|$)/g, "$1")).replace(/(\/?\.?):(\w+)\+/g, "($1(?<$2>*))").replace(/(\/?\.?):(\w+)/g, "($1(?<$2>[^$1/]+?))").replace(/\./g, "\\.").replace(/(\/?)\*/g, "($1.*)?")}/*$`), l, c]) && o }), routes: e2, ...a, async fetch(r3, ...t) {
   let o, c, l = new URL(r3.url), p = r3.query = { __proto__: null };
-  for (let [r4, e2] of l.searchParams) p[r4] = p[r4] ? [].concat(p[r4], e2) : e2;
+  for (let [r4, e3] of l.searchParams) p[r4] = p[r4] ? [].concat(p[r4], e3) : e3;
   r: try {
-    for (let e2 of a.before || []) if (null != (o = await e2(r3.proxy ?? r3, ...t))) break r;
-    e: for (let [a2, p2, f, h] of e) if ((a2 == r3.method || "ALL" == a2) && (c = l.pathname.match(p2))) {
+    for (let e3 of a.before || []) if (null != (o = await e3(r3.proxy ?? r3, ...t))) break r;
+    e: for (let [a2, p2, f, h] of e2) if ((a2 == r3.method || "ALL" == a2) && (c = l.pathname.match(p2))) {
       r3.params = c.groups || {}, r3.route = h;
-      for (let e2 of f) if (null != (o = await e2(r3.proxy ?? r3, ...t))) break e;
+      for (let e3 of f) if (null != (o = await e3(r3.proxy ?? r3, ...t))) break e;
     }
-  } catch (e2) {
-    if (!a.catch) throw e2;
-    o = await a.catch(e2, r3.proxy ?? r3, ...t);
+  } catch (e3) {
+    if (!a.catch) throw e3;
+    o = await a.catch(e3, r3.proxy ?? r3, ...t);
   }
   try {
-    for (let e2 of a.finally || []) o = await e2(o, r3.proxy ?? r3, ...t) ?? o;
-  } catch (e2) {
-    if (!a.catch) throw e2;
-    o = await a.catch(e2, r3.proxy ?? r3, ...t);
+    for (let e3 of a.finally || []) o = await e3(o, r3.proxy ?? r3, ...t) ?? o;
+  } catch (e3) {
+    if (!a.catch) throw e3;
+    o = await a.catch(e3, r3.proxy ?? r3, ...t);
   }
   return o;
 } });
+
+// node_modules/.deno/itty-router@5.0.18/node_modules/itty-router/cors.mjs
+var e = (e2 = {}) => {
+  const { origin: o = "*", credentials: s = false, allowMethods: c = "*", allowHeaders: r2, exposeHeaders: n, maxAge: t } = e2, a = (e3) => {
+    const c2 = e3?.headers.get("origin");
+    return true === o ? c2 : o instanceof RegExp ? o.test(c2) ? c2 : void 0 : Array.isArray(o) ? o.includes(c2) ? c2 : void 0 : o instanceof Function ? o(c2) : "*" == o && s ? c2 : o;
+  }, l = (e3, o2) => {
+    for (const [s2, c2] of Object.entries(o2)) c2 && e3.headers.append(s2, c2);
+    return e3;
+  };
+  return { corsify: (e3, o2) => e3?.headers?.get("access-control-allow-origin") || 101 == e3.status ? e3 : l(e3.clone(), { "access-control-allow-origin": a(o2), "access-control-allow-credentials": s }), preflight: (e3) => {
+    if ("OPTIONS" == e3.method) {
+      const o2 = new Response(null, { status: 204 });
+      return l(o2, { "access-control-allow-origin": a(e3), "access-control-allow-methods": c?.join?.(",") ?? c, "access-control-expose-headers": n?.join?.(",") ?? n, "access-control-allow-headers": r2?.join?.(",") ?? r2 ?? e3.headers.get("access-control-request-headers"), "access-control-max-age": t, "access-control-allow-credentials": s });
+    }
+  } };
+};
 
 // src/gemini-proxy.ts
 async function geminiProxy(rawReq) {
@@ -69,11 +86,15 @@ function openAiMessageToGeminiMessage(messages) {
   const result = messages.flatMap(({ role, content }) => {
     if (role === "system") {
       return [
-        { role: "user", parts: [{ text: content }] },
+        { role: "user", parts: typeof content !== "string" ? content : [{ text: content }] },
         { role: "model", parts: [{ text: "" }] }
       ];
     }
-    const parts = content == null || typeof content === "string" ? [{ text: content?.toString() ?? "" }] : content.map((item) => item.type === "text" ? { text: item.text } : parseBase64(item.image_url.url));
+    const parts = content == null || typeof content === "string" ? [{ text: content?.toString() ?? "" }] : content.map((item) => {
+      if (item.type === "text") return { text: item.text };
+      if (item.type === "image_url") return parseBase64(item.image_url.url);
+      return { text: "" };
+    });
     return [{ role: "user" === role ? "user" : "model", parts }];
   }).flatMap((item, idx, arr) => {
     if (item.role === arr.at(idx + 1)?.role && item.role === "user") {
@@ -92,7 +113,7 @@ function genModel(req) {
   };
   const model = ModelMapping[req.model] ?? defaultModel(req.model);
   let functions = req.tools?.filter((it) => it.type === "function")?.map((it) => it.function) ?? [];
-  functions = functions.concat(req.functions ?? []);
+  functions = functions.concat((req.functions ?? []).map((it) => ({ strict: null, ...it })));
   const responseMimeType = req.response_format?.type === "json_object" ? "application/json" : "text/plain";
   const generateContentRequest = {
     contents: openAiMessageToGeminiMessage(req.messages),
@@ -168,50 +189,6 @@ function hello(req) {
         "temperature": 0.7
     }'
     `);
-}
-
-// src/itty-router/cors.ts
-function cors(options = {}) {
-  const { origin = "*", credentials = false, allowMethods = "*", allowHeaders, exposeHeaders, maxAge } = options;
-  const getAccessControlOrigin = (request) => {
-    const requestOrigin = request?.headers.get("origin");
-    if (!requestOrigin) return void 0;
-    if (origin === true) return requestOrigin;
-    if (origin instanceof RegExp) return origin.test(requestOrigin) ? requestOrigin : void 0;
-    if (Array.isArray(origin)) return origin.includes(requestOrigin) ? requestOrigin : void 0;
-    if (origin instanceof Function) return origin(requestOrigin);
-    return origin === "*" && credentials ? requestOrigin : origin;
-  };
-  const appendHeadersAndReturn = (response, headers) => {
-    for (const [key, value] of Object.entries(headers)) {
-      if (value) response.headers.append(key, value);
-    }
-    return response;
-  };
-  const preflight2 = (request) => {
-    if (request.method === "OPTIONS") {
-      const response = new Response(null, { status: 204 });
-      return appendHeadersAndReturn(response, {
-        "access-control-allow-origin": getAccessControlOrigin(request),
-        "access-control-allow-methods": [allowMethods].flat().join(","),
-        // include allowed methods
-        "access-control-expose-headers": [exposeHeaders].flat().join(","),
-        // include allowed headers
-        "access-control-allow-headers": [allowHeaders].flat().join?.(",") || request.headers.get("access-control-request-headers") || "",
-        // include allowed headers
-        "access-control-max-age": maxAge?.toString(),
-        "access-control-allow-credentials": credentials.toString()
-      });
-    }
-  };
-  const corsify2 = (response, request) => {
-    if (response?.headers?.get("access-control-allow-origin") || response.status === 101) return response;
-    return appendHeadersAndReturn(response, {
-      "access-control-allow-origin": getAccessControlOrigin(request),
-      "access-control-allow-credentials": credentials.toString()
-    });
-  };
-  return { corsify: corsify2, preflight: preflight2 };
 }
 
 // src/log.ts
@@ -369,10 +346,10 @@ async function makeRequest(url, body, requestOptions) {
       }
       throw new Error(`[${response.status} ${response.statusText}] ${message}`);
     }
-  } catch (e) {
-    console.log(e);
-    const err = new GoogleGenerativeAIError(`Error fetching from google -> ${e.message}`);
-    err.stack = e.stack;
+  } catch (e2) {
+    console.log(e2);
+    const err = new GoogleGenerativeAIError(`Error fetching from google -> ${e2.message}`);
+    err.stack = e2.stack;
     throw err;
   }
   return response;
@@ -499,7 +476,7 @@ async function nonStreamingChatProxyHandler(req, apiParam, log) {
         model: req.model,
         choices: [
           {
-            message: { role: "assistant", content },
+            message: { role: "assistant", content, refusal: null },
             finish_reason: "stop",
             index: 0,
             logprobs: null
@@ -516,6 +493,7 @@ async function nonStreamingChatProxyHandler(req, apiParam, log) {
         {
           message: {
             role: "assistant",
+            refusal: null,
             content: null,
             function_call: {
               name: content.name ?? "",
@@ -545,7 +523,11 @@ function streamingChatProxyHandler(req, apiParam, log) {
           yield genStreamResp({ model: req.model, content: data, stop: false });
         }
       } catch (error) {
-        yield genStreamResp({ model: req.model, content: error?.message ?? error.toString(), stop: true });
+        yield genStreamResp({
+          model: req.model,
+          content: error?.message ?? error.toString(),
+          stop: true
+        });
       }
       yield genStreamResp({ model: req.model, content: "", stop: true });
       yield "[DONE]";
@@ -703,7 +685,7 @@ var modelDetail = (model) => {
 };
 
 // src/app.ts
-var { preflight, corsify } = cors({ allowHeaders: "*" });
+var { preflight, corsify } = e({ allowHeaders: "*" });
 var app = r({
   before: [
     preflight,

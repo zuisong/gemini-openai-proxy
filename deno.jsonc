@@ -1,5 +1,20 @@
 {
   "exclude": ["./dist", "./coverage"],
-  "lock": false,
-  "nodeModulesDir": true
+  "lock": {
+    "frozen": false
+  },
+  "nodeModulesDir": "auto",
+  "compilerOptions": {
+    "useUnknownInCatchVariables": false,
+    "lib": [
+      "ESNext.Array",
+      "DOM",
+      "DOM.AsyncIterable",
+      "DOM.Iterable",
+      "ESNext",
+      "ESNext.Disposable",
+      "ESNext.AsyncIterable",
+      "deno.ns"
+    ]
+  }
 }

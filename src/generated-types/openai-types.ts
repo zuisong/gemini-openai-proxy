@@ -445,9 +445,261 @@ export interface paths {
         };
         get?: never;
         put?: never;
-        /** Classifies if text is potentially harmful. */
+        /** Classifies if text and/or image inputs are potentially harmful. Learn
+         *     more in the [moderation guide](/docs/guides/moderation).
+         *      */
         post: operations["createModeration"];
         delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/organization/audit_logs": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** List user actions and configuration changes within this organization. */
+        get: operations["list-audit-logs"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/organization/invites": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** Returns a list of invites in the organization. */
+        get: operations["list-invites"];
+        put?: never;
+        /** Create an invite for a user to the organization. The invite must be accepted by the user before they have access to the organization. */
+        post: operations["inviteUser"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/organization/invites/{invite_id}": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** Retrieves an invite. */
+        get: operations["retrieve-invite"];
+        put?: never;
+        post?: never;
+        /** Delete an invite. If the invite has already been accepted, it cannot be deleted. */
+        delete: operations["delete-invite"];
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/organization/projects": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** Returns a list of projects. */
+        get: operations["list-projects"];
+        put?: never;
+        /** Create a new project in the organization. Projects can be created and archived, but cannot be deleted. */
+        post: operations["create-project"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/organization/projects/{project_id}": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** Retrieves a project. */
+        get: operations["retrieve-project"];
+        put?: never;
+        /** Modifies a project in the organization. */
+        post: operations["modify-project"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/organization/projects/{project_id}/api_keys": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** Returns a list of API keys in the project. */
+        get: operations["list-project-api-keys"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/organization/projects/{project_id}/api_keys/{key_id}": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** Retrieves an API key in the project. */
+        get: operations["retrieve-project-api-key"];
+        put?: never;
+        post?: never;
+        /** Deletes an API key from the project. */
+        delete: operations["delete-project-api-key"];
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/organization/projects/{project_id}/archive": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /** Archives a project in the organization. Archived projects cannot be used or updated. */
+        post: operations["archive-project"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/organization/projects/{project_id}/service_accounts": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** Returns a list of service accounts in the project. */
+        get: operations["list-project-service-accounts"];
+        put?: never;
+        /** Creates a new service account in the project. This also returns an unredacted API key for the service account. */
+        post: operations["create-project-service-account"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/organization/projects/{project_id}/service_accounts/{service_account_id}": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** Retrieves a service account in the project. */
+        get: operations["retrieve-project-service-account"];
+        put?: never;
+        post?: never;
+        /** Deletes a service account from the project. */
+        delete: operations["delete-project-service-account"];
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/organization/projects/{project_id}/users": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** Returns a list of users in the project. */
+        get: operations["list-project-users"];
+        put?: never;
+        /** Adds a user to the project. Users must already be members of the organization to be added to a project. */
+        post: operations["create-project-user"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/organization/projects/{project_id}/users/{user_id}": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** Retrieves a user in the project. */
+        get: operations["retrieve-project-user"];
+        put?: never;
+        /** Modifies a user's role in the project. */
+        post: operations["modify-project-user"];
+        /** Deletes a user from the project. */
+        delete: operations["delete-project-user"];
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/organization/users": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** Lists all of the users in the organization. */
+        get: operations["list-users"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/organization/users/{user_id}": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** Retrieves a user by their identifier. */
+        get: operations["retrieve-user"];
+        put?: never;
+        /** Modifies a user's role in the organization. */
+        post: operations["modify-user"];
+        /** Deletes a user from the organization. */
+        delete: operations["delete-user"];
         options?: never;
         head?: never;
         patch?: never;
@@ -889,6 +1141,7 @@ export interface components {
              *
              */
             data: string;
+        } & {
             [key: string]: unknown;
         };
         /**
@@ -906,7 +1159,7 @@ export interface components {
             /** @description The system instructions that the assistant uses. The maximum length is 256,000 characters.
              *      */
             instructions: string | null;
-            /** @description Set of 16 key-value pairs that can be attached to an object. This can be useful for storing additional information about the object in a structured format. Keys can be a maximum of 64 characters long and values can be a maxium of 512 characters long.
+            /** @description Set of 16 key-value pairs that can be attached to an object. This can be useful for storing additional information about the object in a structured format. Keys can be a maximum of 64 characters long and values can be a maximum of 512 characters long.
              *      */
             metadata: Record<string, never>;
             /** @description ID of the model to use. You can use the [List models](/docs/api-reference/models/list) API to see all of your available models, or see our [Model overview](/docs/models/overview) for descriptions of them.
@@ -930,7 +1183,7 @@ export interface components {
             temperature: number;
             /** @description A set of resources that are used by the assistant's tools. The resources are specific to the type of tool. For example, the `code_interpreter` tool requires a list of file IDs, while the `file_search` tool requires a list of vector store IDs.
              *      */
-            tool_resources?: {
+            tool_resources?: ({
                 code_interpreter?: {
                     /**
                      * @description A list of [file](/docs/api-reference/files) IDs made available to the `code_interpreter`` tool. There can be a maximum of 20 files associated with the tool.
@@ -938,16 +1191,19 @@ export interface components {
                      * @default []
                      */
                     file_ids: string[];
+                } & {
                     [key: string]: unknown;
                 };
                 file_search?: {
                     /** @description The ID of the [vector store](/docs/api-reference/vector-stores/object) attached to this assistant. There can be a maximum of 1 vector store attached to the assistant.
                      *      */
                     vector_store_ids?: string[];
+                } & {
                     [key: string]: unknown;
                 };
+            } & {
                 [key: string]: unknown;
-            } | null;
+            }) | null;
             /**
              * @description A list of tool enabled on the assistant. There can be a maximum of 128 tools per assistant. Tools can be of types `code_interpreter`, `file_search`, or `function`.
              *
@@ -963,27 +1219,18 @@ export interface components {
              * @example 1
              */
             top_p: number;
-            [key: string]: unknown;
-        };
-        /** @description An object describing the expected output of the model. If `json_object` only `function` type `tools` are allowed to be passed to the Run. If `text` the model can return text or any value needed.
-         *      */
-        AssistantsApiResponseFormat: {
-            /**
-             * @description Must be one of `text` or `json_object`.
-             * @default text
-             * @example json_object
-             * @enum {string}
-             */
-            type: "text" | "json_object";
+        } & {
             [key: string]: unknown;
         };
         /** @description Specifies the format that the model must output. Compatible with [GPT-4o](/docs/models/gpt-4o), [GPT-4 Turbo](/docs/models/gpt-4-turbo-and-gpt-4), and all GPT-3.5 Turbo models since `gpt-3.5-turbo-1106`.
          *
-         *     Setting to `{ "type": "json_object" }` enables JSON mode, which guarantees the message the model generates is valid JSON.
+         *     Setting to `{ "type": "json_schema", "json_schema": {...} }` enables Structured Outputs which ensures the model will match your supplied JSON schema. Learn more in the [Structured Outputs guide](/docs/guides/structured-outputs).
+         *
+         *     Setting to `{ "type": "json_object" }` enables JSON mode, which ensures the message the model generates is valid JSON.
          *
          *     **Important:** when using JSON mode, you **must** also instruct the model to produce JSON yourself via a system or user message. Without this, the model may generate an unending stream of whitespace until the generation reaches the token limit, resulting in a long-running and seemingly "stuck" request. Also note that the message content may be partially cut off if `finish_reason="length"`, which indicates the generation exceeded `max_tokens` or the conversation exceeded the max context length.
          *      */
-        AssistantsApiResponseFormatOption: ("none" | "auto") | components["schemas"]["AssistantsApiResponseFormat"];
+        AssistantsApiResponseFormatOption: "auto" | components["schemas"]["ResponseFormatText"] | components["schemas"]["ResponseFormatJsonObject"] | components["schemas"]["ResponseFormatJsonSchema"];
         /** @description Controls which (if any) tool is called by the model.
          *     `none` means the model will not call any tools and instead generates a message.
          *     `auto` is the default value and means the model can pick between generating a message or calling one or more tools.
@@ -996,6 +1243,7 @@ export interface components {
             function?: {
                 /** @description The name of the function to call. */
                 name: string;
+            } & {
                 [key: string]: unknown;
             };
             /**
@@ -1003,6 +1251,7 @@ export interface components {
              * @enum {string}
              */
             type: "function" | "code_interpreter" | "file_search";
+        } & {
             [key: string]: unknown;
         };
         /** @description Represents an event emitted when streaming a Run.
@@ -1033,17 +1282,20 @@ export interface components {
              * @enum {string}
              */
             type: "code_interpreter";
+        } & {
             [key: string]: unknown;
         };
         /** FileSearch tool */
         AssistantToolsFileSearch: {
             /** @description Overrides for the file search tool. */
             file_search?: {
-                /** @description The maximum number of results the file search tool should output. The default is 20 for gpt-4* models and 5 for gpt-3.5-turbo. This number should be between 1 and 50 inclusive.
+                /** @description The maximum number of results the file search tool should output. The default is 20 for `gpt-4*` models and 5 for `gpt-3.5-turbo`. This number should be between 1 and 50 inclusive.
                  *
-                 *     Note that the file search tool may output fewer than `max_num_results` results. See the [file search tool documentation](/docs/assistants/tools/file-search/number-of-chunks-returned) for more information.
+                 *     Note that the file search tool may output fewer than `max_num_results` results. See the [file search tool documentation](/docs/assistants/tools/file-search/customizing-file-search-settings) for more information.
                  *      */
                 max_num_results?: number;
+                ranking_options?: components["schemas"]["FileSearchRankingOptions"];
+            } & {
                 [key: string]: unknown;
             };
             /**
@@ -1051,6 +1303,7 @@ export interface components {
              * @enum {string}
              */
             type: "file_search";
+        } & {
             [key: string]: unknown;
         };
         /** FileSearch tool */
@@ -1060,6 +1313,7 @@ export interface components {
              * @enum {string}
              */
             type: "file_search";
+        } & {
             [key: string]: unknown;
         };
         /** Function tool */
@@ -1070,8 +1324,307 @@ export interface components {
              * @enum {string}
              */
             type: "function";
+        } & {
             [key: string]: unknown;
         };
+        /**
+         * @description The format of the output, in one of these options: `json`, `text`, `srt`, `verbose_json`, or `vtt`.
+         *
+         * @default json
+         * @enum {string}
+         */
+        AudioResponseFormat: "json" | "text" | "srt" | "verbose_json" | "vtt";
+        /** @description A log of a user action or configuration change within this organization. */
+        AuditLog: {
+            actor: components["schemas"]["AuditLogActor"];
+            /** @description The details for events with this `type`. */
+            "api_key.created"?: {
+                /** @description The payload used to create the API key. */
+                data?: {
+                    /** @description A list of scopes allowed for the API key, e.g. `["api.model.request"]` */
+                    scopes?: string[];
+                } & {
+                    [key: string]: unknown;
+                };
+                /** @description The tracking ID of the API key. */
+                id?: string;
+            } & {
+                [key: string]: unknown;
+            };
+            /** @description The details for events with this `type`. */
+            "api_key.deleted"?: {
+                /** @description The tracking ID of the API key. */
+                id?: string;
+            } & {
+                [key: string]: unknown;
+            };
+            /** @description The details for events with this `type`. */
+            "api_key.updated"?: {
+                /** @description The payload used to update the API key. */
+                changes_requested?: {
+                    /** @description A list of scopes allowed for the API key, e.g. `["api.model.request"]` */
+                    scopes?: string[];
+                } & {
+                    [key: string]: unknown;
+                };
+                /** @description The tracking ID of the API key. */
+                id?: string;
+            } & {
+                [key: string]: unknown;
+            };
+            /** @description The Unix timestamp (in seconds) of the event. */
+            effective_at: number;
+            /** @description The ID of this log. */
+            id: string;
+            /** @description The details for events with this `type`. */
+            "invite.accepted"?: {
+                /** @description The ID of the invite. */
+                id?: string;
+            } & {
+                [key: string]: unknown;
+            };
+            /** @description The details for events with this `type`. */
+            "invite.deleted"?: {
+                /** @description The ID of the invite. */
+                id?: string;
+            } & {
+                [key: string]: unknown;
+            };
+            /** @description The details for events with this `type`. */
+            "invite.sent"?: {
+                /** @description The payload used to create the invite. */
+                data?: {
+                    /** @description The email invited to the organization. */
+                    email?: string;
+                    /** @description The role the email was invited to be. Is either `owner` or `member`. */
+                    role?: string;
+                } & {
+                    [key: string]: unknown;
+                };
+                /** @description The ID of the invite. */
+                id?: string;
+            } & {
+                [key: string]: unknown;
+            };
+            /** @description The details for events with this `type`. */
+            "login.failed"?: {
+                /** @description The error code of the failure. */
+                error_code?: string;
+                /** @description The error message of the failure. */
+                error_message?: string;
+            } & {
+                [key: string]: unknown;
+            };
+            /** @description The details for events with this `type`. */
+            "logout.failed"?: {
+                /** @description The error code of the failure. */
+                error_code?: string;
+                /** @description The error message of the failure. */
+                error_message?: string;
+            } & {
+                [key: string]: unknown;
+            };
+            /** @description The details for events with this `type`. */
+            "organization.updated"?: {
+                /** @description The payload used to update the organization settings. */
+                changes_requested?: {
+                    /** @description The organization description. */
+                    description?: string;
+                    /** @description The organization name. */
+                    name?: string;
+                    settings?: {
+                        /** @description Visibility of the threads page which shows messages created with the Assistants API and Playground. One of `ANY_ROLE`, `OWNERS`, or `NONE`. */
+                        threads_ui_visibility?: string;
+                        /** @description Visibility of the usage dashboard which shows activity and costs for your organization. One of `ANY_ROLE` or `OWNERS`. */
+                        usage_dashboard_visibility?: string;
+                    } & {
+                        [key: string]: unknown;
+                    };
+                    /** @description The organization title. */
+                    title?: string;
+                } & {
+                    [key: string]: unknown;
+                };
+                /** @description The organization ID. */
+                id?: string;
+            } & {
+                [key: string]: unknown;
+            };
+            /** @description The project that the action was scoped to. Absent for actions not scoped to projects. */
+            project?: {
+                /** @description The project ID. */
+                id?: string;
+                /** @description The project title. */
+                name?: string;
+            } & {
+                [key: string]: unknown;
+            };
+            /** @description The details for events with this `type`. */
+            "project.archived"?: {
+                /** @description The project ID. */
+                id?: string;
+            } & {
+                [key: string]: unknown;
+            };
+            /** @description The details for events with this `type`. */
+            "project.created"?: {
+                /** @description The payload used to create the project. */
+                data?: {
+                    /** @description The project name. */
+                    name?: string;
+                    /** @description The title of the project as seen on the dashboard. */
+                    title?: string;
+                } & {
+                    [key: string]: unknown;
+                };
+                /** @description The project ID. */
+                id?: string;
+            } & {
+                [key: string]: unknown;
+            };
+            /** @description The details for events with this `type`. */
+            "project.updated"?: {
+                /** @description The payload used to update the project. */
+                changes_requested?: {
+                    /** @description The title of the project as seen on the dashboard. */
+                    title?: string;
+                } & {
+                    [key: string]: unknown;
+                };
+                /** @description The project ID. */
+                id?: string;
+            } & {
+                [key: string]: unknown;
+            };
+            /** @description The details for events with this `type`. */
+            "service_account.created"?: {
+                /** @description The payload used to create the service account. */
+                data?: {
+                    /** @description The role of the service account. Is either `owner` or `member`. */
+                    role?: string;
+                } & {
+                    [key: string]: unknown;
+                };
+                /** @description The service account ID. */
+                id?: string;
+            } & {
+                [key: string]: unknown;
+            };
+            /** @description The details for events with this `type`. */
+            "service_account.deleted"?: {
+                /** @description The service account ID. */
+                id?: string;
+            } & {
+                [key: string]: unknown;
+            };
+            /** @description The details for events with this `type`. */
+            "service_account.updated"?: {
+                /** @description The payload used to updated the service account. */
+                changes_requested?: {
+                    /** @description The role of the service account. Is either `owner` or `member`. */
+                    role?: string;
+                } & {
+                    [key: string]: unknown;
+                };
+                /** @description The service account ID. */
+                id?: string;
+            } & {
+                [key: string]: unknown;
+            };
+            type: components["schemas"]["AuditLogEventType"];
+            /** @description The details for events with this `type`. */
+            "user.added"?: {
+                /** @description The payload used to add the user to the project. */
+                data?: {
+                    /** @description The role of the user. Is either `owner` or `member`. */
+                    role?: string;
+                } & {
+                    [key: string]: unknown;
+                };
+                /** @description The user ID. */
+                id?: string;
+            } & {
+                [key: string]: unknown;
+            };
+            /** @description The details for events with this `type`. */
+            "user.deleted"?: {
+                /** @description The user ID. */
+                id?: string;
+            } & {
+                [key: string]: unknown;
+            };
+            /** @description The details for events with this `type`. */
+            "user.updated"?: {
+                /** @description The payload used to update the user. */
+                changes_requested?: {
+                    /** @description The role of the user. Is either `owner` or `member`. */
+                    role?: string;
+                } & {
+                    [key: string]: unknown;
+                };
+                /** @description The project ID. */
+                id?: string;
+            } & {
+                [key: string]: unknown;
+            };
+        } & {
+            [key: string]: unknown;
+        };
+        /** @description The actor who performed the audit logged action. */
+        AuditLogActor: {
+            api_key?: components["schemas"]["AuditLogActorApiKey"];
+            session?: components["schemas"]["AuditLogActorSession"];
+            /**
+             * @description The type of actor. Is either `session` or `api_key`.
+             * @enum {string}
+             */
+            type?: "session" | "api_key";
+        } & {
+            [key: string]: unknown;
+        };
+        /** @description The API Key used to perform the audit logged action. */
+        AuditLogActorApiKey: {
+            /** @description The tracking id of the API key. */
+            id?: string;
+            service_account?: components["schemas"]["AuditLogActorServiceAccount"];
+            /**
+             * @description The type of API key. Can be either `user` or `service_account`.
+             * @enum {string}
+             */
+            type?: "user" | "service_account";
+            user?: components["schemas"]["AuditLogActorUser"];
+        } & {
+            [key: string]: unknown;
+        };
+        /** @description The service account that performed the audit logged action. */
+        AuditLogActorServiceAccount: {
+            /** @description The service account id. */
+            id?: string;
+        } & {
+            [key: string]: unknown;
+        };
+        /** @description The session in which the audit logged action was performed. */
+        AuditLogActorSession: {
+            /** @description The IP address from which the action was performed. */
+            ip_address?: string;
+            user?: components["schemas"]["AuditLogActorUser"];
+        } & {
+            [key: string]: unknown;
+        };
+        /** @description The user who performed the audit logged action. */
+        AuditLogActorUser: {
+            /** @description The user email. */
+            email?: string;
+            /** @description The user id. */
+            id?: string;
+        } & {
+            [key: string]: unknown;
+        };
+        /**
+         * @description The event type.
+         * @enum {string}
+         */
+        AuditLogEventType: "api_key.created" | "api_key.updated" | "api_key.deleted" | "invite.sent" | "invite.accepted" | "invite.deleted" | "login.succeeded" | "login.failed" | "logout.succeeded" | "logout.failed" | "organization.updated" | "project.created" | "project.updated" | "project.archived" | "service_account.created" | "service_account.updated" | "service_account.deleted" | "user.added" | "user.updated" | "user.deleted";
         /**
          * Auto Chunking Strategy
          * @description The default strategy. This strategy currently uses a `max_chunk_size_tokens` of `800` and `chunk_overlap_tokens` of `400`.
@@ -1082,6 +1635,7 @@ export interface components {
              * @enum {string}
              */
             type: "auto";
+        } & {
             [key: string]: unknown;
         };
         Batch: {
@@ -1100,7 +1654,7 @@ export interface components {
             /** @description The ID of the file containing the outputs of requests with errors. */
             error_file_id?: string;
             errors?: {
-                data?: {
+                data?: ({
                     /** @description An error code identifying the error type. */
                     code?: string;
                     /** @description The line number of the input file where the error occurred, if applicable. */
@@ -1109,10 +1663,12 @@ export interface components {
                     message?: string;
                     /** @description The name of the parameter that caused the error, if applicable. */
                     param?: string | null;
+                } & {
                     [key: string]: unknown;
-                }[];
+                })[];
                 /** @description The object type, which is always `list`. */
                 object?: string;
+            } & {
                 [key: string]: unknown;
             };
             /** @description The Unix timestamp (in seconds) for when the batch expired. */
@@ -1128,7 +1684,7 @@ export interface components {
             in_progress_at?: number;
             /** @description The ID of the input file for the batch. */
             input_file_id: string;
-            /** @description Set of 16 key-value pairs that can be attached to an object. This can be useful for storing additional information about the object in a structured format. Keys can be a maximum of 64 characters long and values can be a maxium of 512 characters long.
+            /** @description Set of 16 key-value pairs that can be attached to an object. This can be useful for storing additional information about the object in a structured format. Keys can be a maximum of 64 characters long and values can be a maximum of 512 characters long.
              *      */
             metadata?: Record<string, never>;
             /**
@@ -1146,6 +1702,7 @@ export interface components {
                 failed: number;
                 /** @description Total number of requests in the batch. */
                 total: number;
+            } & {
                 [key: string]: unknown;
             };
             /**
@@ -1153,6 +1710,7 @@ export interface components {
              * @enum {string}
              */
             status: "validating" | "failed" | "in_progress" | "finalizing" | "completed" | "expired" | "cancelling" | "cancelled";
+        } & {
             [key: string]: unknown;
         };
         /** @description The per-line object of the batch input file */
@@ -1166,6 +1724,7 @@ export interface components {
             method?: "POST";
             /** @description The OpenAI API relative URL to be used for the request. Currently `/v1/chat/completions`, `/v1/embeddings`, and `/v1/completions` are supported. */
             url?: string;
+        } & {
             [key: string]: unknown;
         };
         /** @description The per-line object of the batch output and error files */
@@ -1173,23 +1732,26 @@ export interface components {
             /** @description A developer-provided per-request id that will be used to match outputs to inputs. */
             custom_id?: string;
             /** @description For requests that failed with a non-HTTP error, this will contain more information on the cause of the failure. */
-            error?: {
+            error?: ({
                 /** @description A machine-readable error code. */
                 code?: string;
                 /** @description A human-readable error message. */
                 message?: string;
+            } & {
                 [key: string]: unknown;
-            } | null;
+            }) | null;
             id?: string;
-            response?: {
+            response?: ({
                 /** @description The JSON body of the response */
                 body?: Record<string, never>;
                 /** @description An unique identifier for the OpenAI API request. Please include this request ID when contacting support. */
                 request_id?: string;
                 /** @description The HTTP status code of the response */
                 status_code?: number;
+            } & {
                 [key: string]: unknown;
-            } | null;
+            }) | null;
+        } & {
             [key: string]: unknown;
         };
         CancelUploadRequest: Record<string, never>;
@@ -1198,6 +1760,7 @@ export interface components {
         ChatCompletionFunctionCallOption: {
             /** @description The name of the function to call. */
             name: string;
+        } & {
             [key: string]: unknown;
         };
         /** @deprecated */
@@ -1207,6 +1770,7 @@ export interface components {
             /** @description The name of the function to be called. Must be a-z, A-Z, 0-9, or contain underscores and dashes, with a maximum length of 64. */
             name: string;
             parameters?: components["schemas"]["FunctionParameters"];
+        } & {
             [key: string]: unknown;
         };
         ChatCompletionMessageToolCall: {
@@ -1216,6 +1780,7 @@ export interface components {
                 arguments: string;
                 /** @description The name of the function to call. */
                 name: string;
+            } & {
                 [key: string]: unknown;
             };
             /** @description The ID of the tool call. */
@@ -1225,6 +1790,7 @@ export interface components {
              * @enum {string}
              */
             type: "function";
+        } & {
             [key: string]: unknown;
         };
         ChatCompletionMessageToolCallChunk: {
@@ -1233,6 +1799,7 @@ export interface components {
                 arguments?: string;
                 /** @description The name of the function to call. */
                 name?: string;
+            } & {
                 [key: string]: unknown;
             };
             /** @description The ID of the tool call. */
@@ -1243,6 +1810,7 @@ export interface components {
              * @enum {string}
              */
             type?: "function";
+        } & {
             [key: string]: unknown;
         };
         /** @description The tool calls generated by the model, such as function calls. */
@@ -1252,6 +1820,7 @@ export interface components {
             function: {
                 /** @description The name of the function to call. */
                 name: string;
+            } & {
                 [key: string]: unknown;
             };
             /**
@@ -1259,34 +1828,40 @@ export interface components {
              * @enum {string}
              */
             type: "function";
+        } & {
             [key: string]: unknown;
         };
         /** Assistant message */
         ChatCompletionRequestAssistantMessage: {
             /** @description The contents of the assistant message. Required unless `tool_calls` or `function_call` is specified.
              *      */
-            content?: string | null;
+            content?: (string | components["schemas"]["ChatCompletionRequestAssistantMessageContentPart"][]) | null;
             /**
              * @deprecated
              * @description Deprecated and replaced by `tool_calls`. The name and arguments of a function that should be called, as generated by the model.
              */
-            function_call?: {
+            function_call?: ({
                 /** @description The arguments to call the function with, as generated by the model in JSON format. Note that the model does not always generate valid JSON, and may hallucinate parameters not defined by your function schema. Validate the arguments in your code before calling your function. */
                 arguments: string;
                 /** @description The name of the function to call. */
                 name: string;
+            } & {
                 [key: string]: unknown;
-            } | null;
+            }) | null;
             /** @description An optional name for the participant. Provides the model information to differentiate between participants of the same role. */
             name?: string;
+            /** @description The refusal message by the assistant. */
+            refusal?: string | null;
             /**
              * @description The role of the messages author, in this case `assistant`.
              * @enum {string}
              */
             role: "assistant";
             tool_calls?: components["schemas"]["ChatCompletionMessageToolCalls"];
+        } & {
             [key: string]: unknown;
         };
+        ChatCompletionRequestAssistantMessageContentPart: components["schemas"]["ChatCompletionRequestMessageContentPartText"] | components["schemas"]["ChatCompletionRequestMessageContentPartRefusal"];
         /**
          * Function message
          * @deprecated
@@ -1301,10 +1876,10 @@ export interface components {
              * @enum {string}
              */
             role: "function";
+        } & {
             [key: string]: unknown;
         };
         ChatCompletionRequestMessage: components["schemas"]["ChatCompletionRequestSystemMessage"] | components["schemas"]["ChatCompletionRequestUserMessage"] | components["schemas"]["ChatCompletionRequestAssistantMessage"] | components["schemas"]["ChatCompletionRequestToolMessage"] | components["schemas"]["ChatCompletionRequestFunctionMessage"];
-        ChatCompletionRequestMessageContentPart: components["schemas"]["ChatCompletionRequestMessageContentPartText"] | components["schemas"]["ChatCompletionRequestMessageContentPartImage"];
         /** Image content part */
         ChatCompletionRequestMessageContentPartImage: {
             image_url: {
@@ -1319,6 +1894,7 @@ export interface components {
                  * @description Either a URL of the image or the base64 encoded image data.
                  */
                 url: string;
+            } & {
                 [key: string]: unknown;
             };
             /**
@@ -1326,6 +1902,19 @@ export interface components {
              * @enum {string}
              */
             type: "image_url";
+        } & {
+            [key: string]: unknown;
+        };
+        /** Refusal content part */
+        ChatCompletionRequestMessageContentPartRefusal: {
+            /** @description The refusal message generated by the model. */
+            refusal: string;
+            /**
+             * @description The type of the content part.
+             * @enum {string}
+             */
+            type: "refusal";
+        } & {
             [key: string]: unknown;
         };
         /** Text content part */
@@ -1337,12 +1926,13 @@ export interface components {
              * @enum {string}
              */
             type: "text";
+        } & {
             [key: string]: unknown;
         };
         /** System message */
         ChatCompletionRequestSystemMessage: {
             /** @description The contents of the system message. */
-            content: string;
+            content: string | components["schemas"]["ChatCompletionRequestSystemMessageContentPart"][];
             /** @description An optional name for the participant. Provides the model information to differentiate between participants of the same role. */
             name?: string;
             /**
@@ -1350,12 +1940,14 @@ export interface components {
              * @enum {string}
              */
             role: "system";
+        } & {
             [key: string]: unknown;
         };
+        ChatCompletionRequestSystemMessageContentPart: components["schemas"]["ChatCompletionRequestMessageContentPartText"];
         /** Tool message */
         ChatCompletionRequestToolMessage: {
             /** @description The contents of the tool message. */
-            content: string;
+            content: string | components["schemas"]["ChatCompletionRequestToolMessageContentPart"][];
             /**
              * @description The role of the messages author, in this case `tool`.
              * @enum {string}
@@ -1363,13 +1955,15 @@ export interface components {
             role: "tool";
             /** @description Tool call that this message is responding to. */
             tool_call_id: string;
+        } & {
             [key: string]: unknown;
         };
+        ChatCompletionRequestToolMessageContentPart: components["schemas"]["ChatCompletionRequestMessageContentPartText"];
         /** User message */
         ChatCompletionRequestUserMessage: {
             /** @description The contents of the user message.
              *      */
-            content: string | components["schemas"]["ChatCompletionRequestMessageContentPart"][];
+            content: string | components["schemas"]["ChatCompletionRequestUserMessageContentPart"][];
             /** @description An optional name for the participant. Provides the model information to differentiate between participants of the same role. */
             name?: string;
             /**
@@ -1377,8 +1971,10 @@ export interface components {
              * @enum {string}
              */
             role: "user";
+        } & {
             [key: string]: unknown;
         };
+        ChatCompletionRequestUserMessageContentPart: components["schemas"]["ChatCompletionRequestMessageContentPartText"] | components["schemas"]["ChatCompletionRequestMessageContentPartImage"];
         /** @description A chat completion message generated by the model. */
         ChatCompletionResponseMessage: {
             /** @description The contents of the message. */
@@ -1392,14 +1988,18 @@ export interface components {
                 arguments: string;
                 /** @description The name of the function to call. */
                 name: string;
+            } & {
                 [key: string]: unknown;
             };
+            /** @description The refusal message generated by the model. */
+            refusal: string | null;
             /**
              * @description The role of the author of this message.
              * @enum {string}
              */
             role: "assistant";
             tool_calls?: components["schemas"]["ChatCompletionMessageToolCalls"];
+        } & {
             [key: string]: unknown;
         };
         /**
@@ -1412,12 +2012,13 @@ export interface components {
          *
          * @default null
          */
-        ChatCompletionStreamOptions: {
+        ChatCompletionStreamOptions: ({
             /** @description If set, an additional chunk will be streamed before the `data: [DONE]` message. The `usage` field on this chunk shows the token usage statistics for the entire request, and the `choices` field will always be an empty array. All other chunks will also include a `usage` field, but with a null value.
              *      */
             include_usage?: boolean;
+        } & {
             [key: string]: unknown;
-        } | null;
+        }) | null;
         /** @description A chat completion delta generated by streamed model responses. */
         ChatCompletionStreamResponseDelta: {
             /** @description The contents of the chunk message. */
@@ -1431,14 +2032,18 @@ export interface components {
                 arguments?: string;
                 /** @description The name of the function to call. */
                 name?: string;
+            } & {
                 [key: string]: unknown;
             };
+            /** @description The refusal message generated by the model. */
+            refusal?: string | null;
             /**
              * @description The role of the author of this message.
              * @enum {string}
              */
             role?: "system" | "user" | "assistant" | "tool";
             tool_calls?: components["schemas"]["ChatCompletionMessageToolCallChunk"][];
+        } & {
             [key: string]: unknown;
         };
         ChatCompletionTokenLogprob: {
@@ -1449,15 +2054,17 @@ export interface components {
             /** @description The token. */
             token: string;
             /** @description List of the most likely tokens and their log probability, at this token position. In rare cases, there may be fewer than the number of requested `top_logprobs` returned. */
-            top_logprobs: {
+            top_logprobs: ({
                 /** @description A list of integers representing the UTF-8 bytes representation of the token. Useful in instances where characters are represented by multiple tokens and their byte representations must be combined to generate the correct text representation. Can be `null` if there is no bytes representation for the token. */
                 bytes: number[] | null;
                 /** @description The log probability of this token, if it is within the top 20 most likely tokens. Otherwise, the value `-9999.0` is used to signify that the token is very unlikely. */
                 logprob: number;
                 /** @description The token. */
                 token: string;
+            } & {
                 [key: string]: unknown;
-            }[];
+            })[];
+        } & {
             [key: string]: unknown;
         };
         ChatCompletionTool: {
@@ -1467,6 +2074,7 @@ export interface components {
              * @enum {string}
              */
             type: "function";
+        } & {
             [key: string]: unknown;
         };
         /** @description Controls which (if any) tool is called by the model.
@@ -1487,16 +2095,25 @@ export interface components {
             /** @description The ordered list of Part IDs.
              *      */
             part_ids: string[];
+        } & {
             [key: string]: unknown;
         };
         /** @description Usage statistics for the completion request. */
         CompletionUsage: {
             /** @description Number of tokens in the generated completion. */
             completion_tokens: number;
+            /** @description Breakdown of tokens used in a completion. */
+            completion_tokens_details?: {
+                /** @description Tokens generated by the model for reasoning. */
+                reasoning_tokens?: number;
+            } & {
+                [key: string]: unknown;
+            };
             /** @description Number of tokens in the prompt. */
             prompt_tokens: number;
             /** @description Total number of tokens used in the request (prompt + completion). */
             total_tokens: number;
+        } & {
             [key: string]: unknown;
         };
         CreateAssistantRequest: {
@@ -1506,15 +2123,15 @@ export interface components {
             /** @description The system instructions that the assistant uses. The maximum length is 256,000 characters.
              *      */
             instructions?: string | null;
-            /** @description Set of 16 key-value pairs that can be attached to an object. This can be useful for storing additional information about the object in a structured format. Keys can be a maximum of 64 characters long and values can be a maxium of 512 characters long.
+            /** @description Set of 16 key-value pairs that can be attached to an object. This can be useful for storing additional information about the object in a structured format. Keys can be a maximum of 64 characters long and values can be a maximum of 512 characters long.
              *      */
             metadata?: Record<string, never>;
             /**
              * @description ID of the model to use. You can use the [List models](/docs/api-reference/models/list) API to see all of your available models, or see our [Model overview](/docs/models/overview) for descriptions of them.
              *
-             * @example gpt-4-turbo
+             * @example gpt-4o
              */
-            model: string | ("gpt-4o" | "gpt-4o-2024-05-13" | "gpt-4o-mini" | "gpt-4o-mini-2024-07-18" | "gpt-4-turbo" | "gpt-4-turbo-2024-04-09" | "gpt-4-0125-preview" | "gpt-4-turbo-preview" | "gpt-4-1106-preview" | "gpt-4-vision-preview" | "gpt-4" | "gpt-4-0314" | "gpt-4-0613" | "gpt-4-32k" | "gpt-4-32k-0314" | "gpt-4-32k-0613" | "gpt-3.5-turbo" | "gpt-3.5-turbo-16k" | "gpt-3.5-turbo-0613" | "gpt-3.5-turbo-1106" | "gpt-3.5-turbo-0125" | "gpt-3.5-turbo-16k-0613");
+            model: string | ("gpt-4o" | "gpt-4o-2024-08-06" | "gpt-4o-2024-05-13" | "gpt-4o-2024-08-06" | "gpt-4o-mini" | "gpt-4o-mini-2024-07-18" | "gpt-4-turbo" | "gpt-4-turbo-2024-04-09" | "gpt-4-0125-preview" | "gpt-4-turbo-preview" | "gpt-4-1106-preview" | "gpt-4-vision-preview" | "gpt-4" | "gpt-4-0314" | "gpt-4-0613" | "gpt-4-32k" | "gpt-4-32k-0314" | "gpt-4-32k-0613" | "gpt-3.5-turbo" | "gpt-3.5-turbo-16k" | "gpt-3.5-turbo-0613" | "gpt-3.5-turbo-1106" | "gpt-3.5-turbo-0125" | "gpt-3.5-turbo-16k-0613");
             /** @description The name of the assistant. The maximum length is 256 characters.
              *      */
             name?: string | null;
@@ -1528,7 +2145,7 @@ export interface components {
             temperature: number;
             /** @description A set of resources that are used by the assistant's tools. The resources are specific to the type of tool. For example, the `code_interpreter` tool requires a list of file IDs, while the `file_search` tool requires a list of vector store IDs.
              *      */
-            tool_resources?: {
+            tool_resources?: ({
                 code_interpreter?: {
                     /**
                      * @description A list of [file](/docs/api-reference/files) IDs made available to the `code_interpreter` tool. There can be a maximum of 20 files associated with the tool.
@@ -1536,24 +2153,26 @@ export interface components {
                      * @default []
                      */
                     file_ids: string[];
+                } & {
                     [key: string]: unknown;
                 };
-                file_search?: {
+                file_search?: ({
                     /** @description The [vector store](/docs/api-reference/vector-stores/object) attached to this assistant. There can be a maximum of 1 vector store attached to the assistant.
                      *      */
                     vector_store_ids?: string[];
                     /** @description A helper to create a [vector store](/docs/api-reference/vector-stores/object) with file_ids and attach it to this assistant. There can be a maximum of 1 vector store attached to the assistant.
                      *      */
-                    vector_stores?: {
+                    vector_stores?: ({
                         /** @description The chunking strategy used to chunk the file(s). If not set, will use the `auto` strategy. */
-                        chunking_strategy?: {
+                        chunking_strategy?: ({
                             /**
                              * @description Always `auto`.
                              * @enum {string}
                              */
                             type: "auto";
+                        } & {
                             [key: string]: unknown;
-                        } | {
+                        }) | ({
                             static: {
                                 /** @description The number of tokens that overlap between chunks. The default value is `400`.
                                  *
@@ -1562,6 +2181,7 @@ export interface components {
                                 chunk_overlap_tokens: number;
                                 /** @description The maximum number of tokens in each chunk. The default value is `800`. The minimum value is `100` and the maximum value is `4096`. */
                                 max_chunk_size_tokens: number;
+                            } & {
                                 [key: string]: unknown;
                             };
                             /**
@@ -1569,20 +2189,24 @@ export interface components {
                              * @enum {string}
                              */
                             type: "static";
+                        } & {
                             [key: string]: unknown;
-                        };
+                        });
                         /** @description A list of [file](/docs/api-reference/files) IDs to add to the vector store. There can be a maximum of 10000 files in a vector store.
                          *      */
                         file_ids?: string[];
-                        /** @description Set of 16 key-value pairs that can be attached to a vector store. This can be useful for storing additional information about the vector store in a structured format. Keys can be a maximum of 64 characters long and values can be a maxium of 512 characters long.
+                        /** @description Set of 16 key-value pairs that can be attached to a vector store. This can be useful for storing additional information about the vector store in a structured format. Keys can be a maximum of 64 characters long and values can be a maximum of 512 characters long.
                          *      */
                         metadata?: Record<string, never>;
+                    } & {
                         [key: string]: unknown;
-                    }[];
+                    })[];
+                } & {
                     [key: string]: unknown;
-                } & (unknown | unknown);
+                }) & (unknown | unknown);
+            } & {
                 [key: string]: unknown;
-            } | null;
+            }) | null;
             /**
              * @description A list of tool enabled on the assistant. There can be a maximum of 128 tools per assistant. Tools can be of types `code_interpreter`, `file_search`, or `function`.
              *
@@ -1598,12 +2222,13 @@ export interface components {
              * @example 1
              */
             top_p: number;
+        } & {
             [key: string]: unknown;
         };
         /** @description Represents a chat completion response returned by model, based on the provided input. */
         CreateChatCompletionFunctionResponse: {
             /** @description A list of chat completion choices. Can be more than one if `n` is greater than 1. */
-            choices: {
+            choices: ({
                 /**
                  * @description The reason the model stopped generating tokens. This will be `stop` if the model hit a natural stop point or a provided stop sequence, `length` if the maximum number of tokens specified in the request was reached, `content_filter` if content was omitted due to a flag from our content filters, or `function_call` if the model called a function.
                  *
@@ -1613,8 +2238,9 @@ export interface components {
                 /** @description The index of the choice in the list of choices. */
                 index: number;
                 message: components["schemas"]["ChatCompletionResponseMessage"];
+            } & {
                 [key: string]: unknown;
-            }[];
+            })[];
             /** @description The Unix timestamp (in seconds) of when the chat completion was created. */
             created: number;
             /** @description A unique identifier for the chat completion. */
@@ -1632,6 +2258,7 @@ export interface components {
              *      */
             system_fingerprint?: string;
             usage?: components["schemas"]["CompletionUsage"];
+        } & {
             [key: string]: unknown;
         };
         /** @description Represents a streamed chunk of a chat completion response returned by model, based on the provided input. */
@@ -1674,25 +2301,31 @@ export interface components {
              * @default null
              */
             logit_bias: {
-                [key: string]: number | undefined;
+                [key: string]: number;
             } | null;
             /**
              * @description Whether to return log probabilities of the output tokens or not. If true, returns the log probabilities of each output token returned in the `content` of `message`.
              * @default false
              */
             logprobs: boolean | null;
-            /** @description The maximum number of [tokens](/tokenizer) that can be generated in the chat completion.
-             *
-             *     The total length of input tokens and generated tokens is limited by the model's context length. [Example Python code](https://cookbook.openai.com/examples/how_to_count_tokens_with_tiktoken) for counting tokens.
+            /** @description An upper bound for the number of tokens that can be generated for a completion, including visible output tokens and [reasoning tokens](/docs/guides/reasoning).
              *      */
+            max_completion_tokens?: number | null;
+            /**
+             * @deprecated
+             * @description The maximum number of [tokens](/tokenizer) that can be generated in the chat completion. This value can be used to control [costs](https://openai.com/api/pricing/) for text generated via API.
+             *
+             *     This value is now deprecated in favor of `max_completion_tokens`, and is not compatible with [o1 series models](/docs/guides/reasoning).
+             *
+             */
             max_tokens?: number | null;
             /** @description A list of messages comprising the conversation so far. [Example Python code](https://cookbook.openai.com/examples/how_to_format_inputs_to_chatgpt_models). */
             messages: components["schemas"]["ChatCompletionRequestMessage"][];
             /**
              * @description ID of the model to use. See the [model endpoint compatibility](/docs/models/model-endpoint-compatibility) table for details on which models work with the Chat API.
-             * @example gpt-4-turbo
+             * @example gpt-4o
              */
-            model: string | ("gpt-4o" | "gpt-4o-2024-05-13" | "gpt-4o-mini" | "gpt-4o-mini-2024-07-18" | "gpt-4-turbo" | "gpt-4-turbo-2024-04-09" | "gpt-4-0125-preview" | "gpt-4-turbo-preview" | "gpt-4-1106-preview" | "gpt-4-vision-preview" | "gpt-4" | "gpt-4-0314" | "gpt-4-0613" | "gpt-4-32k" | "gpt-4-32k-0314" | "gpt-4-32k-0613" | "gpt-3.5-turbo" | "gpt-3.5-turbo-16k" | "gpt-3.5-turbo-0301" | "gpt-3.5-turbo-0613" | "gpt-3.5-turbo-1106" | "gpt-3.5-turbo-0125" | "gpt-3.5-turbo-16k-0613");
+            model: string | ("o1-preview" | "o1-preview-2024-09-12" | "o1-mini" | "o1-mini-2024-09-12" | "gpt-4o" | "gpt-4o-2024-08-06" | "gpt-4o-2024-05-13" | "gpt-4o-2024-08-06" | "chatgpt-4o-latest" | "gpt-4o-mini" | "gpt-4o-mini-2024-07-18" | "gpt-4-turbo" | "gpt-4-turbo-2024-04-09" | "gpt-4-0125-preview" | "gpt-4-turbo-preview" | "gpt-4-1106-preview" | "gpt-4-vision-preview" | "gpt-4" | "gpt-4-0314" | "gpt-4-0613" | "gpt-4-32k" | "gpt-4-32k-0314" | "gpt-4-32k-0613" | "gpt-3.5-turbo" | "gpt-3.5-turbo-16k" | "gpt-3.5-turbo-0301" | "gpt-3.5-turbo-0613" | "gpt-3.5-turbo-1106" | "gpt-3.5-turbo-0125" | "gpt-3.5-turbo-16k-0613");
             /**
              * @description How many chat completion choices to generate for each input message. Note that you will be charged based on the number of generated tokens across all of the choices. Keep `n` as `1` to minimize costs.
              * @default 1
@@ -1708,22 +2341,15 @@ export interface components {
              * @default 0
              */
             presence_penalty: number | null;
-            /** @description An object specifying the format that the model must output. Compatible with [GPT-4 Turbo](/docs/models/gpt-4-and-gpt-4-turbo) and all GPT-3.5 Turbo models newer than `gpt-3.5-turbo-1106`.
+            /** @description An object specifying the format that the model must output. Compatible with [GPT-4o](/docs/models/gpt-4o), [GPT-4o mini](/docs/models/gpt-4o-mini), [GPT-4 Turbo](/docs/models/gpt-4-and-gpt-4-turbo) and all GPT-3.5 Turbo models newer than `gpt-3.5-turbo-1106`.
              *
-             *     Setting to `{ "type": "json_object" }` enables JSON mode, which guarantees the message the model generates is valid JSON.
+             *     Setting to `{ "type": "json_schema", "json_schema": {...} }` enables Structured Outputs which ensures the model will match your supplied JSON schema. Learn more in the [Structured Outputs guide](/docs/guides/structured-outputs).
+             *
+             *     Setting to `{ "type": "json_object" }` enables JSON mode, which ensures the message the model generates is valid JSON.
              *
              *     **Important:** when using JSON mode, you **must** also instruct the model to produce JSON yourself via a system or user message. Without this, the model may generate an unending stream of whitespace until the generation reaches the token limit, resulting in a long-running and seemingly "stuck" request. Also note that the message content may be partially cut off if `finish_reason="length"`, which indicates the generation exceeded `max_tokens` or the conversation exceeded the max context length.
              *      */
-            response_format?: {
-                /**
-                 * @description Must be one of `text` or `json_object`.
-                 * @default text
-                 * @example json_object
-                 * @enum {string}
-                 */
-                type: "text" | "json_object";
-                [key: string]: unknown;
-            };
+            response_format?: components["schemas"]["ResponseFormatText"] | components["schemas"]["ResponseFormatJsonObject"] | components["schemas"]["ResponseFormatJsonSchema"];
             /** @description This feature is in Beta.
              *     If specified, our system will make a best effort to sample deterministically, such that repeated requests with the same `seed` and parameters should return the same result.
              *     Determinism is not guaranteed, and you should refer to the `system_fingerprint` response parameter to monitor changes in the backend.
@@ -1731,7 +2357,8 @@ export interface components {
             seed?: number | null;
             /**
              * @description Specifies the latency tier to use for processing the request. This parameter is relevant for customers subscribed to the scale tier service:
-             *       - If set to 'auto', the system will utilize scale tier credits until they are exhausted.
+             *       - If set to 'auto', and the Project is Scale tier enabled, the system will utilize scale tier credits until they are exhausted.
+             *       - If set to 'auto', and the Project is not Scale tier enabled, the request will be processed using the default service tier with a lower uptime SLA and no latency guarentee.
              *       - If set to 'default', the request will be processed using the default service tier with a lower uptime SLA and no latency guarentee.
              *       - When not set, the default behavior is 'auto'.
              *
@@ -1784,12 +2411,13 @@ export interface components {
              * @example user-1234
              */
             user?: string;
+        } & {
             [key: string]: unknown;
         };
         /** @description Represents a chat completion response returned by model, based on the provided input. */
         CreateChatCompletionResponse: {
             /** @description A list of chat completion choices. Can be more than one if `n` is greater than 1. */
-            choices: {
+            choices: ({
                 /**
                  * @description The reason the model stopped generating tokens. This will be `stop` if the model hit a natural stop point or a provided stop sequence,
                  *     `length` if the maximum number of tokens specified in the request was reached,
@@ -1802,14 +2430,18 @@ export interface components {
                 /** @description The index of the choice in the list of choices. */
                 index: number;
                 /** @description Log probability information for the choice. */
-                logprobs: {
+                logprobs: ({
                     /** @description A list of message content tokens with log probability information. */
                     content: components["schemas"]["ChatCompletionTokenLogprob"][] | null;
+                    /** @description A list of message refusal tokens with log probability information. */
+                    refusal: components["schemas"]["ChatCompletionTokenLogprob"][] | null;
+                } & {
                     [key: string]: unknown;
-                } | null;
+                }) | null;
                 message: components["schemas"]["ChatCompletionResponseMessage"];
+            } & {
                 [key: string]: unknown;
-            }[];
+            })[];
             /** @description The Unix timestamp (in seconds) of when the chat completion was created. */
             created: number;
             /** @description A unique identifier for the chat completion. */
@@ -1833,6 +2465,7 @@ export interface components {
              *      */
             system_fingerprint?: string;
             usage?: components["schemas"]["CompletionUsage"];
+        } & {
             [key: string]: unknown;
         };
         /** @description Represents a streamed chunk of a chat completion response returned by model, based on the provided input. */
@@ -1840,7 +2473,7 @@ export interface components {
             /** @description A list of chat completion choices. Can contain more than one elements if `n` is greater than 1. Can also be empty for the
              *     last chunk if you set `stream_options: {"include_usage": true}`.
              *      */
-            choices: {
+            choices: ({
                 delta: components["schemas"]["ChatCompletionStreamResponseDelta"];
                 /**
                  * @description The reason the model stopped generating tokens. This will be `stop` if the model hit a natural stop point or a provided stop sequence,
@@ -1854,13 +2487,17 @@ export interface components {
                 /** @description The index of the choice in the list of choices. */
                 index: number;
                 /** @description Log probability information for the choice. */
-                logprobs?: {
+                logprobs?: ({
                     /** @description A list of message content tokens with log probability information. */
                     content: components["schemas"]["ChatCompletionTokenLogprob"][] | null;
+                    /** @description A list of message refusal tokens with log probability information. */
+                    refusal: components["schemas"]["ChatCompletionTokenLogprob"][] | null;
+                } & {
                     [key: string]: unknown;
-                } | null;
+                }) | null;
+            } & {
                 [key: string]: unknown;
-            }[];
+            })[];
             /** @description The Unix timestamp (in seconds) of when the chat completion was created. Each chunk has the same timestamp. */
             created: number;
             /** @description A unique identifier for the chat completion. Each chunk has the same ID. */
@@ -1892,8 +2529,10 @@ export interface components {
                 prompt_tokens: number;
                 /** @description Total number of tokens used in the request (prompt + completion). */
                 total_tokens: number;
+            } & {
                 [key: string]: unknown;
             };
+        } & {
             [key: string]: unknown;
         };
         CreateCompletionRequest: {
@@ -1931,7 +2570,7 @@ export interface components {
              * @default null
              */
             logit_bias: {
-                [key: string]: number | undefined;
+                [key: string]: number;
             } | null;
             /**
              * @description Include the log probabilities on the `logprobs` most likely output tokens, as well the chosen tokens. For example, if `logprobs` is 5, the API will return a list of the 5 most likely tokens. The API will always return the `logprob` of the sampled token, so there may be up to `logprobs+1` elements in the response.
@@ -2029,13 +2668,14 @@ export interface components {
              * @example user-1234
              */
             user?: string;
+        } & {
             [key: string]: unknown;
         };
         /** @description Represents a completion response from the API. Note: both the streamed and non-streamed response objects share the same shape (unlike the chat endpoint).
          *      */
         CreateCompletionResponse: {
             /** @description The list of completion choices the model generated for the input prompt. */
-            choices: {
+            choices: ({
                 /**
                  * @description The reason the model stopped generating tokens. This will be `stop` if the model hit a natural stop point or a provided stop sequence,
                  *     `length` if the maximum number of tokens specified in the request was reached,
@@ -2045,18 +2685,20 @@ export interface components {
                  */
                 finish_reason: "stop" | "length" | "content_filter";
                 index: number;
-                logprobs: {
+                logprobs: ({
                     text_offset?: number[];
                     token_logprobs?: number[];
                     tokens?: string[];
                     top_logprobs?: {
-                        [key: string]: number | undefined;
+                        [key: string]: number;
                     }[];
+                } & {
                     [key: string]: unknown;
-                } | null;
+                }) | null;
                 text: string;
+            } & {
                 [key: string]: unknown;
-            }[];
+            })[];
             /** @description The Unix timestamp (in seconds) of when the completion was created. */
             created: number;
             /** @description A unique identifier for the completion. */
@@ -2074,6 +2716,7 @@ export interface components {
              *      */
             system_fingerprint?: string;
             usage?: components["schemas"]["CompletionUsage"];
+        } & {
             [key: string]: unknown;
         };
         CreateEmbeddingRequest: {
@@ -2105,6 +2748,7 @@ export interface components {
              * @example user-1234
              */
             user?: string;
+        } & {
             [key: string]: unknown;
         };
         CreateEmbeddingResponse: {
@@ -2123,8 +2767,10 @@ export interface components {
                 prompt_tokens: number;
                 /** @description The total number of tokens used by the request. */
                 total_tokens: number;
+            } & {
                 [key: string]: unknown;
             };
+        } & {
             [key: string]: unknown;
         };
         CreateFileRequest: {
@@ -2142,6 +2788,7 @@ export interface components {
              * @enum {string}
              */
             purpose: "assistants" | "batch" | "fine-tune" | "vision";
+        } & {
             [key: string]: unknown;
         };
         CreateFineTuningJobRequest: {
@@ -2168,10 +2815,11 @@ export interface components {
                  * @default auto
                  */
                 n_epochs?: "auto" | number;
+            } & {
                 [key: string]: unknown;
             };
             /** @description A list of integrations to enable for your fine-tuning job. */
-            integrations?: {
+            integrations?: ({
                 /** @description The type of integration to enable. Currently, only "wandb" (Weights and Biases) is supported.
                  *      */
                 type: "wandb";
@@ -2197,17 +2845,19 @@ export interface components {
                      *     default tags are generated by OpenAI: "openai/finetune", "openai/{base-model}", "openai/{ftjob-abcdef}".
                      *      */
                     tags?: string[];
+                } & {
                     [key: string]: unknown;
                 };
+            } & {
                 [key: string]: unknown;
-            }[] | null;
+            })[] | null;
             /**
              * @description The name of the model to fine-tune. You can select one of the
-             *     [supported models](/docs/guides/fine-tuning/what-models-can-be-fine-tuned).
+             *     [supported models](/docs/guides/fine-tuning/which-models-can-be-fine-tuned).
              *
-             * @example gpt-3.5-turbo
+             * @example gpt-4o-mini
              */
-            model: string | ("babbage-002" | "davinci-002" | "gpt-3.5-turbo");
+            model: string | ("babbage-002" | "davinci-002" | "gpt-3.5-turbo" | "gpt-4o-mini");
             /**
              * @description The seed controls the reproducibility of the job. Passing in the same seed and job parameters should produce the same results, but may differ in rare cases.
              *     If a seed is not specified, one will be generated for you.
@@ -2216,9 +2866,9 @@ export interface components {
              */
             seed?: number | null;
             /**
-             * @description A string of up to 18 characters that will be added to your fine-tuned model name.
+             * @description A string of up to 64 characters that will be added to your fine-tuned model name.
              *
-             *     For example, a `suffix` of "custom-model-name" would produce a model name like `ft:gpt-3.5-turbo:openai:custom-model-name:7p4lURel`.
+             *     For example, a `suffix` of "custom-model-name" would produce a model name like `ft:gpt-4o-mini:openai:custom-model-name:7p4lURel`.
              *
              * @default null
              */
@@ -2252,6 +2902,7 @@ export interface components {
              * @example file-abc123
              */
             validation_file?: string | null;
+        } & {
             [key: string]: unknown;
         };
         CreateImageEditRequest: {
@@ -2302,6 +2953,7 @@ export interface components {
              * @example user-1234
              */
             user?: string;
+        } & {
             [key: string]: unknown;
         };
         CreateImageRequest: {
@@ -2356,6 +3008,7 @@ export interface components {
              * @example user-1234
              */
             user?: string;
+        } & {
             [key: string]: unknown;
         };
         CreateImageVariationRequest: {
@@ -2396,19 +3049,21 @@ export interface components {
              * @example user-1234
              */
             user?: string;
+        } & {
             [key: string]: unknown;
         };
         CreateMessageRequest: {
             /** @description A list of files attached to the message, and the tools they should be added to. */
-            attachments?: {
+            attachments?: ({
                 /** @description The ID of the file to attach to the message. */
                 file_id?: string;
                 /** @description The tools to add this file to. */
                 tools?: (components["schemas"]["AssistantToolsCode"] | components["schemas"]["AssistantToolsFileSearchTypeOnly"])[];
+            } & {
                 [key: string]: unknown;
-            }[] | null;
+            })[] | null;
             content: string | (components["schemas"]["MessageContentImageFileObject"] | components["schemas"]["MessageContentImageUrlObject"] | components["schemas"]["MessageRequestContentTextObject"])[];
-            /** @description Set of 16 key-value pairs that can be attached to an object. This can be useful for storing additional information about the object in a structured format. Keys can be a maximum of 64 characters long and values can be a maxium of 512 characters long.
+            /** @description Set of 16 key-value pairs that can be attached to an object. This can be useful for storing additional information about the object in a structured format. Keys can be a maximum of 64 characters long and values can be a maximum of 512 characters long.
              *      */
             metadata?: Record<string, never>;
             /**
@@ -2419,20 +3074,56 @@ export interface components {
              * @enum {string}
              */
             role: "user" | "assistant";
+        } & {
             [key: string]: unknown;
         };
         CreateModerationRequest: {
-            /** @description The input text to classify */
-            input: string | string[];
+            /** @description Input (or inputs) to classify. Can be a single string, an array of strings, or
+             *     an array of multi-modal input objects similar to other models.
+             *      */
+            input: string | string[] | (({
+                /** @description Contains either an image URL or a data URL for a base64 encoded image. */
+                image_url: {
+                    /**
+                     * Format: uri
+                     * @description Either a URL of the image or the base64 encoded image data.
+                     * @example https://example.com/image.jpg
+                     */
+                    url: string;
+                } & {
+                    [key: string]: unknown;
+                };
+                /**
+                 * @description Always `image_url`.
+                 * @enum {string}
+                 */
+                type: "image_url";
+            } & {
+                [key: string]: unknown;
+            }) | ({
+                /**
+                 * @description A string of text to classify.
+                 * @example I want to kill them
+                 */
+                text: string;
+                /**
+                 * @description Always `text`.
+                 * @enum {string}
+                 */
+                type: "text";
+            } & {
+                [key: string]: unknown;
+            }))[];
             /**
-             * @description Two content moderations models are available: `text-moderation-stable` and `text-moderation-latest`.
+             * @description The content moderation model you would like to use. Learn more in
+             *     [the moderation guide](/docs/guides/moderation), and learn about
+             *     available models [here](/docs/models/moderation).
              *
-             *     The default is `text-moderation-latest` which will be automatically upgraded over time. This ensures you are always using our most accurate model. If you use `text-moderation-stable`, we will provide advanced notice before updating the model. Accuracy of `text-moderation-stable` may be slightly lower than for `text-moderation-latest`.
-             *
-             * @default text-moderation-latest
-             * @example text-moderation-stable
+             * @default omni-moderation-latest
+             * @example omni-moderation-2024-09-26
              */
-            model: string | ("text-moderation-latest" | "text-moderation-stable");
+            model: string | ("omni-moderation-latest" | "omni-moderation-2024-09-26" | "text-moderation-latest" | "text-moderation-stable");
+        } & {
             [key: string]: unknown;
         };
         /** @description Represents if a given text input is potentially harmful. */
@@ -2442,7 +3133,7 @@ export interface components {
             /** @description The model used to generate the moderation results. */
             model: string;
             /** @description A list of moderation objects. */
-            results: {
+            results: ({
                 /** @description A list of the categories, and whether they are flagged or not. */
                 categories: {
                     /** @description Content that expresses, incites, or promotes harassing language towards any target. */
@@ -2453,6 +3144,10 @@ export interface components {
                     hate: boolean;
                     /** @description Hateful content that also includes violence or serious harm towards the targeted group based on race, gender, ethnicity, religion, nationality, sexual orientation, disability status, or caste. */
                     "hate/threatening": boolean;
+                    /** @description Content that includes instructions or advice that facilitate the planning or execution of wrongdoing, or that gives advice or instruction on how to commit illicit acts. For example, "how to shoplift" would fit this category. */
+                    illicit: boolean;
+                    /** @description Content that includes instructions or advice that facilitate the planning or execution of wrongdoing that also includes violence, or that gives advice or instruction on the procurement of any weapon. */
+                    "illicit/violent": boolean;
                     /** @description Content that promotes, encourages, or depicts acts of self-harm, such as suicide, cutting, and eating disorders. */
                     "self-harm": boolean;
                     /** @description Content that encourages performing acts of self-harm, such as suicide, cutting, and eating disorders, or that gives instructions or advice on how to commit such acts. */
@@ -2467,6 +3162,38 @@ export interface components {
                     violence: boolean;
                     /** @description Content that depicts death, violence, or physical injury in graphic detail. */
                     "violence/graphic": boolean;
+                } & {
+                    [key: string]: unknown;
+                };
+                /** @description A list of the categories along with the input type(s) that the score applies to. */
+                category_applied_input_types: {
+                    /** @description The applied input type(s) for the category 'harassment'. */
+                    harassment: "text"[];
+                    /** @description The applied input type(s) for the category 'harassment/threatening'. */
+                    "harassment/threatening": "text"[];
+                    /** @description The applied input type(s) for the category 'hate'. */
+                    hate: "text"[];
+                    /** @description The applied input type(s) for the category 'hate/threatening'. */
+                    "hate/threatening": "text"[];
+                    /** @description The applied input type(s) for the category 'illicit'. */
+                    illicit: "text"[];
+                    /** @description The applied input type(s) for the category 'illicit/violent'. */
+                    "illicit/violent": "text"[];
+                    /** @description The applied input type(s) for the category 'self-harm'. */
+                    "self-harm": ("text" | "image")[];
+                    /** @description The applied input type(s) for the category 'self-harm/instructions'. */
+                    "self-harm/instructions": ("text" | "image")[];
+                    /** @description The applied input type(s) for the category 'self-harm/intent'. */
+                    "self-harm/intent": ("text" | "image")[];
+                    /** @description The applied input type(s) for the category 'sexual'. */
+                    sexual: ("text" | "image")[];
+                    /** @description The applied input type(s) for the category 'sexual/minors'. */
+                    "sexual/minors": "text"[];
+                    /** @description The applied input type(s) for the category 'violence'. */
+                    violence: ("text" | "image")[];
+                    /** @description The applied input type(s) for the category 'violence/graphic'. */
+                    "violence/graphic": ("text" | "image")[];
+                } & {
                     [key: string]: unknown;
                 };
                 /** @description A list of the categories along with their scores as predicted by model. */
@@ -2479,6 +3206,10 @@ export interface components {
                     hate: number;
                     /** @description The score for the category 'hate/threatening'. */
                     "hate/threatening": number;
+                    /** @description The score for the category 'illicit'. */
+                    illicit: number;
+                    /** @description The score for the category 'illicit/violent'. */
+                    "illicit/violent": number;
                     /** @description The score for the category 'self-harm'. */
                     "self-harm": number;
                     /** @description The score for the category 'self-harm/instructions'. */
@@ -2493,12 +3224,15 @@ export interface components {
                     violence: number;
                     /** @description The score for the category 'violence/graphic'. */
                     "violence/graphic": number;
+                } & {
                     [key: string]: unknown;
                 };
                 /** @description Whether any of the below categories are flagged. */
                 flagged: boolean;
+            } & {
                 [key: string]: unknown;
-            }[];
+            })[];
+        } & {
             [key: string]: unknown;
         };
         CreateRunRequest: {
@@ -2516,14 +3250,14 @@ export interface components {
             /** @description The maximum number of prompt tokens that may be used over the course of the run. The run will make a best effort to use only the number of prompt tokens specified, across multiple turns of the run. If the run exceeds the number of prompt tokens specified, the run will end with status `incomplete`. See `incomplete_details` for more info.
              *      */
             max_prompt_tokens?: number | null;
-            /** @description Set of 16 key-value pairs that can be attached to an object. This can be useful for storing additional information about the object in a structured format. Keys can be a maximum of 64 characters long and values can be a maxium of 512 characters long.
+            /** @description Set of 16 key-value pairs that can be attached to an object. This can be useful for storing additional information about the object in a structured format. Keys can be a maximum of 64 characters long and values can be a maximum of 512 characters long.
              *      */
             metadata?: Record<string, never>;
             /**
              * @description The ID of the [Model](/docs/api-reference/models) to be used to execute this run. If a value is provided here, it will override the model associated with the assistant. If not, the model associated with the assistant will be used.
-             * @example gpt-4-turbo
+             * @example gpt-4o
              */
-            model?: (string | ("gpt-4o" | "gpt-4o-2024-05-13" | "gpt-4o-mini" | "gpt-4o-mini-2024-07-18" | "gpt-4-turbo" | "gpt-4-turbo-2024-04-09" | "gpt-4-0125-preview" | "gpt-4-turbo-preview" | "gpt-4-1106-preview" | "gpt-4-vision-preview" | "gpt-4" | "gpt-4-0314" | "gpt-4-0613" | "gpt-4-32k" | "gpt-4-32k-0314" | "gpt-4-32k-0613" | "gpt-3.5-turbo" | "gpt-3.5-turbo-16k" | "gpt-3.5-turbo-0613" | "gpt-3.5-turbo-1106" | "gpt-3.5-turbo-0125" | "gpt-3.5-turbo-16k-0613")) | null;
+            model?: (string | ("gpt-4o" | "gpt-4o-2024-08-06" | "gpt-4o-2024-05-13" | "gpt-4o-2024-08-06" | "gpt-4o-mini" | "gpt-4o-mini-2024-07-18" | "gpt-4-turbo" | "gpt-4-turbo-2024-04-09" | "gpt-4-0125-preview" | "gpt-4-turbo-preview" | "gpt-4-1106-preview" | "gpt-4-vision-preview" | "gpt-4" | "gpt-4-0314" | "gpt-4-0613" | "gpt-4-32k" | "gpt-4-32k-0314" | "gpt-4-32k-0613" | "gpt-3.5-turbo" | "gpt-3.5-turbo-16k" | "gpt-3.5-turbo-0613" | "gpt-3.5-turbo-1106" | "gpt-3.5-turbo-0125" | "gpt-3.5-turbo-16k-0613")) | null;
             parallel_tool_calls?: components["schemas"]["ParallelToolCalls"];
             response_format?: components["schemas"]["AssistantsApiResponseFormatOption"];
             /** @description If `true`, returns a stream of events that happen during the Run as server-sent events, terminating when the Run enters a terminal state with a `data: [DONE]` message.
@@ -2549,6 +3283,7 @@ export interface components {
              */
             top_p: number;
             truncation_strategy?: components["schemas"]["TruncationObject"];
+        } & {
             [key: string]: unknown;
         };
         CreateSpeechRequest: {
@@ -2573,6 +3308,7 @@ export interface components {
              * @enum {string}
              */
             voice: "alloy" | "echo" | "fable" | "onyx" | "nova" | "shimmer";
+        } & {
             [key: string]: unknown;
         };
         CreateThreadAndRunRequest: {
@@ -2586,14 +3322,14 @@ export interface components {
             /** @description The maximum number of prompt tokens that may be used over the course of the run. The run will make a best effort to use only the number of prompt tokens specified, across multiple turns of the run. If the run exceeds the number of prompt tokens specified, the run will end with status `incomplete`. See `incomplete_details` for more info.
              *      */
             max_prompt_tokens?: number | null;
-            /** @description Set of 16 key-value pairs that can be attached to an object. This can be useful for storing additional information about the object in a structured format. Keys can be a maximum of 64 characters long and values can be a maxium of 512 characters long.
+            /** @description Set of 16 key-value pairs that can be attached to an object. This can be useful for storing additional information about the object in a structured format. Keys can be a maximum of 64 characters long and values can be a maximum of 512 characters long.
              *      */
             metadata?: Record<string, never>;
             /**
              * @description The ID of the [Model](/docs/api-reference/models) to be used to execute this run. If a value is provided here, it will override the model associated with the assistant. If not, the model associated with the assistant will be used.
-             * @example gpt-4-turbo
+             * @example gpt-4o
              */
-            model?: (string | ("gpt-4o" | "gpt-4o-2024-05-13" | "gpt-4o-mini" | "gpt-4o-mini-2024-07-18" | "gpt-4-turbo" | "gpt-4-turbo-2024-04-09" | "gpt-4-0125-preview" | "gpt-4-turbo-preview" | "gpt-4-1106-preview" | "gpt-4-vision-preview" | "gpt-4" | "gpt-4-0314" | "gpt-4-0613" | "gpt-4-32k" | "gpt-4-32k-0314" | "gpt-4-32k-0613" | "gpt-3.5-turbo" | "gpt-3.5-turbo-16k" | "gpt-3.5-turbo-0613" | "gpt-3.5-turbo-1106" | "gpt-3.5-turbo-0125" | "gpt-3.5-turbo-16k-0613")) | null;
+            model?: (string | ("gpt-4o" | "gpt-4o-2024-08-06" | "gpt-4o-2024-05-13" | "gpt-4o-2024-08-06" | "gpt-4o-mini" | "gpt-4o-mini-2024-07-18" | "gpt-4-turbo" | "gpt-4-turbo-2024-04-09" | "gpt-4-0125-preview" | "gpt-4-turbo-preview" | "gpt-4-1106-preview" | "gpt-4-vision-preview" | "gpt-4" | "gpt-4-0314" | "gpt-4-0613" | "gpt-4-32k" | "gpt-4-32k-0314" | "gpt-4-32k-0613" | "gpt-3.5-turbo" | "gpt-3.5-turbo-16k" | "gpt-3.5-turbo-0613" | "gpt-3.5-turbo-1106" | "gpt-3.5-turbo-0125" | "gpt-3.5-turbo-16k-0613")) | null;
             parallel_tool_calls?: components["schemas"]["ParallelToolCalls"];
             response_format?: components["schemas"]["AssistantsApiResponseFormatOption"];
             /** @description If `true`, returns a stream of events that happen during the Run as server-sent events, terminating when the Run enters a terminal state with a `data: [DONE]` message.
@@ -2611,7 +3347,7 @@ export interface components {
             tool_choice?: components["schemas"]["AssistantsApiToolChoiceOption"];
             /** @description A set of resources that are used by the assistant's tools. The resources are specific to the type of tool. For example, the `code_interpreter` tool requires a list of file IDs, while the `file_search` tool requires a list of vector store IDs.
              *      */
-            tool_resources?: {
+            tool_resources?: ({
                 code_interpreter?: {
                     /**
                      * @description A list of [file](/docs/api-reference/files) IDs made available to the `code_interpreter` tool. There can be a maximum of 20 files associated with the tool.
@@ -2619,16 +3355,19 @@ export interface components {
                      * @default []
                      */
                     file_ids: string[];
+                } & {
                     [key: string]: unknown;
                 };
                 file_search?: {
                     /** @description The ID of the [vector store](/docs/api-reference/vector-stores/object) attached to this assistant. There can be a maximum of 1 vector store attached to the assistant.
                      *      */
                     vector_store_ids?: string[];
+                } & {
                     [key: string]: unknown;
                 };
+            } & {
                 [key: string]: unknown;
-            } | null;
+            }) | null;
             /** @description Override the tools the assistant can use for this run. This is useful for modifying the behavior on a per-run basis. */
             tools?: (components["schemas"]["AssistantToolsCode"] | components["schemas"]["AssistantToolsFileSearch"] | components["schemas"]["AssistantToolsFunction"])[] | null;
             /**
@@ -2641,17 +3380,18 @@ export interface components {
              */
             top_p: number;
             truncation_strategy?: components["schemas"]["TruncationObject"];
+        } & {
             [key: string]: unknown;
         };
         CreateThreadRequest: {
             /** @description A list of [messages](/docs/api-reference/messages) to start the thread with. */
             messages?: components["schemas"]["CreateMessageRequest"][];
-            /** @description Set of 16 key-value pairs that can be attached to an object. This can be useful for storing additional information about the object in a structured format. Keys can be a maximum of 64 characters long and values can be a maxium of 512 characters long.
+            /** @description Set of 16 key-value pairs that can be attached to an object. This can be useful for storing additional information about the object in a structured format. Keys can be a maximum of 64 characters long and values can be a maximum of 512 characters long.
              *      */
             metadata?: Record<string, never>;
             /** @description A set of resources that are made available to the assistant's tools in this thread. The resources are specific to the type of tool. For example, the `code_interpreter` tool requires a list of file IDs, while the `file_search` tool requires a list of vector store IDs.
              *      */
-            tool_resources?: {
+            tool_resources?: ({
                 code_interpreter?: {
                     /**
                      * @description A list of [file](/docs/api-reference/files) IDs made available to the `code_interpreter` tool. There can be a maximum of 20 files associated with the tool.
@@ -2659,24 +3399,26 @@ export interface components {
                      * @default []
                      */
                     file_ids: string[];
+                } & {
                     [key: string]: unknown;
                 };
-                file_search?: {
+                file_search?: ({
                     /** @description The [vector store](/docs/api-reference/vector-stores/object) attached to this thread. There can be a maximum of 1 vector store attached to the thread.
                      *      */
                     vector_store_ids?: string[];
                     /** @description A helper to create a [vector store](/docs/api-reference/vector-stores/object) with file_ids and attach it to this thread. There can be a maximum of 1 vector store attached to the thread.
                      *      */
-                    vector_stores?: {
+                    vector_stores?: ({
                         /** @description The chunking strategy used to chunk the file(s). If not set, will use the `auto` strategy. */
-                        chunking_strategy?: {
+                        chunking_strategy?: ({
                             /**
                              * @description Always `auto`.
                              * @enum {string}
                              */
                             type: "auto";
+                        } & {
                             [key: string]: unknown;
-                        } | {
+                        }) | ({
                             static: {
                                 /** @description The number of tokens that overlap between chunks. The default value is `400`.
                                  *
@@ -2685,6 +3427,7 @@ export interface components {
                                 chunk_overlap_tokens: number;
                                 /** @description The maximum number of tokens in each chunk. The default value is `800`. The minimum value is `100` and the maximum value is `4096`. */
                                 max_chunk_size_tokens: number;
+                            } & {
                                 [key: string]: unknown;
                             };
                             /**
@@ -2692,20 +3435,25 @@ export interface components {
                              * @enum {string}
                              */
                             type: "static";
+                        } & {
                             [key: string]: unknown;
-                        };
+                        });
                         /** @description A list of [file](/docs/api-reference/files) IDs to add to the vector store. There can be a maximum of 10000 files in a vector store.
                          *      */
                         file_ids?: string[];
-                        /** @description Set of 16 key-value pairs that can be attached to a vector store. This can be useful for storing additional information about the vector store in a structured format. Keys can be a maximum of 64 characters long and values can be a maxium of 512 characters long.
+                        /** @description Set of 16 key-value pairs that can be attached to a vector store. This can be useful for storing additional information about the vector store in a structured format. Keys can be a maximum of 64 characters long and values can be a maximum of 512 characters long.
                          *      */
                         metadata?: Record<string, never>;
+                    } & {
                         [key: string]: unknown;
-                    }[];
+                    })[];
+                } & {
                     [key: string]: unknown;
-                } & (unknown | unknown);
+                }) & (unknown | unknown);
+            } & {
                 [key: string]: unknown;
-            } | null;
+            }) | null;
+        } & {
             [key: string]: unknown;
         };
         CreateTranscriptionRequest: {
@@ -2727,13 +3475,7 @@ export interface components {
             /** @description An optional text to guide the model's style or continue a previous audio segment. The [prompt](/docs/guides/speech-to-text/prompting) should match the audio language.
              *      */
             prompt?: string;
-            /**
-             * @description The format of the transcript output, in one of these options: `json`, `text`, `srt`, `verbose_json`, or `vtt`.
-             *
-             * @default json
-             * @enum {string}
-             */
-            response_format: "json" | "text" | "srt" | "verbose_json" | "vtt";
+            response_format?: components["schemas"]["AudioResponseFormat"];
             /**
              * @description The sampling temperature, between 0 and 1. Higher values like 0.8 will make the output more random, while lower values like 0.2 will make it more focused and deterministic. If set to 0, the model will use [log probability](https://en.wikipedia.org/wiki/Log_probability) to automatically increase the temperature until certain thresholds are hit.
              *
@@ -2748,18 +3490,20 @@ export interface components {
              *     ]
              */
             "timestamp_granularities[]": ("word" | "segment")[];
+        } & {
             [key: string]: unknown;
         };
         /** @description Represents a transcription response returned by model, based on the provided input. */
         CreateTranscriptionResponseJson: {
             /** @description The transcribed text. */
             text: string;
+        } & {
             [key: string]: unknown;
         };
         /** @description Represents a verbose json transcription response returned by model, based on the provided input. */
         CreateTranscriptionResponseVerboseJson: {
             /** @description The duration of the input audio. */
-            duration: string;
+            duration: number;
             /** @description The language of the input audio. */
             language: string;
             /** @description Segments of the transcribed text and their corresponding details. */
@@ -2768,6 +3512,7 @@ export interface components {
             text: string;
             /** @description Extracted words and their corresponding timestamps. */
             words?: components["schemas"]["TranscriptionWord"][];
+        } & {
             [key: string]: unknown;
         };
         CreateTranslationRequest: {
@@ -2786,33 +3531,31 @@ export interface components {
             /** @description An optional text to guide the model's style or continue a previous audio segment. The [prompt](/docs/guides/speech-to-text/prompting) should be in English.
              *      */
             prompt?: string;
-            /**
-             * @description The format of the transcript output, in one of these options: `json`, `text`, `srt`, `verbose_json`, or `vtt`.
-             *
-             * @default json
-             */
-            response_format: string;
+            response_format?: components["schemas"]["AudioResponseFormat"];
             /**
              * @description The sampling temperature, between 0 and 1. Higher values like 0.8 will make the output more random, while lower values like 0.2 will make it more focused and deterministic. If set to 0, the model will use [log probability](https://en.wikipedia.org/wiki/Log_probability) to automatically increase the temperature until certain thresholds are hit.
              *
              * @default 0
              */
             temperature: number;
+        } & {
             [key: string]: unknown;
         };
         CreateTranslationResponseJson: {
             text: string;
+        } & {
             [key: string]: unknown;
         };
         CreateTranslationResponseVerboseJson: {
             /** @description The duration of the input audio. */
-            duration: string;
+            duration: number;
             /** @description The language of the output translation (always `english`). */
             language: string;
             /** @description Segments of the translated text and their corresponding details. */
             segments?: components["schemas"]["TranscriptionSegment"][];
             /** @description The translated text. */
             text: string;
+        } & {
             [key: string]: unknown;
         };
         CreateUploadRequest: {
@@ -2835,18 +3578,21 @@ export interface components {
              * @enum {string}
              */
             purpose: "assistants" | "batch" | "fine-tune" | "vision";
+        } & {
             [key: string]: unknown;
         };
         CreateVectorStoreFileBatchRequest: {
             chunking_strategy?: components["schemas"]["ChunkingStrategyRequestParam"];
             /** @description A list of [File](/docs/api-reference/files) IDs that the vector store should use. Useful for tools like `file_search` that can access files. */
             file_ids: string[];
+        } & {
             [key: string]: unknown;
         };
         CreateVectorStoreFileRequest: {
             chunking_strategy?: components["schemas"]["ChunkingStrategyRequestParam"];
             /** @description A [File](/docs/api-reference/files) ID that the vector store should use. Useful for tools like `file_search` that can access files. */
             file_id: string;
+        } & {
             [key: string]: unknown;
         };
         CreateVectorStoreRequest: {
@@ -2855,11 +3601,18 @@ export interface components {
             expires_after?: components["schemas"]["VectorStoreExpirationAfter"];
             /** @description A list of [File](/docs/api-reference/files) IDs that the vector store should use. Useful for tools like `file_search` that can access files. */
             file_ids?: string[];
-            /** @description Set of 16 key-value pairs that can be attached to an object. This can be useful for storing additional information about the object in a structured format. Keys can be a maximum of 64 characters long and values can be a maxium of 512 characters long.
+            /** @description Set of 16 key-value pairs that can be attached to an object. This can be useful for storing additional information about the object in a structured format. Keys can be a maximum of 64 characters long and values can be a maximum of 512 characters long.
              *      */
             metadata?: Record<string, never>;
             /** @description The name of the vector store. */
             name?: string;
+        } & {
+            [key: string]: unknown;
+        };
+        DefaultProjectErrorResponse: {
+            code: number;
+            message: string;
+        } & {
             [key: string]: unknown;
         };
         DeleteAssistantResponse: {
@@ -2867,6 +3620,7 @@ export interface components {
             id: string;
             /** @enum {string} */
             object: "assistant.deleted";
+        } & {
             [key: string]: unknown;
         };
         DeleteFileResponse: {
@@ -2874,6 +3628,7 @@ export interface components {
             id: string;
             /** @enum {string} */
             object: "file";
+        } & {
             [key: string]: unknown;
         };
         DeleteMessageResponse: {
@@ -2881,12 +3636,14 @@ export interface components {
             id: string;
             /** @enum {string} */
             object: "thread.message.deleted";
+        } & {
             [key: string]: unknown;
         };
         DeleteModelResponse: {
             deleted: boolean;
             id: string;
             object: string;
+        } & {
             [key: string]: unknown;
         };
         DeleteThreadResponse: {
@@ -2894,6 +3651,7 @@ export interface components {
             id: string;
             /** @enum {string} */
             object: "thread.deleted";
+        } & {
             [key: string]: unknown;
         };
         DeleteVectorStoreFileResponse: {
@@ -2901,6 +3659,7 @@ export interface components {
             id: string;
             /** @enum {string} */
             object: "vector_store.file.deleted";
+        } & {
             [key: string]: unknown;
         };
         DeleteVectorStoreResponse: {
@@ -2908,6 +3667,7 @@ export interface components {
             id: string;
             /** @enum {string} */
             object: "vector_store.deleted";
+        } & {
             [key: string]: unknown;
         };
         /** @description Occurs when a stream ends. */
@@ -2916,6 +3676,7 @@ export interface components {
             data: "[DONE]";
             /** @enum {string} */
             event: "done";
+        } & {
             [key: string]: unknown;
         };
         /** @description Represents an embedding vector returned by embedding endpoint.
@@ -2931,6 +3692,7 @@ export interface components {
              * @enum {string}
              */
             object: "embedding";
+        } & {
             [key: string]: unknown;
         };
         Error: {
@@ -2938,6 +3700,7 @@ export interface components {
             message: string;
             param: string | null;
             type: string;
+        } & {
             [key: string]: unknown;
         };
         /** @description Occurs when an [error](/docs/guides/error-codes/api-errors) occurs. This can happen due to an internal server error or a timeout. */
@@ -2945,20 +3708,41 @@ export interface components {
             data: components["schemas"]["Error"];
             /** @enum {string} */
             event: "error";
+        } & {
             [key: string]: unknown;
         };
         ErrorResponse: {
             error: components["schemas"]["Error"];
+        } & {
             [key: string]: unknown;
         };
-        FineTuneChatCompletionRequestAssistantMessage: {
+        /**
+         * File search tool call ranking options
+         * @description The ranking options for the file search. If not specified, the file search tool will use the `auto` ranker and a score_threshold of 0.
+         *
+         *     See the [file search tool documentation](/docs/assistants/tools/file-search/customizing-file-search-settings) for more information.
+         *
+         */
+        FileSearchRankingOptions: {
+            /**
+             * @description The ranker to use for the file search. If not specified will use the `auto` ranker.
+             * @enum {string}
+             */
+            ranker?: "auto" | "default_2024_08_21";
+            /** @description The score threshold for the file search. All values must be a floating point number between 0 and 1. */
+            score_threshold: number;
+        } & {
+            [key: string]: unknown;
+        };
+        FineTuneChatCompletionRequestAssistantMessage: ({
             /**
              * @description Controls whether the assistant message is trained against (0 or 1)
              * @enum {integer}
              */
             weight?: 0 | 1;
+        } & {
             [key: string]: unknown;
-        } & WithRequired<components["schemas"]["ChatCompletionRequestAssistantMessage"], "role">;
+        }) & WithRequired<components["schemas"]["ChatCompletionRequestAssistantMessage"], "role">;
         /** @description The per-line training example of a fine-tuning input file for chat models */
         FinetuneChatRequestInput: {
             /**
@@ -2970,6 +3754,7 @@ export interface components {
             parallel_tool_calls?: components["schemas"]["ParallelToolCalls"];
             /** @description A list of tools the model may generate JSON inputs for. */
             tools?: components["schemas"]["ChatCompletionTool"][];
+        } & {
             [key: string]: unknown;
         };
         /** @description The per-line training example of a fine-tuning input file for completions models */
@@ -2978,6 +3763,7 @@ export interface components {
             completion?: string;
             /** @description The input prompt for this training example. */
             prompt?: string;
+        } & {
             [key: string]: unknown;
         };
         /** Fine-Tuning Job Integration */
@@ -3009,8 +3795,10 @@ export interface components {
                  *     default tags are generated by OpenAI: "openai/finetune", "openai/{base-model}", "openai/{ftjob-abcdef}".
                  *      */
                 tags?: string[];
+            } & {
                 [key: string]: unknown;
             };
+        } & {
             [key: string]: unknown;
         };
         /**
@@ -3022,15 +3810,16 @@ export interface components {
             /** @description The Unix timestamp (in seconds) for when the fine-tuning job was created. */
             created_at: number;
             /** @description For fine-tuning jobs that have `failed`, this will contain more information on the cause of the failure. */
-            error: {
+            error: ({
                 /** @description A machine-readable error code. */
                 code: string;
                 /** @description A human-readable error message. */
                 message: string;
                 /** @description The parameter that was invalid, usually `training_file` or `validation_file`. This field will be null if the failure was not parameter-specific. */
                 param: string | null;
+            } & {
                 [key: string]: unknown;
-            } | null;
+            }) | null;
             /** @description The Unix timestamp (in seconds) for when the fine-tuning job is estimated to finish. The value will be null if the fine-tuning job is not running. */
             estimated_finish?: number | null;
             /** @description The name of the fine-tuned model that is being created. The value will be null if the fine-tuning job is still running. */
@@ -3045,6 +3834,7 @@ export interface components {
                  * @default auto
                  */
                 n_epochs: "auto" | number;
+            } & {
                 [key: string]: unknown;
             };
             /** @description The object identifier, which can be referenced in the API endpoints. */
@@ -3075,6 +3865,7 @@ export interface components {
             training_file: string;
             /** @description The file ID used for validation. You can retrieve the validation results with the [Files API](/docs/api-reference/files/retrieve-contents). */
             validation_file: string | null;
+        } & {
             [key: string]: unknown;
         };
         /**
@@ -3100,6 +3891,7 @@ export interface components {
                 train_mean_token_accuracy?: number;
                 valid_loss?: number;
                 valid_mean_token_accuracy?: number;
+            } & {
                 [key: string]: unknown;
             };
             /**
@@ -3109,6 +3901,7 @@ export interface components {
             object: "fine_tuning.job.checkpoint";
             /** @description The step number that the checkpoint was created at. */
             step_number: number;
+        } & {
             [key: string]: unknown;
         };
         /** @description Fine-tuning job event object */
@@ -3120,6 +3913,7 @@ export interface components {
             message: string;
             /** @enum {string} */
             object: "fine_tuning.job.event";
+        } & {
             [key: string]: unknown;
         };
         FunctionObject: {
@@ -3128,6 +3922,12 @@ export interface components {
             /** @description The name of the function to be called. Must be a-z, A-Z, 0-9, or contain underscores and dashes, with a maximum length of 64. */
             name: string;
             parameters?: components["schemas"]["FunctionParameters"];
+            /**
+             * @description Whether to enable strict schema adherence when generating the function call. If set to true, the model will follow the exact schema defined in the `parameters` field. Only a subset of JSON Schema is supported when `strict` is `true`. Learn more about Structured Outputs in the [function calling guide](docs/guides/function-calling).
+             * @default false
+             */
+            strict: boolean | null;
+        } & {
             [key: string]: unknown;
         };
         /** @description The parameters the functions accepts, described as a JSON Schema object. See the [guide](/docs/guides/function-calling) for examples, and the [JSON Schema reference](https://json-schema.org/understanding-json-schema/) for documentation about the format.
@@ -3144,11 +3944,81 @@ export interface components {
             revised_prompt?: string;
             /** @description The URL of the generated image, if `response_format` is `url` (default). */
             url?: string;
+        } & {
             [key: string]: unknown;
         };
         ImagesResponse: {
             created: number;
             data: components["schemas"]["Image"][];
+        } & {
+            [key: string]: unknown;
+        };
+        /** @description Represents an individual `invite` to the organization. */
+        Invite: {
+            /** @description The Unix timestamp (in seconds) of when the invite was accepted. */
+            accepted_at?: number;
+            /** @description The email address of the individual to whom the invite was sent */
+            email: string;
+            /** @description The Unix timestamp (in seconds) of when the invite expires. */
+            expires_at: number;
+            /** @description The identifier, which can be referenced in API endpoints */
+            id: string;
+            /** @description The Unix timestamp (in seconds) of when the invite was sent. */
+            invited_at: number;
+            /**
+             * @description The object type, which is always `organization.invite`
+             * @enum {string}
+             */
+            object: "organization.invite";
+            /**
+             * @description `owner` or `reader`
+             * @enum {string}
+             */
+            role: "owner" | "reader";
+            /**
+             * @description `accepted`,`expired`, or `pending`
+             * @enum {string}
+             */
+            status: "accepted" | "expired" | "pending";
+        } & {
+            [key: string]: unknown;
+        };
+        InviteDeleteResponse: {
+            deleted: boolean;
+            id: string;
+            /**
+             * @description The object type, which is always `organization.invite.deleted`
+             * @enum {string}
+             */
+            object: "organization.invite.deleted";
+        } & {
+            [key: string]: unknown;
+        };
+        InviteListResponse: {
+            data: components["schemas"]["Invite"][];
+            /** @description The first `invite_id` in the retrieved `list` */
+            first_id?: string;
+            /** @description The `has_more` property is used for pagination to indicate there are additional results. */
+            has_more?: boolean;
+            /** @description The last `invite_id` in the retrieved `list` */
+            last_id?: string;
+            /**
+             * @description The object type, which is always `list`
+             * @enum {string}
+             */
+            object: "list";
+        } & {
+            [key: string]: unknown;
+        };
+        InviteRequest: {
+            /** @description Send an email to this address */
+            email: string;
+            /**
+             * @description `owner` or `reader`
+             * @enum {string}
+             */
+            role: "reader" | "owner";
+        } & {
             [key: string]: unknown;
         };
         ListAssistantsResponse: {
@@ -3161,6 +4031,19 @@ export interface components {
             last_id: string;
             /** @example list */
             object: string;
+        } & {
+            [key: string]: unknown;
+        };
+        ListAuditLogsResponse: {
+            data: components["schemas"]["AuditLog"][];
+            /** @example audit_log-defb456h8dks */
+            first_id: string;
+            has_more: boolean;
+            /** @example audit_log-hnbkd8s93s */
+            last_id: string;
+            /** @enum {string} */
+            object: "list";
+        } & {
             [key: string]: unknown;
         };
         ListBatchesResponse: {
@@ -3172,12 +4055,14 @@ export interface components {
             last_id?: string;
             /** @enum {string} */
             object: "list";
+        } & {
             [key: string]: unknown;
         };
         ListFilesResponse: {
             data: components["schemas"]["OpenAIFile"][];
             /** @enum {string} */
             object: "list";
+        } & {
             [key: string]: unknown;
         };
         ListFineTuningJobCheckpointsResponse: {
@@ -3187,12 +4072,14 @@ export interface components {
             last_id?: string | null;
             /** @enum {string} */
             object: "list";
+        } & {
             [key: string]: unknown;
         };
         ListFineTuningJobEventsResponse: {
             data: components["schemas"]["FineTuningJobEvent"][];
             /** @enum {string} */
             object: "list";
+        } & {
             [key: string]: unknown;
         };
         ListMessagesResponse: {
@@ -3205,12 +4092,14 @@ export interface components {
             last_id: string;
             /** @example list */
             object: string;
+        } & {
             [key: string]: unknown;
         };
         ListModelsResponse: {
             data: components["schemas"]["Model"][];
             /** @enum {string} */
             object: "list";
+        } & {
             [key: string]: unknown;
         };
         ListPaginatedFineTuningJobsResponse: {
@@ -3218,6 +4107,7 @@ export interface components {
             has_more: boolean;
             /** @enum {string} */
             object: "list";
+        } & {
             [key: string]: unknown;
         };
         ListRunsResponse: {
@@ -3230,6 +4120,7 @@ export interface components {
             last_id: string;
             /** @example list */
             object: string;
+        } & {
             [key: string]: unknown;
         };
         ListRunStepsResponse: {
@@ -3242,6 +4133,7 @@ export interface components {
             last_id: string;
             /** @example list */
             object: string;
+        } & {
             [key: string]: unknown;
         };
         ListThreadsResponse: {
@@ -3254,6 +4146,7 @@ export interface components {
             last_id: string;
             /** @example list */
             object: string;
+        } & {
             [key: string]: unknown;
         };
         ListVectorStoreFilesResponse: {
@@ -3266,6 +4159,7 @@ export interface components {
             last_id: string;
             /** @example list */
             object: string;
+        } & {
             [key: string]: unknown;
         };
         ListVectorStoresResponse: {
@@ -3278,6 +4172,7 @@ export interface components {
             last_id: string;
             /** @example list */
             object: string;
+        } & {
             [key: string]: unknown;
         };
         /**
@@ -3294,6 +4189,7 @@ export interface components {
                 detail: "auto" | "low" | "high";
                 /** @description The [File](/docs/api-reference/files) ID of the image in the message content. Set `purpose="vision"` when uploading the File if you need to later display the file content. */
                 file_id: string;
+            } & {
                 [key: string]: unknown;
             };
             /**
@@ -3301,6 +4197,7 @@ export interface components {
              * @enum {string}
              */
             type: "image_file";
+        } & {
             [key: string]: unknown;
         };
         /**
@@ -3320,6 +4217,7 @@ export interface components {
                  * @description The external URL of the image, must be a supported image types: jpeg, jpg, png, gif, webp.
                  */
                 url: string;
+            } & {
                 [key: string]: unknown;
             };
             /**
@@ -3327,6 +4225,21 @@ export interface components {
              * @enum {string}
              */
             type: "image_url";
+        } & {
+            [key: string]: unknown;
+        };
+        /**
+         * Refusal
+         * @description The refusal content generated by the assistant.
+         */
+        MessageContentRefusalObject: {
+            refusal: string;
+            /**
+             * @description Always `refusal`.
+             * @enum {string}
+             */
+            type: "refusal";
+        } & {
             [key: string]: unknown;
         };
         /**
@@ -3338,6 +4251,7 @@ export interface components {
             file_citation: {
                 /** @description The ID of the specific File the citation is from. */
                 file_id: string;
+            } & {
                 [key: string]: unknown;
             };
             start_index: number;
@@ -3348,6 +4262,7 @@ export interface components {
              * @enum {string}
              */
             type: "file_citation";
+        } & {
             [key: string]: unknown;
         };
         /**
@@ -3359,6 +4274,7 @@ export interface components {
             file_path: {
                 /** @description The ID of the file that was generated. */
                 file_id: string;
+            } & {
                 [key: string]: unknown;
             };
             start_index: number;
@@ -3369,6 +4285,7 @@ export interface components {
              * @enum {string}
              */
             type: "file_path";
+        } & {
             [key: string]: unknown;
         };
         /**
@@ -3380,6 +4297,7 @@ export interface components {
                 annotations: (components["schemas"]["MessageContentTextAnnotationsFileCitationObject"] | components["schemas"]["MessageContentTextAnnotationsFilePathObject"])[];
                 /** @description The data that makes up the text. */
                 value: string;
+            } & {
                 [key: string]: unknown;
             };
             /**
@@ -3387,6 +4305,7 @@ export interface components {
              * @enum {string}
              */
             type: "text";
+        } & {
             [key: string]: unknown;
         };
         /**
@@ -3403,6 +4322,7 @@ export interface components {
                 detail: "auto" | "low" | "high";
                 /** @description The [File](/docs/api-reference/files) ID of the image in the message content. Set `purpose="vision"` when uploading the File if you need to later display the file content. */
                 file_id?: string;
+            } & {
                 [key: string]: unknown;
             };
             /** @description The index of the content part in the message. */
@@ -3412,6 +4332,7 @@ export interface components {
              * @enum {string}
              */
             type: "image_file";
+        } & {
             [key: string]: unknown;
         };
         /**
@@ -3428,6 +4349,7 @@ export interface components {
                 detail: "auto" | "low" | "high";
                 /** @description The URL of the image, must be a supported image types: jpeg, jpg, png, gif, webp. */
                 url?: string;
+            } & {
                 [key: string]: unknown;
             };
             /** @description The index of the content part in the message. */
@@ -3437,6 +4359,23 @@ export interface components {
              * @enum {string}
              */
             type: "image_url";
+        } & {
+            [key: string]: unknown;
+        };
+        /**
+         * Refusal
+         * @description The refusal content that is part of a message.
+         */
+        MessageDeltaContentRefusalObject: {
+            /** @description The index of the refusal part in the message. */
+            index: number;
+            refusal?: string;
+            /**
+             * @description Always `refusal`.
+             * @enum {string}
+             */
+            type: "refusal";
+        } & {
             [key: string]: unknown;
         };
         /**
@@ -3450,6 +4389,7 @@ export interface components {
                 file_id?: string;
                 /** @description The specific quote in the file. */
                 quote?: string;
+            } & {
                 [key: string]: unknown;
             };
             /** @description The index of the annotation in the text content part. */
@@ -3462,6 +4402,7 @@ export interface components {
              * @enum {string}
              */
             type: "file_citation";
+        } & {
             [key: string]: unknown;
         };
         /**
@@ -3473,6 +4414,7 @@ export interface components {
             file_path?: {
                 /** @description The ID of the file that was generated. */
                 file_id?: string;
+            } & {
                 [key: string]: unknown;
             };
             /** @description The index of the annotation in the text content part. */
@@ -3485,6 +4427,7 @@ export interface components {
              * @enum {string}
              */
             type: "file_path";
+        } & {
             [key: string]: unknown;
         };
         /**
@@ -3498,6 +4441,7 @@ export interface components {
                 annotations?: (components["schemas"]["MessageDeltaContentTextAnnotationsFileCitationObject"] | components["schemas"]["MessageDeltaContentTextAnnotationsFilePathObject"])[];
                 /** @description The data that makes up the text. */
                 value?: string;
+            } & {
                 [key: string]: unknown;
             };
             /**
@@ -3505,6 +4449,7 @@ export interface components {
              * @enum {string}
              */
             type: "text";
+        } & {
             [key: string]: unknown;
         };
         /**
@@ -3516,12 +4461,13 @@ export interface components {
             /** @description The delta containing the fields that have changed on the Message. */
             delta: {
                 /** @description The content of the message in array of text and/or images. */
-                content?: (components["schemas"]["MessageDeltaContentImageFileObject"] | components["schemas"]["MessageDeltaContentTextObject"] | components["schemas"]["MessageDeltaContentImageUrlObject"])[];
+                content?: (components["schemas"]["MessageDeltaContentImageFileObject"] | components["schemas"]["MessageDeltaContentTextObject"] | components["schemas"]["MessageDeltaContentRefusalObject"] | components["schemas"]["MessageDeltaContentImageUrlObject"])[];
                 /**
                  * @description The entity that produced the message. One of `user` or `assistant`.
                  * @enum {string}
                  */
                 role?: "user" | "assistant";
+            } & {
                 [key: string]: unknown;
             };
             /** @description The identifier of the message, which can be referenced in API endpoints. */
@@ -3531,6 +4477,7 @@ export interface components {
              * @enum {string}
              */
             object: "thread.message.delta";
+        } & {
             [key: string]: unknown;
         };
         /**
@@ -3541,17 +4488,18 @@ export interface components {
             /** @description If applicable, the ID of the [assistant](/docs/api-reference/assistants) that authored this message. */
             assistant_id: string | null;
             /** @description A list of files attached to the message, and the tools they were added to. */
-            attachments: {
+            attachments: ({
                 /** @description The ID of the file to attach to the message. */
                 file_id?: string;
                 /** @description The tools to add this file to. */
                 tools?: (components["schemas"]["AssistantToolsCode"] | components["schemas"]["AssistantToolsFileSearchTypeOnly"])[];
+            } & {
                 [key: string]: unknown;
-            }[] | null;
+            })[] | null;
             /** @description The Unix timestamp (in seconds) for when the message was completed. */
             completed_at: number | null;
             /** @description The content of the message in array of text and/or images. */
-            content: (components["schemas"]["MessageContentImageFileObject"] | components["schemas"]["MessageContentImageUrlObject"] | components["schemas"]["MessageContentTextObject"])[];
+            content: (components["schemas"]["MessageContentImageFileObject"] | components["schemas"]["MessageContentImageUrlObject"] | components["schemas"]["MessageContentTextObject"] | components["schemas"]["MessageContentRefusalObject"])[];
             /** @description The Unix timestamp (in seconds) for when the message was created. */
             created_at: number;
             /** @description The identifier, which can be referenced in API endpoints. */
@@ -3559,15 +4507,16 @@ export interface components {
             /** @description The Unix timestamp (in seconds) for when the message was marked as incomplete. */
             incomplete_at: number | null;
             /** @description On an incomplete message, details about why the message is incomplete. */
-            incomplete_details: {
+            incomplete_details: ({
                 /**
                  * @description The reason the message is incomplete.
                  * @enum {string}
                  */
                 reason: "content_filter" | "max_tokens" | "run_cancelled" | "run_expired" | "run_failed";
+            } & {
                 [key: string]: unknown;
-            } | null;
-            /** @description Set of 16 key-value pairs that can be attached to an object. This can be useful for storing additional information about the object in a structured format. Keys can be a maximum of 64 characters long and values can be a maxium of 512 characters long.
+            }) | null;
+            /** @description Set of 16 key-value pairs that can be attached to an object. This can be useful for storing additional information about the object in a structured format. Keys can be a maximum of 64 characters long and values can be a maximum of 512 characters long.
              *      */
             metadata: Record<string, never>;
             /**
@@ -3589,6 +4538,7 @@ export interface components {
             status: "in_progress" | "incomplete" | "completed";
             /** @description The [thread](/docs/api-reference/threads) ID that this message belongs to. */
             thread_id: string;
+        } & {
             [key: string]: unknown;
         };
         /**
@@ -3603,34 +4553,40 @@ export interface components {
              * @enum {string}
              */
             type: "text";
+        } & {
             [key: string]: unknown;
         };
-        MessageStreamEvent: {
+        MessageStreamEvent: ({
             data: components["schemas"]["MessageObject"];
             /** @enum {string} */
             event: "thread.message.created";
+        } & {
             [key: string]: unknown;
-        } | {
+        }) | ({
             data: components["schemas"]["MessageObject"];
             /** @enum {string} */
             event: "thread.message.in_progress";
+        } & {
             [key: string]: unknown;
-        } | {
+        }) | ({
             data: components["schemas"]["MessageDeltaObject"];
             /** @enum {string} */
             event: "thread.message.delta";
+        } & {
             [key: string]: unknown;
-        } | {
+        }) | ({
             data: components["schemas"]["MessageObject"];
             /** @enum {string} */
             event: "thread.message.completed";
+        } & {
             [key: string]: unknown;
-        } | {
+        }) | ({
             data: components["schemas"]["MessageObject"];
             /** @enum {string} */
             event: "thread.message.incomplete";
+        } & {
             [key: string]: unknown;
-        };
+        });
         /**
          * Model
          * @description Describes an OpenAI model offering that can be used with the API.
@@ -3647,6 +4603,7 @@ export interface components {
             object: "model";
             /** @description The organization that owns the model. */
             owned_by: string;
+        } & {
             [key: string]: unknown;
         };
         ModifyAssistantRequest: {
@@ -3656,7 +4613,7 @@ export interface components {
             /** @description The system instructions that the assistant uses. The maximum length is 256,000 characters.
              *      */
             instructions?: string | null;
-            /** @description Set of 16 key-value pairs that can be attached to an object. This can be useful for storing additional information about the object in a structured format. Keys can be a maximum of 64 characters long and values can be a maxium of 512 characters long.
+            /** @description Set of 16 key-value pairs that can be attached to an object. This can be useful for storing additional information about the object in a structured format. Keys can be a maximum of 64 characters long and values can be a maximum of 512 characters long.
              *      */
             metadata?: Record<string, never>;
             /** @description ID of the model to use. You can use the [List models](/docs/api-reference/models/list) API to see all of your available models, or see our [Model overview](/docs/models/overview) for descriptions of them.
@@ -3675,7 +4632,7 @@ export interface components {
             temperature: number;
             /** @description A set of resources that are used by the assistant's tools. The resources are specific to the type of tool. For example, the `code_interpreter` tool requires a list of file IDs, while the `file_search` tool requires a list of vector store IDs.
              *      */
-            tool_resources?: {
+            tool_resources?: ({
                 code_interpreter?: {
                     /**
                      * @description Overrides the list of [file](/docs/api-reference/files) IDs made available to the `code_interpreter` tool. There can be a maximum of 20 files associated with the tool.
@@ -3683,16 +4640,19 @@ export interface components {
                      * @default []
                      */
                     file_ids: string[];
+                } & {
                     [key: string]: unknown;
                 };
                 file_search?: {
                     /** @description Overrides the [vector store](/docs/api-reference/vector-stores/object) attached to this assistant. There can be a maximum of 1 vector store attached to the assistant.
                      *      */
                     vector_store_ids?: string[];
+                } & {
                     [key: string]: unknown;
                 };
+            } & {
                 [key: string]: unknown;
-            } | null;
+            }) | null;
             /**
              * @description A list of tool enabled on the assistant. There can be a maximum of 128 tools per assistant. Tools can be of types `code_interpreter`, `file_search`, or `function`.
              *
@@ -3708,27 +4668,30 @@ export interface components {
              * @example 1
              */
             top_p: number;
+        } & {
             [key: string]: unknown;
         };
         ModifyMessageRequest: {
-            /** @description Set of 16 key-value pairs that can be attached to an object. This can be useful for storing additional information about the object in a structured format. Keys can be a maximum of 64 characters long and values can be a maxium of 512 characters long.
+            /** @description Set of 16 key-value pairs that can be attached to an object. This can be useful for storing additional information about the object in a structured format. Keys can be a maximum of 64 characters long and values can be a maximum of 512 characters long.
              *      */
             metadata?: Record<string, never>;
+        } & {
             [key: string]: unknown;
         };
         ModifyRunRequest: {
-            /** @description Set of 16 key-value pairs that can be attached to an object. This can be useful for storing additional information about the object in a structured format. Keys can be a maximum of 64 characters long and values can be a maxium of 512 characters long.
+            /** @description Set of 16 key-value pairs that can be attached to an object. This can be useful for storing additional information about the object in a structured format. Keys can be a maximum of 64 characters long and values can be a maximum of 512 characters long.
              *      */
             metadata?: Record<string, never>;
+        } & {
             [key: string]: unknown;
         };
         ModifyThreadRequest: {
-            /** @description Set of 16 key-value pairs that can be attached to an object. This can be useful for storing additional information about the object in a structured format. Keys can be a maximum of 64 characters long and values can be a maxium of 512 characters long.
+            /** @description Set of 16 key-value pairs that can be attached to an object. This can be useful for storing additional information about the object in a structured format. Keys can be a maximum of 64 characters long and values can be a maximum of 512 characters long.
              *      */
             metadata?: Record<string, never>;
             /** @description A set of resources that are made available to the assistant's tools in this thread. The resources are specific to the type of tool. For example, the `code_interpreter` tool requires a list of file IDs, while the `file_search` tool requires a list of vector store IDs.
              *      */
-            tool_resources?: {
+            tool_resources?: ({
                 code_interpreter?: {
                     /**
                      * @description A list of [file](/docs/api-reference/files) IDs made available to the `code_interpreter` tool. There can be a maximum of 20 files associated with the tool.
@@ -3736,16 +4699,20 @@ export interface components {
                      * @default []
                      */
                     file_ids: string[];
+                } & {
                     [key: string]: unknown;
                 };
                 file_search?: {
                     /** @description The [vector store](/docs/api-reference/vector-stores/object) attached to this thread. There can be a maximum of 1 vector store attached to the thread.
                      *      */
                     vector_store_ids?: string[];
+                } & {
                     [key: string]: unknown;
                 };
+            } & {
                 [key: string]: unknown;
-            } | null;
+            }) | null;
+        } & {
             [key: string]: unknown;
         };
         /**
@@ -3782,6 +4749,7 @@ export interface components {
              * @description Deprecated. For details on why a fine-tuning training file failed validation, see the `error` field on `fine_tuning.job`.
              */
             status_details?: string;
+        } & {
             [key: string]: unknown;
         };
         /**
@@ -3794,6 +4762,7 @@ export interface components {
              * @enum {string}
              */
             type: "other";
+        } & {
             [key: string]: unknown;
         };
         /**
@@ -3801,16 +4770,287 @@ export interface components {
          * @default true
          */
         ParallelToolCalls: boolean;
+        /** @description Represents an individual project. */
+        Project: {
+            /** @description The Unix timestamp (in seconds) of when the project was archived or `null`. */
+            archived_at?: number | null;
+            /** @description The Unix timestamp (in seconds) of when the project was created. */
+            created_at: number;
+            /** @description The identifier, which can be referenced in API endpoints */
+            id: string;
+            /** @description The name of the project. This appears in reporting. */
+            name: string;
+            /**
+             * @description The object type, which is always `organization.project`
+             * @enum {string}
+             */
+            object: "organization.project";
+            /**
+             * @description `active` or `archived`
+             * @enum {string}
+             */
+            status: "active" | "archived";
+        } & {
+            [key: string]: unknown;
+        };
+        /** @description Represents an individual API key in a project. */
+        ProjectApiKey: {
+            /** @description The Unix timestamp (in seconds) of when the API key was created */
+            created_at: number;
+            /** @description The identifier, which can be referenced in API endpoints */
+            id: string;
+            /** @description The name of the API key */
+            name: string;
+            /**
+             * @description The object type, which is always `organization.project.api_key`
+             * @enum {string}
+             */
+            object: "organization.project.api_key";
+            owner: {
+                service_account?: components["schemas"]["ProjectServiceAccount"];
+                /**
+                 * @description `user` or `service_account`
+                 * @enum {string}
+                 */
+                type?: "user" | "service_account";
+                user?: components["schemas"]["ProjectUser"];
+            } & {
+                [key: string]: unknown;
+            };
+            /** @description The redacted value of the API key */
+            redacted_value: string;
+        } & {
+            [key: string]: unknown;
+        };
+        ProjectApiKeyDeleteResponse: {
+            deleted: boolean;
+            id: string;
+            /** @enum {string} */
+            object: "organization.project.api_key.deleted";
+        } & {
+            [key: string]: unknown;
+        };
+        ProjectApiKeyListResponse: {
+            data: components["schemas"]["ProjectApiKey"][];
+            first_id: string;
+            has_more: boolean;
+            last_id: string;
+            /** @enum {string} */
+            object: "list";
+        } & {
+            [key: string]: unknown;
+        };
+        ProjectCreateRequest: {
+            /** @description The friendly name of the project, this name appears in reports. */
+            name: string;
+        } & {
+            [key: string]: unknown;
+        };
+        ProjectListResponse: {
+            data: components["schemas"]["Project"][];
+            first_id: string;
+            has_more: boolean;
+            last_id: string;
+            /** @enum {string} */
+            object: "list";
+        } & {
+            [key: string]: unknown;
+        };
+        /** @description Represents an individual service account in a project. */
+        ProjectServiceAccount: {
+            /** @description The Unix timestamp (in seconds) of when the service account was created */
+            created_at: number;
+            /** @description The identifier, which can be referenced in API endpoints */
+            id: string;
+            /** @description The name of the service account */
+            name: string;
+            /**
+             * @description The object type, which is always `organization.project.service_account`
+             * @enum {string}
+             */
+            object: "organization.project.service_account";
+            /**
+             * @description `owner` or `member`
+             * @enum {string}
+             */
+            role: "owner" | "member";
+        } & {
+            [key: string]: unknown;
+        };
+        ProjectServiceAccountApiKey: {
+            created_at: number;
+            id: string;
+            name: string;
+            /**
+             * @description The object type, which is always `organization.project.service_account.api_key`
+             * @enum {string}
+             */
+            object: "organization.project.service_account.api_key";
+            value: string;
+        } & {
+            [key: string]: unknown;
+        };
+        ProjectServiceAccountCreateRequest: {
+            /** @description The name of the service account being created. */
+            name: string;
+        } & {
+            [key: string]: unknown;
+        };
+        ProjectServiceAccountCreateResponse: {
+            api_key: components["schemas"]["ProjectServiceAccountApiKey"];
+            created_at: number;
+            id: string;
+            name: string;
+            /** @enum {string} */
+            object: "organization.project.service_account";
+            /**
+             * @description Service accounts can only have one role of type `member`
+             * @enum {string}
+             */
+            role: "member";
+        } & {
+            [key: string]: unknown;
+        };
+        ProjectServiceAccountDeleteResponse: {
+            deleted: boolean;
+            id: string;
+            /** @enum {string} */
+            object: "organization.project.service_account.deleted";
+        } & {
+            [key: string]: unknown;
+        };
+        ProjectServiceAccountListResponse: {
+            data: components["schemas"]["ProjectServiceAccount"][];
+            first_id: string;
+            has_more: boolean;
+            last_id: string;
+            /** @enum {string} */
+            object: "list";
+        } & {
+            [key: string]: unknown;
+        };
+        ProjectUpdateRequest: {
+            /** @description The updated name of the project, this name appears in reports. */
+            name: string;
+        } & {
+            [key: string]: unknown;
+        };
+        /** @description Represents an individual user in a project. */
+        ProjectUser: {
+            /** @description The Unix timestamp (in seconds) of when the project was added. */
+            added_at: number;
+            /** @description The email address of the user */
+            email: string;
+            /** @description The identifier, which can be referenced in API endpoints */
+            id: string;
+            /** @description The name of the user */
+            name: string;
+            /**
+             * @description The object type, which is always `organization.project.user`
+             * @enum {string}
+             */
+            object: "organization.project.user";
+            /**
+             * @description `owner` or `member`
+             * @enum {string}
+             */
+            role: "owner" | "member";
+        } & {
+            [key: string]: unknown;
+        };
+        ProjectUserCreateRequest: {
+            /**
+             * @description `owner` or `member`
+             * @enum {string}
+             */
+            role: "owner" | "member";
+            /** @description The ID of the user. */
+            user_id: string;
+        } & {
+            [key: string]: unknown;
+        };
+        ProjectUserDeleteResponse: {
+            deleted: boolean;
+            id: string;
+            /** @enum {string} */
+            object: "organization.project.user.deleted";
+        } & {
+            [key: string]: unknown;
+        };
+        ProjectUserListResponse: {
+            data: components["schemas"]["ProjectUser"][];
+            first_id: string;
+            has_more: boolean;
+            last_id: string;
+            object: string;
+        } & {
+            [key: string]: unknown;
+        };
+        ProjectUserUpdateRequest: {
+            /**
+             * @description `owner` or `member`
+             * @enum {string}
+             */
+            role: "owner" | "member";
+        } & {
+            [key: string]: unknown;
+        };
+        ResponseFormatJsonObject: {
+            /**
+             * @description The type of response format being defined: `json_object`
+             * @enum {string}
+             */
+            type: "json_object";
+        } & {
+            [key: string]: unknown;
+        };
+        ResponseFormatJsonSchema: {
+            json_schema: {
+                /** @description A description of what the response format is for, used by the model to determine how to respond in the format. */
+                description?: string;
+                /** @description The name of the response format. Must be a-z, A-Z, 0-9, or contain underscores and dashes, with a maximum length of 64. */
+                name: string;
+                schema?: components["schemas"]["ResponseFormatJsonSchemaSchema"];
+                /**
+                 * @description Whether to enable strict schema adherence when generating the output. If set to true, the model will always follow the exact schema defined in the `schema` field. Only a subset of JSON Schema is supported when `strict` is `true`. To learn more, read the [Structured Outputs guide](/docs/guides/structured-outputs).
+                 * @default false
+                 */
+                strict: boolean | null;
+            } & {
+                [key: string]: unknown;
+            };
+            /**
+             * @description The type of response format being defined: `json_schema`
+             * @enum {string}
+             */
+            type: "json_schema";
+        } & {
+            [key: string]: unknown;
+        };
+        /** @description The schema for the response format, described as a JSON Schema object. */
+        ResponseFormatJsonSchemaSchema: {
+            [key: string]: unknown;
+        };
+        ResponseFormatText: {
+            /**
+             * @description The type of response format being defined: `text`
+             * @enum {string}
+             */
+            type: "text";
+        } & {
+            [key: string]: unknown;
+        };
         /** @description Usage statistics related to the run. This value will be `null` if the run is not in a terminal state (i.e. `in_progress`, `queued`, etc.). */
-        RunCompletionUsage: {
+        RunCompletionUsage: ({
             /** @description Number of completion tokens used over the course of the run. */
             completion_tokens: number;
             /** @description Number of prompt tokens used over the course of the run. */
             prompt_tokens: number;
             /** @description Total number of tokens used (prompt + completion). */
             total_tokens: number;
+        } & {
             [key: string]: unknown;
-        } | null;
+        }) | null;
         /**
          * A run on a thread
          * @description Represents an execution run on a [thread](/docs/api-reference/threads).
@@ -3831,18 +5071,19 @@ export interface components {
             /** @description The identifier, which can be referenced in API endpoints. */
             id: string;
             /** @description Details on why the run is incomplete. Will be `null` if the run is not incomplete. */
-            incomplete_details: {
+            incomplete_details: ({
                 /**
                  * @description The reason why the run is incomplete. This will point to which specific token limit was reached over the course of the run.
                  * @enum {string}
                  */
                 reason?: "max_completion_tokens" | "max_prompt_tokens";
+            } & {
                 [key: string]: unknown;
-            } | null;
+            }) | null;
             /** @description The instructions that the [assistant](/docs/api-reference/assistants) used for this run. */
             instructions: string;
             /** @description The last error associated with this run. Will be `null` if there are no errors. */
-            last_error: {
+            last_error: ({
                 /**
                  * @description One of `server_error`, `rate_limit_exceeded`, or `invalid_prompt`.
                  * @enum {string}
@@ -3850,15 +5091,16 @@ export interface components {
                 code: "server_error" | "rate_limit_exceeded" | "invalid_prompt";
                 /** @description A human-readable description of the error. */
                 message: string;
+            } & {
                 [key: string]: unknown;
-            } | null;
+            }) | null;
             /** @description The maximum number of completion tokens specified to have been used over the course of the run.
              *      */
             max_completion_tokens: number | null;
             /** @description The maximum number of prompt tokens specified to have been used over the course of the run.
              *      */
             max_prompt_tokens: number | null;
-            /** @description Set of 16 key-value pairs that can be attached to an object. This can be useful for storing additional information about the object in a structured format. Keys can be a maximum of 64 characters long and values can be a maxium of 512 characters long.
+            /** @description Set of 16 key-value pairs that can be attached to an object. This can be useful for storing additional information about the object in a structured format. Keys can be a maximum of 64 characters long and values can be a maximum of 512 characters long.
              *      */
             metadata: Record<string, never>;
             /** @description The model that the [assistant](/docs/api-reference/assistants) used for this run. */
@@ -3870,11 +5112,12 @@ export interface components {
             object: "thread.run";
             parallel_tool_calls: components["schemas"]["ParallelToolCalls"];
             /** @description Details on the action required to continue the run. Will be `null` if no action is required. */
-            required_action: {
+            required_action: ({
                 /** @description Details on the tool outputs needed for this run to continue. */
                 submit_tool_outputs: {
                     /** @description A list of the relevant tool calls. */
                     tool_calls: components["schemas"]["RunToolCallObject"][];
+                } & {
                     [key: string]: unknown;
                 };
                 /**
@@ -3882,8 +5125,9 @@ export interface components {
                  * @enum {string}
                  */
                 type: "submit_tool_outputs";
+            } & {
                 [key: string]: unknown;
-            } | null;
+            }) | null;
             response_format: components["schemas"]["AssistantsApiResponseFormatOption"];
             /** @description The Unix timestamp (in seconds) for when the run was started. */
             started_at: number | null;
@@ -3906,18 +5150,20 @@ export interface components {
             top_p?: number | null;
             truncation_strategy: components["schemas"]["TruncationObject"];
             usage: components["schemas"]["RunCompletionUsage"];
+        } & {
             [key: string]: unknown;
         };
         /** @description Usage statistics related to the run step. This value will be `null` while the run step's status is `in_progress`. */
-        RunStepCompletionUsage: {
+        RunStepCompletionUsage: ({
             /** @description Number of completion tokens used over the course of the run step. */
             completion_tokens: number;
             /** @description Number of prompt tokens used over the course of the run step. */
             prompt_tokens: number;
             /** @description Total number of tokens used (prompt + completion). */
             total_tokens: number;
+        } & {
             [key: string]: unknown;
-        } | null;
+        }) | null;
         /**
          * Run step delta object
          * @description Represents a run step delta i.e. any changed fields on a run step during streaming.
@@ -3928,6 +5174,7 @@ export interface components {
             delta: {
                 /** @description The details of the run step. */
                 step_details?: components["schemas"]["RunStepDeltaStepDetailsMessageCreationObject"] | components["schemas"]["RunStepDeltaStepDetailsToolCallsObject"];
+            } & {
                 [key: string]: unknown;
             };
             /** @description The identifier of the run step, which can be referenced in API endpoints. */
@@ -3937,6 +5184,7 @@ export interface components {
              * @enum {string}
              */
             object: "thread.run.step.delta";
+        } & {
             [key: string]: unknown;
         };
         /**
@@ -3947,6 +5195,7 @@ export interface components {
             message_creation?: {
                 /** @description The ID of the message that was created by this run step. */
                 message_id?: string;
+            } & {
                 [key: string]: unknown;
             };
             /**
@@ -3954,6 +5203,7 @@ export interface components {
              * @enum {string}
              */
             type: "message_creation";
+        } & {
             [key: string]: unknown;
         };
         /**
@@ -3967,6 +5217,7 @@ export interface components {
                 input?: string;
                 /** @description The outputs from the Code Interpreter tool call. Code Interpreter can output one or more items, including text (`logs`) or images (`image`). Each of these are represented by a different object type. */
                 outputs?: (components["schemas"]["RunStepDeltaStepDetailsToolCallsCodeOutputLogsObject"] | components["schemas"]["RunStepDeltaStepDetailsToolCallsCodeOutputImageObject"])[];
+            } & {
                 [key: string]: unknown;
             };
             /** @description The ID of the tool call. */
@@ -3978,6 +5229,7 @@ export interface components {
              * @enum {string}
              */
             type: "code_interpreter";
+        } & {
             [key: string]: unknown;
         };
         /** Code interpreter image output */
@@ -3985,6 +5237,7 @@ export interface components {
             image?: {
                 /** @description The [file](/docs/api-reference/files) ID of the image. */
                 file_id?: string;
+            } & {
                 [key: string]: unknown;
             };
             /** @description The index of the output in the outputs array. */
@@ -3994,6 +5247,7 @@ export interface components {
              * @enum {string}
              */
             type: "image";
+        } & {
             [key: string]: unknown;
         };
         /**
@@ -4010,6 +5264,7 @@ export interface components {
              * @enum {string}
              */
             type: "logs";
+        } & {
             [key: string]: unknown;
         };
         /** File search tool call */
@@ -4025,6 +5280,7 @@ export interface components {
              * @enum {string}
              */
             type: "file_search";
+        } & {
             [key: string]: unknown;
         };
         /** Function tool call */
@@ -4037,6 +5293,7 @@ export interface components {
                 name?: string;
                 /** @description The output of the function. This will be `null` if the outputs have not been [submitted](/docs/api-reference/runs/submitToolOutputs) yet. */
                 output?: string | null;
+            } & {
                 [key: string]: unknown;
             };
             /** @description The ID of the tool call object. */
@@ -4048,6 +5305,7 @@ export interface components {
              * @enum {string}
              */
             type: "function";
+        } & {
             [key: string]: unknown;
         };
         /**
@@ -4063,6 +5321,7 @@ export interface components {
              * @enum {string}
              */
             type: "tool_calls";
+        } & {
             [key: string]: unknown;
         };
         /**
@@ -4073,6 +5332,7 @@ export interface components {
             message_creation: {
                 /** @description The ID of the message that was created by this run step. */
                 message_id: string;
+            } & {
                 [key: string]: unknown;
             };
             /**
@@ -4080,6 +5340,7 @@ export interface components {
              * @enum {string}
              */
             type: "message_creation";
+        } & {
             [key: string]: unknown;
         };
         /**
@@ -4093,6 +5354,7 @@ export interface components {
                 input: string;
                 /** @description The outputs from the Code Interpreter tool call. Code Interpreter can output one or more items, including text (`logs`) or images (`image`). Each of these are represented by a different object type. */
                 outputs: (components["schemas"]["RunStepDetailsToolCallsCodeOutputLogsObject"] | components["schemas"]["RunStepDetailsToolCallsCodeOutputImageObject"])[];
+            } & {
                 [key: string]: unknown;
             };
             /** @description The ID of the tool call. */
@@ -4102,6 +5364,7 @@ export interface components {
              * @enum {string}
              */
             type: "code_interpreter";
+        } & {
             [key: string]: unknown;
         };
         /** Code Interpreter image output */
@@ -4109,6 +5372,7 @@ export interface components {
             image: {
                 /** @description The [file](/docs/api-reference/files) ID of the image. */
                 file_id: string;
+            } & {
                 [key: string]: unknown;
             };
             /**
@@ -4116,6 +5380,7 @@ export interface components {
              * @enum {string}
              */
             type: "image";
+        } & {
             [key: string]: unknown;
         };
         /**
@@ -4130,12 +5395,19 @@ export interface components {
              * @enum {string}
              */
             type: "logs";
+        } & {
             [key: string]: unknown;
         };
         /** File search tool call */
         RunStepDetailsToolCallsFileSearchObject: {
             /** @description For now, this is always going to be an empty object. */
-            file_search: Record<string, never>;
+            file_search: {
+                ranking_options?: components["schemas"]["RunStepDetailsToolCallsFileSearchRankingOptionsObject"];
+                /** @description The results of the file search. */
+                results?: components["schemas"]["RunStepDetailsToolCallsFileSearchResultObject"][];
+            } & {
+                [key: string]: unknown;
+            };
             /** @description The ID of the tool call object. */
             id: string;
             /**
@@ -4143,6 +5415,48 @@ export interface components {
              * @enum {string}
              */
             type: "file_search";
+        } & {
+            [key: string]: unknown;
+        };
+        /**
+         * File search tool call ranking options
+         * @description The ranking options for the file search.
+         */
+        RunStepDetailsToolCallsFileSearchRankingOptionsObject: {
+            /**
+             * @description The ranker used for the file search.
+             * @enum {string}
+             */
+            ranker: "default_2024_08_21";
+            /** @description The score threshold for the file search. All values must be a floating point number between 0 and 1. */
+            score_threshold: number;
+        } & {
+            [key: string]: unknown;
+        };
+        /**
+         * File search tool call result
+         * @description A result instance of the file search.
+         */
+        RunStepDetailsToolCallsFileSearchResultObject: {
+            /** @description The content of the result that was found. The content is only included if requested via the include query parameter. */
+            content?: ({
+                /** @description The text content of the file. */
+                text?: string;
+                /**
+                 * @description The type of the content.
+                 * @enum {string}
+                 */
+                type?: "text";
+            } & {
+                [key: string]: unknown;
+            })[];
+            /** @description The ID of the file that result was found in. */
+            file_id: string;
+            /** @description The name of the file that result was found in. */
+            file_name: string;
+            /** @description The score of the result. All values must be a floating point number between 0 and 1. */
+            score: number;
+        } & {
             [key: string]: unknown;
         };
         /** Function tool call */
@@ -4155,6 +5469,7 @@ export interface components {
                 name: string;
                 /** @description The output of the function. This will be `null` if the outputs have not been [submitted](/docs/api-reference/runs/submitToolOutputs) yet. */
                 output: string | null;
+            } & {
                 [key: string]: unknown;
             };
             /** @description The ID of the tool call object. */
@@ -4164,6 +5479,7 @@ export interface components {
              * @enum {string}
              */
             type: "function";
+        } & {
             [key: string]: unknown;
         };
         /**
@@ -4179,6 +5495,7 @@ export interface components {
              * @enum {string}
              */
             type: "tool_calls";
+        } & {
             [key: string]: unknown;
         };
         /**
@@ -4202,7 +5519,7 @@ export interface components {
             /** @description The identifier of the run step, which can be referenced in API endpoints. */
             id: string;
             /** @description The last error associated with this run step. Will be `null` if there are no errors. */
-            last_error: {
+            last_error: ({
                 /**
                  * @description One of `server_error` or `rate_limit_exceeded`.
                  * @enum {string}
@@ -4210,9 +5527,10 @@ export interface components {
                 code: "server_error" | "rate_limit_exceeded";
                 /** @description A human-readable description of the error. */
                 message: string;
+            } & {
                 [key: string]: unknown;
-            } | null;
-            /** @description Set of 16 key-value pairs that can be attached to an object. This can be useful for storing additional information about the object in a structured format. Keys can be a maximum of 64 characters long and values can be a maxium of 512 characters long.
+            }) | null;
+            /** @description Set of 16 key-value pairs that can be attached to an object. This can be useful for storing additional information about the object in a structured format. Keys can be a maximum of 64 characters long and values can be a maximum of 512 characters long.
              *      */
             metadata: Record<string, never>;
             /**
@@ -4237,95 +5555,113 @@ export interface components {
              */
             type: "message_creation" | "tool_calls";
             usage: components["schemas"]["RunStepCompletionUsage"];
+        } & {
             [key: string]: unknown;
         };
-        RunStepStreamEvent: {
+        RunStepStreamEvent: ({
             data: components["schemas"]["RunStepObject"];
             /** @enum {string} */
             event: "thread.run.step.created";
+        } & {
             [key: string]: unknown;
-        } | {
+        }) | ({
             data: components["schemas"]["RunStepObject"];
             /** @enum {string} */
             event: "thread.run.step.in_progress";
+        } & {
             [key: string]: unknown;
-        } | {
+        }) | ({
             data: components["schemas"]["RunStepDeltaObject"];
             /** @enum {string} */
             event: "thread.run.step.delta";
+        } & {
             [key: string]: unknown;
-        } | {
+        }) | ({
             data: components["schemas"]["RunStepObject"];
             /** @enum {string} */
             event: "thread.run.step.completed";
+        } & {
             [key: string]: unknown;
-        } | {
+        }) | ({
             data: components["schemas"]["RunStepObject"];
             /** @enum {string} */
             event: "thread.run.step.failed";
+        } & {
             [key: string]: unknown;
-        } | {
+        }) | ({
             data: components["schemas"]["RunStepObject"];
             /** @enum {string} */
             event: "thread.run.step.cancelled";
+        } & {
             [key: string]: unknown;
-        } | {
+        }) | ({
             data: components["schemas"]["RunStepObject"];
             /** @enum {string} */
             event: "thread.run.step.expired";
+        } & {
             [key: string]: unknown;
-        };
-        RunStreamEvent: {
+        });
+        RunStreamEvent: ({
             data: components["schemas"]["RunObject"];
             /** @enum {string} */
             event: "thread.run.created";
+        } & {
             [key: string]: unknown;
-        } | {
+        }) | ({
             data: components["schemas"]["RunObject"];
             /** @enum {string} */
             event: "thread.run.queued";
+        } & {
             [key: string]: unknown;
-        } | {
+        }) | ({
             data: components["schemas"]["RunObject"];
             /** @enum {string} */
             event: "thread.run.in_progress";
+        } & {
             [key: string]: unknown;
-        } | {
+        }) | ({
             data: components["schemas"]["RunObject"];
             /** @enum {string} */
             event: "thread.run.requires_action";
+        } & {
             [key: string]: unknown;
-        } | {
+        }) | ({
             data: components["schemas"]["RunObject"];
             /** @enum {string} */
             event: "thread.run.completed";
+        } & {
             [key: string]: unknown;
-        } | {
+        }) | ({
             data: components["schemas"]["RunObject"];
             /** @enum {string} */
             event: "thread.run.incomplete";
+        } & {
             [key: string]: unknown;
-        } | {
+        }) | ({
             data: components["schemas"]["RunObject"];
             /** @enum {string} */
             event: "thread.run.failed";
+        } & {
             [key: string]: unknown;
-        } | {
+        }) | ({
             data: components["schemas"]["RunObject"];
             /** @enum {string} */
             event: "thread.run.cancelling";
+        } & {
             [key: string]: unknown;
-        } | {
+        }) | ({
             data: components["schemas"]["RunObject"];
             /** @enum {string} */
             event: "thread.run.cancelled";
+        } & {
             [key: string]: unknown;
-        } | {
+        }) | ({
             data: components["schemas"]["RunObject"];
             /** @enum {string} */
             event: "thread.run.expired";
+        } & {
             [key: string]: unknown;
-        };
+        });
         /** @description Tool call objects */
         RunToolCallObject: {
             /** @description The function definition. */
@@ -4334,6 +5670,7 @@ export interface components {
                 arguments: string;
                 /** @description The name of the function. */
                 name: string;
+            } & {
                 [key: string]: unknown;
             };
             /** @description The ID of the tool call. This ID must be referenced when you submit the tool outputs in using the [Submit tool outputs to run](/docs/api-reference/runs/submitToolOutputs) endpoint. */
@@ -4343,6 +5680,7 @@ export interface components {
              * @enum {string}
              */
             type: "function";
+        } & {
             [key: string]: unknown;
         };
         StaticChunkingStrategy: {
@@ -4353,6 +5691,7 @@ export interface components {
             chunk_overlap_tokens: number;
             /** @description The maximum number of tokens in each chunk. The default value is `800`. The minimum value is `100` and the maximum value is `4096`. */
             max_chunk_size_tokens: number;
+        } & {
             [key: string]: unknown;
         };
         /** Static Chunking Strategy */
@@ -4363,6 +5702,7 @@ export interface components {
              * @enum {string}
              */
             type: "static";
+        } & {
             [key: string]: unknown;
         };
         /** Static Chunking Strategy */
@@ -4373,6 +5713,7 @@ export interface components {
              * @enum {string}
              */
             type: "static";
+        } & {
             [key: string]: unknown;
         };
         SubmitToolOutputsRunRequest: {
@@ -4380,13 +5721,15 @@ export interface components {
              *      */
             stream?: boolean | null;
             /** @description A list of tools for which the outputs are being submitted. */
-            tool_outputs: {
+            tool_outputs: ({
                 /** @description The output of the tool call to be submitted to continue the run. */
                 output?: string;
                 /** @description The ID of the tool call in the `required_action` object within the run object the output is being submitted for. */
                 tool_call_id?: string;
+            } & {
                 [key: string]: unknown;
-            }[];
+            })[];
+        } & {
             [key: string]: unknown;
         };
         /**
@@ -4398,7 +5741,7 @@ export interface components {
             created_at: number;
             /** @description The identifier, which can be referenced in API endpoints. */
             id: string;
-            /** @description Set of 16 key-value pairs that can be attached to an object. This can be useful for storing additional information about the object in a structured format. Keys can be a maximum of 64 characters long and values can be a maxium of 512 characters long.
+            /** @description Set of 16 key-value pairs that can be attached to an object. This can be useful for storing additional information about the object in a structured format. Keys can be a maximum of 64 characters long and values can be a maximum of 512 characters long.
              *      */
             metadata: Record<string, never>;
             /**
@@ -4408,7 +5751,7 @@ export interface components {
             object: "thread";
             /** @description A set of resources that are made available to the assistant's tools in this thread. The resources are specific to the type of tool. For example, the `code_interpreter` tool requires a list of file IDs, while the `file_search` tool requires a list of vector store IDs.
              *      */
-            tool_resources: {
+            tool_resources: ({
                 code_interpreter?: {
                     /**
                      * @description A list of [file](/docs/api-reference/files) IDs made available to the `code_interpreter` tool. There can be a maximum of 20 files associated with the tool.
@@ -4416,22 +5759,27 @@ export interface components {
                      * @default []
                      */
                     file_ids: string[];
+                } & {
                     [key: string]: unknown;
                 };
                 file_search?: {
                     /** @description The [vector store](/docs/api-reference/vector-stores/object) attached to this thread. There can be a maximum of 1 vector store attached to the thread.
                      *      */
                     vector_store_ids?: string[];
+                } & {
                     [key: string]: unknown;
                 };
+            } & {
                 [key: string]: unknown;
-            } | null;
+            }) | null;
+        } & {
             [key: string]: unknown;
         };
         ThreadStreamEvent: {
             data: components["schemas"]["ThreadObject"];
             /** @enum {string} */
             event: "thread.created";
+        } & {
             [key: string]: unknown;
         };
         TranscriptionSegment: {
@@ -4473,6 +5821,7 @@ export interface components {
             text: string;
             /** @description Array of token IDs for the text content. */
             tokens: number[];
+        } & {
             [key: string]: unknown;
         };
         TranscriptionWord: {
@@ -4488,6 +5837,7 @@ export interface components {
             start: number;
             /** @description The text content of the word. */
             word: string;
+        } & {
             [key: string]: unknown;
         };
         /**
@@ -4502,15 +5852,17 @@ export interface components {
              * @enum {string}
              */
             type: "auto" | "last_messages";
+        } & {
             [key: string]: unknown;
         };
         UpdateVectorStoreRequest: {
             expires_after?: components["schemas"]["VectorStoreExpirationAfter"];
-            /** @description Set of 16 key-value pairs that can be attached to an object. This can be useful for storing additional information about the object in a structured format. Keys can be a maximum of 64 characters long and values can be a maxium of 512 characters long.
+            /** @description Set of 16 key-value pairs that can be attached to an object. This can be useful for storing additional information about the object in a structured format. Keys can be a maximum of 64 characters long and values can be a maximum of 512 characters long.
              *      */
             metadata?: Record<string, never>;
             /** @description The name of the vector store. */
             name?: string | null;
+        } & {
             [key: string]: unknown;
         };
         /**
@@ -4543,6 +5895,7 @@ export interface components {
              * @enum {string}
              */
             status: "pending" | "completed" | "cancelled" | "expired";
+        } & {
             [key: string]: unknown;
         };
         /**
@@ -4562,6 +5915,57 @@ export interface components {
             object: "upload.part";
             /** @description The ID of the Upload object that this Part was added to. */
             upload_id: string;
+        } & {
+            [key: string]: unknown;
+        };
+        /** @description Represents an individual `user` within an organization. */
+        User: {
+            /** @description The Unix timestamp (in seconds) of when the user was added. */
+            added_at: number;
+            /** @description The email address of the user */
+            email: string;
+            /** @description The identifier, which can be referenced in API endpoints */
+            id: string;
+            /** @description The name of the user */
+            name: string;
+            /**
+             * @description The object type, which is always `organization.user`
+             * @enum {string}
+             */
+            object: "organization.user";
+            /**
+             * @description `owner` or `reader`
+             * @enum {string}
+             */
+            role: "owner" | "reader";
+        } & {
+            [key: string]: unknown;
+        };
+        UserDeleteResponse: {
+            deleted: boolean;
+            id: string;
+            /** @enum {string} */
+            object: "organization.user.deleted";
+        } & {
+            [key: string]: unknown;
+        };
+        UserListResponse: {
+            data: components["schemas"]["User"][];
+            first_id: string;
+            has_more: boolean;
+            last_id: string;
+            /** @enum {string} */
+            object: "list";
+        } & {
+            [key: string]: unknown;
+        };
+        UserRoleUpdateRequest: {
+            /**
+             * @description `owner` or `reader`
+             * @enum {string}
+             */
+            role: "owner" | "reader";
+        } & {
             [key: string]: unknown;
         };
         /**
@@ -4576,6 +5980,7 @@ export interface components {
             anchor: "last_active_at";
             /** @description The number of days after the anchor time that the vector store will expire. */
             days: number;
+        } & {
             [key: string]: unknown;
         };
         /**
@@ -4596,6 +6001,7 @@ export interface components {
                 in_progress: number;
                 /** @description The total number of files. */
                 total: number;
+            } & {
                 [key: string]: unknown;
             };
             /** @description The identifier, which can be referenced in API endpoints. */
@@ -4612,6 +6018,7 @@ export interface components {
             status: "in_progress" | "completed" | "cancelled" | "failed";
             /** @description The ID of the [vector store](/docs/api-reference/vector-stores/object) that the [File](/docs/api-reference/files) is attached to. */
             vector_store_id: string;
+        } & {
             [key: string]: unknown;
         };
         /**
@@ -4626,16 +6033,17 @@ export interface components {
             /** @description The identifier, which can be referenced in API endpoints. */
             id: string;
             /** @description The last error associated with this vector store file. Will be `null` if there are no errors. */
-            last_error: {
+            last_error: ({
                 /**
                  * @description One of `server_error` or `rate_limit_exceeded`.
                  * @enum {string}
                  */
-                code: "internal_error" | "file_not_found" | "parsing_error" | "unhandled_mime_type";
+                code: "server_error" | "unsupported_file" | "invalid_file";
                 /** @description A human-readable description of the error. */
                 message: string;
+            } & {
                 [key: string]: unknown;
-            } | null;
+            }) | null;
             /**
              * @description The object type, which is always `vector_store.file`.
              * @enum {string}
@@ -4650,6 +6058,7 @@ export interface components {
             usage_bytes: number;
             /** @description The ID of the [vector store](/docs/api-reference/vector-stores/object) that the [File](/docs/api-reference/files) is attached to. */
             vector_store_id: string;
+        } & {
             [key: string]: unknown;
         };
         /**
@@ -4673,13 +6082,14 @@ export interface components {
                 in_progress: number;
                 /** @description The total number of files. */
                 total: number;
+            } & {
                 [key: string]: unknown;
             };
             /** @description The identifier, which can be referenced in API endpoints. */
             id: string;
             /** @description The Unix timestamp (in seconds) for when the vector store was last active. */
             last_active_at: number | null;
-            /** @description Set of 16 key-value pairs that can be attached to an object. This can be useful for storing additional information about the object in a structured format. Keys can be a maximum of 64 characters long and values can be a maxium of 512 characters long.
+            /** @description Set of 16 key-value pairs that can be attached to an object. This can be useful for storing additional information about the object in a structured format. Keys can be a maximum of 64 characters long and values can be a maximum of 512 characters long.
              *      */
             metadata: Record<string, never>;
             /** @description The name of the vector store. */
@@ -4696,6 +6106,7 @@ export interface components {
             status: "expired" | "in_progress" | "completed";
             /** @description The total number of bytes used by the files in the vector store. */
             usage_bytes: number;
+        } & {
             [key: string]: unknown;
         };
     };
@@ -4967,8 +6378,9 @@ export interface operations {
                     input_file_id: string;
                     /** @description Optional custom metadata for the batch. */
                     metadata?: {
-                        [key: string]: string | undefined;
+                        [key: string]: string;
                     } | null;
+                } & {
                     [key: string]: unknown;
                 };
             };
@@ -5536,6 +6948,773 @@ export interface operations {
             };
         };
     };
+    "list-audit-logs": {
+        parameters: {
+            query?: {
+                /** @description Return only events performed by users with these emails. */
+                "actor_emails[]"?: string[];
+                /** @description Return only events performed by these actors. Can be a user ID, a service account ID, or an api key tracking ID. */
+                "actor_ids[]"?: string[];
+                /** @description A cursor for use in pagination. `after` is an object ID that defines your place in the list. For instance, if you make a list request and receive 100 objects, ending with obj_foo, your subsequent call can include after=obj_foo in order to fetch the next page of the list.
+                 *      */
+                after?: string;
+                /** @description A cursor for use in pagination. `before` is an object ID that defines your place in the list. For instance, if you make a list request and receive 100 objects, ending with obj_foo, your subsequent call can include before=obj_foo in order to fetch the previous page of the list.
+                 *      */
+                before?: string;
+                /** @description Return only events whose `effective_at` (Unix seconds) is in this range. */
+                effective_at?: {
+                    /** @description Return only events whose `effective_at` (Unix seconds) is greater than this value. */
+                    gt?: number;
+                    /** @description Return only events whose `effective_at` (Unix seconds) is greater than or equal to this value. */
+                    gte?: number;
+                    /** @description Return only events whose `effective_at` (Unix seconds) is less than this value. */
+                    lt?: number;
+                    /** @description Return only events whose `effective_at` (Unix seconds) is less than or equal to this value. */
+                    lte?: number;
+                } & {
+                    [key: string]: unknown;
+                };
+                /** @description Return only events with a `type` in one of these values. For example, `project.created`. For all options, see the documentation for the [audit log object](/docs/api-reference/audit-logs/object). */
+                "event_types[]"?: components["schemas"]["AuditLogEventType"][];
+                /** @description A limit on the number of objects to be returned. Limit can range between 1 and 100, and the default is 20.
+                 *      */
+                limit?: number;
+                /** @description Return only events for these projects. */
+                "project_ids[]"?: string[];
+                /** @description Return only events performed on these targets. For example, a project ID updated. */
+                "resource_ids[]"?: string[];
+            };
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Audit logs listed successfully. */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ListAuditLogsResponse"];
+                };
+            };
+        };
+    };
+    "list-invites": {
+        parameters: {
+            query?: {
+                /** @description A cursor for use in pagination. `after` is an object ID that defines your place in the list. For instance, if you make a list request and receive 100 objects, ending with obj_foo, your subsequent call can include after=obj_foo in order to fetch the next page of the list.
+                 *      */
+                after?: string;
+                /** @description A limit on the number of objects to be returned. Limit can range between 1 and 100, and the default is 20.
+                 *      */
+                limit?: number;
+            };
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Invites listed successfully. */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["InviteListResponse"];
+                };
+            };
+        };
+    };
+    inviteUser: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** @description The invite request payload. */
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["InviteRequest"];
+            };
+        };
+        responses: {
+            /** @description User invited successfully. */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["Invite"];
+                };
+            };
+        };
+    };
+    "retrieve-invite": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                /** @description The ID of the invite to retrieve. */
+                invite_id: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Invite retrieved successfully. */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["Invite"];
+                };
+            };
+        };
+    };
+    "delete-invite": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                /** @description The ID of the invite to delete. */
+                invite_id: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Invite deleted successfully. */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["InviteDeleteResponse"];
+                };
+            };
+        };
+    };
+    "list-projects": {
+        parameters: {
+            query?: {
+                /** @description A cursor for use in pagination. `after` is an object ID that defines your place in the list. For instance, if you make a list request and receive 100 objects, ending with obj_foo, your subsequent call can include after=obj_foo in order to fetch the next page of the list.
+                 *      */
+                after?: string;
+                /** @description If `true` returns all projects including those that have been `archived`. Archived projects are not included by default. */
+                include_archived?: boolean;
+                /** @description A limit on the number of objects to be returned. Limit can range between 1 and 100, and the default is 20.
+                 *      */
+                limit?: number;
+            };
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Projects listed successfully. */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ProjectListResponse"];
+                };
+            };
+        };
+    };
+    "create-project": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** @description The project create request payload. */
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["ProjectCreateRequest"];
+            };
+        };
+        responses: {
+            /** @description Project created successfully. */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["Project"];
+                };
+            };
+        };
+    };
+    "retrieve-project": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                /** @description The ID of the project. */
+                project_id: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Project retrieved successfully. */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["Project"];
+                };
+            };
+        };
+    };
+    "modify-project": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** @description The project update request payload. */
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["ProjectUpdateRequest"];
+            };
+        };
+        responses: {
+            /** @description Project updated successfully. */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["Project"];
+                };
+            };
+            /** @description Error response when updating the default project. */
+            400: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponse"];
+                };
+            };
+        };
+    };
+    "list-project-api-keys": {
+        parameters: {
+            query?: {
+                /** @description A cursor for use in pagination. `after` is an object ID that defines your place in the list. For instance, if you make a list request and receive 100 objects, ending with obj_foo, your subsequent call can include after=obj_foo in order to fetch the next page of the list.
+                 *      */
+                after?: string;
+                /** @description A limit on the number of objects to be returned. Limit can range between 1 and 100, and the default is 20.
+                 *      */
+                limit?: number;
+            };
+            header?: never;
+            path: {
+                /** @description The ID of the project. */
+                project_id: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Project API keys listed successfully. */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ProjectApiKeyListResponse"];
+                };
+            };
+        };
+    };
+    "retrieve-project-api-key": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                /** @description The ID of the API key. */
+                key_id: string;
+                /** @description The ID of the project. */
+                project_id: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Project API key retrieved successfully. */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ProjectApiKey"];
+                };
+            };
+        };
+    };
+    "delete-project-api-key": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                /** @description The ID of the API key. */
+                key_id: string;
+                /** @description The ID of the project. */
+                project_id: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Project API key deleted successfully. */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ProjectApiKeyDeleteResponse"];
+                };
+            };
+            /** @description Error response for various conditions. */
+            400: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponse"];
+                };
+            };
+        };
+    };
+    "archive-project": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                /** @description The ID of the project. */
+                project_id: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Project archived successfully. */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["Project"];
+                };
+            };
+        };
+    };
+    "list-project-service-accounts": {
+        parameters: {
+            query?: {
+                /** @description A cursor for use in pagination. `after` is an object ID that defines your place in the list. For instance, if you make a list request and receive 100 objects, ending with obj_foo, your subsequent call can include after=obj_foo in order to fetch the next page of the list.
+                 *      */
+                after?: string;
+                /** @description A limit on the number of objects to be returned. Limit can range between 1 and 100, and the default is 20.
+                 *      */
+                limit?: number;
+            };
+            header?: never;
+            path: {
+                /** @description The ID of the project. */
+                project_id: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Project service accounts listed successfully. */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ProjectServiceAccountListResponse"];
+                };
+            };
+            /** @description Error response when project is archived. */
+            400: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponse"];
+                };
+            };
+        };
+    };
+    "create-project-service-account": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                /** @description The ID of the project. */
+                project_id: string;
+            };
+            cookie?: never;
+        };
+        /** @description The project service account create request payload. */
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["ProjectServiceAccountCreateRequest"];
+            };
+        };
+        responses: {
+            /** @description Project service account created successfully. */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ProjectServiceAccountCreateResponse"];
+                };
+            };
+            /** @description Error response when project is archived. */
+            400: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponse"];
+                };
+            };
+        };
+    };
+    "retrieve-project-service-account": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                /** @description The ID of the project. */
+                project_id: string;
+                /** @description The ID of the service account. */
+                service_account_id: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Project service account retrieved successfully. */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ProjectServiceAccount"];
+                };
+            };
+        };
+    };
+    "delete-project-service-account": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                /** @description The ID of the project. */
+                project_id: string;
+                /** @description The ID of the service account. */
+                service_account_id: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Project service account deleted successfully. */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ProjectServiceAccountDeleteResponse"];
+                };
+            };
+        };
+    };
+    "list-project-users": {
+        parameters: {
+            query?: {
+                /** @description A cursor for use in pagination. `after` is an object ID that defines your place in the list. For instance, if you make a list request and receive 100 objects, ending with obj_foo, your subsequent call can include after=obj_foo in order to fetch the next page of the list.
+                 *      */
+                after?: string;
+                /** @description A limit on the number of objects to be returned. Limit can range between 1 and 100, and the default is 20.
+                 *      */
+                limit?: number;
+            };
+            header?: never;
+            path: {
+                /** @description The ID of the project. */
+                project_id: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Project users listed successfully. */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ProjectUserListResponse"];
+                };
+            };
+            /** @description Error response when project is archived. */
+            400: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponse"];
+                };
+            };
+        };
+    };
+    "create-project-user": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                /** @description The ID of the project. */
+                project_id: string;
+            };
+            cookie?: never;
+        };
+        /** @description The project user create request payload. */
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["ProjectUserCreateRequest"];
+            };
+        };
+        responses: {
+            /** @description User added to project successfully. */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ProjectUser"];
+                };
+            };
+            /** @description Error response for various conditions. */
+            400: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponse"];
+                };
+            };
+        };
+    };
+    "retrieve-project-user": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                /** @description The ID of the project. */
+                project_id: string;
+                /** @description The ID of the user. */
+                user_id: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Project user retrieved successfully. */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ProjectUser"];
+                };
+            };
+        };
+    };
+    "modify-project-user": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** @description The project user update request payload. */
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["ProjectUserUpdateRequest"];
+            };
+        };
+        responses: {
+            /** @description Project user's role updated successfully. */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ProjectUser"];
+                };
+            };
+            /** @description Error response for various conditions. */
+            400: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponse"];
+                };
+            };
+        };
+    };
+    "delete-project-user": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                /** @description The ID of the project. */
+                project_id: string;
+                /** @description The ID of the user. */
+                user_id: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Project user deleted successfully. */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ProjectUserDeleteResponse"];
+                };
+            };
+            /** @description Error response for various conditions. */
+            400: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponse"];
+                };
+            };
+        };
+    };
+    "list-users": {
+        parameters: {
+            query?: {
+                /** @description A cursor for use in pagination. `after` is an object ID that defines your place in the list. For instance, if you make a list request and receive 100 objects, ending with obj_foo, your subsequent call can include after=obj_foo in order to fetch the next page of the list.
+                 *      */
+                after?: string;
+                /** @description A limit on the number of objects to be returned. Limit can range between 1 and 100, and the default is 20.
+                 *      */
+                limit?: number;
+            };
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Users listed successfully. */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["UserListResponse"];
+                };
+            };
+        };
+    };
+    "retrieve-user": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                /** @description The ID of the user. */
+                user_id: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description User retrieved successfully. */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["User"];
+                };
+            };
+        };
+    };
+    "modify-user": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** @description The new user role to modify. This must be one of `owner` or `member`. */
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["UserRoleUpdateRequest"];
+            };
+        };
+        responses: {
+            /** @description User role updated successfully. */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["User"];
+                };
+            };
+        };
+    };
+    "delete-user": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                /** @description The ID of the user. */
+                user_id: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description User deleted successfully. */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["UserDeleteResponse"];
+                };
+            };
+        };
+    };
     createThread: {
         parameters: {
             query?: never;
@@ -5816,7 +7995,13 @@ export interface operations {
     };
     createRun: {
         parameters: {
-            query?: never;
+            query?: {
+                /** @description A list of additional fields to include in the response. Currently the only supported value is `step_details.tool_calls[*].file_search.results[*].content` to fetch the file search result content.
+                 *
+                 *     See the [file search tool documentation](/docs/assistants/tools/file-search/customizing-file-search-settings) for more information.
+                 *      */
+                "include[]"?: "step_details.tool_calls[*].file_search.results[*].content"[];
+            };
             header?: never;
             path: {
                 /** @description The ID of the thread to run. */
@@ -5929,6 +8114,11 @@ export interface operations {
                 /** @description A cursor for use in pagination. `before` is an object ID that defines your place in the list. For instance, if you make a list request and receive 100 objects, ending with obj_foo, your subsequent call can include before=obj_foo in order to fetch the previous page of the list.
                  *      */
                 before?: string;
+                /** @description A list of additional fields to include in the response. Currently the only supported value is `step_details.tool_calls[*].file_search.results[*].content` to fetch the file search result content.
+                 *
+                 *     See the [file search tool documentation](/docs/assistants/tools/file-search/customizing-file-search-settings) for more information.
+                 *      */
+                "include[]"?: "step_details.tool_calls[*].file_search.results[*].content"[];
                 /** @description A limit on the number of objects to be returned. Limit can range between 1 and 100, and the default is 20.
                  *      */
                 limit?: number;
@@ -5960,7 +8150,13 @@ export interface operations {
     };
     getRunStep: {
         parameters: {
-            query?: never;
+            query?: {
+                /** @description A list of additional fields to include in the response. Currently the only supported value is `step_details.tool_calls[*].file_search.results[*].content` to fetch the file search result content.
+                 *
+                 *     See the [file search tool documentation](/docs/assistants/tools/file-search/customizing-file-search-settings) for more information.
+                 *      */
+                "include[]"?: "step_details.tool_calls[*].file_search.results[*].content"[];
+            };
             header?: never;
             path: {
                 /** @description The ID of the run to which the run step belongs. */

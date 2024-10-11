@@ -51,15 +51,19 @@ export function openAiMessageToGeminiMessage(messages: OpenAI.Chat.ChatCompletio
     .flatMap(({ role, content }) => {
       if (role === "system") {
         return [
-          { role: "user", parts: [{ text: content }] },
+          { role: "user", parts: typeof content !== "string" ? content : [{ text: content }] },
           { role: "model", parts: [{ text: "" }] },
-        ]
+        ] satisfies Content[] as Content[]
       }
 
       const parts: Part[] =
         content == null || typeof content === "string"
           ? [{ text: content?.toString() ?? "" }]
-          : content.map((item) => (item.type === "text" ? { text: item.text } : parseBase64(item.image_url.url)))
+          : content.map((item) => {
+              if (item.type === "text") return { text: item.text }
+              if (item.type === "image_url") return parseBase64(item.image_url.url)
+              return { text: "" }
+            })
 
       return [{ role: "user" === role ? "user" : "model", parts: parts }]
     })
@@ -86,7 +90,7 @@ export function genModel(req: OpenAI.Chat.ChatCompletionCreateParams): [GeminiMo
   let functions: OpenAI.Chat.FunctionObject[] =
     req.tools?.filter((it) => it.type === "function")?.map((it) => it.function) ?? []
 
-  functions = functions.concat(req.functions ?? [])
+  functions = functions.concat((req.functions ?? []).map((it) => ({ strict: null, ...it })))
 
   const responseMimeType = req.response_format?.type === "json_object" ? "application/json" : "text/plain"
 

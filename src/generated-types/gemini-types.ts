@@ -1058,36 +1058,42 @@ export interface components {
             groundingPassage?: components["schemas"]["GroundingPassageId"];
             /** @description Identifier for a `Chunk` fetched via Semantic Retriever. */
             semanticRetrieverChunk?: components["schemas"]["SemanticRetrieverChunk"];
+        } & {
             [key: string]: unknown;
         };
         /** @description Request to batch create `Chunk`s. */
         BatchCreateChunksRequest: {
             /** @description Required. The request messages specifying the `Chunk`s to create. A maximum of 100 `Chunk`s can be created in a batch. */
             requests?: components["schemas"]["CreateChunkRequest"][];
+        } & {
             [key: string]: unknown;
         };
         /** @description Response from `BatchCreateChunks` containing a list of created `Chunk`s. */
         BatchCreateChunksResponse: {
             /** @description `Chunk`s created. */
             chunks?: components["schemas"]["Chunk"][];
+        } & {
             [key: string]: unknown;
         };
         /** @description Request to batch delete `Chunk`s. */
         BatchDeleteChunksRequest: {
             /** @description Required. The request messages specifying the `Chunk`s to delete. */
             requests?: components["schemas"]["DeleteChunkRequest"][];
+        } & {
             [key: string]: unknown;
         };
         /** @description Batch request to get embeddings from the model for a list of prompts. */
         BatchEmbedContentsRequest: {
             /** @description Required. Embed requests for the batch. The model in each of these requests must match the model specified `BatchEmbedContentsRequest.model`. */
             requests?: components["schemas"]["EmbedContentRequest"][];
+        } & {
             [key: string]: unknown;
         };
         /** @description The response to a `BatchEmbedContentsRequest`. */
         BatchEmbedContentsResponse: {
             /** @description Output only. The embeddings for each request, in the same order as provided in the batch request. */
             readonly embeddings?: components["schemas"]["ContentEmbedding"][];
+        } & {
             [key: string]: unknown;
         };
         /** @description Batch request to get a text embedding from the model. */
@@ -1096,24 +1102,28 @@ export interface components {
             requests?: components["schemas"]["EmbedTextRequest"][];
             /** @description Optional. The free-form input texts that the model will turn into an embedding. The current limit is 100 texts, over which an error will be thrown. */
             texts?: string[];
+        } & {
             [key: string]: unknown;
         };
         /** @description The response to a EmbedTextRequest. */
         BatchEmbedTextResponse: {
             /** @description Output only. The embeddings generated from the input text. */
             readonly embeddings?: components["schemas"]["Embedding"][];
+        } & {
             [key: string]: unknown;
         };
         /** @description Request to batch update `Chunk`s. */
         BatchUpdateChunksRequest: {
             /** @description Required. The request messages specifying the `Chunk`s to update. A maximum of 100 `Chunk`s can be updated in a batch. */
             requests?: components["schemas"]["UpdateChunkRequest"][];
+        } & {
             [key: string]: unknown;
         };
         /** @description Response from `BatchUpdateChunks` containing a list of updated `Chunk`s. */
         BatchUpdateChunksResponse: {
             /** @description `Chunk`s updated. */
             chunks?: components["schemas"]["Chunk"][];
+        } & {
             [key: string]: unknown;
         };
         /** @description Raw media bytes. Text should not be sent as raw bytes, use the 'text' field. */
@@ -1125,6 +1135,7 @@ export interface components {
             data?: string;
             /** @description The IANA standard MIME type of the source data. Examples: - image/png - image/jpeg If an unsupported MIME type is provided, an error will be returned. For a complete list of supported types, see [Supported file formats](https://ai.google.dev/gemini-api/docs/prompting_with_media#supported_file_formats). */
             mimeType?: string;
+        } & {
             [key: string]: unknown;
         };
         /** @description Content that has been preprocessed and can be used in subsequent request to GenerativeService. Cached content can be only used with model it was created for. */
@@ -1165,6 +1176,7 @@ export interface components {
             readonly updateTime?: string;
             /** @description Output only. Metadata on the usage of the cached content. */
             readonly usageMetadata?: components["schemas"]["CachedContentUsageMetadata"];
+        } & {
             [key: string]: unknown;
         };
         /** @description Metadata on the usage of the cached content. */
@@ -1174,6 +1186,7 @@ export interface components {
              * @description Total number of tokens that the cached content consumes.
              */
             totalTokenCount?: number;
+        } & {
             [key: string]: unknown;
         };
         /** @description A response candidate generated from the model. */
@@ -1201,6 +1214,7 @@ export interface components {
              * @description Output only. Token count for this candidate.
              */
             readonly tokenCount?: number;
+        } & {
             [key: string]: unknown;
         };
         /** @description A `Chunk` is a subpart of a `Document` that is treated as an independent unit for the purposes of vector representation and storage. A `Corpus` can have a maximum of 1 million `Chunk`s. */
@@ -1226,18 +1240,21 @@ export interface components {
              * @description Output only. The Timestamp of when the `Chunk` was last updated.
              */
             readonly updateTime?: string;
+        } & {
             [key: string]: unknown;
         };
         /** @description Extracted data that represents the `Chunk` content. */
         ChunkData: {
             /** @description The `Chunk` content as a string. The maximum number of tokens per chunk is 2043. */
             stringValue?: string;
+        } & {
             [key: string]: unknown;
         };
         /** @description A collection of source attributions for a piece of content. */
         CitationMetadata: {
             /** @description Citations to sources for a specific response. */
             citationSources?: components["schemas"]["CitationSource"][];
+        } & {
             [key: string]: unknown;
         };
         /** @description A citation to a source for a portion of a specific response. */
@@ -1256,6 +1273,7 @@ export interface components {
             startIndex?: number;
             /** @description Optional. URI that is attributed as a source for a portion of the text. */
             uri?: string;
+        } & {
             [key: string]: unknown;
         };
         /** @description Tool that executes code generated by the model, and automatically returns the result to the model. See also `ExecutableCode` and `CodeExecutionResult` which are only generated when using this tool. */
@@ -1269,6 +1287,7 @@ export interface components {
             outcome?: "OUTCOME_UNSPECIFIED" | "OUTCOME_OK" | "OUTCOME_FAILED" | "OUTCOME_DEADLINE_EXCEEDED";
             /** @description Optional. Contains stdout when code execution is successful, stderr or other description otherwise. */
             output?: string;
+        } & {
             [key: string]: unknown;
         };
         /** @description Filter condition applicable to a single key. */
@@ -1285,6 +1304,7 @@ export interface components {
             operation?: "OPERATOR_UNSPECIFIED" | "LESS" | "LESS_EQUAL" | "EQUAL" | "GREATER_EQUAL" | "GREATER" | "NOT_EQUAL" | "INCLUDES" | "EXCLUDES";
             /** @description The string value to filter the metadata on. */
             stringValue?: string;
+        } & {
             [key: string]: unknown;
         };
         /** @description The base structured datatype containing multi-part content of a message. A `Content` includes a `role` field designating the producer of the `Content` and a `parts` field containing multi-part data that contains the content of the message turn. */
@@ -1293,12 +1313,14 @@ export interface components {
             parts?: components["schemas"]["Part"][];
             /** @description Optional. The producer of the content. Must be either 'user' or 'model'. Useful to set for multi-turn conversations, otherwise can be left blank or unset. */
             role?: string;
+        } & {
             [key: string]: unknown;
         };
         /** @description A list of floats representing an embedding. */
         ContentEmbedding: {
             /** @description The embedding values. */
             values?: number[];
+        } & {
             [key: string]: unknown;
         };
         /** @description Content filtering metadata associated with processing a single request. ContentFilter contains a reason and an optional supporting string. The reason may be unspecified. */
@@ -1310,6 +1332,7 @@ export interface components {
              * @enum {string}
              */
             reason?: "BLOCKED_REASON_UNSPECIFIED" | "SAFETY" | "OTHER";
+        } & {
             [key: string]: unknown;
         };
         /** @description A `Corpus` is a collection of `Document`s. A project can create up to 5 corpora. */
@@ -1328,12 +1351,14 @@ export interface components {
              * @description Output only. The Timestamp of when the `Corpus` was last updated.
              */
             readonly updateTime?: string;
+        } & {
             [key: string]: unknown;
         };
         /** @description Counts the number of tokens in the `prompt` sent to a model. Models may tokenize text differently, so each model may return a different `token_count`. */
         CountMessageTokensRequest: {
             /** @description Required. The prompt, whose token count is to be returned. */
             prompt?: components["schemas"]["MessagePrompt"];
+        } & {
             [key: string]: unknown;
         };
         /** @description A response from `CountMessageTokens`. It returns the model's `token_count` for the `prompt`. */
@@ -1343,12 +1368,14 @@ export interface components {
              * @description The number of tokens that the `model` tokenizes the `prompt` into. Always non-negative.
              */
             tokenCount?: number;
+        } & {
             [key: string]: unknown;
         };
         /** @description Counts the number of tokens in the `prompt` sent to a model. Models may tokenize text differently, so each model may return a different `token_count`. */
         CountTextTokensRequest: {
             /** @description Required. The free-form input text given to the model as a prompt. */
             prompt?: components["schemas"]["TextPrompt"];
+        } & {
             [key: string]: unknown;
         };
         /** @description A response from `CountTextTokens`. It returns the model's `token_count` for the `prompt`. */
@@ -1358,6 +1385,7 @@ export interface components {
              * @description The number of tokens that the `model` tokenizes the `prompt` into. Always non-negative.
              */
             tokenCount?: number;
+        } & {
             [key: string]: unknown;
         };
         /** @description Counts the number of tokens in the `prompt` sent to a model. Models may tokenize text differently, so each model may return a different `token_count`. */
@@ -1366,6 +1394,7 @@ export interface components {
             contents?: components["schemas"]["Content"][];
             /** @description Optional. The overall input given to the model. CountTokens will count prompt, function calling, etc. */
             generateContentRequest?: components["schemas"]["GenerateContentRequest"];
+        } & {
             [key: string]: unknown;
         };
         /** @description A response from `CountTokens`. It returns the model's `token_count` for the `prompt`. */
@@ -1375,6 +1404,7 @@ export interface components {
              * @description The number of tokens that the `model` tokenizes the `prompt` into. Always non-negative. When cached_content is set, this is still the total effective prompt size. I.e. this includes the number of tokens in the cached content.
              */
             totalTokens?: number;
+        } & {
             [key: string]: unknown;
         };
         /** @description Request to create a `Chunk`. */
@@ -1383,18 +1413,21 @@ export interface components {
             chunk?: components["schemas"]["Chunk"];
             /** @description Required. The name of the `Document` where this `Chunk` will be created. Example: `corpora/my-corpus-123/documents/the-doc-abc` */
             parent?: string;
+        } & {
             [key: string]: unknown;
         };
         /** @description Request for `CreateFile`. */
         CreateFileRequest: {
             /** @description Optional. Metadata for the file to create. */
             file?: components["schemas"]["File"];
+        } & {
             [key: string]: unknown;
         };
         /** @description Response for `CreateFile`. */
         CreateFileResponse: {
             /** @description Metadata for the created file. */
             file?: components["schemas"]["File"];
+        } & {
             [key: string]: unknown;
         };
         /** @description User provided metadata stored as key-value pairs. */
@@ -1410,18 +1443,21 @@ export interface components {
             stringListValue?: components["schemas"]["StringList"];
             /** @description The string value of the metadata to store. */
             stringValue?: string;
+        } & {
             [key: string]: unknown;
         };
         /** @description Dataset for training or validation. */
         Dataset: {
             /** @description Optional. Inline examples. */
             examples?: components["schemas"]["TuningExamples"];
+        } & {
             [key: string]: unknown;
         };
         /** @description Request to delete a `Chunk`. */
         DeleteChunkRequest: {
             /** @description Required. The resource name of the `Chunk` to delete. Example: `corpora/my-corpus-123/documents/the-doc-abc/chunks/some-chunk` */
             name?: string;
+        } & {
             [key: string]: unknown;
         };
         /** @description A `Document` is a collection of `Chunk`s. A `Corpus` can have a maximum of 10,000 `Document`s. */
@@ -1442,6 +1478,7 @@ export interface components {
              * @description Output only. The Timestamp of when the `Document` was last updated.
              */
             readonly updateTime?: string;
+        } & {
             [key: string]: unknown;
         };
         /** @description Request containing the `Content` for the model to embed. */
@@ -1462,18 +1499,21 @@ export interface components {
             taskType?: "TASK_TYPE_UNSPECIFIED" | "RETRIEVAL_QUERY" | "RETRIEVAL_DOCUMENT" | "SEMANTIC_SIMILARITY" | "CLASSIFICATION" | "CLUSTERING" | "QUESTION_ANSWERING" | "FACT_VERIFICATION";
             /** @description Optional. An optional title for the text. Only applicable when TaskType is `RETRIEVAL_DOCUMENT`. Note: Specifying a `title` for `RETRIEVAL_DOCUMENT` provides better quality embeddings for retrieval. */
             title?: string;
+        } & {
             [key: string]: unknown;
         };
         /** @description The response to an `EmbedContentRequest`. */
         EmbedContentResponse: {
             /** @description Output only. The embedding generated from the input content. */
             readonly embedding?: components["schemas"]["ContentEmbedding"];
+        } & {
             [key: string]: unknown;
         };
         /** @description A list of floats representing the embedding. */
         Embedding: {
             /** @description The embedding values. */
             value?: number[];
+        } & {
             [key: string]: unknown;
         };
         /** @description Request to get a text embedding from the model. */
@@ -1482,12 +1522,14 @@ export interface components {
             model?: string;
             /** @description Optional. The free-form input text that the model will turn into an embedding. */
             text?: string;
+        } & {
             [key: string]: unknown;
         };
         /** @description The response to a EmbedTextRequest. */
         EmbedTextResponse: {
             /** @description Output only. The embedding generated from the input text. */
             readonly embedding?: components["schemas"]["Embedding"];
+        } & {
             [key: string]: unknown;
         };
         /** @description A generic empty message that you can re-use to avoid defining duplicated empty messages in your APIs. A typical example is to use it as the request or the response type of an API method. For instance: service Foo { rpc Bar(google.protobuf.Empty) returns (google.protobuf.Empty); } */
@@ -1498,6 +1540,7 @@ export interface components {
             input?: components["schemas"]["Message"];
             /** @description Required. An example of what the model should output given the input. */
             output?: components["schemas"]["Message"];
+        } & {
             [key: string]: unknown;
         };
         /** @description Code generated by the model that is meant to be executed, and the result returned to the model. Only generated when using the `CodeExecution` tool, in which the code will be automatically executed, and a corresponding `CodeExecutionResult` will also be generated. */
@@ -1509,6 +1552,7 @@ export interface components {
              * @enum {string}
              */
             language?: "LANGUAGE_UNSPECIFIED" | "PYTHON";
+        } & {
             [key: string]: unknown;
         };
         /** @description A file uploaded to the API. */
@@ -1555,6 +1599,7 @@ export interface components {
             readonly uri?: string;
             /** @description Output only. Metadata for a video. */
             readonly videoMetadata?: components["schemas"]["VideoMetadata"];
+        } & {
             [key: string]: unknown;
         };
         /** @description URI based data. */
@@ -1563,6 +1608,7 @@ export interface components {
             fileUri?: string;
             /** @description Optional. The IANA standard MIME type of the source data. */
             mimeType?: string;
+        } & {
             [key: string]: unknown;
         };
         /** @description A predicted `FunctionCall` returned from the model that contains a string representing the `FunctionDeclaration.name` with the arguments and their values. */
@@ -1573,6 +1619,7 @@ export interface components {
             };
             /** @description Required. The name of the function to call. Must be a-z, A-Z, 0-9, or contain underscores and dashes, with a maximum length of 63. */
             name?: string;
+        } & {
             [key: string]: unknown;
         };
         /** @description Configuration for specifying function calling behavior. */
@@ -1584,6 +1631,7 @@ export interface components {
              * @enum {string}
              */
             mode?: "MODE_UNSPECIFIED" | "AUTO" | "ANY" | "NONE";
+        } & {
             [key: string]: unknown;
         };
         /** @description Structured representation of a function declaration as defined by the [OpenAPI 3.03 specification](https://spec.openapis.org/oas/v3.0.3). Included in this declaration are the function name and parameters. This FunctionDeclaration is a representation of a block of code that can be used as a `Tool` by the model and executed by the client. */
@@ -1594,6 +1642,7 @@ export interface components {
             name?: string;
             /** @description Optional. Describes the parameters to this function. Reflects the Open API 3.03 Parameter Object string Key: the name of the parameter. Parameter names are case sensitive. Schema Value: the Schema defining the type used for the parameter. */
             parameters?: components["schemas"]["Schema"];
+        } & {
             [key: string]: unknown;
         };
         /** @description The result output from a `FunctionCall` that contains a string representing the `FunctionDeclaration.name` and a structured JSON object containing any output from the function is used as context to the model. This should contain the result of a`FunctionCall` made based on model prediction. */
@@ -1604,6 +1653,7 @@ export interface components {
             response?: {
                 [key: string]: unknown;
             };
+        } & {
             [key: string]: unknown;
         };
         /** @description Request to generate a grounded answer from the model. */
@@ -1626,6 +1676,7 @@ export interface components {
              * @description Optional. Controls the randomness of the output. Values can range from [0.0,1.0], inclusive. A value closer to 1.0 will produce responses that are more varied and creative, while a value closer to 0.0 will typically result in more straightforward responses from the model. A low temperature (~0.2) is usually recommended for Attributed-Question-Answering use cases.
              */
             temperature?: number;
+        } & {
             [key: string]: unknown;
         };
         /** @description Response from the model for a grounded answer. */
@@ -1639,6 +1690,7 @@ export interface components {
             readonly answerableProbability?: number;
             /** @description Output only. Feedback related to the input data used to answer the question, as opposed to model-generated response to the question. "Input data" can be one or more of the following: - Question specified by the last entry in `GenerateAnswerRequest.content` - Conversation history specified by the other entries in `GenerateAnswerRequest.content` - Grounding sources (`GenerateAnswerRequest.semantic_retriever` or `GenerateAnswerRequest.inline_passages`) */
             readonly inputFeedback?: components["schemas"]["InputFeedback"];
+        } & {
             [key: string]: unknown;
         };
         /** @description Request to generate a completion from the model. */
@@ -1659,6 +1711,7 @@ export interface components {
             toolConfig?: components["schemas"]["ToolConfig"];
             /** @description Optional. A list of `Tools` the model may use to generate the next response. A `Tool` is a piece of code that enables the system to interact with external systems to perform an action, or set of actions, outside of knowledge and scope of the model. The only supported tool is currently `Function`. */
             tools?: components["schemas"]["Tool"][];
+        } & {
             [key: string]: unknown;
         };
         /** @description Response from the model supporting multiple candidates. Note on safety ratings and content filtering. They are reported for both prompt in `GenerateContentResponse.prompt_feedback` and for each candidate in `finish_reason` and in `safety_ratings`. The API contract is that: - either all requested candidates are returned or no candidates at all - no candidates are returned only if there was something wrong with the prompt (see `prompt_feedback`) - feedback on each candidate is reported on `finish_reason` and `safety_ratings`. */
@@ -1669,6 +1722,7 @@ export interface components {
             promptFeedback?: components["schemas"]["PromptFeedback"];
             /** @description Output only. Metadata on the generation requests' token usage. */
             readonly usageMetadata?: components["schemas"]["UsageMetadata"];
+        } & {
             [key: string]: unknown;
         };
         /** @description Request to generate a message response from the model. */
@@ -1695,6 +1749,7 @@ export interface components {
              * @description Optional. The maximum cumulative probability of tokens to consider when sampling. The model uses combined Top-k and nucleus sampling. Nucleus sampling considers the smallest set of tokens whose probability sum is at least `top_p`.
              */
             topP?: number;
+        } & {
             [key: string]: unknown;
         };
         /** @description The response from the model. This includes candidate messages and conversation history in the form of chronologically-ordered messages. */
@@ -1705,6 +1760,7 @@ export interface components {
             filters?: components["schemas"]["ContentFilter"][];
             /** @description The conversation history used by the model. */
             messages?: components["schemas"]["Message"][];
+        } & {
             [key: string]: unknown;
         };
         /** @description Request to generate a text completion response from the model. */
@@ -1740,6 +1796,7 @@ export interface components {
              * @description Optional. The maximum cumulative probability of tokens to consider when sampling. The model uses combined Top-k and nucleus sampling. Tokens are sorted based on their assigned probabilities so that only the most likely tokens are considered. Top-k sampling directly limits the maximum number of tokens to consider, while Nucleus sampling limits number of tokens based on the cumulative probability. Note: The default value varies by model, see the `Model.top_p` attribute of the `Model` returned the `getModel` function.
              */
             topP?: number;
+        } & {
             [key: string]: unknown;
         };
         /** @description The response from the model, including candidate completions. */
@@ -1750,6 +1807,7 @@ export interface components {
             filters?: components["schemas"]["ContentFilter"][];
             /** @description Returns any safety feedback related to content filtering. */
             safetyFeedback?: components["schemas"]["SafetyFeedback"][];
+        } & {
             [key: string]: unknown;
         };
         /** @description Configuration options for model generation and outputs. Not all parameters may be configurable for every model. */
@@ -1785,6 +1843,7 @@ export interface components {
              * @description Optional. The maximum cumulative probability of tokens to consider when sampling. The model uses combined Top-k and nucleus sampling. Tokens are sorted based on their assigned probabilities so that only the most likely tokens are considered. Top-k sampling directly limits the maximum number of tokens to consider, while Nucleus sampling limits number of tokens based on the cumulative probability. Note: The default value varies by model, see the `Model.top_p` attribute of the `Model` returned from the `getModel` function.
              */
             topP?: number;
+        } & {
             [key: string]: unknown;
         };
         /** @description Attribution for a source that contributed to an answer. */
@@ -1793,6 +1852,7 @@ export interface components {
             content?: components["schemas"]["Content"];
             /** @description Output only. Identifier for the source contributing to this attribution. */
             readonly sourceId?: components["schemas"]["AttributionSourceId"];
+        } & {
             [key: string]: unknown;
         };
         /** @description Passage included inline with a grounding configuration. */
@@ -1801,6 +1861,7 @@ export interface components {
             content?: components["schemas"]["Content"];
             /** @description Identifier for the passage for attributing this passage in grounded answers. */
             id?: string;
+        } & {
             [key: string]: unknown;
         };
         /** @description Identifier for a part within a `GroundingPassage`. */
@@ -1812,12 +1873,14 @@ export interface components {
             readonly partIndex?: number;
             /** @description Output only. ID of the passage matching the `GenerateAnswerRequest`'s `GroundingPassage.id`. */
             readonly passageId?: string;
+        } & {
             [key: string]: unknown;
         };
         /** @description A repeated list of passages. */
         GroundingPassages: {
             /** @description List of passages. */
             passages?: components["schemas"]["GroundingPassage"][];
+        } & {
             [key: string]: unknown;
         };
         /** @description Hyperparameters controlling the tuning process. Read more at https://ai.google.dev/docs/model_tuning_guidance */
@@ -1842,6 +1905,7 @@ export interface components {
              * @description Optional. Immutable. The learning rate multiplier is used to calculate a final learning_rate based on the default (recommended) value. Actual learning rate := learning_rate_multiplier * default learning rate Default learning rate is dependent on base model and dataset size. If not set, a default of 1.0 will be used.
              */
             learningRateMultiplier?: number;
+        } & {
             [key: string]: unknown;
         };
         /** @description Feedback related to the input data used to answer the question, as opposed to model-generated response to the question. */
@@ -1853,6 +1917,7 @@ export interface components {
             blockReason?: "BLOCK_REASON_UNSPECIFIED" | "SAFETY" | "OTHER";
             /** @description Ratings for safety of the input. There is at most one rating per category. */
             safetyRatings?: components["schemas"]["SafetyRating"][];
+        } & {
             [key: string]: unknown;
         };
         /** @description Response with CachedContents list. */
@@ -1861,6 +1926,7 @@ export interface components {
             cachedContents?: components["schemas"]["CachedContent"][];
             /** @description A token, which can be sent as `page_token` to retrieve the next page. If this field is omitted, there are no subsequent pages. */
             nextPageToken?: string;
+        } & {
             [key: string]: unknown;
         };
         /** @description Response from `ListChunks` containing a paginated list of `Chunk`s. The `Chunk`s are sorted by ascending `chunk.create_time`. */
@@ -1869,6 +1935,7 @@ export interface components {
             chunks?: components["schemas"]["Chunk"][];
             /** @description A token, which can be sent as `page_token` to retrieve the next page. If this field is omitted, there are no more pages. */
             nextPageToken?: string;
+        } & {
             [key: string]: unknown;
         };
         /** @description Response from `ListCorpora` containing a paginated list of `Corpora`. The results are sorted by ascending `corpus.create_time`. */
@@ -1877,6 +1944,7 @@ export interface components {
             corpora?: components["schemas"]["Corpus"][];
             /** @description A token, which can be sent as `page_token` to retrieve the next page. If this field is omitted, there are no more pages. */
             nextPageToken?: string;
+        } & {
             [key: string]: unknown;
         };
         /** @description Response from `ListDocuments` containing a paginated list of `Document`s. The `Document`s are sorted by ascending `document.create_time`. */
@@ -1885,6 +1953,7 @@ export interface components {
             documents?: components["schemas"]["Document"][];
             /** @description A token, which can be sent as `page_token` to retrieve the next page. If this field is omitted, there are no more pages. */
             nextPageToken?: string;
+        } & {
             [key: string]: unknown;
         };
         /** @description Response for `ListFiles`. */
@@ -1893,6 +1962,7 @@ export interface components {
             files?: components["schemas"]["File"][];
             /** @description A token that can be sent as a `page_token` into a subsequent `ListFiles` call. */
             nextPageToken?: string;
+        } & {
             [key: string]: unknown;
         };
         /** @description Response from `ListModel` containing a paginated list of Models. */
@@ -1901,6 +1971,7 @@ export interface components {
             models?: components["schemas"]["Model"][];
             /** @description A token, which can be sent as `page_token` to retrieve the next page. If this field is omitted, there are no more pages. */
             nextPageToken?: string;
+        } & {
             [key: string]: unknown;
         };
         /** @description Response from `ListPermissions` containing a paginated list of permissions. */
@@ -1909,6 +1980,7 @@ export interface components {
             nextPageToken?: string;
             /** @description Returned permissions. */
             permissions?: components["schemas"]["Permission"][];
+        } & {
             [key: string]: unknown;
         };
         /** @description Response from `ListTunedModels` containing a paginated list of Models. */
@@ -1917,6 +1989,7 @@ export interface components {
             nextPageToken?: string;
             /** @description The returned Models. */
             tunedModels?: components["schemas"]["TunedModel"][];
+        } & {
             [key: string]: unknown;
         };
         /** @description The base unit of structured text. A `Message` includes an `author` and the `content` of the `Message`. The `author` is used to tag messages when they are fed to the model as text. */
@@ -1927,6 +2000,7 @@ export interface components {
             readonly citationMetadata?: components["schemas"]["CitationMetadata"];
             /** @description Required. The text content of the structured `Message`. */
             content?: string;
+        } & {
             [key: string]: unknown;
         };
         /** @description All of the structured input text passed to the model as a prompt. A `MessagePrompt` contains a structured set of fields that provide context for the conversation, examples of user input/model output message pairs that prime the model to respond in different ways, and the conversation history or list of messages representing the alternating turns of the conversation between the user and the model. */
@@ -1937,6 +2011,7 @@ export interface components {
             examples?: components["schemas"]["Example"][];
             /** @description Required. A snapshot of the recent conversation history sorted chronologically. Turns alternate between two authors. If the total input size exceeds the model's `input_token_limit` the input will be truncated: The oldest items will be dropped from `messages`. */
             messages?: components["schemas"]["Message"][];
+        } & {
             [key: string]: unknown;
         };
         /** @description User provided filter to limit retrieval based on `Chunk` or `Document` level metadata values. Example (genre = drama OR genre = action): key = "document.custom_metadata.genre" conditions = [{string_value = "drama", operation = EQUAL}, {string_value = "action", operation = EQUAL}] */
@@ -1945,6 +2020,7 @@ export interface components {
             conditions?: components["schemas"]["Condition"][];
             /** @description Required. The key of the metadata to filter on. */
             key?: string;
+        } & {
             [key: string]: unknown;
         };
         /** @description Information about a Generative Language Model. */
@@ -1991,6 +2067,7 @@ export interface components {
             topP?: number;
             /** @description Required. The version number of the model. This represents the major version */
             version?: string;
+        } & {
             [key: string]: unknown;
         };
         /** @description This resource represents a long-running operation that is the result of a network API call. */
@@ -2009,6 +2086,7 @@ export interface components {
             response?: {
                 [key: string]: unknown;
             };
+        } & {
             [key: string]: unknown;
         };
         /** @description A datatype containing media that is part of a multi-part `Content` message. A `Part` consists of data which has an associated datatype. A `Part` can only contain one of the accepted types in `Part.data`. A `Part` must have a fixed IANA MIME type identifying the type and subtype of the media if the `inline_data` field is filled with raw bytes. */
@@ -2027,6 +2105,7 @@ export interface components {
             inlineData?: components["schemas"]["Blob"];
             /** @description Inline text. */
             text?: string;
+        } & {
             [key: string]: unknown;
         };
         /** @description Permission resource grants user, group or the rest of the world access to the PaLM API resource (e.g. a tuned model, corpus). A role is a collection of permitted operations that allows users to perform specific actions on PaLM API resources. To make them available to users, groups, or service accounts, you assign roles. When you assign a role, you grant permissions that the role contains. There are three concentric roles. Each role is a superset of the previous role's permitted operations: - reader can use the resource (e.g. tuned model, corpus) for inference - writer has reader's permissions and additionally can edit and share - owner has writer's permissions and additionally can delete */
@@ -2045,6 +2124,7 @@ export interface components {
              * @enum {string}
              */
             role?: "ROLE_UNSPECIFIED" | "OWNER" | "WRITER" | "READER";
+        } & {
             [key: string]: unknown;
         };
         /** @description A set of the feedback metadata the prompt specified in `GenerateContentRequest.content`. */
@@ -2056,6 +2136,7 @@ export interface components {
             blockReason?: "BLOCK_REASON_UNSPECIFIED" | "SAFETY" | "OTHER";
             /** @description Ratings for safety of the prompt. There is at most one rating per category. */
             safetyRatings?: components["schemas"]["SafetyRating"][];
+        } & {
             [key: string]: unknown;
         };
         /** @description Request for querying a `Corpus`. */
@@ -2069,12 +2150,14 @@ export interface components {
              * @description Optional. The maximum number of `Chunk`s to return. The service may return fewer `Chunk`s. If unspecified, at most 10 `Chunk`s will be returned. The maximum specified result count is 100.
              */
             resultsCount?: number;
+        } & {
             [key: string]: unknown;
         };
         /** @description Response from `QueryCorpus` containing a list of relevant chunks. */
         QueryCorpusResponse: {
             /** @description The relevant chunks. */
             relevantChunks?: components["schemas"]["RelevantChunk"][];
+        } & {
             [key: string]: unknown;
         };
         /** @description Request for querying a `Document`. */
@@ -2088,12 +2171,14 @@ export interface components {
              * @description Optional. The maximum number of `Chunk`s to return. The service may return fewer `Chunk`s. If unspecified, at most 10 `Chunk`s will be returned. The maximum specified result count is 100.
              */
             resultsCount?: number;
+        } & {
             [key: string]: unknown;
         };
         /** @description Response from `QueryDocument` containing a list of relevant chunks. */
         QueryDocumentResponse: {
             /** @description The returned relevant chunks. */
             relevantChunks?: components["schemas"]["RelevantChunk"][];
+        } & {
             [key: string]: unknown;
         };
         /** @description The information for a chunk relevant to a query. */
@@ -2105,6 +2190,7 @@ export interface components {
              * @description `Chunk` relevance to the query.
              */
             chunkRelevanceScore?: number;
+        } & {
             [key: string]: unknown;
         };
         /** @description Safety feedback for an entire request. This field is populated if content in the input and/or response is blocked due to safety settings. SafetyFeedback may not exist for every HarmCategory. Each SafetyFeedback will return the safety settings used by the request as well as the lowest HarmProbability that should be allowed in order to return a result. */
@@ -2113,6 +2199,7 @@ export interface components {
             rating?: components["schemas"]["SafetyRating"];
             /** @description Safety settings applied to the request. */
             setting?: components["schemas"]["SafetySetting"];
+        } & {
             [key: string]: unknown;
         };
         /** @description Safety rating for a piece of content. The safety rating contains the category of harm and the harm probability level in that category for a piece of content. Content is classified for safety across a number of harm categories and the probability of the harm classification is included here. */
@@ -2129,6 +2216,7 @@ export interface components {
              * @enum {string}
              */
             probability?: "HARM_PROBABILITY_UNSPECIFIED" | "NEGLIGIBLE" | "LOW" | "MEDIUM" | "HIGH";
+        } & {
             [key: string]: unknown;
         };
         /** @description Safety setting, affecting the safety-blocking behavior. Passing a safety setting for a category changes the allowed probability that content is blocked. */
@@ -2143,6 +2231,7 @@ export interface components {
              * @enum {string}
              */
             threshold?: "HARM_BLOCK_THRESHOLD_UNSPECIFIED" | "BLOCK_LOW_AND_ABOVE" | "BLOCK_MEDIUM_AND_ABOVE" | "BLOCK_ONLY_HIGH" | "BLOCK_NONE";
+        } & {
             [key: string]: unknown;
         };
         /** @description The `Schema` object allows the definition of input and output data types. These types can be objects, but also primitives and arrays. Represents a select subset of an [OpenAPI 3.0 schema object](https://spec.openapis.org/oas/v3.0.3#schema). */
@@ -2159,7 +2248,7 @@ export interface components {
             nullable?: boolean;
             /** @description Optional. Properties of Type.OBJECT. */
             properties?: {
-                [key: string]: components["schemas"]["Schema"] | undefined;
+                [key: string]: components["schemas"]["Schema"];
             };
             /** @description Optional. Required properties of Type.OBJECT. */
             required?: string[];
@@ -2168,6 +2257,7 @@ export interface components {
              * @enum {string}
              */
             type?: "TYPE_UNSPECIFIED" | "STRING" | "NUMBER" | "INTEGER" | "BOOLEAN" | "ARRAY" | "OBJECT";
+        } & {
             [key: string]: unknown;
         };
         /** @description Identifier for a `Chunk` retrieved via Semantic Retriever specified in the `GenerateAnswerRequest` using `SemanticRetrieverConfig`. */
@@ -2176,6 +2266,7 @@ export interface components {
             readonly chunk?: string;
             /** @description Output only. Name of the source matching the request's `SemanticRetrieverConfig.source`. Example: `corpora/123` or `corpora/123/documents/abc` */
             readonly source?: string;
+        } & {
             [key: string]: unknown;
         };
         /** @description Configuration for retrieving grounding content from a `Corpus` or `Document` created using the Semantic Retriever API. */
@@ -2196,6 +2287,7 @@ export interface components {
             query?: components["schemas"]["Content"];
             /** @description Required. Name of the resource for retrieval, e.g. corpora/123 or corpora/123/documents/abc. */
             source?: string;
+        } & {
             [key: string]: unknown;
         };
         /** @description The `Status` type defines a logical error model that is suitable for different programming environments, including REST APIs and RPC APIs. It is used by [gRPC](https://github.com/grpc). Each `Status` message contains three pieces of data: error code, error message, and error details. You can find out more about this error model and how to work with it in the [API Design Guide](https://cloud.google.com/apis/design/errors). */
@@ -2211,12 +2303,14 @@ export interface components {
             }[];
             /** @description A developer-facing error message, which should be in English. Any user-facing error message should be localized and sent in the google.rpc.Status.details field, or localized by the client. */
             message?: string;
+        } & {
             [key: string]: unknown;
         };
         /** @description User provided string values assigned to a single metadata key. */
         StringList: {
             /** @description The string values of the metadata to store. */
             values?: string[];
+        } & {
             [key: string]: unknown;
         };
         /** @description Output text returned from a model. */
@@ -2227,12 +2321,14 @@ export interface components {
             readonly output?: string;
             /** @description Ratings for the safety of a response. There is at most one rating per category. */
             safetyRatings?: components["schemas"]["SafetyRating"][];
+        } & {
             [key: string]: unknown;
         };
         /** @description Text given to the model as a prompt. The Model will use this TextPrompt to Generate a text completion. */
         TextPrompt: {
             /** @description Required. The prompt text. */
             text?: string;
+        } & {
             [key: string]: unknown;
         };
         /** @description Tool details that the model may use to generate response. A `Tool` is a piece of code that enables the system to interact with external systems to perform an action, or set of actions, outside of knowledge and scope of the model. */
@@ -2241,18 +2337,21 @@ export interface components {
             codeExecution?: components["schemas"]["CodeExecution"];
             /** @description Optional. A list of `FunctionDeclarations` available to the model that can be used for function calling. The model or system does not execute the function. Instead the defined function may be returned as a FunctionCall with arguments to the client side for execution. The model may decide to call a subset of these functions by populating FunctionCall in the response. The next conversation turn may contain a FunctionResponse with the [content.role] "function" generation context for the next model turn. */
             functionDeclarations?: components["schemas"]["FunctionDeclaration"][];
+        } & {
             [key: string]: unknown;
         };
         /** @description The Tool configuration containing parameters for specifying `Tool` use in the request. */
         ToolConfig: {
             /** @description Optional. Function calling config. */
             functionCallingConfig?: components["schemas"]["FunctionCallingConfig"];
+        } & {
             [key: string]: unknown;
         };
         /** @description Request to transfer the ownership of the tuned model. */
         TransferOwnershipRequest: {
             /** @description Required. The email address of the user to whom the tuned model is being transferred to. */
             emailAddress?: string;
+        } & {
             [key: string]: unknown;
         };
         /** @description Response from `TransferOwnership`. */
@@ -2301,6 +2400,7 @@ export interface components {
              * @description Output only. The timestamp when this model was updated.
              */
             readonly updateTime?: string;
+        } & {
             [key: string]: unknown;
         };
         /** @description Tuned model as a source for training a new model. */
@@ -2309,6 +2409,7 @@ export interface components {
             readonly baseModel?: string;
             /** @description Immutable. The name of the `TunedModel` to use as the starting point for training the new model. Example: `tunedModels/my-tuned-model` */
             tunedModel?: string;
+        } & {
             [key: string]: unknown;
         };
         /** @description A single example for tuning. */
@@ -2317,12 +2418,14 @@ export interface components {
             output?: string;
             /** @description Optional. Text model input. */
             textInput?: string;
+        } & {
             [key: string]: unknown;
         };
         /** @description A set of tuning examples. Can be training or validation data. */
         TuningExamples: {
             /** @description Required. The examples. Example input can be for text or discuss, but all examples in a set must be of the same type. */
             examples?: components["schemas"]["TuningExample"][];
+        } & {
             [key: string]: unknown;
         };
         /** @description Record for a single tuning step. */
@@ -2347,6 +2450,7 @@ export interface components {
              * @description Output only. The tuning step.
              */
             readonly step?: number;
+        } & {
             [key: string]: unknown;
         };
         /** @description Tuning tasks that create tuned models. */
@@ -2367,6 +2471,7 @@ export interface components {
             readonly startTime?: string;
             /** @description Required. Input only. Immutable. The model training data. */
             trainingData?: components["schemas"]["Dataset"];
+        } & {
             [key: string]: unknown;
         };
         /** @description Request to update a `Chunk`. */
@@ -2378,6 +2483,7 @@ export interface components {
              * @description Required. The list of fields to update. Currently, this only supports updating `custom_metadata` and `data`.
              */
             updateMask?: string;
+        } & {
             [key: string]: unknown;
         };
         /** @description Metadata on the generation request's token usage. */
@@ -2402,6 +2508,7 @@ export interface components {
              * @description Total token count for the generation request (prompt + candidates).
              */
             totalTokenCount?: number;
+        } & {
             [key: string]: unknown;
         };
         /** @description Metadata for a video `File`. */
@@ -2411,6 +2518,7 @@ export interface components {
              * @description Duration of the video.
              */
             videoDuration?: string;
+        } & {
             [key: string]: unknown;
         };
     };

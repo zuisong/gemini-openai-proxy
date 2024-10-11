@@ -14,17 +14,16 @@
     "build:deno": "deno run --allow-read --allow-env --allow-write=./dist --allow-run build.mjs",
     "build:node": "node build.mjs",
     "test:deno": "deno test --allow-net --allow-env",
-    "test-cov": "deno test --coverage -A --env && deno coverage coverage --lcov --output=coverage/lcov.info",
-    "generate-openapi-types": "deno run --allow-net --no-prompt --allow-env=YOUR_GEMINI_API_KEY --allow-write=./src/openapi-types.ts generate-opeapi-types.ts"
+    "test-cov": "deno test --coverage -A --env && deno coverage coverage --lcov --output=coverage/lcov.info"
   },
   "dependencies": {
-    "@hono/node-server": "1.13.1",
+    "@hono/node-server": "1.13.2",
     "eventsource-parser": "2.0.1",
     "itty-router": "5.0.18"
   },
   "devDependencies": {
     "esbuild": "0.24.0",
-    "@total-typescript/ts-reset": "^0.6.1"
+    "@total-typescript/ts-reset": "0.6.1"
   },
   "engines": {
     "node": ">=18.0.0",

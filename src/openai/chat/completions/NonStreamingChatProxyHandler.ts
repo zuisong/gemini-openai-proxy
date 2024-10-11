@@ -42,7 +42,7 @@ export async function nonStreamingChatProxyHandler(
         model: req.model,
         choices: [
           {
-            message: { role: "assistant", content: content },
+            message: { role: "assistant", content: content, refusal: null },
             finish_reason: "stop",
             index: 0,
             logprobs: null,
@@ -60,6 +60,7 @@ export async function nonStreamingChatProxyHandler(
         {
           message: {
             role: "assistant",
+            refusal: null,
             content: null,
             function_call: {
               name: content.name ?? "",
