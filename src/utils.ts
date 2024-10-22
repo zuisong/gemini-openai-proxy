@@ -79,7 +79,7 @@ export function openAiMessageToGeminiSystemPrompt(
     (item) => {return item.role === "system"}
   );
   if (systemMessages.length !== 1){
-    return {}
+    return
   }
   const systemMessage = systemMessages.at(0);
   const result: Content = { role: "system", parts: [{ text: systemMessage.content?.toString() ?? "" }]};
@@ -103,8 +103,10 @@ export function genModel(req: OpenAI.Chat.ChatCompletionCreateParams): [GeminiMo
 
   const responseMimeType = req.response_format?.type === "json_object" ? "application/json" : "text/plain"
 
+  const systemPrompt = openAiMessageToGeminiSystemPrompt(req.messages);
+
   const generateContentRequest: GenerateContentRequest = {
-    systemInstruction: openAiMessageToGeminiSystemPrompt(req.messages),
+    systemInstruction: systemPrompt,
     contents: openAiMessageToGeminiMessage(req.messages),
     generationConfig: {
       maxOutputTokens: req.max_tokens ?? undefined,
