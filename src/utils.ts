@@ -78,8 +78,12 @@ export function openAiMessageToGeminiSystemPrompt(
   const systemMessages: OpenAI.Chat.ChatCompletionMessageParam[] = messages.filter(
     (item) => {return item.role === "system"}
   );
-  if (systemMessages.length !== 1){
+  if (systemMessages.length === 0){
     return
+  }
+  if (systemMessages.length !== 1){
+    // TODO 此处应当异常
+    return { role: "system", parts: [{ text: "" }]};
   }
   const systemMessage = systemMessages.at(0);
   const result: Content = { role: "system", parts: [{ text: systemMessage.content?.toString() ?? "" }]};
