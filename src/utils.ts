@@ -46,16 +46,14 @@ function parseBase64(base64: string): Part {
   }
 }
 
-export function openAiMessageToGeminiMessage(messages: OpenAI.Chat.ChatCompletionMessageParam[]): Content[] {
+export function openAiMessageToGeminiMessage(
+  messages: OpenAI.Chat.ChatCompletionMessageParam[],
+): Content[] {
   const result: Content[] = messages
     .flatMap(({ role, content }) => {
       if (role === "system") {
-        return [
-          { role: "user", parts: [{ text: content }] },
-          { role: "model", parts: [{ text: "" }] },
-        ]
+        return []
       }
-
       const parts: Part[] =
         content == null || typeof content === "string"
           ? [{ text: content?.toString() ?? "" }]
@@ -71,6 +69,21 @@ export function openAiMessageToGeminiMessage(messages: OpenAI.Chat.ChatCompletio
     })
 
   return result
+}
+
+
+export function openAiMessageToGeminiSystemPrompt(
+  messages: OpenAI.Chat.ChatCompletionMessageParam[],
+): Content {
+  const systemMessages: OpenAI.Chat.ChatCompletionMessageParam[] = messages.filter(
+    (item) => {item.role === "system"}
+  );
+  if (systemMessages.length !== 1){
+    return {role: "system", parts: []}
+  }
+  const systemMessage = systemMessages.at(0);
+  const result: Content = { role: "system", parts: [{ text: systemMessage.content?.toString() ?? "" }]};
+  return result;
 }
 
 export function genModel(req: OpenAI.Chat.ChatCompletionCreateParams): [GeminiModel, GenerateContentRequest] {
@@ -91,6 +104,7 @@ export function genModel(req: OpenAI.Chat.ChatCompletionCreateParams): [GeminiMo
   const responseMimeType = req.response_format?.type === "json_object" ? "application/json" : "text/plain"
 
   const generateContentRequest: GenerateContentRequest = {
+    systemInstruction: openAiMessageToGeminiSystemPrompt(req.messages),
     contents: openAiMessageToGeminiMessage(req.messages),
     generationConfig: {
       maxOutputTokens: req.max_tokens ?? undefined,
