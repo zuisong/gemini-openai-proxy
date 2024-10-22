@@ -76,7 +76,7 @@ export function openAiMessageToGeminiSystemPrompt(
   messages: OpenAI.Chat.ChatCompletionMessageParam[],
 ): Content {
   const systemMessages: OpenAI.Chat.ChatCompletionMessageParam[] = messages.filter(
-    (item) => {item.role === "system"}
+    (item) => {return item.role === "system"}
   );
   if (systemMessages.length !== 1){
     return {role: "system", parts: []}
