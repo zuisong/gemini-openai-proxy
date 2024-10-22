@@ -79,7 +79,7 @@ export function openAiMessageToGeminiSystemPrompt(
     (item) => {return item.role === "system"}
   );
   if (systemMessages.length !== 1){
-    return {role: "system", parts: []}
+    return {}
   }
   const systemMessage = systemMessages.at(0);
   const result: Content = { role: "system", parts: [{ text: systemMessage.content?.toString() ?? "" }]};
