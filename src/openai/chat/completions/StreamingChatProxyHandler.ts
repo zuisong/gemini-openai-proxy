@@ -4,6 +4,7 @@ import type { FunctionCall } from "../../../gemini-api-client/types.ts"
 import type { Logger } from "../../../log.ts"
 import type { OpenAI } from "../../../types.ts"
 import { type ApiParam, genModel } from "../../../utils.ts"
+import { calculatePromptTokens } from "./prompt.ts"
 
 export function streamingChatProxyHandler(
   req: OpenAI.Chat.ChatCompletionCreateParams,
@@ -14,16 +15,21 @@ export function streamingChatProxyHandler(
   log?.debug("streamGenerateContent request", req)
   return sseResponse(
     (async function* () {
-      try {
-        for await (const it of generateContent("streamGenerateContent", apiParam, model, geminiReq)) {
-          log?.debug("streamGenerateContent resp", it)
-          const data = resultHelper(it)
-          yield genStreamResp({ model: req.model, content: data, stop: false })
-        }
-      } catch (error) {
-        yield genStreamResp({ model: req.model, content: error?.message ?? error.toString(), stop: true })
+      for await (const it of generateContent("streamGenerateContent", apiParam, model, geminiReq)) {
+        log?.debug("streamGenerateContent resp", it)
+        const data = resultHelper(it)
+        yield genStreamResp({ model: req.model, content: data, stop: false, request: req })
       }
-      yield genStreamResp({ model: req.model, content: "", stop: true })
+      if (!req.stream_options.include_usage){
+        yield genStreamResp({ model: req.model, content: "", stop: true, request: req })
+      } else {
+        yield genStreamResp({ 
+          model: req.model, 
+          content: "",
+          stop: true,
+          request: req
+        })
+      }
       yield "[DONE]"
       return undefined
     })(),
@@ -34,7 +40,9 @@ function genStreamResp({
   model,
   content,
   stop,
-}: { model: string; content: string | FunctionCall; stop: boolean }): OpenAI.Chat.ChatCompletionChunk {
+  request,
+}: { model: string; content: string | FunctionCall; stop: boolean, request: OpenAI.Chat.ChatCompletionCreateParams }
+): OpenAI.Chat.ChatCompletionChunk {
   if (typeof content === "string") {
     return {
       id: "chatcmpl-abc123",
@@ -48,6 +56,11 @@ function genStreamResp({
           index: 0,
         },
       ],
+      usage: !request.stream_options.include_usage?null:{
+        prompt_tokens: calculatePromptTokens(request.messages),
+        completion_tokens: content.length,
+        total_tokens: calculatePromptTokens(request.messages) + content.length,
+      }
     } satisfies OpenAI.Chat.ChatCompletionChunk
   }
 
@@ -63,7 +76,12 @@ function genStreamResp({
         index: 0,
       },
     ],
-  } satisfies OpenAI.Chat.ChatCompletionChunk
+    usage: !request.stream_options.include_usage?null:{
+      prompt_tokens: calculatePromptTokens(request.messages),
+      completion_tokens: 0,
+      total_tokens: calculatePromptTokens(request.messages),
+    }
+} satisfies OpenAI.Chat.ChatCompletionChunk
 }
 
 const encoder = new TextEncoder()
