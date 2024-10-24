@@ -218,75 +218,117 @@ var Logger = class {
   }
 };
 
-// node_modules/.deno/eventsource-parser@2.0.1/node_modules/eventsource-parser/dist/index.js
-function createParser(onParse) {
-  let isFirstChunk, buffer, startingPosition, startingFieldLength, eventId, eventName, data;
-  return reset(), { feed, reset };
-  function reset() {
-    isFirstChunk = true, buffer = "", startingPosition = 0, startingFieldLength = -1, eventId = void 0, eventName = void 0, data = "";
+// node_modules/.deno/eventsource-parser@3.0.0/node_modules/eventsource-parser/dist/index.js
+var __defProp = Object.defineProperty;
+var __defNormalProp = (obj, key, value) => key in obj ? __defProp(obj, key, { enumerable: true, configurable: true, writable: true, value }) : obj[key] = value;
+var __publicField = (obj, key, value) => __defNormalProp(obj, typeof key != "symbol" ? key + "" : key, value);
+var ParseError = class extends Error {
+  constructor(message, options) {
+    super(message), __publicField(this, "type"), __publicField(this, "field"), __publicField(this, "value"), __publicField(this, "line"), this.name = "ParseError", this.type = options.type, this.field = options.field, this.value = options.value, this.line = options.line;
   }
-  function feed(chunk) {
-    buffer = buffer ? buffer + chunk : chunk, isFirstChunk && hasBom(buffer) && (buffer = buffer.slice(BOM.length)), isFirstChunk = false;
-    const length = buffer.length;
-    let position = 0, discardTrailingNewline = false;
-    for (; position < length; ) {
-      discardTrailingNewline && (buffer[position] === `
-` && ++position, discardTrailingNewline = false);
-      let lineLength = -1, fieldLength = startingFieldLength, character;
-      for (let index = startingPosition; lineLength < 0 && index < length; ++index)
-        character = buffer[index], character === ":" && fieldLength < 0 ? fieldLength = index - position : character === "\r" ? (discardTrailingNewline = true, lineLength = index - position) : character === `
-` && (lineLength = index - position);
-      if (lineLength < 0) {
-        startingPosition = length - position, startingFieldLength = fieldLength;
-        break;
-      } else
-        startingPosition = 0, startingFieldLength = -1;
-      parseEventStreamLine(buffer, position, fieldLength, lineLength), position += lineLength + 1;
-    }
-    position === length ? buffer = "" : position > 0 && (buffer = buffer.slice(position));
+};
+function noop(_arg) {
+}
+function createParser(callbacks) {
+  const { onEvent = noop, onError = noop, onRetry = noop, onComment } = callbacks;
+  let incompleteLine = "", isFirstChunk = true, id, data = "", eventType = "";
+  function feed(newChunk) {
+    const chunk = isFirstChunk ? newChunk.replace(/^\xEF\xBB\xBF/, "") : newChunk, [complete, incomplete] = splitLines(`${incompleteLine}${chunk}`);
+    for (const line of complete)
+      parseLine(line);
+    incompleteLine = incomplete, isFirstChunk = false;
   }
-  function parseEventStreamLine(lineBuffer, index, fieldLength, lineLength) {
-    if (lineLength === 0) {
-      data.length > 0 && (onParse({
-        type: "event",
-        id: eventId,
-        event: eventName || void 0,
-        data: data.slice(0, -1)
-        // remove trailing newline
-      }), data = "", eventId = void 0), eventName = void 0;
+  function parseLine(line) {
+    if (line === "") {
+      dispatchEvent();
       return;
     }
-    const noValue = fieldLength < 0, field = lineBuffer.slice(index, index + (noValue ? lineLength : fieldLength));
-    let step = 0;
-    noValue ? step = lineLength : lineBuffer[index + fieldLength + 1] === " " ? step = fieldLength + 2 : step = fieldLength + 1;
-    const position = index + step, valueLength = lineLength - step, value = lineBuffer.slice(position, position + valueLength).toString();
-    if (field === "data")
-      data += value ? `${value}
-` : `
+    if (line.startsWith(":")) {
+      onComment && onComment(line.slice(line.startsWith(": ") ? 2 : 1));
+      return;
+    }
+    const fieldSeparatorIndex = line.indexOf(":");
+    if (fieldSeparatorIndex !== -1) {
+      const field = line.slice(0, fieldSeparatorIndex), offset = line[fieldSeparatorIndex + 1] === " " ? 2 : 1, value = line.slice(fieldSeparatorIndex + offset);
+      processField(field, value, line);
+      return;
+    }
+    processField(line, "", line);
+  }
+  function processField(field, value, line) {
+    switch (field) {
+      case "event":
+        eventType = value;
+        break;
+      case "data":
+        data = `${data}${value}
 `;
-    else if (field === "event")
-      eventName = value;
-    else if (field === "id" && !value.includes("\0"))
-      eventId = value;
-    else if (field === "retry") {
-      const retry = parseInt(value, 10);
-      Number.isNaN(retry) || onParse({ type: "reconnect-interval", value: retry });
+        break;
+      case "id":
+        id = value.includes("\0") ? void 0 : value;
+        break;
+      case "retry":
+        /^\d+$/.test(value) ? onRetry(parseInt(value, 10)) : onError(
+          new ParseError(`Invalid \`retry\` value: "${value}"`, {
+            type: "invalid-retry",
+            value,
+            line
+          })
+        );
+        break;
+      default:
+        onError(
+          new ParseError(
+            `Unknown field "${field.length > 20 ? `${field.slice(0, 20)}\u2026` : field}"`,
+            { type: "unknown-field", field, value, line }
+          )
+        );
+        break;
     }
   }
+  function dispatchEvent() {
+    data.length > 0 && onEvent({
+      id,
+      event: eventType || void 0,
+      // If the data buffer's last character is a U+000A LINE FEED (LF) character,
+      // then remove the last character from the data buffer.
+      data: data.endsWith(`
+`) ? data.slice(0, -1) : data
+    }), id = void 0, data = "", eventType = "";
+  }
+  function reset(options = {}) {
+    incompleteLine && options.consume && parseLine(incompleteLine), id = void 0, data = "", eventType = "", incompleteLine = "";
+  }
+  return { feed, reset };
 }
-var BOM = [239, 187, 191];
-function hasBom(buffer) {
-  return BOM.every((charCode, index) => buffer.charCodeAt(index) === charCode);
+function splitLines(chunk) {
+  const lines = [];
+  let incompleteLine = "";
+  const totalLength = chunk.length;
+  for (let i = 0; i < totalLength; i++) {
+    const char = chunk[i];
+    char === "\r" && chunk[i + 1] === `
+` ? (lines.push(incompleteLine), incompleteLine = "", i++) : char === "\r" || char === `
+` ? (lines.push(incompleteLine), incompleteLine = "") : incompleteLine += char;
+  }
+  return [lines, incompleteLine];
 }
 
-// node_modules/.deno/eventsource-parser@2.0.1/node_modules/eventsource-parser/dist/stream.js
+// node_modules/.deno/eventsource-parser@3.0.0/node_modules/eventsource-parser/dist/stream.js
 var EventSourceParserStream = class extends TransformStream {
-  constructor() {
+  constructor({ onError, onRetry, onComment } = {}) {
     let parser;
     super({
       start(controller) {
-        parser = createParser((event) => {
-          event.type === "event" && controller.enqueue(event);
+        parser = createParser({
+          onEvent: (event) => {
+            controller.enqueue(event);
+          },
+          onError(error) {
+            onError === "terminate" ? controller.error(error) : typeof onError == "function" && onError(error);
+          },
+          onRetry,
+          onComment
         });
       },
       transform(chunk) {

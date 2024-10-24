@@ -1,7 +1,7 @@
 import { assertFalse } from "jsr:@std/assert"
 import { expect } from "jsr:@std/expect"
 import { afterEach, beforeEach, describe, it } from "jsr:@std/testing/bdd"
-import { type ParseEvent, createParser } from "eventsource-parser"
+import { createParser } from "eventsource-parser"
 import { app } from "../src/app.ts"
 import type { OpenAI } from "../src/types.ts"
 import { MockFetch } from "./mock-fetch.ts"
@@ -102,13 +102,12 @@ describe("openai to gemini test", () => {
         const text = await res.text()
         console.log(text)
 
-        createParser((event: ParseEvent) => {
-          if (event.type !== "event") {
-            return
-          }
-          if (event.data === "[DONE]") return
-          const data = JSON.parse(event.data) as OpenAI.Chat.ChatCompletion
-          assertFalse(data.choices.find((it) => it.finish_reason === "stop" && it.message?.content))
+        createParser({
+          onEvent: (event) => {
+            if (event.data === "[DONE]") return
+            const data = JSON.parse(event.data) as OpenAI.Chat.ChatCompletion
+            assertFalse(data.choices.find((it) => it.finish_reason === "stop" && it.message?.content))
+          },
         })
           //
           .feed(text)
