@@ -23,17 +23,10 @@ export async function embeddingProxyHandler(rawReq: Request): Promise<Response> 
 
   let geminiResp: number[] | undefined = []
 
-  try {
-    for await (const it of generateContent("embedContent", apiParam, "text-embedding-004", embedContentRequest)) {
-      const data = it.embedding?.values
-      geminiResp = data
-      break
-    }
-  } catch (err) {
-    // 出现异常时打印请求参数和响应，以便调试
-    log?.error(req)
-    log?.error(err?.message ?? err.toString())
-    geminiResp = err?.message ?? err.toString()
+  for await (const it of generateContent("embedContent", apiParam, "text-embedding-004", embedContentRequest)) {
+    const data = it.embedding?.values
+    geminiResp = data
+    break
   }
 
   log?.debug(req)

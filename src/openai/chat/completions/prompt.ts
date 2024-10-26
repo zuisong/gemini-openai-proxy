@@ -6,7 +6,7 @@ export function calculatePromptTokens(
 ): number {
   let result = 0;
   messages.flatMap(({ _, content }) => {
-    result += content.length;
+    result += content?.length ?? 0;
   })
   return result
 }

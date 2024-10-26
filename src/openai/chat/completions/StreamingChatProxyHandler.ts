@@ -20,7 +20,7 @@ export function streamingChatProxyHandler(
         const data = resultHelper(it)
         yield genStreamResp({ model: req.model, content: data, stop: false, request: req })
       }
-      if (!req.stream_options.include_usage){
+      if (!req.stream_options?.include_usage){
         yield genStreamResp({ model: req.model, content: "", stop: true, request: req })
       } else {
         yield genStreamResp({ 
@@ -56,7 +56,7 @@ function genStreamResp({
           index: 0,
         },
       ],
-      usage: !request.stream_options.include_usage?null:{
+      usage: !request?.stream_options?.include_usage ? undefined : {
         prompt_tokens: calculatePromptTokens(request.messages),
         completion_tokens: content.length,
         total_tokens: calculatePromptTokens(request.messages) + content.length,
@@ -76,7 +76,7 @@ function genStreamResp({
         index: 0,
       },
     ],
-    usage: !request.stream_options.include_usage?null:{
+    usage: !request?.stream_options?.include_usage ? undefined : {
       prompt_tokens: calculatePromptTokens(request.messages),
       completion_tokens: 0,
       total_tokens: calculatePromptTokens(request.messages),

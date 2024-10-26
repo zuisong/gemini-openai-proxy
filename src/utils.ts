@@ -74,19 +74,19 @@ export function openAiMessageToGeminiMessage(
 
 export function openAiMessageToGeminiSystemPrompt(
   messages: OpenAI.Chat.ChatCompletionMessageParam[],
-): Content {
+): Content | undefined {
   const systemMessages: OpenAI.Chat.ChatCompletionMessageParam[] = messages.filter(
     (item) => {return item.role === "system"}
   );
   if (systemMessages.length === 0){
-    return
+    return undefined;
   }
   if (systemMessages.length !== 1){
     // TODO 此处应当异常
     return { role: "system", parts: [{ text: "" }]};
   }
   const systemMessage = systemMessages.at(0);
-  const result: Content = { role: "system", parts: [{ text: systemMessage.content?.toString() ?? "" }]};
+  const result: Content = { role: "system", parts: [{ text: systemMessage?.content?.toString() ?? "" }]};
   return result;
 }
 
@@ -107,10 +107,8 @@ export function genModel(req: OpenAI.Chat.ChatCompletionCreateParams): [GeminiMo
 
   const responseMimeType = req.response_format?.type === "json_object" ? "application/json" : "text/plain"
 
-  const systemPrompt = openAiMessageToGeminiSystemPrompt(req.messages);
-
   const generateContentRequest: GenerateContentRequest = {
-    systemInstruction: systemPrompt,
+    systemInstruction: openAiMessageToGeminiSystemPrompt(req.messages),
     contents: openAiMessageToGeminiMessage(req.messages),
     generationConfig: {
       maxOutputTokens: req.max_tokens ?? undefined,

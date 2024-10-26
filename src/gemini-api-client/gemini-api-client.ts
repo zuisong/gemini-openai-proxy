@@ -71,9 +71,15 @@ async function makeRequest(url: RequestUrl, body: string, requestOptions?: Reque
     }
   } catch (e) {
     console.log(e)
-    const err = new GoogleGenerativeAIError(`Error fetching from google -> ${e.message}`)
-    err.stack = e.stack
-    throw err
+    if (e instanceof Error) {
+      const err = new GoogleGenerativeAIError(`Error fetching from google -> ${e.message}`)
+      err.stack = e.stack;
+      throw err;
+    } else {
+      const err = new GoogleGenerativeAIError(`Error fetching from google -> Unknow Error!`)
+      err.stack = "";
+      throw err;
+    }
   }
   return response
 }
