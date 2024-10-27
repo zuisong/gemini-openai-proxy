@@ -7,7 +7,10 @@ permissions:
 on:
   push:
   workflow_dispatch:
-
+  pull_request:
+    branches:
+      - main
+      - "releases/**"
 env:
   IMAGE_TAG: ${{ github.ref_name }}
   IMAGE_NAME: ghcr.io/${{ github.repository }}
