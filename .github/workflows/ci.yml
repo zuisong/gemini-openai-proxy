@@ -7,6 +7,7 @@ permissions:
 on:
   push:
   workflow_dispatch:
+  pull_request:
 
 env:
   IMAGE_TAG: ${{ github.ref_name }}
@@ -63,3 +64,11 @@ jobs:
         uses: biomejs/setup-biome@v2
       - name: Run Biome
         run: biome ci --reporter=github .
+  test:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Setup Deno
+        uses: denoland/setup-deno@v2
+      - name: Run test
+        run: deno task test-cov
