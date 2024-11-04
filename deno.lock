@@ -4,14 +4,14 @@
     "jsr:@std/assert@*": "1.0.6",
     "jsr:@std/assert@^1.0.6": "1.0.6",
     "jsr:@std/expect@*": "1.0.4",
-    "jsr:@std/fs@*": "1.0.4",
+    "jsr:@std/fs@*": "1.0.5",
     "jsr:@std/internal@^1.0.4": "1.0.4",
-    "jsr:@std/path@^1.0.6": "1.0.6",
+    "jsr:@std/path@^1.0.7": "1.0.7",
     "jsr:@std/testing@*": "1.0.3",
-    "npm:@hono/node-server@1.13.2": "1.13.2_hono@4.6.3",
+    "npm:@hono/node-server@1.13.5": "1.13.5_hono@4.6.8",
     "npm:@total-typescript/ts-reset@0.6.1": "0.6.1",
-    "npm:esbuild@0.24.0": "0.24.0",
-    "npm:eventsource-parser@2.0.1": "2.0.1",
+    "npm:esbuild@0.24": "0.24.0",
+    "npm:eventsource-parser@3.0.0": "3.0.0",
     "npm:itty-router@5.0.18": "5.0.18"
   },
   "jsr": {
@@ -28,8 +28,8 @@
         "jsr:@std/internal"
       ]
     },
-    "@std/fs@1.0.4": {
-      "integrity": "2907d32d8d1d9e540588fd5fe0ec21ee638134bd51df327ad4e443aaef07123c",
+    "@std/fs@1.0.5": {
+      "integrity": "41806ad6823d0b5f275f9849a2640d87e4ef67c51ee1b8fb02426f55e02fd44e",
       "dependencies": [
         "jsr:@std/path"
       ]
@@ -37,8 +37,8 @@
     "@std/internal@1.0.4": {
       "integrity": "62e8e4911527e5e4f307741a795c0b0a9e6958d0b3790716ae71ce085f755422"
     },
-    "@std/path@1.0.6": {
-      "integrity": "ab2c55f902b380cf28e0eec501b4906e4c1960d13f00e11cfbcd21de15f18fed"
+    "@std/path@1.0.7": {
+      "integrity": "76a689e07f0e15dcc6002ec39d0866797e7156629212b28f27179b8a5c3b33a1"
     },
     "@std/testing@1.0.3": {
       "integrity": "f98c2bee53860a5916727d7e7d3abe920dd6f9edace022e2d059f00d05c2cf42",
@@ -121,8 +121,8 @@
     "@esbuild/win32-x64@0.24.0": {
       "integrity": "sha512-7IAFPrjSQIJrGsK6flwg7NFmwBoSTyF3rl7If0hNUFQU4ilTsEPL6GuMuU9BfIWVVGuRnuIidkSMC+c0Otu8IA=="
     },
-    "@hono/node-server@1.13.2_hono@4.6.3": {
-      "integrity": "sha512-0w8nEmAyx0Ul0CQp8BL2VtAG4YVdpzXd/mvvM+l0G5Oq22pUyHS+KeFFPSY+czLOF5NAiV3MUNPD1n14Ol5svg==",
+    "@hono/node-server@1.13.5_hono@4.6.8": {
+      "integrity": "sha512-lSo+CFlLqAFB4fX7ePqI9nauEn64wOfJHAfc9duYFTvAG3o416pC0nTGeNjuLHchLedH+XyWda5v79CVx1PIjg==",
       "dependencies": [
         "hono"
       ]
@@ -159,11 +159,11 @@
         "@esbuild/win32-x64"
       ]
     },
-    "eventsource-parser@2.0.1": {
-      "integrity": "sha512-gMaRLm5zejEH9mNXC54AnIteFI9YwL/q5JKMdBnoG+lEI1JWVGFVk0Taaj9Xb5SKgzIBDZoQX5IzMe44ILWODg=="
+    "eventsource-parser@3.0.0": {
+      "integrity": "sha512-T1C0XCUimhxVQzW4zFipdx0SficT651NnkR0ZSH3yQwh+mFMdLfgjABVi4YtMTtaL4s168593DaoaRLMqryavA=="
     },
-    "hono@4.6.3": {
-      "integrity": "sha512-0LeEuBNFeSHGqZ9sNVVgZjB1V5fmhkBSB0hZrpqStSMLOWgfLy0dHOvrjbJh0H2khsjet6rbHfWTHY0kpYThKQ=="
+    "hono@4.6.8": {
+      "integrity": "sha512-f+2Ec9JAzabT61pglDiLJcF/DjiSefZkjCn9bzm1cYLGkD5ExJ3Jnv93ax9h0bn7UPLHF81KktoyjdQfWI2n1Q=="
     },
     "itty-router@5.0.18": {
       "integrity": "sha512-mK3ReOt4ARAGy0V0J7uHmArG2USN2x0zprZ+u+YgmeRjXTDbaowDy3kPcsmQY6tH+uHhDgpWit9Vqmv/4rTXwA=="
@@ -186,10 +186,10 @@
   "workspace": {
     "packageJson": {
       "dependencies": [
-        "npm:@hono/node-server@1.13.2",
+        "npm:@hono/node-server@1.13.5",
         "npm:@total-typescript/ts-reset@0.6.1",
-        "npm:esbuild@0.24.0",
-        "npm:eventsource-parser@2.0.1",
+        "npm:esbuild@0.24",
+        "npm:eventsource-parser@3.0.0",
         "npm:itty-router@5.0.18"
       ]
     }
