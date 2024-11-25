@@ -1,30 +1,31 @@
 {
   "version": "4",
   "specifiers": {
-    "jsr:@std/assert@*": "1.0.6",
-    "jsr:@std/assert@^1.0.6": "1.0.6",
-    "jsr:@std/expect@*": "1.0.4",
+    "jsr:@std/assert@*": "1.0.8",
+    "jsr:@std/assert@^1.0.8": "1.0.8",
+    "jsr:@std/expect@*": "1.0.8",
     "jsr:@std/fs@*": "1.0.5",
-    "jsr:@std/internal@^1.0.4": "1.0.4",
-    "jsr:@std/path@^1.0.7": "1.0.7",
-    "jsr:@std/testing@*": "1.0.3",
-    "npm:@hono/node-server@1.13.5": "1.13.5_hono@4.6.8",
+    "jsr:@std/internal@^1.0.5": "1.0.5",
+    "jsr:@std/path@^1.0.7": "1.0.8",
+    "jsr:@std/testing@*": "1.0.5",
+    "npm:@hono/node-server@1.13.7": "1.13.7_hono@4.6.11",
     "npm:@total-typescript/ts-reset@0.6.1": "0.6.1",
+    "npm:@types/node@*": "22.5.4",
     "npm:esbuild@0.24": "0.24.0",
     "npm:eventsource-parser@3.0.0": "3.0.0",
     "npm:itty-router@5.0.18": "5.0.18"
   },
   "jsr": {
-    "@std/assert@1.0.6": {
-      "integrity": "1904c05806a25d94fe791d6d883b685c9e2dcd60e4f9fc30f4fc5cf010c72207",
+    "@std/assert@1.0.8": {
+      "integrity": "ebe0bd7eb488ee39686f77003992f389a06c3da1bbd8022184804852b2fa641b",
       "dependencies": [
         "jsr:@std/internal"
       ]
     },
-    "@std/expect@1.0.4": {
-      "integrity": "97f68a445a9de0d9670200d2b7a19a7505a01b2cb390a983ba8d97d90ce30c4f",
+    "@std/expect@1.0.8": {
+      "integrity": "27e40d8f3aefb372fc6a703fb0b69e34560e72a2f78705178babdffa00119a5f",
       "dependencies": [
-        "jsr:@std/assert@^1.0.6",
+        "jsr:@std/assert@^1.0.8",
         "jsr:@std/internal"
       ]
     },
@@ -34,16 +35,16 @@
         "jsr:@std/path"
       ]
     },
-    "@std/internal@1.0.4": {
-      "integrity": "62e8e4911527e5e4f307741a795c0b0a9e6958d0b3790716ae71ce085f755422"
+    "@std/internal@1.0.5": {
+      "integrity": "54a546004f769c1ac9e025abd15a76b6671ddc9687e2313b67376125650dc7ba"
     },
-    "@std/path@1.0.7": {
-      "integrity": "76a689e07f0e15dcc6002ec39d0866797e7156629212b28f27179b8a5c3b33a1"
+    "@std/path@1.0.8": {
+      "integrity": "548fa456bb6a04d3c1a1e7477986b6cffbce95102d0bb447c67c4ee70e0364be"
     },
-    "@std/testing@1.0.3": {
-      "integrity": "f98c2bee53860a5916727d7e7d3abe920dd6f9edace022e2d059f00d05c2cf42",
+    "@std/testing@1.0.5": {
+      "integrity": "6e693cbec94c81a1ad3df668685c7ba8e20742bb10305bc7137faa5cf16d2ec4",
       "dependencies": [
-        "jsr:@std/assert@^1.0.6",
+        "jsr:@std/assert@^1.0.8",
         "jsr:@std/internal"
       ]
     }
@@ -121,14 +122,20 @@
     "@esbuild/win32-x64@0.24.0": {
       "integrity": "sha512-7IAFPrjSQIJrGsK6flwg7NFmwBoSTyF3rl7If0hNUFQU4ilTsEPL6GuMuU9BfIWVVGuRnuIidkSMC+c0Otu8IA=="
     },
-    "@hono/node-server@1.13.5_hono@4.6.8": {
-      "integrity": "sha512-lSo+CFlLqAFB4fX7ePqI9nauEn64wOfJHAfc9duYFTvAG3o416pC0nTGeNjuLHchLedH+XyWda5v79CVx1PIjg==",
+    "@hono/node-server@1.13.7_hono@4.6.11": {
+      "integrity": "sha512-kTfUMsoloVKtRA2fLiGSd9qBddmru9KadNyhJCwgKBxTiNkaAJEwkVN9KV/rS4HtmmNRtUh6P+YpmjRMl0d9vQ==",
       "dependencies": [
         "hono"
       ]
     },
     "@total-typescript/ts-reset@0.6.1": {
       "integrity": "sha512-cka47fVSo6lfQDIATYqb/vO1nvFfbPw7uWLayIXIhGETj0wcOOlrlkobOMDNQOFr9QOafegUPq13V2+6vtD7yg=="
+    },
+    "@types/node@22.5.4": {
+      "integrity": "sha512-FDuKUJQm/ju9fT/SeX/6+gBzoPzlVCzfzmGkwKvRHQVxi4BntVbyIwf6a4Xn62mrvndLiml6z/UBXIdEVjQLXg==",
+      "dependencies": [
+        "undici-types"
+      ]
     },
     "esbuild@0.24.0": {
       "integrity": "sha512-FuLPevChGDshgSicjisSooU0cemp/sGXR841D5LHMB7mTVOmsEHcAxaH3irL53+8YDIeVNQEySh4DaYU/iuPqQ==",
@@ -162,11 +169,14 @@
     "eventsource-parser@3.0.0": {
       "integrity": "sha512-T1C0XCUimhxVQzW4zFipdx0SficT651NnkR0ZSH3yQwh+mFMdLfgjABVi4YtMTtaL4s168593DaoaRLMqryavA=="
     },
-    "hono@4.6.8": {
-      "integrity": "sha512-f+2Ec9JAzabT61pglDiLJcF/DjiSefZkjCn9bzm1cYLGkD5ExJ3Jnv93ax9h0bn7UPLHF81KktoyjdQfWI2n1Q=="
+    "hono@4.6.11": {
+      "integrity": "sha512-f0LwJQFKdUUrCUAVowxSvNCjyzI7ZLt8XWYU/EApyeq5FfOvHFarBaE5rjU9HTNFk4RI0FkdB2edb3p/7xZjzQ=="
     },
     "itty-router@5.0.18": {
       "integrity": "sha512-mK3ReOt4ARAGy0V0J7uHmArG2USN2x0zprZ+u+YgmeRjXTDbaowDy3kPcsmQY6tH+uHhDgpWit9Vqmv/4rTXwA=="
+    },
+    "undici-types@6.19.8": {
+      "integrity": "sha512-ve2KP6f/JnbPBFyobGHuerC9g1FYGn/F8n1LWTwNxCEzd6IfqTwUQcNXgEtmmQ6DlRrC1hrSrBnCZPokRrDHjw=="
     }
   },
   "redirects": {
@@ -186,7 +196,7 @@
   "workspace": {
     "packageJson": {
       "dependencies": [
-        "npm:@hono/node-server@1.13.5",
+        "npm:@hono/node-server@1.13.7",
         "npm:@total-typescript/ts-reset@0.6.1",
         "npm:esbuild@0.24",
         "npm:eventsource-parser@3.0.0",

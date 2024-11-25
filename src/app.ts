@@ -1,16 +1,16 @@
-import type { IRequest, IttyRouterType } from "itty-router"
+import type { IRequest } from "itty-router"
 import { Router } from "itty-router/Router"
 import { cors } from "itty-router/cors"
 import { geminiProxy } from "./gemini-proxy.ts"
 import { hello } from "./hello.ts"
-import { Logger } from "./log.ts"
+import { type Any, Logger } from "./log.ts"
 import { chatProxyHandler } from "./openai/chat/completions/ChatProxyHandler.ts"
 import { embeddingProxyHandler } from "./openai/embeddingProxyHandler.ts"
 import { modelDetail, models } from "./openai/models.ts"
 
 const { preflight, corsify } = cors({ allowHeaders: "*" })
 
-const app: IttyRouterType = Router<IRequest>({
+const app = Router<IRequest, Any[], Response>({
   before: [
     preflight,
     (req) => {

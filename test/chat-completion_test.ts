@@ -100,11 +100,8 @@ describe("openai to gemini test", () => {
           }),
         )
 
-        console.log(111)
-        const text = await res.text()
-        console.log(text)
-
-        const values = ReadableStream.from(text).pipeThrough(new EventSourceParserStream()).values()
+        const body = res.body ?? throws(new Error("no body"))
+        const values = body.pipeThrough(new TextDecoderStream()).pipeThrough(new EventSourceParserStream()).values()
 
         for await (const e of values) {
           if (e.data === "[DONE]") return
@@ -116,3 +113,7 @@ describe("openai to gemini test", () => {
     }
   })
 })
+
+function throws(e: Error): never {
+  throw e
+}

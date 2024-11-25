@@ -1,4 +1,4 @@
-// node_modules/.deno/@hono+node-server@1.13.5/node_modules/@hono/node-server/dist/index.mjs
+// node_modules/.deno/@hono+node-server@1.13.7/node_modules/@hono/node-server/dist/index.mjs
 import { createServer as createServerHTTP } from "http";
 import { Http2ServerRequest } from "http2";
 import { Readable } from "stream";
@@ -393,6 +393,8 @@ var getRequestListener = (fetchCallback, options = {}) => {
       outgoing.on("close", () => {
         if (incoming.errored) {
           req[getAbortController]().abort(incoming.errored.toString());
+        } else if (!outgoing.writableFinished) {
+          req[getAbortController]().abort("Client connection prematurely closed.");
         }
       });
       res = fetchCallback(req, { incoming, outgoing });
