@@ -1,6 +1,30 @@
 # changelog
 
-## 0.13.0 (Unreleased)
+## 0.15.0 (Unreleased)
+
+- ...
+
+## 0.14.0 (2024-11-25)
+
+- Add support for `gemini-*` model names. Now we can use `gemini-1.5-flash-8b-exp-0924`, `gemini-exp-1114`, `gemini-1.5-flash-8b`, etc.
+- Add embedding endpoint support.
+
+  ```
+  curl https://gemini-openai-proxy.deno.dev/v1/embeddings \
+        -H "Content-Type: application/json" \
+        -H "Authorization: Bearer $YOUR_GEMINI_API_KEY" \
+        -d '{
+      "input": "Your text string goes here",
+      "model": "text-embedding-3-small"
+    }'
+  ```
+
+- Fix bugs (#83)
+
+## 0.13.0 (2024-06-14)
+
+- Support response format by @Quilljou in #51
+- use streamGenerateContent api, truly support stream response by @zuisong in #55
 
 ## 0.12.0 (2024-05-16)
 
