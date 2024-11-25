@@ -532,13 +532,13 @@ function openAiMessageToGeminiMessage(messages) {
     if (role === "system") {
       return [
         { role: "user", parts: typeof content !== "string" ? content : [{ text: content }] },
-        { role: "model", parts: [{ text: "" }] }
+        { role: "model", parts: [{ text: "OK" }] }
       ];
     }
     const parts = content == null || typeof content === "string" ? [{ text: content?.toString() ?? "" }] : content.map((item) => {
       if (item.type === "text") return { text: item.text };
       if (item.type === "image_url") return parseBase64(item.image_url.url);
-      return { text: "" };
+      return { text: "OK" };
     });
     return [{ role: "user" === role ? "user" : "model", parts }];
   }).flatMap((item, idx, arr) => {
