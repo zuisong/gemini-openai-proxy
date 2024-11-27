@@ -531,8 +531,7 @@ function openAiMessageToGeminiMessage(messages) {
   const result = messages.flatMap(({ role, content }) => {
     if (role === "system") {
       return [
-        { role: "user", parts: typeof content !== "string" ? content : [{ text: content }] },
-        { role: "model", parts: [{ text: "OK" }] }
+        { role: "user", parts: typeof content !== "string" ? content : [{ text: content }] }
       ];
     }
     const parts = content == null || typeof content === "string" ? [{ text: content?.toString() ?? "" }] : content.map((item) => {
@@ -541,11 +540,6 @@ function openAiMessageToGeminiMessage(messages) {
       return { text: "OK" };
     });
     return [{ role: "user" === role ? "user" : "model", parts }];
-  }).flatMap((item, idx, arr) => {
-    if (item.role === arr.at(idx + 1)?.role && item.role === "user") {
-      return [item, { role: "model", parts: [{ text: "" }] }];
-    }
-    return [item];
   });
   return result;
 }
