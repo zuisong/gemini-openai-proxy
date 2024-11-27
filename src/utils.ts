@@ -47,32 +47,22 @@ function parseBase64(base64: string): Part {
 }
 
 export function openAiMessageToGeminiMessage(messages: OpenAI.Chat.ChatCompletionMessageParam[]): Content[] {
-  const result: Content[] = messages
-    .flatMap(({ role, content }) => {
-      if (role === "system") {
-        return [
-          { role: "user", parts: typeof content !== "string" ? content : [{ text: content }] },
-          { role: "model", parts: [{ text: "OK" }] },
-        ] satisfies Content[] as Content[]
-      }
-
-      const parts: Part[] =
-        content == null || typeof content === "string"
-          ? [{ text: content?.toString() ?? "" }]
-          : content.map((item) => {
-              if (item.type === "text") return { text: item.text }
-              if (item.type === "image_url") return parseBase64(item.image_url.url)
-              return { text: "OK" }
-            })
-
-      return [{ role: "user" === role ? "user" : "model", parts: parts }]
-    })
-    .flatMap((item, idx, arr) => {
-      if (item.role === arr.at(idx + 1)?.role && item.role === "user") {
-        return [item, { role: "model", parts: [{ text: "" }] }]
-      }
-      return [item]
-    })
+  const result: Content[] = messages.flatMap(({ role, content }) => {
+    if (role === "system") {
+      return [
+        { role: "user", parts: typeof content !== "string" ? content : [{ text: content }] },
+      ] satisfies Content[] as Content[]
+    }
+    const parts: Part[] =
+      content == null || typeof content === "string"
+        ? [{ text: content?.toString() ?? "" }]
+        : content.map((item) => {
+            if (item.type === "text") return { text: item.text }
+            if (item.type === "image_url") return parseBase64(item.image_url.url)
+            return { text: "OK" }
+          })
+    return [{ role: "user" === role ? "user" : "model", parts: parts }]
+  })
 
   return result
 }
