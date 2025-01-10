@@ -1,5 +1,5 @@
 #----------------
-FROM denoland/deno:latest as builder
+FROM denoland/deno:latest AS builder
 WORKDIR /data
 COPY . .
 RUN deno task build:deno
