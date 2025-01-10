@@ -114,23 +114,23 @@ export function genModel(req: OpenAI.Chat.ChatCompletionCreateParams): [GeminiMo
   }
   return [model, generateContentRequest]
 }
-export type GeminiModel =
-  | "gemini-1.0-pro-vision-latest"
-  | "gemini-1.0-pro-latest"
-  | "gemini-1.0-ultra-latest"
+export type KnownGeminiModel =
   | "gemini-1.5-pro-latest"
   | "gemini-1.5-flash-latest"
-  | "gemini-1.5-flash-8b-exp-0827"
+  | "gemini-1.5-flash-8b-latest"
+  | "gemini-2.0-flash-exp"
   | "text-embedding-004"
 
-export const ModelMapping: Readonly<Record<string, GeminiModel>> = {
-  "gpt-3.5-turbo": "gemini-1.0-pro-latest",
+export type GeminiModel = `gemini${string}` | "text-embedding-004"
+
+export const ModelMapping: Readonly<Record<string, KnownGeminiModel>> = {
+  "gpt-3.5-turbo": "gemini-1.5-flash-8b-latest",
   "gpt-4": "gemini-1.5-pro-latest",
   "gpt-4o": "gemini-1.5-flash-latest",
-  "gpt-4o-mini": "gemini-1.5-flash-8b-exp-0827",
-  "gpt-4-vision-preview": "gemini-1.0-pro-vision-latest",
+  "gpt-4o-mini": "gemini-1.5-flash-8b-latest",
+  "gpt-4-vision-preview": "gemini-1.5-flash-latest",
   "gpt-4-turbo": "gemini-1.5-pro-latest",
-  "gpt-4-turbo-preview": "gemini-1.5-pro-latest",
+  "gpt-4-turbo-preview": "gemini-2.0-flash-exp",
 }
 
 export function getRuntimeKey() {

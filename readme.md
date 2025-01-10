@@ -75,15 +75,17 @@ curl -s http://localhost:8000/v1/chat/completions \
 
 ## Model Mappings
 
-| OpenAI Model         | Gemini Model                 |
-| -------------------- | ---------------------------- |
-| gpt-3.5-turbo        | gemini-1.0-pro-latest        |
-| gpt-4                | gemini-1.5-pro-latest        |
-| gpt-4-vision-preview | gemini-1.0-pro-vision-latest |
-| gpt-4-turbo          | gemini-1.5-pro-latest        |
-| gpt-4o               | gemini-1.5-flash-latest      |
-| gpt-4-turbo-preview  | gemini-1.5-pro-latest        |
-| ...others            | gemini-1.0-pro-latest        |
+| Request Model        | Target Gemini Model         |
+| -------------------- | --------------------------- |
+| gpt-3.5-turbo        | gemini-1.5-flash-8b-latest  |
+| gpt-4                | gemini-1.5-pro-latest       |
+| gpt-4o               | gemini-1.5-flash-latest     |
+| gpt-4o-mini          | gemini-1.5-flash-8b-latest  |
+| gpt-4-vision-preview | gemini-1.5-flash-latest     |
+| gpt-4-turbo          | gemini-1.5-pro-latest       |
+| gpt-4-turbo-preview  | gemini-2.0-flash-exp        |
+| gemini*              | gemini*                     |
+|  ...(others)         | gemini-1.5-flash-latest     |
 
 ## Run On Serverless
 

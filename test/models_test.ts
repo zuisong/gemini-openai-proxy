@@ -3,6 +3,7 @@ import * as bdd from "jsr:@std/testing/bdd"
 import { app } from "../src/app.ts"
 
 import { modelData } from "../src/openai/models.ts"
+import type { OpenAI } from "../src/types.ts"
 
 bdd.describe("openai model api test", () => {
   bdd.it("models test", async () => {
@@ -12,7 +13,7 @@ bdd.describe("openai model api test", () => {
       }),
     )
 
-    const { data: models } = await res.json()
+    const { data: models } = (await res.json()) as OpenAI.Models.ModelsPage
     console.log(models)
 
     expect(models).toStrictEqual(modelData)
