@@ -11,11 +11,15 @@ describe("openai to gemini test", () => {
   describe("success test", () => {
     const fetchMocker = new MockFetch()
 
-    for (const [geminiModel, openaiModel] of [
-      ["gemini-1.0-pro-latest", "gpt-3.5-turbo"],
-      ["gemini-1.0-pro-latest", "gpt-4"],
-      ["gemini-1.5-pro-latest", "gpt-4-turbo-preview"],
-    ]) {
+    for (const [openaiModel, geminiModel] of Object.entries({
+      "gpt-3.5-turbo": "gemini-1.5-flash-8b-latest",
+      "gpt-4": "gemini-1.5-pro-latest",
+      "gpt-4o": "gemini-1.5-flash-latest",
+      "gpt-4o-mini": "gemini-1.5-flash-8b-latest",
+      "gpt-4-vision-preview": "gemini-1.5-flash-latest",
+      "gpt-4-turbo": "gemini-1.5-pro-latest",
+      "gpt-4-turbo-preview": "gemini-2.0-flash-exp",
+    })) {
       beforeEach(() => {
         fetchMocker.mock(
           (req) => req.url.includes(`generativelanguage.googleapis.com/v1beta/models/${geminiModel}:generateContent`),
@@ -59,6 +63,7 @@ describe("openai to gemini test", () => {
               service_tier: "auto",
               n: 1,
               store: false,
+              reasoning_effort: "medium",
             } satisfies OpenAI.Chat.ChatCompletionCreateParams),
           }),
         )
@@ -96,6 +101,7 @@ describe("openai to gemini test", () => {
               service_tier: "auto",
               n: 1,
               store: false,
+              reasoning_effort: "medium",
             } satisfies OpenAI.Chat.ChatCompletionCreateParams),
           }),
         )

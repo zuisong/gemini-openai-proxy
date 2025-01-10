@@ -12,6 +12,7 @@ export declare namespace OpenAI {
     type FunctionObject = components["schemas"]["FunctionObject"]
   }
   namespace Models {
+    type ModelsPage = components["schemas"]["ListModelsResponse"]
     type Model = components["schemas"]["Model"]
   }
   namespace Embeddings {
