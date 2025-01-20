@@ -1,13 +1,6 @@
-#!/usr/bin/env -S deno run --allow-net  --allow-write=./src/generated-types --allow-read=./src/generated-types --allow-read=.  --no-prompt --allow-env --unstable-unsafe-proto
+#!/usr/bin/env -S deno run --allow-net  --allow-write=./src/generated-types --allow-read=./src/generated-types --allow-read=.  --no-prompt --allow-env
 import { emptyDirSync } from "jsr:@std/fs"
-import { convert } from "https://esm.sh/gh/APIs-guru/google-discovery-to-swagger@openapi3/src/index.js?bundle&dev&a.js"
-import openapiTS, { astToString } from "https://esm.sh/openapi-typescript@7.4.1?bundle"
-
-const data = await fetch(
-  "https://github.com/google/generative-ai-go/raw/main/genai/internal/generativelanguage/v1beta/generativelanguage-api.json",
-)
-
-const openapi = convert((await data.json()) ?? "{}")
+import openapiTS, { astToString } from "https://esm.sh/openapi-typescript@7.5.2?bundle"
 
 const openapis = [
   {
@@ -17,8 +10,10 @@ const openapis = [
     path: "./src/generated-types/openai-types.ts",
   },
   {
+    data: await fetch(
+      "https://github.com/zuisong/googleapis-openapi/raw/refs/heads/main/googleapis/generativelanguage/v1beta/generativelanguage-api-openapi_v3.json",
+    ).then((res) => res.text()),
     path: "./src/generated-types/gemini-types.ts",
-    data: openapi,
   },
 ] as const
 

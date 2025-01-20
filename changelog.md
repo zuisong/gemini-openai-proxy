@@ -8,22 +8,22 @@
 
 - Update model mapping
 
-  | Request Model        | Target Gemini Model         |
-  | -------------------- | --------------------------- |
-  | gpt-3.5-turbo        | gemini-1.5-flash-8b-latest  |
-  | gpt-4                | gemini-1.5-pro-latest       |
-  | gpt-4o               | gemini-1.5-flash-latest     |
-  | gpt-4o-mini          | gemini-1.5-flash-8b-latest  |
-  | gpt-4-vision-preview | gemini-1.5-flash-latest     |
-  | gpt-4-turbo          | gemini-1.5-pro-latest       |
-  | gpt-4-turbo-preview  | gemini-2.0-flash-exp        |
-  | gemini*              | gemini*                     |
-  |  ...(others)         | gemini-1.5-flash-latest     |
-
+  | Request Model        | Target Gemini Model        |
+  | -------------------- | -------------------------- |
+  | gpt-3.5-turbo        | gemini-1.5-flash-8b-latest |
+  | gpt-4                | gemini-1.5-pro-latest      |
+  | gpt-4o               | gemini-1.5-flash-latest    |
+  | gpt-4o-mini          | gemini-1.5-flash-8b-latest |
+  | gpt-4-vision-preview | gemini-1.5-flash-latest    |
+  | gpt-4-turbo          | gemini-1.5-pro-latest      |
+  | gpt-4-turbo-preview  | gemini-2.0-flash-exp       |
+  | gemini*              | gemini*                    |
+  | ...(others)          | gemini-1.5-flash-latest    |
 
 ## 0.14.0 (2024-11-25)
 
-- Add support for `gemini-*` model names. Now we can use `gemini-1.5-flash-8b-exp-0924`, `gemini-exp-1114`, `gemini-1.5-flash-8b`, etc.
+- Add support for `gemini-*` model names. Now we can use
+  `gemini-1.5-flash-8b-exp-0924`, `gemini-exp-1114`, `gemini-1.5-flash-8b`, etc.
 - Add embedding endpoint support.
 
   ```
@@ -41,7 +41,8 @@
 ## 0.13.0 (2024-06-14)
 
 - Support response format by @Quilljou in #51
-- use streamGenerateContent api, truly support stream response by @zuisong in #55
+- use streamGenerateContent api, truly support stream response by @zuisong in
+  #55
 
 ## 0.12.0 (2024-05-16)
 

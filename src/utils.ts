@@ -50,7 +50,10 @@ export function openAiMessageToGeminiMessage(messages: OpenAI.Chat.ChatCompletio
   const result: Content[] = messages.flatMap(({ role, content }) => {
     if (role === "system") {
       return [
-        { role: "user", parts: typeof content !== "string" ? content : [{ text: content }] },
+        {
+          role: "user",
+          parts: typeof content !== "string" ? content : [{ text: content }],
+        },
       ] satisfies Content[] as Content[]
     }
     const parts: Part[] =

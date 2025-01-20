@@ -4,6 +4,9 @@
     "frozen": false
   },
   "nodeModulesDir": "auto",
+  "fmt": {
+    "exclude": ["*"]
+  },
   "compilerOptions": {
     "useUnknownInCatchVariables": false,
     "lib": [
