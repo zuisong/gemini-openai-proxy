@@ -86,7 +86,10 @@ function openAiMessageToGeminiMessage(messages) {
   const result = messages.flatMap(({ role, content }) => {
     if (role === "system") {
       return [
-        { role: "user", parts: typeof content !== "string" ? content : [{ text: content }] }
+        {
+          role: "user",
+          parts: typeof content !== "string" ? content : [{ text: content }]
+        }
       ];
     }
     const parts = content == null || typeof content === "string" ? [{ text: content?.toString() ?? "" }] : content.map((item) => {
