@@ -102,13 +102,7 @@ function openAiMessageToGeminiMessage(messages) {
   return result;
 }
 function genModel(req) {
-  const defaultModel = (m) => {
-    if (m.startsWith("gemini")) {
-      return m;
-    }
-    return "gemini-1.5-flash-latest";
-  };
-  const model = ModelMapping[req.model] ?? defaultModel(req.model);
+  const model = GeminiModel.modelMapping(req.model);
   let functions = req.tools?.filter((it) => it.type === "function")?.map((it) => it.function) ?? [];
   functions = functions.concat((req.functions ?? []).map((it) => ({ strict: null, ...it })));
   const responseMimeType = req.response_format?.type === "json_object" ? "application/json" : "text/plain";
@@ -118,7 +112,10 @@ function genModel(req) {
       maxOutputTokens: req.max_tokens ?? void 0,
       temperature: req.temperature ?? void 0,
       topP: req.top_p ?? void 0,
-      responseMimeType
+      responseMimeType,
+      thinkingConfig: !model.isThinkingModel() ? void 0 : {
+        includeThoughts: true
+      }
     },
     tools: functions.length === 0 ? void 0 : [
       {
@@ -137,6 +134,34 @@ function genModel(req) {
   };
   return [model, generateContentRequest];
 }
+var GeminiModel = class _GeminiModel {
+  static modelMapping(model) {
+    const modelName = ModelMapping[model] ?? _GeminiModel.defaultModel(model);
+    return new _GeminiModel(modelName);
+  }
+  model;
+  constructor(model) {
+    this.model = model;
+  }
+  isThinkingModel() {
+    return this.model.includes("thinking");
+  }
+  apiVersion() {
+    if (this.isThinkingModel()) {
+      return "v1alpha";
+    }
+    return "v1beta";
+  }
+  toString() {
+    return this.model;
+  }
+  static defaultModel(m) {
+    if (m.startsWith("gemini")) {
+      return m;
+    }
+    return "gemini-1.5-flash-latest";
+  }
+};
 var ModelMapping = {
   "gpt-3.5-turbo": "gemini-1.5-flash-8b-latest",
   "gpt-4": "gemini-1.5-pro-latest",
@@ -405,7 +430,7 @@ var RequestUrl = class {
     this.apiParam = apiParam;
   }
   toURL() {
-    const api_version = "v1beta";
+    const api_version = this.model.apiVersion();
     const url = new URL(`${BASE_URL}/${api_version}/models/${this.model}:${this.task}`);
     url.searchParams.append("key", this.apiParam.apikey);
     if (this.stream) {
@@ -676,7 +701,12 @@ async function embeddingProxyHandler(rawReq) {
   log?.warn("request", embedContentRequest);
   let geminiResp = [];
   try {
-    for await (const it of generateContent("embedContent", apiParam, "text-embedding-004", embedContentRequest)) {
+    for await (const it of generateContent(
+      "embedContent",
+      apiParam,
+      new GeminiModel("text-embedding-004"),
+      embedContentRequest
+    )) {
       const data = it.embedding?.values;
       geminiResp = data;
       break;
@@ -745,7 +775,7 @@ app.post("/v1/chat/completions", chatProxyHandler);
 app.post("/v1/embeddings", embeddingProxyHandler);
 app.get("/v1/models", () => Response.json(models()));
 app.get("/v1/models/:model", (c) => Response.json(modelDetail(c.params.model)));
-app.post(":model_version/models/:model_and_action", geminiProxy);
+app.post("/:model_version/models/:model_and_action", geminiProxy);
 app.all("*", () => new Response("Page Not Found", { status: 404 }));
 
 // main_deno.ts

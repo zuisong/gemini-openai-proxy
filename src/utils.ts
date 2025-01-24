@@ -71,14 +71,7 @@ export function openAiMessageToGeminiMessage(messages: OpenAI.Chat.ChatCompletio
 }
 
 export function genModel(req: OpenAI.Chat.ChatCompletionCreateParams): [GeminiModel, GenerateContentRequest] {
-  const defaultModel = (m: string): GeminiModel => {
-    if (m.startsWith("gemini")) {
-      return m as GeminiModel
-    }
-    return "gemini-1.5-flash-latest"
-  }
-
-  const model: GeminiModel = ModelMapping[req.model] ?? defaultModel(req.model)
+  const model: GeminiModel = GeminiModel.modelMapping(req.model)
 
   let functions: OpenAI.Chat.FunctionObject[] =
     req.tools?.filter((it) => it.type === "function")?.map((it) => it.function) ?? []
@@ -94,6 +87,11 @@ export function genModel(req: OpenAI.Chat.ChatCompletionCreateParams): [GeminiMo
       temperature: req.temperature ?? undefined,
       topP: req.top_p ?? undefined,
       responseMimeType: responseMimeType,
+      thinkingConfig: !model.isThinkingModel()
+        ? undefined
+        : {
+            includeThoughts: true,
+          },
     },
     tools:
       functions.length === 0
@@ -124,7 +122,42 @@ export type KnownGeminiModel =
   | "gemini-2.0-flash-exp"
   | "text-embedding-004"
 
-export type GeminiModel = `gemini${string}` | "text-embedding-004"
+export type API_VERSION = "v1beta" | "v1" | "v1alpha"
+
+export class GeminiModel {
+  static modelMapping(model: string): GeminiModel {
+    const modelName: GeminiModelName | KnownGeminiModel = ModelMapping[model] ?? GeminiModel.defaultModel(model)
+    return new GeminiModel(modelName)
+  }
+  public readonly model: GeminiModelName
+  constructor(model: GeminiModelName) {
+    this.model = model
+  }
+
+  isThinkingModel(): boolean {
+    return this.model.includes("thinking")
+  }
+
+  apiVersion(): API_VERSION {
+    if (this.isThinkingModel()) {
+      return "v1alpha"
+    }
+    return "v1beta"
+  }
+
+  toString(): string {
+    return this.model
+  }
+
+  private static defaultModel(m: string): GeminiModelName {
+    if (m.startsWith("gemini")) {
+      return m as GeminiModelName
+    }
+    return "gemini-1.5-flash-latest"
+  }
+}
+
+export type GeminiModelName = `gemini${string}` | "text-embedding-004"
 
 export const ModelMapping: Readonly<Record<string, KnownGeminiModel>> = {
   "gpt-3.5-turbo": "gemini-1.5-flash-8b-latest",

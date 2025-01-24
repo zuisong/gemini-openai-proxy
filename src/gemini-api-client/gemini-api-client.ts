@@ -89,8 +89,9 @@ export class RequestUrl {
     this.stream = stream
     this.apiParam = apiParam
   }
+
   toURL(): URL {
-    const api_version: API_VERSION = "v1beta"
+    const api_version = this.model.apiVersion()
     const url = new URL(`${BASE_URL}/${api_version}/models/${this.model}:${this.task}`)
     url.searchParams.append("key", this.apiParam.apikey)
     if (this.stream) {
@@ -101,8 +102,6 @@ export class RequestUrl {
 }
 
 const BASE_URL = "https://generativelanguage.googleapis.com"
-
-type API_VERSION = "v1beta" | "v1"
 
 /**
  * Generates the request options to be passed to the fetch API.
