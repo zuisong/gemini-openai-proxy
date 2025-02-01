@@ -18,7 +18,7 @@
     "test-cov": "deno test --coverage -A --env && deno coverage coverage --lcov --output=coverage/lcov.info"
   },
   "dependencies": {
-    "@hono/node-server": "1.13.7",
+    "@hono/node-server": "1.13.8",
     "eventsource-parser": "3.0.0",
     "itty-router": "5.0.18"
   },
