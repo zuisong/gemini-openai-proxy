@@ -109,7 +109,7 @@ function genModel(req) {
   const generateContentRequest = {
     contents: openAiMessageToGeminiMessage(req.messages),
     generationConfig: {
-      maxOutputTokens: req.max_tokens ?? void 0,
+      maxOutputTokens: req.max_completion_tokens ?? void 0,
       temperature: req.temperature ?? void 0,
       topP: req.top_p ?? void 0,
       responseMimeType,

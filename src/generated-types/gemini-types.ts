@@ -1,5 +1,5 @@
 export interface paths {
-    "/v1beta/{model}:batchEmbedContents": {
+    "/v1alpha/{model}:batchEmbedContents": {
         parameters: {
             query?: {
                 /** @description V1 error format. */
@@ -31,7 +31,7 @@ export interface paths {
         };
         get?: never;
         put?: never;
-        /** @description Generates multiple embeddings from the model given input text in a synchronous call. */
+        /** @description Generates multiple embedding vectors from the input `Content` which consists of a batch of strings represented as `EmbedContentRequest` objects. */
         post: operations["generativelanguage.models.batchEmbedContents"];
         delete?: never;
         options?: never;
@@ -39,7 +39,7 @@ export interface paths {
         patch?: never;
         trace?: never;
     };
-    "/v1beta/{model}:batchEmbedText": {
+    "/v1alpha/{model}:batchEmbedText": {
         parameters: {
             query?: {
                 /** @description V1 error format. */
@@ -79,7 +79,7 @@ export interface paths {
         patch?: never;
         trace?: never;
     };
-    "/v1beta/{model}:countMessageTokens": {
+    "/v1alpha/{model}:countMessageTokens": {
         parameters: {
             query?: {
                 /** @description V1 error format. */
@@ -119,7 +119,7 @@ export interface paths {
         patch?: never;
         trace?: never;
     };
-    "/v1beta/{model}:countTextTokens": {
+    "/v1alpha/{model}:countTextTokens": {
         parameters: {
             query?: {
                 /** @description V1 error format. */
@@ -159,7 +159,7 @@ export interface paths {
         patch?: never;
         trace?: never;
     };
-    "/v1beta/{model}:countTokens": {
+    "/v1alpha/{model}:countTokens": {
         parameters: {
             query?: {
                 /** @description V1 error format. */
@@ -191,7 +191,7 @@ export interface paths {
         };
         get?: never;
         put?: never;
-        /** @description Runs a model's tokenizer on input content and returns the token count. */
+        /** @description Runs a model's tokenizer on input `Content` and returns the token count. Refer to the [tokens guide](https://ai.google.dev/gemini-api/docs/tokens) to learn more about tokens. */
         post: operations["generativelanguage.models.countTokens"];
         delete?: never;
         options?: never;
@@ -199,7 +199,7 @@ export interface paths {
         patch?: never;
         trace?: never;
     };
-    "/v1beta/{model}:embedContent": {
+    "/v1alpha/{model}:embedContent": {
         parameters: {
             query?: {
                 /** @description V1 error format. */
@@ -231,7 +231,7 @@ export interface paths {
         };
         get?: never;
         put?: never;
-        /** @description Generates an embedding from the model given an input `Content`. */
+        /** @description Generates a text embedding vector from the input `Content` using the specified [Gemini Embedding model](https://ai.google.dev/gemini-api/docs/models/gemini#text-embedding). */
         post: operations["generativelanguage.models.embedContent"];
         delete?: never;
         options?: never;
@@ -239,7 +239,7 @@ export interface paths {
         patch?: never;
         trace?: never;
     };
-    "/v1beta/{model}:embedText": {
+    "/v1alpha/{model}:embedText": {
         parameters: {
             query?: {
                 /** @description V1 error format. */
@@ -279,7 +279,7 @@ export interface paths {
         patch?: never;
         trace?: never;
     };
-    "/v1beta/{model}:generateAnswer": {
+    "/v1alpha/{model}:generateAnswer": {
         parameters: {
             query?: {
                 /** @description V1 error format. */
@@ -319,7 +319,7 @@ export interface paths {
         patch?: never;
         trace?: never;
     };
-    "/v1beta/{model}:generateContent": {
+    "/v1alpha/{model}:generateContent": {
         parameters: {
             query?: {
                 /** @description V1 error format. */
@@ -351,7 +351,7 @@ export interface paths {
         };
         get?: never;
         put?: never;
-        /** @description Generates a response from the model given an input `GenerateContentRequest`. Input capabilities differ between models, including tuned models. See the [model guide](https://ai.google.dev/models/gemini) and [tuning guide](https://ai.google.dev/docs/model_tuning_guidance) for details. */
+        /** @description Generates a model response given an input `GenerateContentRequest`. Refer to the [text generation guide](https://ai.google.dev/gemini-api/docs/text-generation) for detailed usage information. Input capabilities differ between models, including tuned models. Refer to the [model guide](https://ai.google.dev/gemini-api/docs/models/gemini) and [tuning guide](https://ai.google.dev/gemini-api/docs/model-tuning) for details. */
         post: operations["generativelanguage.tunedModels.generateContent"];
         delete?: never;
         options?: never;
@@ -359,7 +359,7 @@ export interface paths {
         patch?: never;
         trace?: never;
     };
-    "/v1beta/{model}:generateMessage": {
+    "/v1alpha/{model}:generateMessage": {
         parameters: {
             query?: {
                 /** @description V1 error format. */
@@ -399,7 +399,7 @@ export interface paths {
         patch?: never;
         trace?: never;
     };
-    "/v1beta/{model}:generateText": {
+    "/v1alpha/{model}:generateText": {
         parameters: {
             query?: {
                 /** @description V1 error format. */
@@ -439,7 +439,7 @@ export interface paths {
         patch?: never;
         trace?: never;
     };
-    "/v1beta/{model}:streamGenerateContent": {
+    "/v1alpha/{model}:predict": {
         parameters: {
             query?: {
                 /** @description V1 error format. */
@@ -471,15 +471,95 @@ export interface paths {
         };
         get?: never;
         put?: never;
-        /** @description Generates a streamed response from the model given an input `GenerateContentRequest`. */
-        post: operations["generativelanguage.models.streamGenerateContent"];
+        /** @description Performs a prediction request. */
+        post: operations["generativelanguage.models.predict"];
         delete?: never;
         options?: never;
         head?: never;
         patch?: never;
         trace?: never;
     };
-    "/v1beta/{name}": {
+    "/v1alpha/{model}:predictLongRunning": {
+        parameters: {
+            query?: {
+                /** @description V1 error format. */
+                "$.xgafv"?: components["parameters"]["_.xgafv"];
+                /** @description OAuth access token. */
+                access_token?: components["parameters"]["access_token"];
+                /** @description Data format for response. */
+                alt?: components["parameters"]["alt"];
+                /** @description JSONP */
+                callback?: components["parameters"]["callback"];
+                /** @description Selector specifying which fields to include in a partial response. */
+                fields?: components["parameters"]["fields"];
+                /** @description API key. Your API key identifies your project and provides you with API access, quota, and reports. Required unless you provide an OAuth 2.0 token. */
+                key?: components["parameters"]["key"];
+                /** @description OAuth 2.0 token for the current user. */
+                oauth_token?: components["parameters"]["oauth_token"];
+                /** @description Returns response with indentations and line breaks. */
+                prettyPrint?: components["parameters"]["prettyPrint"];
+                /** @description Available to use for quota purposes for server-side applications. Can be any arbitrary string assigned to a user, but should not exceed 40 characters. */
+                quotaUser?: components["parameters"]["quotaUser"];
+                /** @description Upload protocol for media (e.g. "raw", "multipart"). */
+                upload_protocol?: components["parameters"]["upload_protocol"];
+                /** @description Legacy upload protocol for media (e.g. "media", "multipart"). */
+                uploadType?: components["parameters"]["uploadType"];
+            };
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /** @description Same as Predict but returns an LRO. */
+        post: operations["generativelanguage.models.predictLongRunning"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/v1alpha/{model}:streamGenerateContent": {
+        parameters: {
+            query?: {
+                /** @description V1 error format. */
+                "$.xgafv"?: components["parameters"]["_.xgafv"];
+                /** @description OAuth access token. */
+                access_token?: components["parameters"]["access_token"];
+                /** @description Data format for response. */
+                alt?: components["parameters"]["alt"];
+                /** @description JSONP */
+                callback?: components["parameters"]["callback"];
+                /** @description Selector specifying which fields to include in a partial response. */
+                fields?: components["parameters"]["fields"];
+                /** @description API key. Your API key identifies your project and provides you with API access, quota, and reports. Required unless you provide an OAuth 2.0 token. */
+                key?: components["parameters"]["key"];
+                /** @description OAuth 2.0 token for the current user. */
+                oauth_token?: components["parameters"]["oauth_token"];
+                /** @description Returns response with indentations and line breaks. */
+                prettyPrint?: components["parameters"]["prettyPrint"];
+                /** @description Available to use for quota purposes for server-side applications. Can be any arbitrary string assigned to a user, but should not exceed 40 characters. */
+                quotaUser?: components["parameters"]["quotaUser"];
+                /** @description Upload protocol for media (e.g. "raw", "multipart"). */
+                upload_protocol?: components["parameters"]["upload_protocol"];
+                /** @description Legacy upload protocol for media (e.g. "media", "multipart"). */
+                uploadType?: components["parameters"]["uploadType"];
+            };
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /** @description Generates a [streamed response](https://ai.google.dev/gemini-api/docs/text-generation?lang=python#generate-a-text-stream) from the model given an input `GenerateContentRequest`. */
+        post: operations["generativelanguage.tunedModels.streamGenerateContent"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/v1alpha/{name}": {
         parameters: {
             query?: {
                 /** @description V1 error format. */
@@ -521,7 +601,7 @@ export interface paths {
         patch: operations["generativelanguage.tunedModels.permissions.patch"];
         trace?: never;
     };
-    "/v1beta/{name}:query": {
+    "/v1alpha/{name}:query": {
         parameters: {
             query?: {
                 /** @description V1 error format. */
@@ -561,7 +641,7 @@ export interface paths {
         patch?: never;
         trace?: never;
     };
-    "/v1beta/{name}:transferOwnership": {
+    "/v1alpha/{name}:transferOwnership": {
         parameters: {
             query?: {
                 /** @description V1 error format. */
@@ -601,7 +681,47 @@ export interface paths {
         patch?: never;
         trace?: never;
     };
-    "/v1beta/{parent}/chunks": {
+    "/v1alpha/{name}/operations": {
+        parameters: {
+            query?: {
+                /** @description V1 error format. */
+                "$.xgafv"?: components["parameters"]["_.xgafv"];
+                /** @description OAuth access token. */
+                access_token?: components["parameters"]["access_token"];
+                /** @description Data format for response. */
+                alt?: components["parameters"]["alt"];
+                /** @description JSONP */
+                callback?: components["parameters"]["callback"];
+                /** @description Selector specifying which fields to include in a partial response. */
+                fields?: components["parameters"]["fields"];
+                /** @description API key. Your API key identifies your project and provides you with API access, quota, and reports. Required unless you provide an OAuth 2.0 token. */
+                key?: components["parameters"]["key"];
+                /** @description OAuth 2.0 token for the current user. */
+                oauth_token?: components["parameters"]["oauth_token"];
+                /** @description Returns response with indentations and line breaks. */
+                prettyPrint?: components["parameters"]["prettyPrint"];
+                /** @description Available to use for quota purposes for server-side applications. Can be any arbitrary string assigned to a user, but should not exceed 40 characters. */
+                quotaUser?: components["parameters"]["quotaUser"];
+                /** @description Upload protocol for media (e.g. "raw", "multipart"). */
+                upload_protocol?: components["parameters"]["upload_protocol"];
+                /** @description Legacy upload protocol for media (e.g. "media", "multipart"). */
+                uploadType?: components["parameters"]["uploadType"];
+            };
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** @description Lists operations that match the specified filter in the request. If the server doesn't support this method, it returns `UNIMPLEMENTED`. */
+        get: operations["generativelanguage.tunedModels.operations.list"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/v1alpha/{parent}/chunks": {
         parameters: {
             query?: {
                 /** @description V1 error format. */
@@ -642,7 +762,7 @@ export interface paths {
         patch?: never;
         trace?: never;
     };
-    "/v1beta/{parent}/chunks:batchCreate": {
+    "/v1alpha/{parent}/chunks:batchCreate": {
         parameters: {
             query?: {
                 /** @description V1 error format. */
@@ -682,7 +802,7 @@ export interface paths {
         patch?: never;
         trace?: never;
     };
-    "/v1beta/{parent}/chunks:batchDelete": {
+    "/v1alpha/{parent}/chunks:batchDelete": {
         parameters: {
             query?: {
                 /** @description V1 error format. */
@@ -722,7 +842,7 @@ export interface paths {
         patch?: never;
         trace?: never;
     };
-    "/v1beta/{parent}/chunks:batchUpdate": {
+    "/v1alpha/{parent}/chunks:batchUpdate": {
         parameters: {
             query?: {
                 /** @description V1 error format. */
@@ -762,7 +882,7 @@ export interface paths {
         patch?: never;
         trace?: never;
     };
-    "/v1beta/{parent}/documents": {
+    "/v1alpha/{parent}/documents": {
         parameters: {
             query?: {
                 /** @description V1 error format. */
@@ -803,7 +923,7 @@ export interface paths {
         patch?: never;
         trace?: never;
     };
-    "/v1beta/{parent}/permissions": {
+    "/v1alpha/{parent}/permissions": {
         parameters: {
             query?: {
                 /** @description V1 error format. */
@@ -844,7 +964,7 @@ export interface paths {
         patch?: never;
         trace?: never;
     };
-    "/v1beta/cachedContents": {
+    "/v1alpha/cachedContents": {
         parameters: {
             query?: {
                 /** @description V1 error format. */
@@ -885,7 +1005,7 @@ export interface paths {
         patch?: never;
         trace?: never;
     };
-    "/v1beta/corpora": {
+    "/v1alpha/corpora": {
         parameters: {
             query?: {
                 /** @description V1 error format. */
@@ -926,7 +1046,7 @@ export interface paths {
         patch?: never;
         trace?: never;
     };
-    "/v1beta/files": {
+    "/v1alpha/files": {
         parameters: {
             query?: {
                 /** @description V1 error format. */
@@ -967,7 +1087,7 @@ export interface paths {
         patch?: never;
         trace?: never;
     };
-    "/v1beta/models": {
+    "/v1alpha/generatedFiles": {
         parameters: {
             query?: {
                 /** @description V1 error format. */
@@ -997,7 +1117,47 @@ export interface paths {
             path?: never;
             cookie?: never;
         };
-        /** @description Lists models available through the API. */
+        /** @description Lists the generated files owned by the requesting project. */
+        get: operations["generativelanguage.generatedFiles.list"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/v1alpha/models": {
+        parameters: {
+            query?: {
+                /** @description V1 error format. */
+                "$.xgafv"?: components["parameters"]["_.xgafv"];
+                /** @description OAuth access token. */
+                access_token?: components["parameters"]["access_token"];
+                /** @description Data format for response. */
+                alt?: components["parameters"]["alt"];
+                /** @description JSONP */
+                callback?: components["parameters"]["callback"];
+                /** @description Selector specifying which fields to include in a partial response. */
+                fields?: components["parameters"]["fields"];
+                /** @description API key. Your API key identifies your project and provides you with API access, quota, and reports. Required unless you provide an OAuth 2.0 token. */
+                key?: components["parameters"]["key"];
+                /** @description OAuth 2.0 token for the current user. */
+                oauth_token?: components["parameters"]["oauth_token"];
+                /** @description Returns response with indentations and line breaks. */
+                prettyPrint?: components["parameters"]["prettyPrint"];
+                /** @description Available to use for quota purposes for server-side applications. Can be any arbitrary string assigned to a user, but should not exceed 40 characters. */
+                quotaUser?: components["parameters"]["quotaUser"];
+                /** @description Upload protocol for media (e.g. "raw", "multipart"). */
+                upload_protocol?: components["parameters"]["upload_protocol"];
+                /** @description Legacy upload protocol for media (e.g. "media", "multipart"). */
+                uploadType?: components["parameters"]["uploadType"];
+            };
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** @description Lists the [`Model`s](https://ai.google.dev/gemini-api/docs/models/gemini) available through the Gemini API. */
         get: operations["generativelanguage.models.list"];
         put?: never;
         post?: never;
@@ -1007,7 +1167,7 @@ export interface paths {
         patch?: never;
         trace?: never;
     };
-    "/v1beta/tunedModels": {
+    "/v1alpha/tunedModels": {
         parameters: {
             query?: {
                 /** @description V1 error format. */
@@ -1037,10 +1197,10 @@ export interface paths {
             path?: never;
             cookie?: never;
         };
-        /** @description Lists tuned models owned by the user. */
+        /** @description Lists created tuned models. */
         get: operations["generativelanguage.tunedModels.list"];
         put?: never;
-        /** @description Creates a tuned model. Intermediate tuning progress (if any) is accessed through the [google.longrunning.Operations] service. Status and results can be accessed through the Operations service. Example: GET /v1/tunedModels/az2mb0bpw6i/operations/000-111-222 */
+        /** @description Creates a tuned model. Check intermediate tuning progress (if any) through the [google.longrunning.Operations] service. Access status and results through the Operations service. Example: GET /v1/tunedModels/az2mb0bpw6i/operations/000-111-222 */
         post: operations["generativelanguage.tunedModels.create"];
         delete?: never;
         options?: never;
@@ -1191,22 +1351,31 @@ export interface components {
         };
         /** @description A response candidate generated from the model. */
         Candidate: {
+            /**
+             * Format: double
+             * @description Output only. Average log probability score of the candidate.
+             */
+            readonly avgLogprobs?: number;
             /** @description Output only. Citation information for model-generated candidate. This field may be populated with recitation information for any text included in the `content`. These are passages that are "recited" from copyrighted material in the foundational LLM's training data. */
             readonly citationMetadata?: components["schemas"]["CitationMetadata"];
             /** @description Output only. Generated content returned from the model. */
             readonly content?: components["schemas"]["Content"];
             /**
-             * @description Optional. Output only. The reason why the model stopped generating tokens. If empty, the model has not stopped generating the tokens.
+             * @description Optional. Output only. The reason why the model stopped generating tokens. If empty, the model has not stopped generating tokens.
              * @enum {string}
              */
-            readonly finishReason?: "FINISH_REASON_UNSPECIFIED" | "STOP" | "MAX_TOKENS" | "SAFETY" | "RECITATION" | "LANGUAGE" | "OTHER";
+            readonly finishReason?: "FINISH_REASON_UNSPECIFIED" | "STOP" | "MAX_TOKENS" | "SAFETY" | "RECITATION" | "LANGUAGE" | "OTHER" | "BLOCKLIST" | "PROHIBITED_CONTENT" | "SPII" | "MALFORMED_FUNCTION_CALL" | "IMAGE_SAFETY";
             /** @description Output only. Attribution information for sources that contributed to a grounded answer. This field is populated for `GenerateAnswer` calls. */
             readonly groundingAttributions?: components["schemas"]["GroundingAttribution"][];
+            /** @description Output only. Grounding metadata for the candidate. This field is populated for `GenerateContent` calls. */
+            readonly groundingMetadata?: components["schemas"]["GroundingMetadata"];
             /**
              * Format: int32
-             * @description Output only. Index of the candidate in the list of candidates.
+             * @description Output only. Index of the candidate in the list of response candidates.
              */
             readonly index?: number;
+            /** @description Output only. Log-likelihood scores for the response tokens and top tokens */
+            readonly logprobsResult?: components["schemas"]["LogprobsResult"];
             /** @description List of ratings for the safety of a response candidate. There is at most one rating per category. */
             safetyRatings?: components["schemas"]["SafetyRating"][];
             /**
@@ -1392,7 +1561,7 @@ export interface components {
         CountTokensRequest: {
             /** @description Optional. The input given to the model as a prompt. This field is ignored when `generate_content_request` is set. */
             contents?: components["schemas"]["Content"][];
-            /** @description Optional. The overall input given to the model. CountTokens will count prompt, function calling, etc. */
+            /** @description Optional. The overall input given to the `Model`. This includes the prompt as well as other model steering information like [system instructions](https://ai.google.dev/gemini-api/docs/system-instructions), and/or function declarations for [function calling](https://ai.google.dev/gemini-api/docs/function-calling). `Model`s/`Content`s and `generate_content_request`s are mutually exclusive. You can either send `Model` + `Content`s or a `generate_content_request`, but never both. */
             generateContentRequest?: components["schemas"]["GenerateContentRequest"];
         } & {
             [key: string]: unknown;
@@ -1401,7 +1570,14 @@ export interface components {
         CountTokensResponse: {
             /**
              * Format: int32
-             * @description The number of tokens that the `model` tokenizes the `prompt` into. Always non-negative. When cached_content is set, this is still the total effective prompt size. I.e. this includes the number of tokens in the cached content.
+             * @description Number of tokens in the cached part of the prompt (the cached content).
+             */
+            cachedContentTokenCount?: number;
+            /** @description Output only. List of modalities that were processed in the request input. */
+            readonly promptTokensDetails?: components["schemas"]["ModalityTokenCount"][];
+            /**
+             * Format: int32
+             * @description The number of tokens that the `Model` tokenizes the `prompt` into. Always non-negative.
              */
             totalTokens?: number;
         } & {
@@ -1448,7 +1624,7 @@ export interface components {
         };
         /** @description Dataset for training or validation. */
         Dataset: {
-            /** @description Optional. Inline examples. */
+            /** @description Optional. Inline examples with simple input/output text. */
             examples?: components["schemas"]["TuningExamples"];
         } & {
             [key: string]: unknown;
@@ -1481,6 +1657,23 @@ export interface components {
         } & {
             [key: string]: unknown;
         };
+        /** @description Response for `DownloadFile`. */
+        DownloadFileResponse: Record<string, never>;
+        /** @description Describes the options to customize dynamic retrieval. */
+        DynamicRetrievalConfig: {
+            /**
+             * Format: float
+             * @description The threshold to be used in dynamic retrieval. If not set, a system default value is used.
+             */
+            dynamicThreshold?: number;
+            /**
+             * @description The mode of the predictor to be used in dynamic retrieval.
+             * @enum {string}
+             */
+            mode?: "MODE_UNSPECIFIED" | "MODE_DYNAMIC";
+        } & {
+            [key: string]: unknown;
+        };
         /** @description Request containing the `Content` for the model to embed. */
         EmbedContentRequest: {
             /** @description Required. The content to embed. Only the `parts.text` fields will be counted. */
@@ -1489,7 +1682,7 @@ export interface components {
             model?: string;
             /**
              * Format: int32
-             * @description Optional. Optional reduced dimension for the output embedding. If set, excessive values in the output embedding are truncated from the end. Supported by newer models since 2024, and the earlier model (`models/embedding-001`) cannot specify this value.
+             * @description Optional. Optional reduced dimension for the output embedding. If set, excessive values in the output embedding are truncated from the end. Supported by newer models since 2024 only. You cannot set this value if using the earlier model (`models/embedding-001`).
              */
             outputDimensionality?: number;
             /**
@@ -1555,7 +1748,7 @@ export interface components {
         } & {
             [key: string]: unknown;
         };
-        /** @description A file uploaded to the API. */
+        /** @description A file uploaded to the API. Next ID: 15 */
         File: {
             /**
              * Format: google-datetime
@@ -1564,6 +1757,8 @@ export interface components {
             readonly createTime?: string;
             /** @description Optional. The human-readable display name for the `File`. The display name must be no more than 512 characters in length, including spaces. Example: "Welcome Image" */
             displayName?: string;
+            /** @description Output only. The download uri of the `File`. */
+            readonly downloadUri?: string;
             /** @description Output only. Error status if File processing failed. */
             readonly error?: components["schemas"]["Status"];
             /**
@@ -1585,6 +1780,11 @@ export interface components {
              * @description Output only. Size of the file in bytes.
              */
             readonly sizeBytes?: string;
+            /**
+             * @description Source of the File.
+             * @enum {string}
+             */
+            source?: "SOURCE_UNSPECIFIED" | "UPLOADED" | "GENERATED";
             /**
              * @description Output only. Processing state of the File.
              * @enum {string}
@@ -1617,6 +1817,8 @@ export interface components {
             args?: {
                 [key: string]: unknown;
             };
+            /** @description Optional. The unique id of the function call. If populated, the client to execute the `function_call` and return the response with the matching `id`. */
+            id?: string;
             /** @description Required. The name of the function to call. Must be a-z, A-Z, 0-9, or contain underscores and dashes, with a maximum length of 63. */
             name?: string;
         } & {
@@ -1642,11 +1844,15 @@ export interface components {
             name?: string;
             /** @description Optional. Describes the parameters to this function. Reflects the Open API 3.03 Parameter Object string Key: the name of the parameter. Parameter names are case sensitive. Schema Value: the Schema defining the type used for the parameter. */
             parameters?: components["schemas"]["Schema"];
+            /** @description Optional. Describes the output from this function in JSON Schema format. Reflects the Open API 3.03 Response Object. The Schema defines the type used for the response value of the function. */
+            response?: components["schemas"]["Schema"];
         } & {
             [key: string]: unknown;
         };
         /** @description The result output from a `FunctionCall` that contains a string representing the `FunctionDeclaration.name` and a structured JSON object containing any output from the function is used as context to the model. This should contain the result of a`FunctionCall` made based on model prediction. */
         FunctionResponse: {
+            /** @description Optional. The id of the function call this response is for. Populated by the client to match the corresponding function call `id`. */
+            id?: string;
             /** @description Required. The name of the function to call. Must be a-z, A-Z, 0-9, or contain underscores and dashes, with a maximum length of 63. */
             name?: string;
             /** @description Required. The function response in JSON object format. */
@@ -1656,18 +1862,18 @@ export interface components {
         } & {
             [key: string]: unknown;
         };
-        /** @description Request to generate a grounded answer from the model. */
+        /** @description Request to generate a grounded answer from the `Model`. */
         GenerateAnswerRequest: {
             /**
              * @description Required. Style in which answers should be returned.
              * @enum {string}
              */
             answerStyle?: "ANSWER_STYLE_UNSPECIFIED" | "ABSTRACTIVE" | "EXTRACTIVE" | "VERBOSE";
-            /** @description Required. The content of the current conversation with the model. For single-turn queries, this is a single question to answer. For multi-turn queries, this is a repeated field that contains conversation history and the last `Content` in the list containing the question. Note: GenerateAnswer currently only supports queries in English. */
+            /** @description Required. The content of the current conversation with the `Model`. For single-turn queries, this is a single question to answer. For multi-turn queries, this is a repeated field that contains conversation history and the last `Content` in the list containing the question. Note: `GenerateAnswer` only supports queries in English. */
             contents?: components["schemas"]["Content"][];
             /** @description Passages provided inline with the request. */
             inlinePassages?: components["schemas"]["GroundingPassages"];
-            /** @description Optional. A list of unique `SafetySetting` instances for blocking unsafe content. This will be enforced on the `GenerateAnswerRequest.contents` and `GenerateAnswerResponse.candidate`. There should not be more than one setting for each `SafetyCategory` type. The API will block any contents and responses that fail to meet the thresholds set by these settings. This list overrides the default settings for each `SafetyCategory` specified in the safety_settings. If there is no `SafetySetting` for a given `SafetyCategory` provided in the list, the API will use the default safety setting for that category. Harm categories HARM_CATEGORY_HATE_SPEECH, HARM_CATEGORY_SEXUALLY_EXPLICIT, HARM_CATEGORY_DANGEROUS_CONTENT, HARM_CATEGORY_HARASSMENT are supported. */
+            /** @description Optional. A list of unique `SafetySetting` instances for blocking unsafe content. This will be enforced on the `GenerateAnswerRequest.contents` and `GenerateAnswerResponse.candidate`. There should not be more than one setting for each `SafetyCategory` type. The API will block any contents and responses that fail to meet the thresholds set by these settings. This list overrides the default settings for each `SafetyCategory` specified in the safety_settings. If there is no `SafetySetting` for a given `SafetyCategory` provided in the list, the API will use the default safety setting for that category. Harm categories HARM_CATEGORY_HATE_SPEECH, HARM_CATEGORY_SEXUALLY_EXPLICIT, HARM_CATEGORY_DANGEROUS_CONTENT, HARM_CATEGORY_HARASSMENT are supported. Refer to the [guide](https://ai.google.dev/gemini-api/docs/safety-settings) for detailed information on available safety settings. Also refer to the [Safety guidance](https://ai.google.dev/gemini-api/docs/safety-guidance) to learn how to incorporate safety considerations in your AI applications. */
             safetySettings?: components["schemas"]["SafetySetting"][];
             /** @description Content retrieved from resources created via the Semantic Retriever API. */
             semanticRetriever?: components["schemas"]["SemanticRetrieverConfig"];
@@ -1685,43 +1891,61 @@ export interface components {
             answer?: components["schemas"]["Candidate"];
             /**
              * Format: float
-             * @description Output only. The model's estimate of the probability that its answer is correct and grounded in the input passages. A low answerable_probability indicates that the answer might not be grounded in the sources. When `answerable_probability` is low, some clients may wish to: * Display a message to the effect of "We couldn’t answer that question" to the user. * Fall back to a general-purpose LLM that answers the question from world knowledge. The threshold and nature of such fallbacks will depend on individual clients’ use cases. 0.5 is a good starting threshold.
+             * @description Output only. The model's estimate of the probability that its answer is correct and grounded in the input passages. A low `answerable_probability` indicates that the answer might not be grounded in the sources. When `answerable_probability` is low, you may want to: * Display a message to the effect of "We couldn’t answer that question" to the user. * Fall back to a general-purpose LLM that answers the question from world knowledge. The threshold and nature of such fallbacks will depend on individual use cases. `0.5` is a good starting threshold.
              */
             readonly answerableProbability?: number;
-            /** @description Output only. Feedback related to the input data used to answer the question, as opposed to model-generated response to the question. "Input data" can be one or more of the following: - Question specified by the last entry in `GenerateAnswerRequest.content` - Conversation history specified by the other entries in `GenerateAnswerRequest.content` - Grounding sources (`GenerateAnswerRequest.semantic_retriever` or `GenerateAnswerRequest.inline_passages`) */
+            /** @description Output only. Feedback related to the input data used to answer the question, as opposed to the model-generated response to the question. The input data can be one or more of the following: - Question specified by the last entry in `GenerateAnswerRequest.content` - Conversation history specified by the other entries in `GenerateAnswerRequest.content` - Grounding sources (`GenerateAnswerRequest.semantic_retriever` or `GenerateAnswerRequest.inline_passages`) */
             readonly inputFeedback?: components["schemas"]["InputFeedback"];
         } & {
             [key: string]: unknown;
         };
         /** @description Request to generate a completion from the model. */
         GenerateContentRequest: {
-            /** @description Optional. The name of the cached content used as context to serve the prediction. Note: only used in explicit caching, where users can have control over caching (e.g. what content to cache) and enjoy guaranteed cost savings. Format: `cachedContents/{cachedContent}` */
+            /** @description Optional. The name of the content [cached](https://ai.google.dev/gemini-api/docs/caching) to use as context to serve the prediction. Format: `cachedContents/{cachedContent}` */
             cachedContent?: string;
-            /** @description Required. The content of the current conversation with the model. For single-turn queries, this is a single instance. For multi-turn queries, this is a repeated field that contains conversation history + latest request. */
+            /** @description Required. The content of the current conversation with the model. For single-turn queries, this is a single instance. For multi-turn queries like [chat](https://ai.google.dev/gemini-api/docs/text-generation#chat), this is a repeated field that contains the conversation history and the latest request. */
             contents?: components["schemas"]["Content"][];
             /** @description Optional. Configuration options for model generation and outputs. */
             generationConfig?: components["schemas"]["GenerationConfig"];
-            /** @description Required. The name of the `Model` to use for generating the completion. Format: `name=models/{model}`. */
+            /** @description Required. The name of the `Model` to use for generating the completion. Format: `models/{model}`. */
             model?: string;
-            /** @description Optional. A list of unique `SafetySetting` instances for blocking unsafe content. This will be enforced on the `GenerateContentRequest.contents` and `GenerateContentResponse.candidates`. There should not be more than one setting for each `SafetyCategory` type. The API will block any contents and responses that fail to meet the thresholds set by these settings. This list overrides the default settings for each `SafetyCategory` specified in the safety_settings. If there is no `SafetySetting` for a given `SafetyCategory` provided in the list, the API will use the default safety setting for that category. Harm categories HARM_CATEGORY_HATE_SPEECH, HARM_CATEGORY_SEXUALLY_EXPLICIT, HARM_CATEGORY_DANGEROUS_CONTENT, HARM_CATEGORY_HARASSMENT are supported. */
+            /** @description Optional. A list of unique `SafetySetting` instances for blocking unsafe content. This will be enforced on the `GenerateContentRequest.contents` and `GenerateContentResponse.candidates`. There should not be more than one setting for each `SafetyCategory` type. The API will block any contents and responses that fail to meet the thresholds set by these settings. This list overrides the default settings for each `SafetyCategory` specified in the safety_settings. If there is no `SafetySetting` for a given `SafetyCategory` provided in the list, the API will use the default safety setting for that category. Harm categories HARM_CATEGORY_HATE_SPEECH, HARM_CATEGORY_SEXUALLY_EXPLICIT, HARM_CATEGORY_DANGEROUS_CONTENT, HARM_CATEGORY_HARASSMENT, HARM_CATEGORY_CIVIC_INTEGRITY are supported. Refer to the [guide](https://ai.google.dev/gemini-api/docs/safety-settings) for detailed information on available safety settings. Also refer to the [Safety guidance](https://ai.google.dev/gemini-api/docs/safety-guidance) to learn how to incorporate safety considerations in your AI applications. */
             safetySettings?: components["schemas"]["SafetySetting"][];
-            /** @description Optional. Developer set system instruction. Currently, text only. */
+            /** @description Optional. Developer set [system instruction(s)](https://ai.google.dev/gemini-api/docs/system-instructions). Currently, text only. */
             systemInstruction?: components["schemas"]["Content"];
-            /** @description Optional. Tool configuration for any `Tool` specified in the request. */
+            /** @description Optional. Tool configuration for any `Tool` specified in the request. Refer to the [Function calling guide](https://ai.google.dev/gemini-api/docs/function-calling#function_calling_mode) for a usage example. */
             toolConfig?: components["schemas"]["ToolConfig"];
-            /** @description Optional. A list of `Tools` the model may use to generate the next response. A `Tool` is a piece of code that enables the system to interact with external systems to perform an action, or set of actions, outside of knowledge and scope of the model. The only supported tool is currently `Function`. */
+            /** @description Optional. A list of `Tools` the `Model` may use to generate the next response. A `Tool` is a piece of code that enables the system to interact with external systems to perform an action, or set of actions, outside of knowledge and scope of the `Model`. Supported `Tool`s are `Function` and `code_execution`. Refer to the [Function calling](https://ai.google.dev/gemini-api/docs/function-calling) and the [Code execution](https://ai.google.dev/gemini-api/docs/code-execution) guides to learn more. */
             tools?: components["schemas"]["Tool"][];
         } & {
             [key: string]: unknown;
         };
-        /** @description Response from the model supporting multiple candidates. Note on safety ratings and content filtering. They are reported for both prompt in `GenerateContentResponse.prompt_feedback` and for each candidate in `finish_reason` and in `safety_ratings`. The API contract is that: - either all requested candidates are returned or no candidates at all - no candidates are returned only if there was something wrong with the prompt (see `prompt_feedback`) - feedback on each candidate is reported on `finish_reason` and `safety_ratings`. */
+        /** @description Response from the model supporting multiple candidate responses. Safety ratings and content filtering are reported for both prompt in `GenerateContentResponse.prompt_feedback` and for each candidate in `finish_reason` and in `safety_ratings`. The API: - Returns either all requested candidates or none of them - Returns no candidates at all only if there was something wrong with the prompt (check `prompt_feedback`) - Reports feedback on each candidate in `finish_reason` and `safety_ratings`. */
         GenerateContentResponse: {
             /** @description Candidate responses from the model. */
             candidates?: components["schemas"]["Candidate"][];
+            /** @description Output only. The model version used to generate the response. */
+            readonly modelVersion?: string;
             /** @description Returns the prompt's feedback related to the content filters. */
             promptFeedback?: components["schemas"]["PromptFeedback"];
             /** @description Output only. Metadata on the generation requests' token usage. */
             readonly usageMetadata?: components["schemas"]["UsageMetadata"];
+        } & {
+            [key: string]: unknown;
+        };
+        /** @description A file generated on behalf of a user. */
+        GeneratedFile: {
+            /** @description Error details if the GeneratedFile ends up in the STATE_FAILED state. */
+            error?: components["schemas"]["Status"];
+            /** @description MIME type of the generatedFile. */
+            mimeType?: string;
+            /** @description Identifier. The name of the generated file. Example: `generatedFiles/abc-123` */
+            name?: string;
+            /**
+             * @description Output only. The state of the GeneratedFile.
+             * @enum {string}
+             */
+            readonly state?: "STATE_UNSPECIFIED" | "GENERATING" | "GENERATED" | "FAILED";
         } & {
             [key: string]: unknown;
         };
@@ -1810,39 +2034,83 @@ export interface components {
         } & {
             [key: string]: unknown;
         };
-        /** @description Configuration options for model generation and outputs. Not all parameters may be configurable for every model. */
+        /** @description Configuration options for model generation and outputs. Not all parameters are configurable for every model. */
         GenerationConfig: {
             /**
              * Format: int32
              * @description Optional. Number of generated responses to return. Currently, this value can only be set to 1. If unset, this will default to 1.
              */
             candidateCount?: number;
+            /** @description Optional. Enables enhanced civic answers. It may not be available for all models. */
+            enableEnhancedCivicAnswers?: boolean;
+            /**
+             * Format: float
+             * @description Optional. Frequency penalty applied to the next token's logprobs, multiplied by the number of times each token has been seen in the respponse so far. A positive penalty will discourage the use of tokens that have already been used, proportional to the number of times the token has been used: The more a token is used, the more dificult it is for the model to use that token again increasing the vocabulary of responses. Caution: A _negative_ penalty will encourage the model to reuse tokens proportional to the number of times the token has been used. Small negative values will reduce the vocabulary of a response. Larger negative values will cause the model to start repeating a common token until it hits the max_output_tokens limit.
+             */
+            frequencyPenalty?: number;
             /**
              * Format: int32
-             * @description Optional. The maximum number of tokens to include in a candidate. Note: The default value varies by model, see the `Model.output_token_limit` attribute of the `Model` returned from the `getModel` function.
+             * @description Optional. Only valid if response_logprobs=True. This sets the number of top logprobs to return at each decoding step in the Candidate.logprobs_result.
+             */
+            logprobs?: number;
+            /**
+             * Format: int32
+             * @description Optional. The maximum number of tokens to include in a response candidate. Note: The default value varies by model, see the `Model.output_token_limit` attribute of the `Model` returned from the `getModel` function.
              */
             maxOutputTokens?: number;
-            /** @description Optional. Output response mimetype of the generated candidate text. Supported mimetype: `text/plain`: (default) Text output. `application/json`: JSON response in the candidates. */
+            /**
+             * @description Optional. If specified, the media resolution specified will be used.
+             * @enum {string}
+             */
+            mediaResolution?: "MEDIA_RESOLUTION_UNSPECIFIED" | "MEDIA_RESOLUTION_LOW" | "MEDIA_RESOLUTION_MEDIUM" | "MEDIA_RESOLUTION_HIGH";
+            /**
+             * Format: float
+             * @description Optional. Presence penalty applied to the next token's logprobs if the token has already been seen in the response. This penalty is binary on/off and not dependant on the number of times the token is used (after the first). Use frequency_penalty for a penalty that increases with each use. A positive penalty will discourage the use of tokens that have already been used in the response, increasing the vocabulary. A negative penalty will encourage the use of tokens that have already been used in the response, decreasing the vocabulary.
+             */
+            presencePenalty?: number;
+            /** @description Optional. If true, export the logprobs results in response. */
+            responseLogprobs?: boolean;
+            /** @description Optional. MIME type of the generated candidate text. Supported MIME types are: `text/plain`: (default) Text output. `application/json`: JSON response in the response candidates. `text/x.enum`: ENUM as a string response in the response candidates. Refer to the [docs](https://ai.google.dev/gemini-api/docs/prompting_with_media#plain_text_formats) for a list of all supported text MIME types. */
             responseMimeType?: string;
-            /** @description Optional. Output response schema of the generated candidate text when response mime type can have schema. Schema can be objects, primitives or arrays and is a subset of [OpenAPI schema](https://spec.openapis.org/oas/v3.0.3#schema). If set, a compatible response_mime_type must also be set. Compatible mimetypes: `application/json`: Schema for JSON response. */
+            /** @description Optional. The requested modalities of the response. Represents the set of modalities that the model can return, and should be expected in the response. This is an exact match to the modalities of the response. A model may have multiple combinations of supported modalities. If the requested modalities do not match any of the supported combinations, an error will be returned. An empty list is equivalent to requesting only text. */
+            responseModalities?: ("MODALITY_UNSPECIFIED" | "TEXT" | "IMAGE" | "AUDIO")[];
+            /** @description Optional. Output schema of the generated candidate text. Schemas must be a subset of the [OpenAPI schema](https://spec.openapis.org/oas/v3.0.3#schema) and can be objects, primitives or arrays. If set, a compatible `response_mime_type` must also be set. Compatible MIME types: `application/json`: Schema for JSON response. Refer to the [JSON text generation guide](https://ai.google.dev/gemini-api/docs/json-mode) for more details. */
             responseSchema?: components["schemas"]["Schema"];
-            /** @description Optional. The set of character sequences (up to 5) that will stop output generation. If specified, the API will stop at the first appearance of a stop sequence. The stop sequence will not be included as part of the response. */
+            /**
+             * Format: int32
+             * @description Optional. Seed used in decoding. If not set, the request uses a randomly generated seed.
+             */
+            seed?: number;
+            /** @description Optional. The speech generation config. */
+            speechConfig?: components["schemas"]["SpeechConfig"];
+            /** @description Optional. The set of character sequences (up to 5) that will stop output generation. If specified, the API will stop at the first appearance of a `stop_sequence`. The stop sequence will not be included as part of the response. */
             stopSequences?: string[];
             /**
              * Format: float
              * @description Optional. Controls the randomness of the output. Note: The default value varies by model, see the `Model.temperature` attribute of the `Model` returned from the `getModel` function. Values can range from [0.0, 2.0].
              */
             temperature?: number;
+            /** @description Optional. Config for thinking features. An error will be returned if this field is set for models that don't support thinking. */
+            thinkingConfig?: components["schemas"]["ThinkingConfig"];
             /**
              * Format: int32
-             * @description Optional. The maximum number of tokens to consider when sampling. Models use nucleus sampling or combined Top-k and nucleus sampling. Top-k sampling considers the set of `top_k` most probable tokens. Models running with nucleus sampling don't allow top_k setting. Note: The default value varies by model, see the `Model.top_k` attribute of the `Model` returned from the `getModel` function. Empty `top_k` field in `Model` indicates the model doesn't apply top-k sampling and doesn't allow setting `top_k` on requests.
+             * @description Optional. The maximum number of tokens to consider when sampling. Gemini models use Top-p (nucleus) sampling or a combination of Top-k and nucleus sampling. Top-k sampling considers the set of `top_k` most probable tokens. Models running with nucleus sampling don't allow top_k setting. Note: The default value varies by `Model` and is specified by the`Model.top_p` attribute returned from the `getModel` function. An empty `top_k` attribute indicates that the model doesn't apply top-k sampling and doesn't allow setting `top_k` on requests.
              */
             topK?: number;
             /**
              * Format: float
-             * @description Optional. The maximum cumulative probability of tokens to consider when sampling. The model uses combined Top-k and nucleus sampling. Tokens are sorted based on their assigned probabilities so that only the most likely tokens are considered. Top-k sampling directly limits the maximum number of tokens to consider, while Nucleus sampling limits number of tokens based on the cumulative probability. Note: The default value varies by model, see the `Model.top_p` attribute of the `Model` returned from the `getModel` function.
+             * @description Optional. The maximum cumulative probability of tokens to consider when sampling. The model uses combined Top-k and Top-p (nucleus) sampling. Tokens are sorted based on their assigned probabilities so that only the most likely tokens are considered. Top-k sampling directly limits the maximum number of tokens to consider, while Nucleus sampling limits the number of tokens based on the cumulative probability. Note: The default value varies by `Model` and is specified by the`Model.top_p` attribute returned from the `getModel` function. An empty `top_k` attribute indicates that the model doesn't apply top-k sampling and doesn't allow setting `top_k` on requests.
              */
             topP?: number;
+        } & {
+            [key: string]: unknown;
+        };
+        /** @description GoogleSearch tool type. Tool to support Google Search in Model. Powered by Google. */
+        GoogleSearch: Record<string, never>;
+        /** @description Tool to retrieve public web data for grounding, powered by Google. */
+        GoogleSearchRetrieval: {
+            /** @description Specifies the dynamic retrieval configuration for the given source. */
+            dynamicRetrievalConfig?: components["schemas"]["DynamicRetrievalConfig"];
         } & {
             [key: string]: unknown;
         };
@@ -1852,6 +2120,28 @@ export interface components {
             content?: components["schemas"]["Content"];
             /** @description Output only. Identifier for the source contributing to this attribution. */
             readonly sourceId?: components["schemas"]["AttributionSourceId"];
+        } & {
+            [key: string]: unknown;
+        };
+        /** @description Grounding chunk. */
+        GroundingChunk: {
+            /** @description Grounding chunk from the web. */
+            web?: components["schemas"]["Web"];
+        } & {
+            [key: string]: unknown;
+        };
+        /** @description Metadata returned to client when grounding is enabled. */
+        GroundingMetadata: {
+            /** @description List of supporting references retrieved from specified grounding source. */
+            groundingChunks?: components["schemas"]["GroundingChunk"][];
+            /** @description List of grounding support. */
+            groundingSupports?: components["schemas"]["GroundingSupport"][];
+            /** @description Metadata related to retrieval in the grounding flow. */
+            retrievalMetadata?: components["schemas"]["RetrievalMetadata"];
+            /** @description Optional. Google search entry for the following-up web searches. */
+            searchEntryPoint?: components["schemas"]["SearchEntryPoint"];
+            /** @description Web search queries for the following-up web search. */
+            webSearchQueries?: string[];
         } & {
             [key: string]: unknown;
         };
@@ -1883,6 +2173,17 @@ export interface components {
         } & {
             [key: string]: unknown;
         };
+        /** @description Grounding support. */
+        GroundingSupport: {
+            /** @description Confidence score of the support references. Ranges from 0 to 1. 1 is the most confident. This list must have the same size as the grounding_chunk_indices. */
+            confidenceScores?: number[];
+            /** @description A list of indices (into 'grounding_chunk') specifying the citations associated with the claim. For instance [1,3,4] means that grounding_chunk[1], grounding_chunk[3], grounding_chunk[4] are the retrieved content attributed to the claim. */
+            groundingChunkIndices?: number[];
+            /** @description Segment of the content this support belongs to. */
+            segment?: components["schemas"]["Segment"];
+        } & {
+            [key: string]: unknown;
+        };
         /** @description Hyperparameters controlling the tuning process. Read more at https://ai.google.dev/docs/model_tuning_guidance */
         Hyperparameters: {
             /**
@@ -1908,10 +2209,10 @@ export interface components {
         } & {
             [key: string]: unknown;
         };
-        /** @description Feedback related to the input data used to answer the question, as opposed to model-generated response to the question. */
+        /** @description Feedback related to the input data used to answer the question, as opposed to the model-generated response to the question. */
         InputFeedback: {
             /**
-             * @description Optional. If set, the input was blocked and no candidates are returned. Rephrase your input.
+             * @description Optional. If set, the input was blocked and no candidates are returned. Rephrase the input.
              * @enum {string}
              */
             blockReason?: "BLOCK_REASON_UNSPECIFIED" | "SAFETY" | "OTHER";
@@ -1965,12 +2266,30 @@ export interface components {
         } & {
             [key: string]: unknown;
         };
+        /** @description Response for `ListGeneratedFiles`. */
+        ListGeneratedFilesResponse: {
+            /** @description The list of `GeneratedFile`s. */
+            generatedFiles?: components["schemas"]["GeneratedFile"][];
+            /** @description A token that can be sent as a `page_token` into a subsequent `ListGeneratedFiles` call. */
+            nextPageToken?: string;
+        } & {
+            [key: string]: unknown;
+        };
         /** @description Response from `ListModel` containing a paginated list of Models. */
         ListModelsResponse: {
             /** @description The returned Models. */
             models?: components["schemas"]["Model"][];
             /** @description A token, which can be sent as `page_token` to retrieve the next page. If this field is omitted, there are no more pages. */
             nextPageToken?: string;
+        } & {
+            [key: string]: unknown;
+        };
+        /** @description The response message for Operations.ListOperations. */
+        ListOperationsResponse: {
+            /** @description The standard List next-page token. */
+            nextPageToken?: string;
+            /** @description A list of operations that matches the specified filter in the request. */
+            operations?: components["schemas"]["Operation"][];
         } & {
             [key: string]: unknown;
         };
@@ -1989,6 +2308,32 @@ export interface components {
             nextPageToken?: string;
             /** @description The returned Models. */
             tunedModels?: components["schemas"]["TunedModel"][];
+        } & {
+            [key: string]: unknown;
+        };
+        /** @description Logprobs Result */
+        LogprobsResult: {
+            /** @description Length = total number of decoding steps. The chosen candidates may or may not be in top_candidates. */
+            chosenCandidates?: components["schemas"]["LogprobsResultCandidate"][];
+            /** @description Length = total number of decoding steps. */
+            topCandidates?: components["schemas"]["TopCandidates"][];
+        } & {
+            [key: string]: unknown;
+        };
+        /** @description Candidate for the logprobs token and score. */
+        LogprobsResultCandidate: {
+            /**
+             * Format: float
+             * @description The candidate's log probability.
+             */
+            logProbability?: number;
+            /** @description The candidate’s token string value. */
+            token?: string;
+            /**
+             * Format: int32
+             * @description The candidate’s token id value.
+             */
+            tokenId?: number;
         } & {
             [key: string]: unknown;
         };
@@ -2023,13 +2368,28 @@ export interface components {
         } & {
             [key: string]: unknown;
         };
+        /** @description Represents token counting info for a single modality. */
+        ModalityTokenCount: {
+            /**
+             * @description The modality associated with this token count.
+             * @enum {string}
+             */
+            modality?: "MODALITY_UNSPECIFIED" | "TEXT" | "IMAGE" | "VIDEO" | "AUDIO" | "DOCUMENT";
+            /**
+             * Format: int32
+             * @description Number of tokens.
+             */
+            tokenCount?: number;
+        } & {
+            [key: string]: unknown;
+        };
         /** @description Information about a Generative Language Model. */
         Model: {
-            /** @description Required. The name of the base model, pass this to the generation request. Examples: * `chat-bison` */
+            /** @description Required. The name of the base model, pass this to the generation request. Examples: * `gemini-1.5-flash` */
             baseModelId?: string;
             /** @description A short description of the model. */
             description?: string;
-            /** @description The human-readable name of the model. E.g. "Chat Bison". The name can be up to 128 characters long and can consist of any UTF-8 characters. */
+            /** @description The human-readable name of the model. E.g. "Gemini 1.5 Flash". The name can be up to 128 characters long and can consist of any UTF-8 characters. */
             displayName?: string;
             /**
              * Format: int32
@@ -2041,14 +2401,14 @@ export interface components {
              * @description The maximum temperature this model can use.
              */
             maxTemperature?: number;
-            /** @description Required. The resource name of the `Model`. Format: `models/{model}` with a `{model}` naming convention of: * "{base_model_id}-{version}" Examples: * `models/chat-bison-001` */
+            /** @description Required. The resource name of the `Model`. Refer to [Model variants](https://ai.google.dev/gemini-api/docs/models/gemini#model-variations) for all allowed values. Format: `models/{model}` with a `{model}` naming convention of: * "{base_model_id}-{version}" Examples: * `models/gemini-1.5-flash-001` */
             name?: string;
             /**
              * Format: int32
              * @description Maximum number of output tokens available for this model.
              */
             outputTokenLimit?: number;
-            /** @description The model's supported generation methods. The method names are defined as Pascal case strings, such as `generateMessage` which correspond to API methods. */
+            /** @description The model's supported generation methods. The corresponding API method names are defined as Pascal case strings, such as `generateMessage` and `generateContent`. */
             supportedGenerationMethods?: string[];
             /**
              * Format: float
@@ -2062,10 +2422,10 @@ export interface components {
             topK?: number;
             /**
              * Format: float
-             * @description For Nucleus sampling. Nucleus sampling considers the smallest set of tokens whose probability sum is at least `top_p`. This value specifies default to be used by the backend while making the call to the model.
+             * @description For [Nucleus sampling](https://ai.google.dev/gemini-api/docs/prompting-strategies#top-p). Nucleus sampling considers the smallest set of tokens whose probability sum is at least `top_p`. This value specifies default to be used by the backend while making the call to the model.
              */
             topP?: number;
-            /** @description Required. The version number of the model. This represents the major version */
+            /** @description Required. The version number of the model. This represents the major version (`1.0` or `1.5`) */
             version?: string;
         } & {
             [key: string]: unknown;
@@ -2105,6 +2465,8 @@ export interface components {
             inlineData?: components["schemas"]["Blob"];
             /** @description Inline text. */
             text?: string;
+            /** @description Optional. Indicates if the part is thought from the model. */
+            thought?: boolean;
         } & {
             [key: string]: unknown;
         };
@@ -2127,13 +2489,45 @@ export interface components {
         } & {
             [key: string]: unknown;
         };
+        /** @description The configuration for the prebuilt speaker to use. */
+        PrebuiltVoiceConfig: {
+            /** @description The name of the preset voice to use. */
+            voiceName?: string;
+        } & {
+            [key: string]: unknown;
+        };
+        /** @description Request message for [PredictionService.PredictLongRunning]. */
+        PredictLongRunningRequest: {
+            /** @description Required. The instances that are the input to the prediction call. */
+            instances?: unknown[];
+            /** @description Optional. The parameters that govern the prediction call. */
+            parameters?: unknown;
+        } & {
+            [key: string]: unknown;
+        };
+        /** @description Request message for PredictionService.Predict. */
+        PredictRequest: {
+            /** @description Required. The instances that are the input to the prediction call. */
+            instances?: unknown[];
+            /** @description Optional. The parameters that govern the prediction call. */
+            parameters?: unknown;
+        } & {
+            [key: string]: unknown;
+        };
+        /** @description Response message for [PredictionService.Predict]. */
+        PredictResponse: {
+            /** @description The outputs of the prediction call. */
+            predictions?: unknown[];
+        } & {
+            [key: string]: unknown;
+        };
         /** @description A set of the feedback metadata the prompt specified in `GenerateContentRequest.content`. */
         PromptFeedback: {
             /**
-             * @description Optional. If set, the prompt was blocked and no candidates are returned. Rephrase your prompt.
+             * @description Optional. If set, the prompt was blocked and no candidates are returned. Rephrase the prompt.
              * @enum {string}
              */
-            blockReason?: "BLOCK_REASON_UNSPECIFIED" | "SAFETY" | "OTHER";
+            blockReason?: "BLOCK_REASON_UNSPECIFIED" | "SAFETY" | "OTHER" | "BLOCKLIST" | "PROHIBITED_CONTENT" | "IMAGE_SAFETY";
             /** @description Ratings for safety of the prompt. There is at most one rating per category. */
             safetyRatings?: components["schemas"]["SafetyRating"][];
         } & {
@@ -2193,6 +2587,16 @@ export interface components {
         } & {
             [key: string]: unknown;
         };
+        /** @description Metadata related to retrieval in the grounding flow. */
+        RetrievalMetadata: {
+            /**
+             * Format: float
+             * @description Optional. Score indicating how likely information from google search could help answer the prompt. The score is in the range [0, 1], where 0 is the least likely and 1 is the most likely. This score is only populated when google search grounding and dynamic retrieval is enabled. It will be compared to the threshold to determine whether to trigger google search.
+             */
+            googleSearchDynamicRetrievalScore?: number;
+        } & {
+            [key: string]: unknown;
+        };
         /** @description Safety feedback for an entire request. This field is populated if content in the input and/or response is blocked due to safety settings. SafetyFeedback may not exist for every HarmCategory. Each SafetyFeedback will return the safety settings used by the request as well as the lowest HarmProbability that should be allowed in order to return a result. */
         SafetyFeedback: {
             /** @description Safety rating evaluated from content. */
@@ -2210,7 +2614,7 @@ export interface components {
              * @description Required. The category for this rating.
              * @enum {string}
              */
-            category?: "HARM_CATEGORY_UNSPECIFIED" | "HARM_CATEGORY_DEROGATORY" | "HARM_CATEGORY_TOXICITY" | "HARM_CATEGORY_VIOLENCE" | "HARM_CATEGORY_SEXUAL" | "HARM_CATEGORY_MEDICAL" | "HARM_CATEGORY_DANGEROUS" | "HARM_CATEGORY_HARASSMENT" | "HARM_CATEGORY_HATE_SPEECH" | "HARM_CATEGORY_SEXUALLY_EXPLICIT" | "HARM_CATEGORY_DANGEROUS_CONTENT";
+            category?: "HARM_CATEGORY_UNSPECIFIED" | "HARM_CATEGORY_DEROGATORY" | "HARM_CATEGORY_TOXICITY" | "HARM_CATEGORY_VIOLENCE" | "HARM_CATEGORY_SEXUAL" | "HARM_CATEGORY_MEDICAL" | "HARM_CATEGORY_DANGEROUS" | "HARM_CATEGORY_HARASSMENT" | "HARM_CATEGORY_HATE_SPEECH" | "HARM_CATEGORY_SEXUALLY_EXPLICIT" | "HARM_CATEGORY_DANGEROUS_CONTENT" | "HARM_CATEGORY_CIVIC_INTEGRITY";
             /**
              * @description Required. The probability of harm for this content.
              * @enum {string}
@@ -2225,12 +2629,12 @@ export interface components {
              * @description Required. The category for this setting.
              * @enum {string}
              */
-            category?: "HARM_CATEGORY_UNSPECIFIED" | "HARM_CATEGORY_DEROGATORY" | "HARM_CATEGORY_TOXICITY" | "HARM_CATEGORY_VIOLENCE" | "HARM_CATEGORY_SEXUAL" | "HARM_CATEGORY_MEDICAL" | "HARM_CATEGORY_DANGEROUS" | "HARM_CATEGORY_HARASSMENT" | "HARM_CATEGORY_HATE_SPEECH" | "HARM_CATEGORY_SEXUALLY_EXPLICIT" | "HARM_CATEGORY_DANGEROUS_CONTENT";
+            category?: "HARM_CATEGORY_UNSPECIFIED" | "HARM_CATEGORY_DEROGATORY" | "HARM_CATEGORY_TOXICITY" | "HARM_CATEGORY_VIOLENCE" | "HARM_CATEGORY_SEXUAL" | "HARM_CATEGORY_MEDICAL" | "HARM_CATEGORY_DANGEROUS" | "HARM_CATEGORY_HARASSMENT" | "HARM_CATEGORY_HATE_SPEECH" | "HARM_CATEGORY_SEXUALLY_EXPLICIT" | "HARM_CATEGORY_DANGEROUS_CONTENT" | "HARM_CATEGORY_CIVIC_INTEGRITY";
             /**
              * @description Required. Controls the probability threshold at which harm is blocked.
              * @enum {string}
              */
-            threshold?: "HARM_BLOCK_THRESHOLD_UNSPECIFIED" | "BLOCK_LOW_AND_ABOVE" | "BLOCK_MEDIUM_AND_ABOVE" | "BLOCK_ONLY_HIGH" | "BLOCK_NONE";
+            threshold?: "HARM_BLOCK_THRESHOLD_UNSPECIFIED" | "BLOCK_LOW_AND_ABOVE" | "BLOCK_MEDIUM_AND_ABOVE" | "BLOCK_ONLY_HIGH" | "BLOCK_NONE" | "OFF";
         } & {
             [key: string]: unknown;
         };
@@ -2244,12 +2648,24 @@ export interface components {
             format?: string;
             /** @description Optional. Schema of the elements of Type.ARRAY. */
             items?: components["schemas"]["Schema"];
+            /**
+             * Format: int64
+             * @description Optional. Maximum number of the elements for Type.ARRAY.
+             */
+            maxItems?: string;
+            /**
+             * Format: int64
+             * @description Optional. Minimum number of the elements for Type.ARRAY.
+             */
+            minItems?: string;
             /** @description Optional. Indicates if the value may be null. */
             nullable?: boolean;
             /** @description Optional. Properties of Type.OBJECT. */
             properties?: {
                 [key: string]: components["schemas"]["Schema"];
             };
+            /** @description Optional. The order of the properties. Not a standard field in open api spec. Used to determine the order of the properties in the response. */
+            propertyOrdering?: string[];
             /** @description Optional. Required properties of Type.OBJECT. */
             required?: string[];
             /**
@@ -2257,6 +2673,40 @@ export interface components {
              * @enum {string}
              */
             type?: "TYPE_UNSPECIFIED" | "STRING" | "NUMBER" | "INTEGER" | "BOOLEAN" | "ARRAY" | "OBJECT";
+        } & {
+            [key: string]: unknown;
+        };
+        /** @description Google search entry point. */
+        SearchEntryPoint: {
+            /** @description Optional. Web content snippet that can be embedded in a web page or an app webview. */
+            renderedContent?: string;
+            /**
+             * Format: byte
+             * @description Optional. Base64 encoded JSON representing array of tuple.
+             */
+            sdkBlob?: string;
+        } & {
+            [key: string]: unknown;
+        };
+        /** @description Segment of the content. */
+        Segment: {
+            /**
+             * Format: int32
+             * @description Output only. End index in the given Part, measured in bytes. Offset from the start of the Part, exclusive, starting at zero.
+             */
+            readonly endIndex?: number;
+            /**
+             * Format: int32
+             * @description Output only. The index of a Part object within its parent Content object.
+             */
+            readonly partIndex?: number;
+            /**
+             * Format: int32
+             * @description Output only. Start index in the given Part, measured in bytes. Offset from the start of the Part, inclusive, starting at zero.
+             */
+            readonly startIndex?: number;
+            /** @description Output only. The text corresponding to the segment from the response. */
+            readonly text?: string;
         } & {
             [key: string]: unknown;
         };
@@ -2283,10 +2733,17 @@ export interface components {
              * @description Optional. Minimum relevance score for retrieved relevant `Chunk`s.
              */
             minimumRelevanceScore?: number;
-            /** @description Required. Query to use for similarity matching `Chunk`s in the given resource. */
+            /** @description Required. Query to use for matching `Chunk`s in the given resource by similarity. */
             query?: components["schemas"]["Content"];
-            /** @description Required. Name of the resource for retrieval, e.g. corpora/123 or corpora/123/documents/abc. */
+            /** @description Required. Name of the resource for retrieval. Example: `corpora/123` or `corpora/123/documents/abc`. */
             source?: string;
+        } & {
+            [key: string]: unknown;
+        };
+        /** @description The speech generation config. */
+        SpeechConfig: {
+            /** @description The configuration for the speaker to use. */
+            voiceConfig?: components["schemas"]["VoiceConfig"];
         } & {
             [key: string]: unknown;
         };
@@ -2331,12 +2788,23 @@ export interface components {
         } & {
             [key: string]: unknown;
         };
+        /** @description Config for thinking features. */
+        ThinkingConfig: {
+            /** @description Indicates whether to include thoughts in the response. If true, thoughts are returned only when available. */
+            includeThoughts?: boolean;
+        } & {
+            [key: string]: unknown;
+        };
         /** @description Tool details that the model may use to generate response. A `Tool` is a piece of code that enables the system to interact with external systems to perform an action, or set of actions, outside of knowledge and scope of the model. */
         Tool: {
             /** @description Optional. Enables the model to execute code as part of generation. */
             codeExecution?: components["schemas"]["CodeExecution"];
-            /** @description Optional. A list of `FunctionDeclarations` available to the model that can be used for function calling. The model or system does not execute the function. Instead the defined function may be returned as a FunctionCall with arguments to the client side for execution. The model may decide to call a subset of these functions by populating FunctionCall in the response. The next conversation turn may contain a FunctionResponse with the [content.role] "function" generation context for the next model turn. */
+            /** @description Optional. A list of `FunctionDeclarations` available to the model that can be used for function calling. The model or system does not execute the function. Instead the defined function may be returned as a FunctionCall with arguments to the client side for execution. The model may decide to call a subset of these functions by populating FunctionCall in the response. The next conversation turn may contain a FunctionResponse with the Content.role "function" generation context for the next model turn. */
             functionDeclarations?: components["schemas"]["FunctionDeclaration"][];
+            /** @description Optional. GoogleSearch tool type. Tool to support Google Search in Model. Powered by Google. */
+            googleSearch?: components["schemas"]["GoogleSearch"];
+            /** @description Optional. Retrieval tool that is powered by Google search. */
+            googleSearchRetrieval?: components["schemas"]["GoogleSearchRetrieval"];
         } & {
             [key: string]: unknown;
         };
@@ -2344,6 +2812,13 @@ export interface components {
         ToolConfig: {
             /** @description Optional. Function calling config. */
             functionCallingConfig?: components["schemas"]["FunctionCallingConfig"];
+        } & {
+            [key: string]: unknown;
+        };
+        /** @description Candidates with top log probabilities at each decoding step. */
+        TopCandidates: {
+            /** @description Sorted by log probability in descending order. */
+            candidates?: components["schemas"]["LogprobsResultCandidate"][];
         } & {
             [key: string]: unknown;
         };
@@ -2358,7 +2833,7 @@ export interface components {
         TransferOwnershipResponse: Record<string, never>;
         /** @description A fine-tuned model created using ModelService.CreateTunedModel. */
         TunedModel: {
-            /** @description Immutable. The name of the `Model` to tune. Example: `models/text-bison-001` */
+            /** @description Immutable. The name of the `Model` to tune. Example: `models/gemini-1.5-flash-001` */
             baseModel?: string;
             /**
              * Format: google-datetime
@@ -2369,8 +2844,10 @@ export interface components {
             description?: string;
             /** @description Optional. The name to display for this model in user interfaces. The display name must be up to 40 characters including spaces. */
             displayName?: string;
-            /** @description Output only. The tuned model name. A unique name will be generated on create. Example: `tunedModels/az2mb0bpw6i` If display_name is set on create, the id portion of the name will be set by concatenating the words of the display_name with hyphens and adding a random portion for uniqueness. Example: display_name = "Sentence Translator" name = "tunedModels/sentence-translator-u3b7m" */
+            /** @description Output only. The tuned model name. A unique name will be generated on create. Example: `tunedModels/az2mb0bpw6i` If display_name is set on create, the id portion of the name will be set by concatenating the words of the display_name with hyphens and adding a random portion for uniqueness. Example: * display_name = `Sentence Translator` * name = `tunedModels/sentence-translator-u3b7m` */
             readonly name?: string;
+            /** @description Optional. List of project numbers that have read access to the tuned model. */
+            readerProjectNumbers?: string[];
             /**
              * @description Output only. The state of the tuned model.
              * @enum {string}
@@ -2405,10 +2882,19 @@ export interface components {
         };
         /** @description Tuned model as a source for training a new model. */
         TunedModelSource: {
-            /** @description Output only. The name of the base `Model` this `TunedModel` was tuned from. Example: `models/text-bison-001` */
+            /** @description Output only. The name of the base `Model` this `TunedModel` was tuned from. Example: `models/gemini-1.5-flash-001` */
             readonly baseModel?: string;
             /** @description Immutable. The name of the `TunedModel` to use as the starting point for training the new model. Example: `tunedModels/my-tuned-model` */
             tunedModel?: string;
+        } & {
+            [key: string]: unknown;
+        };
+        /** @description The structured datatype containing multi-part content of an example message. This is a subset of the Content proto used during model inference with limited type support. A `Content` includes a `role` field designating the producer of the `Content` and a `parts` field containing multi-part data that contains the content of the message turn. */
+        TuningContent: {
+            /** @description Ordered `Parts` that constitute a single message. Parts may have different MIME types. */
+            parts?: components["schemas"]["TuningPart"][];
+            /** @description Optional. The producer of the content. Must be either 'user' or 'model'. Useful to set for multi-turn conversations, otherwise can be left blank or unset. */
+            role?: string;
         } & {
             [key: string]: unknown;
         };
@@ -2423,8 +2909,26 @@ export interface components {
         };
         /** @description A set of tuning examples. Can be training or validation data. */
         TuningExamples: {
-            /** @description Required. The examples. Example input can be for text or discuss, but all examples in a set must be of the same type. */
+            /** @description The examples. Example input can be for text or discuss, but all examples in a set must be of the same type. */
             examples?: components["schemas"]["TuningExample"][];
+            /** @description Content examples. For multiturn conversations. */
+            multiturnExamples?: components["schemas"]["TuningMultiturnExample"][];
+        } & {
+            [key: string]: unknown;
+        };
+        /** @description A tuning example with multiturn input. */
+        TuningMultiturnExample: {
+            /** @description Each Content represents a turn in the conversation. */
+            contents?: components["schemas"]["TuningContent"][];
+            /** @description Optional. Developer set system instructions. Currently, text only. */
+            systemInstruction?: components["schemas"]["TuningContent"];
+        } & {
+            [key: string]: unknown;
+        };
+        /** @description A datatype containing data that is part of a multi-part `TuningContent` message. This is a subset of the Part used for model inference, with limited type support. A `Part` consists of data which has an associated datatype. A `Part` can only contain one of the accepted types in `Part.data`. */
+        TuningPart: {
+            /** @description Inline text. */
+            text?: string;
         } & {
             [key: string]: unknown;
         };
@@ -2490,22 +2994,28 @@ export interface components {
         UsageMetadata: {
             /**
              * Format: int32
-             * @description Number of tokens in the cached part of the prompt, i.e. in the cached content.
+             * @description Number of tokens in the cached part of the prompt (the cached content)
              */
             cachedContentTokenCount?: number;
+            /** @description Output only. List of modalities of the cached content in the request input. */
+            readonly cacheTokensDetails?: components["schemas"]["ModalityTokenCount"][];
             /**
              * Format: int32
-             * @description Total number of tokens across the generated candidates.
+             * @description Total number of tokens across all the generated response candidates.
              */
             candidatesTokenCount?: number;
+            /** @description Output only. List of modalities that were returned in the response. */
+            readonly candidatesTokensDetails?: components["schemas"]["ModalityTokenCount"][];
             /**
              * Format: int32
-             * @description Number of tokens in the prompt. When cached_content is set, this is still the total effective prompt size. I.e. this includes the number of tokens in the cached content.
+             * @description Number of tokens in the prompt. When `cached_content` is set, this is still the total effective prompt size meaning this includes the number of tokens in the cached content.
              */
             promptTokenCount?: number;
+            /** @description Output only. List of modalities that were processed in the request input. */
+            readonly promptTokensDetails?: components["schemas"]["ModalityTokenCount"][];
             /**
              * Format: int32
-             * @description Total token count for the generation request (prompt + candidates).
+             * @description Total token count for the generation request (prompt + response candidates).
              */
             totalTokenCount?: number;
         } & {
@@ -2518,6 +3028,22 @@ export interface components {
              * @description Duration of the video.
              */
             videoDuration?: string;
+        } & {
+            [key: string]: unknown;
+        };
+        /** @description The configuration for the voice to use. */
+        VoiceConfig: {
+            /** @description The configuration for the prebuilt voice to use. */
+            prebuiltVoiceConfig?: components["schemas"]["PrebuiltVoiceConfig"];
+        } & {
+            [key: string]: unknown;
+        };
+        /** @description Chunk from the web. */
+        Web: {
+            /** @description Title of the chunk. */
+            title?: string;
+            /** @description URI reference of the chunk. */
+            uri?: string;
         } & {
             [key: string]: unknown;
         };
@@ -2981,7 +3507,7 @@ export interface operations {
             };
             header?: never;
             path: {
-                /** @description Required. The name of the `Model` to use for generating the completion. Format: `name=models/{model}`. */
+                /** @description Required. The name of the `Model` to use for generating the completion. Format: `models/{model}`. */
                 model: string;
             };
             cookie?: never;
@@ -3103,7 +3629,7 @@ export interface operations {
             };
         };
     };
-    "generativelanguage.models.streamGenerateContent": {
+    "generativelanguage.models.predict": {
         parameters: {
             query?: {
                 /** @description V1 error format. */
@@ -3131,7 +3657,107 @@ export interface operations {
             };
             header?: never;
             path: {
-                /** @description Required. The name of the `Model` to use for generating the completion. Format: `name=models/{model}`. */
+                /** @description Required. The name of the model for prediction. Format: `name=models/{model}`. */
+                model: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: {
+            content: {
+                "application/json": components["schemas"]["PredictRequest"];
+            };
+        };
+        responses: {
+            /** @description Successful response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["PredictResponse"];
+                };
+            };
+        };
+    };
+    "generativelanguage.models.predictLongRunning": {
+        parameters: {
+            query?: {
+                /** @description V1 error format. */
+                "$.xgafv"?: components["parameters"]["_.xgafv"];
+                /** @description OAuth access token. */
+                access_token?: components["parameters"]["access_token"];
+                /** @description Data format for response. */
+                alt?: components["parameters"]["alt"];
+                /** @description JSONP */
+                callback?: components["parameters"]["callback"];
+                /** @description Selector specifying which fields to include in a partial response. */
+                fields?: components["parameters"]["fields"];
+                /** @description API key. Your API key identifies your project and provides you with API access, quota, and reports. Required unless you provide an OAuth 2.0 token. */
+                key?: components["parameters"]["key"];
+                /** @description OAuth 2.0 token for the current user. */
+                oauth_token?: components["parameters"]["oauth_token"];
+                /** @description Returns response with indentations and line breaks. */
+                prettyPrint?: components["parameters"]["prettyPrint"];
+                /** @description Available to use for quota purposes for server-side applications. Can be any arbitrary string assigned to a user, but should not exceed 40 characters. */
+                quotaUser?: components["parameters"]["quotaUser"];
+                /** @description Upload protocol for media (e.g. "raw", "multipart"). */
+                upload_protocol?: components["parameters"]["upload_protocol"];
+                /** @description Legacy upload protocol for media (e.g. "media", "multipart"). */
+                uploadType?: components["parameters"]["uploadType"];
+            };
+            header?: never;
+            path: {
+                /** @description Required. The name of the model for prediction. Format: `name=models/{model}`. */
+                model: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: {
+            content: {
+                "application/json": components["schemas"]["PredictLongRunningRequest"];
+            };
+        };
+        responses: {
+            /** @description Successful response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["Operation"];
+                };
+            };
+        };
+    };
+    "generativelanguage.tunedModels.streamGenerateContent": {
+        parameters: {
+            query?: {
+                /** @description V1 error format. */
+                "$.xgafv"?: components["parameters"]["_.xgafv"];
+                /** @description OAuth access token. */
+                access_token?: components["parameters"]["access_token"];
+                /** @description Data format for response. */
+                alt?: components["parameters"]["alt"];
+                /** @description JSONP */
+                callback?: components["parameters"]["callback"];
+                /** @description Selector specifying which fields to include in a partial response. */
+                fields?: components["parameters"]["fields"];
+                /** @description API key. Your API key identifies your project and provides you with API access, quota, and reports. Required unless you provide an OAuth 2.0 token. */
+                key?: components["parameters"]["key"];
+                /** @description OAuth 2.0 token for the current user. */
+                oauth_token?: components["parameters"]["oauth_token"];
+                /** @description Returns response with indentations and line breaks. */
+                prettyPrint?: components["parameters"]["prettyPrint"];
+                /** @description Available to use for quota purposes for server-side applications. Can be any arbitrary string assigned to a user, but should not exceed 40 characters. */
+                quotaUser?: components["parameters"]["quotaUser"];
+                /** @description Upload protocol for media (e.g. "raw", "multipart"). */
+                upload_protocol?: components["parameters"]["upload_protocol"];
+                /** @description Legacy upload protocol for media (e.g. "media", "multipart"). */
+                uploadType?: components["parameters"]["uploadType"];
+            };
+            header?: never;
+            path: {
+                /** @description Required. The name of the `Model` to use for generating the completion. Format: `models/{model}`. */
                 model: string;
             };
             cookie?: never;
@@ -3395,6 +4021,58 @@ export interface operations {
                 };
                 content: {
                     "application/json": components["schemas"]["TransferOwnershipResponse"];
+                };
+            };
+        };
+    };
+    "generativelanguage.tunedModels.operations.list": {
+        parameters: {
+            query?: {
+                /** @description V1 error format. */
+                "$.xgafv"?: components["parameters"]["_.xgafv"];
+                /** @description OAuth access token. */
+                access_token?: components["parameters"]["access_token"];
+                /** @description Data format for response. */
+                alt?: components["parameters"]["alt"];
+                /** @description JSONP */
+                callback?: components["parameters"]["callback"];
+                /** @description Selector specifying which fields to include in a partial response. */
+                fields?: components["parameters"]["fields"];
+                /** @description The standard list filter. */
+                filter?: string;
+                /** @description API key. Your API key identifies your project and provides you with API access, quota, and reports. Required unless you provide an OAuth 2.0 token. */
+                key?: components["parameters"]["key"];
+                /** @description OAuth 2.0 token for the current user. */
+                oauth_token?: components["parameters"]["oauth_token"];
+                /** @description The standard list page size. */
+                pageSize?: number;
+                /** @description The standard list page token. */
+                pageToken?: string;
+                /** @description Returns response with indentations and line breaks. */
+                prettyPrint?: components["parameters"]["prettyPrint"];
+                /** @description Available to use for quota purposes for server-side applications. Can be any arbitrary string assigned to a user, but should not exceed 40 characters. */
+                quotaUser?: components["parameters"]["quotaUser"];
+                /** @description Upload protocol for media (e.g. "raw", "multipart"). */
+                upload_protocol?: components["parameters"]["upload_protocol"];
+                /** @description Legacy upload protocol for media (e.g. "media", "multipart"). */
+                uploadType?: components["parameters"]["uploadType"];
+            };
+            header?: never;
+            path: {
+                /** @description The name of the operation's parent resource. */
+                name: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Successful response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ListOperationsResponse"];
                 };
             };
         };
@@ -4131,6 +4809,53 @@ export interface operations {
             };
         };
     };
+    "generativelanguage.generatedFiles.list": {
+        parameters: {
+            query?: {
+                /** @description V1 error format. */
+                "$.xgafv"?: components["parameters"]["_.xgafv"];
+                /** @description OAuth access token. */
+                access_token?: components["parameters"]["access_token"];
+                /** @description Data format for response. */
+                alt?: components["parameters"]["alt"];
+                /** @description JSONP */
+                callback?: components["parameters"]["callback"];
+                /** @description Selector specifying which fields to include in a partial response. */
+                fields?: components["parameters"]["fields"];
+                /** @description API key. Your API key identifies your project and provides you with API access, quota, and reports. Required unless you provide an OAuth 2.0 token. */
+                key?: components["parameters"]["key"];
+                /** @description OAuth 2.0 token for the current user. */
+                oauth_token?: components["parameters"]["oauth_token"];
+                /** @description Optional. Maximum number of `GeneratedFile`s to return per page. If unspecified, defaults to 10. Maximum `page_size` is 50. */
+                pageSize?: number;
+                /** @description Optional. A page token from a previous `ListGeneratedFiles` call. */
+                pageToken?: string;
+                /** @description Returns response with indentations and line breaks. */
+                prettyPrint?: components["parameters"]["prettyPrint"];
+                /** @description Available to use for quota purposes for server-side applications. Can be any arbitrary string assigned to a user, but should not exceed 40 characters. */
+                quotaUser?: components["parameters"]["quotaUser"];
+                /** @description Upload protocol for media (e.g. "raw", "multipart"). */
+                upload_protocol?: components["parameters"]["upload_protocol"];
+                /** @description Legacy upload protocol for media (e.g. "media", "multipart"). */
+                uploadType?: components["parameters"]["uploadType"];
+            };
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Successful response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ListGeneratedFilesResponse"];
+                };
+            };
+        };
+    };
     "generativelanguage.models.list": {
         parameters: {
             query?: {
@@ -4148,7 +4873,7 @@ export interface operations {
                 key?: components["parameters"]["key"];
                 /** @description OAuth 2.0 token for the current user. */
                 oauth_token?: components["parameters"]["oauth_token"];
-                /** @description The maximum number of `Models` to return (per page). The service may return fewer models. If unspecified, at most 50 models will be returned per page. This method returns at most 1000 models per page, even if you pass a larger page_size. */
+                /** @description The maximum number of `Models` to return (per page). If unspecified, 50 models will be returned per page. This method returns at most 1000 models per page, even if you pass a larger page_size. */
                 pageSize?: number;
                 /** @description A page token, received from a previous `ListModels` call. Provide the `page_token` returned by one request as an argument to the next request to retrieve the next page. When paginating, all other parameters provided to `ListModels` must match the call that provided the page token. */
                 pageToken?: string;
@@ -4248,7 +4973,7 @@ export interface operations {
                 prettyPrint?: components["parameters"]["prettyPrint"];
                 /** @description Available to use for quota purposes for server-side applications. Can be any arbitrary string assigned to a user, but should not exceed 40 characters. */
                 quotaUser?: components["parameters"]["quotaUser"];
-                /** @description Optional. The unique id for the tuned model if specified. This value should be up to 40 characters, the first character must be a letter, the last could be a letter or a number. The id must match the regular expression: [a-z]([a-z0-9-]{0,38}[a-z0-9])?. */
+                /** @description Optional. The unique id for the tuned model if specified. This value should be up to 40 characters, the first character must be a letter, the last could be a letter or a number. The id must match the regular expression: `[a-z]([a-z0-9-]{0,38}[a-z0-9])?`. */
                 tunedModelId?: string;
                 /** @description Upload protocol for media (e.g. "raw", "multipart"). */
                 upload_protocol?: components["parameters"]["upload_protocol"];

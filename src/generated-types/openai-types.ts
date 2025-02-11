@@ -151,6 +151,12 @@ export interface paths {
         /** Creates a model response for the given chat conversation. Learn more in the
          *     [text generation](/docs/guides/text-generation), [vision](/docs/guides/vision),
          *     and [audio](/docs/guides/audio) guides.
+         *
+         *     Parameter support can differ depending on the model used to generate the
+         *     response, particularly for newer reasoning models. Parameters that are only
+         *     supported for reasoning models are noted below. For the current state of
+         *     unsupported parameters in reasoning models,
+         *     [refer to the reasoning guide](/docs/guides/reasoning).
          *      */
         post: operations["createChatCompletion"];
         delete?: never;
@@ -200,7 +206,7 @@ export interface paths {
             path?: never;
             cookie?: never;
         };
-        /** Returns a list of files that belong to the user's organization. */
+        /** Returns a list of files. */
         get: operations["listFiles"];
         put?: never;
         /** Upload a file that can be used across various endpoints. Individual files can be up to 512 MB, and the size of all files uploaded by one organization can be up to 100 GB.
@@ -209,7 +215,7 @@ export interface paths {
          *
          *     The Fine-tuning API only supports `.jsonl` files. The input also has certain required formats for fine-tuning [chat](/docs/api-reference/fine-tuning/chat-input) or [completions](/docs/api-reference/fine-tuning/completions-input) models.
          *
-         *     The Batch API only supports `.jsonl` files up to 100 MB in size. The input also has a specific required [format](/docs/api-reference/batch/request-input).
+         *     The Batch API only supports `.jsonl` files up to 200 MB in size. The input also has a specific required [format](/docs/api-reference/batch/request-input).
          *
          *     Please [contact us](https://help.openai.com/) if you need to increase these storage limits.
          *      */
@@ -458,6 +464,54 @@ export interface paths {
         patch?: never;
         trace?: never;
     };
+    "/organization/admin_api_keys": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /**
+         * List organization API keys
+         * @description Retrieve a paginated list of organization admin API keys.
+         */
+        get: operations["admin-api-keys-list"];
+        put?: never;
+        /**
+         * Create an organization admin API key
+         * @description Create a new admin-level API key for the organization.
+         */
+        post: operations["admin-api-keys-create"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/organization/admin_api_keys/{key_id}": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /**
+         * Retrieve a single organization API key
+         * @description Get details for a specific organization API key by its ID.
+         */
+        get: operations["admin-api-keys-get"];
+        put?: never;
+        post?: never;
+        /**
+         * Delete an organization admin API key
+         * @description Delete the specified admin API key.
+         */
+        delete: operations["admin-api-keys-delete"];
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
     "/organization/audit_logs": {
         parameters: {
             query?: never;
@@ -467,6 +521,23 @@ export interface paths {
         };
         /** List user actions and configuration changes within this organization. */
         get: operations["list-audit-logs"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/organization/costs": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** Get costs details for the organization. */
+        get: operations["usage-costs"];
         put?: never;
         post?: never;
         delete?: never;
@@ -599,6 +670,40 @@ export interface paths {
         patch?: never;
         trace?: never;
     };
+    "/organization/projects/{project_id}/rate_limits": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** Returns the rate limits per model for a project. */
+        get: operations["list-project-rate-limits"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/organization/projects/{project_id}/rate_limits/{rate_limit_id}": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /** Updates a project rate limit. */
+        post: operations["update-project-rate-limits"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
     "/organization/projects/{project_id}/service_accounts": {
         parameters: {
             query?: never;
@@ -672,6 +777,142 @@ export interface paths {
         patch?: never;
         trace?: never;
     };
+    "/organization/usage/audio_speeches": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** Get audio speeches usage details for the organization. */
+        get: operations["usage-audio-speeches"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/organization/usage/audio_transcriptions": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** Get audio transcriptions usage details for the organization. */
+        get: operations["usage-audio-transcriptions"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/organization/usage/code_interpreter_sessions": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** Get code interpreter sessions usage details for the organization. */
+        get: operations["usage-code-interpreter-sessions"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/organization/usage/completions": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** Get completions usage details for the organization. */
+        get: operations["usage-completions"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/organization/usage/embeddings": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** Get embeddings usage details for the organization. */
+        get: operations["usage-embeddings"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/organization/usage/images": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** Get images usage details for the organization. */
+        get: operations["usage-images"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/organization/usage/moderations": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** Get moderations usage details for the organization. */
+        get: operations["usage-moderations"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/organization/usage/vector_stores": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** Get vector stores usage details for the organization. */
+        get: operations["usage-vector-stores"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
     "/organization/users": {
         parameters: {
             query?: never;
@@ -703,6 +944,30 @@ export interface paths {
         post: operations["modify-user"];
         /** Deletes a user from the organization. */
         delete: operations["delete-user"];
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/realtime/sessions": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /** Create an ephemeral API token for use in client-side applications with the
+         *     Realtime API. Can be configured with the same session parameters as the
+         *     `session.update` client event.
+         *
+         *     It responds with a session object, plus a `client_secret` key which contains
+         *     a usable ephemeral API token that can be used to authenticate browser clients
+         *     for the Realtime API.
+         *      */
+        post: operations["create-realtime-session"];
+        delete?: never;
         options?: never;
         head?: never;
         patch?: never;
@@ -917,7 +1182,7 @@ export interface paths {
          *     Once you complete the Upload, we will create a [File](/docs/api-reference/files/object) object that contains all the parts you uploaded. This File is usable in the rest of our platform as a regular File object.
          *
          *     For certain `purpose`s, the correct `mime_type` must be specified. Please refer to documentation for the supported MIME types for your use case:
-         *     - [Assistants](/docs/assistants/tools/file-search/supported-files)
+         *     - [Assistants](/docs/assistants/tools/file-search#supported-files)
          *
          *     For guidance on the proper filename extensions for each purpose, please follow the documentation on [creating a File](/docs/api-reference/files/create).
          *      */
@@ -1147,6 +1412,55 @@ export interface components {
         } & {
             [key: string]: unknown;
         };
+        AdminApiKey: {
+            /**
+             * Format: int64
+             * @example 1711471533
+             */
+            created_at?: number;
+            /** @example key_abc */
+            id?: string;
+            /** @example Administration Key */
+            name?: string;
+            /** @example organization.admin_api_key */
+            object?: string;
+            owner?: {
+                /**
+                 * Format: int64
+                 * @example 1711471533
+                 */
+                created_at?: number;
+                /** @example sa_456 */
+                id?: string;
+                /** @example My Service Account */
+                name?: string;
+                /** @example member */
+                role?: string;
+                /** @example service_account */
+                type?: string;
+            } & {
+                [key: string]: unknown;
+            };
+            /** @example sk-admin...def */
+            redacted_value?: string;
+            /** @example sk-admin-1234abcd */
+            value?: string;
+        } & {
+            [key: string]: unknown;
+        };
+        ApiKeyList: {
+            data?: components["schemas"]["AdminApiKey"][];
+            /** @example key_abc */
+            first_id?: string;
+            /** @example false */
+            has_more?: boolean;
+            /** @example key_xyz */
+            last_id?: string;
+            /** @example list */
+            object?: string;
+        } & {
+            [key: string]: unknown;
+        };
         /**
          * Assistant
          * @description Represents an `assistant` that can call the model and use tools.
@@ -1162,10 +1476,8 @@ export interface components {
             /** @description The system instructions that the assistant uses. The maximum length is 256,000 characters.
              *      */
             instructions: string | null;
-            /** @description Set of 16 key-value pairs that can be attached to an object. This can be useful for storing additional information about the object in a structured format. Keys can be a maximum of 64 characters long and values can be a maximum of 512 characters long.
-             *      */
-            metadata: Record<string, never>;
-            /** @description ID of the model to use. You can use the [List models](/docs/api-reference/models/list) API to see all of your available models, or see our [Model overview](/docs/models/overview) for descriptions of them.
+            metadata: components["schemas"]["Metadata"];
+            /** @description ID of the model to use. You can use the [List models](/docs/api-reference/models/list) API to see all of your available models, or see our [Model overview](/docs/models) for descriptions of them.
              *      */
             model: string;
             /** @description The name of the assistant. The maximum length is 256 characters.
@@ -1176,7 +1488,7 @@ export interface components {
              * @enum {string}
              */
             object: "assistant";
-            response_format?: components["schemas"]["AssistantsApiResponseFormatOption"];
+            response_format?: components["schemas"]["AssistantsApiResponseFormatOption"] & unknown;
             /**
              * @description What sampling temperature to use, between 0 and 2. Higher values like 0.8 will make the output more random, while lower values like 0.2 will make it more focused and deterministic.
              *
@@ -1225,7 +1537,7 @@ export interface components {
         } & {
             [key: string]: unknown;
         };
-        /** @description Specifies the format that the model must output. Compatible with [GPT-4o](/docs/models/gpt-4o), [GPT-4 Turbo](/docs/models/gpt-4-turbo-and-gpt-4), and all GPT-3.5 Turbo models since `gpt-3.5-turbo-1106`.
+        /** @description Specifies the format that the model must output. Compatible with [GPT-4o](/docs/models#gpt-4o), [GPT-4 Turbo](/docs/models#gpt-4-turbo-and-gpt-4), and all GPT-3.5 Turbo models since `gpt-3.5-turbo-1106`.
          *
          *     Setting to `{ "type": "json_schema", "json_schema": {...} }` enables Structured Outputs which ensures the model will match your supplied JSON schema. Learn more in the [Structured Outputs guide](/docs/guides/structured-outputs).
          *
@@ -1294,7 +1606,7 @@ export interface components {
             file_search?: {
                 /** @description The maximum number of results the file search tool should output. The default is 20 for `gpt-4*` models and 5 for `gpt-3.5-turbo`. This number should be between 1 and 50 inclusive.
                  *
-                 *     Note that the file search tool may output fewer than `max_num_results` results. See the [file search tool documentation](/docs/assistants/tools/file-search/customizing-file-search-settings) for more information.
+                 *     Note that the file search tool may output fewer than `max_num_results` results. See the [file search tool documentation](/docs/assistants/tools/file-search#customizing-file-search-settings) for more information.
                  *      */
                 max_num_results?: number;
                 ranking_options?: components["schemas"]["FileSearchRankingOptions"];
@@ -1500,6 +1812,37 @@ export interface components {
                 [key: string]: unknown;
             };
             /** @description The details for events with this `type`. */
+            "rate_limit.deleted"?: {
+                /** @description The rate limit ID */
+                id?: string;
+            } & {
+                [key: string]: unknown;
+            };
+            /** @description The details for events with this `type`. */
+            "rate_limit.updated"?: {
+                /** @description The payload used to update the rate limits. */
+                changes_requested?: {
+                    /** @description The maximum batch input tokens per day. Only relevant for certain models. */
+                    batch_1_day_max_input_tokens?: number;
+                    /** @description The maximum audio megabytes per minute. Only relevant for certain models. */
+                    max_audio_megabytes_per_1_minute?: number;
+                    /** @description The maximum images per minute. Only relevant for certain models. */
+                    max_images_per_1_minute?: number;
+                    /** @description The maximum requests per day. Only relevant for certain models. */
+                    max_requests_per_1_day?: number;
+                    /** @description The maximum requests per minute. */
+                    max_requests_per_1_minute?: number;
+                    /** @description The maximum tokens per minute. */
+                    max_tokens_per_1_minute?: number;
+                } & {
+                    [key: string]: unknown;
+                };
+                /** @description The rate limit ID */
+                id?: string;
+            } & {
+                [key: string]: unknown;
+            };
+            /** @description The details for events with this `type`. */
             "service_account.created"?: {
                 /** @description The payload used to create the service account. */
                 data?: {
@@ -1627,7 +1970,7 @@ export interface components {
          * @description The event type.
          * @enum {string}
          */
-        AuditLogEventType: "api_key.created" | "api_key.updated" | "api_key.deleted" | "invite.sent" | "invite.accepted" | "invite.deleted" | "login.succeeded" | "login.failed" | "logout.succeeded" | "logout.failed" | "organization.updated" | "project.created" | "project.updated" | "project.archived" | "service_account.created" | "service_account.updated" | "service_account.deleted" | "user.added" | "user.updated" | "user.deleted";
+        AuditLogEventType: "api_key.created" | "api_key.updated" | "api_key.deleted" | "invite.sent" | "invite.accepted" | "invite.deleted" | "login.succeeded" | "login.failed" | "logout.succeeded" | "logout.failed" | "organization.updated" | "project.created" | "project.updated" | "project.archived" | "service_account.created" | "service_account.updated" | "service_account.deleted" | "rate_limit.updated" | "rate_limit.deleted" | "user.added" | "user.updated" | "user.deleted";
         /**
          * Auto Chunking Strategy
          * @description The default strategy. This strategy currently uses a `max_chunk_size_tokens` of `800` and `chunk_overlap_tokens` of `400`.
@@ -1687,9 +2030,7 @@ export interface components {
             in_progress_at?: number;
             /** @description The ID of the input file for the batch. */
             input_file_id: string;
-            /** @description Set of 16 key-value pairs that can be attached to an object. This can be useful for storing additional information about the object in a structured format. Keys can be a maximum of 64 characters long and values can be a maximum of 512 characters long.
-             *      */
-            metadata?: Record<string, never>;
+            metadata?: components["schemas"]["Metadata"];
             /**
              * @description The object type, which is always `batch`.
              * @enum {string}
@@ -1846,7 +2187,11 @@ export interface components {
         } & {
             [key: string]: unknown;
         };
-        /** Assistant message */
+        /**
+         * Assistant message
+         * @description Messages sent by the model in response to user messages.
+         *
+         */
         ChatCompletionRequestAssistantMessage: {
             /** @description Data about a previous audio response from the model.
              *     [Learn more](/docs/guides/audio).
@@ -1888,6 +2233,26 @@ export interface components {
         };
         ChatCompletionRequestAssistantMessageContentPart: components["schemas"]["ChatCompletionRequestMessageContentPartText"] | components["schemas"]["ChatCompletionRequestMessageContentPartRefusal"];
         /**
+         * Developer message
+         * @description Developer-provided instructions that the model should follow, regardless of
+         *     messages sent by the user. With o1 models and newer, `developer` messages
+         *     replace the previous `system` messages.
+         *
+         */
+        ChatCompletionRequestDeveloperMessage: {
+            /** @description The contents of the developer message. */
+            content: string | components["schemas"]["ChatCompletionRequestMessageContentPartText"][];
+            /** @description An optional name for the participant. Provides the model information to differentiate between participants of the same role. */
+            name?: string;
+            /**
+             * @description The role of the messages author, in this case `developer`.
+             * @enum {string}
+             */
+            role: "developer";
+        } & {
+            [key: string]: unknown;
+        };
+        /**
          * Function message
          * @deprecated
          */
@@ -1904,7 +2269,7 @@ export interface components {
         } & {
             [key: string]: unknown;
         };
-        ChatCompletionRequestMessage: components["schemas"]["ChatCompletionRequestSystemMessage"] | components["schemas"]["ChatCompletionRequestUserMessage"] | components["schemas"]["ChatCompletionRequestAssistantMessage"] | components["schemas"]["ChatCompletionRequestToolMessage"] | components["schemas"]["ChatCompletionRequestFunctionMessage"];
+        ChatCompletionRequestMessage: components["schemas"]["ChatCompletionRequestDeveloperMessage"] | components["schemas"]["ChatCompletionRequestSystemMessage"] | components["schemas"]["ChatCompletionRequestUserMessage"] | components["schemas"]["ChatCompletionRequestAssistantMessage"] | components["schemas"]["ChatCompletionRequestToolMessage"] | components["schemas"]["ChatCompletionRequestFunctionMessage"];
         /**
          * Audio content part
          * @description Learn about [audio inputs](/docs/guides/audio).
@@ -1939,7 +2304,7 @@ export interface components {
         ChatCompletionRequestMessageContentPartImage: {
             image_url: {
                 /**
-                 * @description Specifies the detail level of the image. Learn more in the [Vision guide](/docs/guides/vision/low-or-high-fidelity-image-understanding).
+                 * @description Specifies the detail level of the image. Learn more in the [Vision guide](/docs/guides/vision#low-or-high-fidelity-image-understanding).
                  * @default auto
                  * @enum {string}
                  */
@@ -1988,7 +2353,13 @@ export interface components {
         } & {
             [key: string]: unknown;
         };
-        /** System message */
+        /**
+         * System message
+         * @description Developer-provided instructions that the model should follow, regardless of
+         *     messages sent by the user. With o1 models and newer, use `developer` messages
+         *     for this purpose instead.
+         *
+         */
         ChatCompletionRequestSystemMessage: {
             /** @description The contents of the system message. */
             content: string | components["schemas"]["ChatCompletionRequestSystemMessageContentPart"][];
@@ -2018,7 +2389,12 @@ export interface components {
             [key: string]: unknown;
         };
         ChatCompletionRequestToolMessageContentPart: components["schemas"]["ChatCompletionRequestMessageContentPartText"];
-        /** User message */
+        /**
+         * User message
+         * @description Messages sent by an end user, containing prompts or additional context
+         *     information.
+         *
+         */
         ChatCompletionRequestUserMessage: {
             /** @description The contents of the user message.
              *      */
@@ -2085,7 +2461,7 @@ export interface components {
          * @description The role of the author of a message
          * @enum {string}
          */
-        ChatCompletionRole: "system" | "user" | "assistant" | "tool" | "function";
+        ChatCompletionRole: "developer" | "system" | "user" | "assistant" | "tool" | "function";
         /**
          * @description Options for streaming response. Only set this when you set `stream: true`.
          *
@@ -2120,7 +2496,7 @@ export interface components {
              * @description The role of the author of this message.
              * @enum {string}
              */
-            role?: "system" | "user" | "assistant" | "tool";
+            role?: "developer" | "system" | "user" | "assistant" | "tool";
             tool_calls?: components["schemas"]["ChatCompletionMessageToolCallChunk"][];
         } & {
             [key: string]: unknown;
@@ -2179,30 +2555,88 @@ export interface components {
         };
         /** @description Usage statistics for the completion request. */
         CompletionUsage: {
-            /** @description Number of tokens in the generated completion. */
+            /**
+             * @description Number of tokens in the generated completion.
+             * @default 0
+             */
             completion_tokens: number;
             /** @description Breakdown of tokens used in a completion. */
             completion_tokens_details?: {
-                /** @description Audio input tokens generated by the model. */
-                audio_tokens?: number;
-                /** @description Tokens generated by the model for reasoning. */
-                reasoning_tokens?: number;
+                /**
+                 * @description When using Predicted Outputs, the number of tokens in the
+                 *     prediction that appeared in the completion.
+                 *
+                 * @default 0
+                 */
+                accepted_prediction_tokens: number;
+                /**
+                 * @description Audio input tokens generated by the model.
+                 * @default 0
+                 */
+                audio_tokens: number;
+                /**
+                 * @description Tokens generated by the model for reasoning.
+                 * @default 0
+                 */
+                reasoning_tokens: number;
+                /**
+                 * @description When using Predicted Outputs, the number of tokens in the
+                 *     prediction that did not appear in the completion. However, like
+                 *     reasoning tokens, these tokens are still counted in the total
+                 *     completion tokens for purposes of billing, output, and context window
+                 *     limits.
+                 *
+                 * @default 0
+                 */
+                rejected_prediction_tokens: number;
             } & {
                 [key: string]: unknown;
             };
-            /** @description Number of tokens in the prompt. */
+            /**
+             * @description Number of tokens in the prompt.
+             * @default 0
+             */
             prompt_tokens: number;
             /** @description Breakdown of tokens used in the prompt. */
             prompt_tokens_details?: {
-                /** @description Audio input tokens present in the prompt. */
-                audio_tokens?: number;
-                /** @description Cached tokens present in the prompt. */
-                cached_tokens?: number;
+                /**
+                 * @description Audio input tokens present in the prompt.
+                 * @default 0
+                 */
+                audio_tokens: number;
+                /**
+                 * @description Cached tokens present in the prompt.
+                 * @default 0
+                 */
+                cached_tokens: number;
             } & {
                 [key: string]: unknown;
             };
-            /** @description Total number of tokens used in the request (prompt + completion). */
+            /**
+             * @description Total number of tokens used in the request (prompt + completion).
+             * @default 0
+             */
             total_tokens: number;
+        } & {
+            [key: string]: unknown;
+        };
+        /** @description The aggregated costs details of the specific time bucket. */
+        CostsResult: {
+            /** @description The monetary value in its associated currency. */
+            amount?: {
+                /** @description Lowercase ISO-4217 currency e.g. "usd" */
+                currency?: string;
+                /** @description The numeric value of the cost. */
+                value?: number;
+            } & {
+                [key: string]: unknown;
+            };
+            /** @description When `group_by=line_item`, this field provides the line item of the grouped costs result. */
+            line_item?: string | null;
+            /** @enum {string} */
+            object: "organization.costs.result";
+            /** @description When `group_by=project_id`, this field provides the project ID of the grouped costs result. */
+            project_id?: string | null;
         } & {
             [key: string]: unknown;
         };
@@ -2213,19 +2647,17 @@ export interface components {
             /** @description The system instructions that the assistant uses. The maximum length is 256,000 characters.
              *      */
             instructions?: string | null;
-            /** @description Set of 16 key-value pairs that can be attached to an object. This can be useful for storing additional information about the object in a structured format. Keys can be a maximum of 64 characters long and values can be a maximum of 512 characters long.
-             *      */
-            metadata?: Record<string, never>;
+            metadata?: components["schemas"]["Metadata"];
             /**
-             * @description ID of the model to use. You can use the [List models](/docs/api-reference/models/list) API to see all of your available models, or see our [Model overview](/docs/models/overview) for descriptions of them.
+             * @description ID of the model to use. You can use the [List models](/docs/api-reference/models/list) API to see all of your available models, or see our [Model overview](/docs/models) for descriptions of them.
              *
              * @example gpt-4o
              */
-            model: string | ("gpt-4o" | "gpt-4o-2024-08-06" | "gpt-4o-2024-05-13" | "gpt-4o-2024-08-06" | "gpt-4o-mini" | "gpt-4o-mini-2024-07-18" | "gpt-4-turbo" | "gpt-4-turbo-2024-04-09" | "gpt-4-0125-preview" | "gpt-4-turbo-preview" | "gpt-4-1106-preview" | "gpt-4-vision-preview" | "gpt-4" | "gpt-4-0314" | "gpt-4-0613" | "gpt-4-32k" | "gpt-4-32k-0314" | "gpt-4-32k-0613" | "gpt-3.5-turbo" | "gpt-3.5-turbo-16k" | "gpt-3.5-turbo-0613" | "gpt-3.5-turbo-1106" | "gpt-3.5-turbo-0125" | "gpt-3.5-turbo-16k-0613");
+            model: string | ("gpt-4o" | "gpt-4o-2024-11-20" | "gpt-4o-2024-08-06" | "gpt-4o-2024-05-13" | "gpt-4o-mini" | "gpt-4o-mini-2024-07-18" | "gpt-4-turbo" | "gpt-4-turbo-2024-04-09" | "gpt-4-0125-preview" | "gpt-4-turbo-preview" | "gpt-4-1106-preview" | "gpt-4-vision-preview" | "gpt-4" | "gpt-4-0314" | "gpt-4-0613" | "gpt-4-32k" | "gpt-4-32k-0314" | "gpt-4-32k-0613" | "gpt-3.5-turbo" | "gpt-3.5-turbo-16k" | "gpt-3.5-turbo-0613" | "gpt-3.5-turbo-1106" | "gpt-3.5-turbo-0125" | "gpt-3.5-turbo-16k-0613");
             /** @description The name of the assistant. The maximum length is 256 characters.
              *      */
             name?: string | null;
-            response_format?: components["schemas"]["AssistantsApiResponseFormatOption"];
+            response_format?: components["schemas"]["AssistantsApiResponseFormatOption"] & unknown;
             /**
              * @description What sampling temperature to use, between 0 and 2. Higher values like 0.8 will make the output more random, while lower values like 0.2 will make it more focused and deterministic.
              *
@@ -2285,9 +2717,7 @@ export interface components {
                         /** @description A list of [file](/docs/api-reference/files) IDs to add to the vector store. There can be a maximum of 10000 files in a vector store.
                          *      */
                         file_ids?: string[];
-                        /** @description Set of 16 key-value pairs that can be attached to a vector store. This can be useful for storing additional information about the vector store in a structured format. Keys can be a maximum of 64 characters long and values can be a maximum of 512 characters long.
-                         *      */
-                        metadata?: Record<string, never>;
+                        metadata?: components["schemas"]["Metadata"];
                     } & {
                         [key: string]: unknown;
                     })[];
@@ -2366,19 +2796,18 @@ export interface components {
                  */
                 format: "wav" | "mp3" | "flac" | "opus" | "pcm16";
                 /**
-                 * @description Specifies the voice type. Supported voices are `alloy`, `echo`,
-                 *     `fable`, `onyx`, `nova`, and `shimmer`.
+                 * @description The voice the model uses to respond. Supported voices are `ash`, `ballad`, `coral`, `sage`, and `verse` (also supported but not recommended are `alloy`, `echo`, and `shimmer`; these voices are less expressive).
                  *
                  * @enum {string}
                  */
-                voice: "alloy" | "echo" | "fable" | "onyx" | "nova" | "shimmer";
+                voice: "alloy" | "ash" | "ballad" | "coral" | "echo" | "sage" | "shimmer" | "verse";
             } & {
                 [key: string]: unknown;
             }) | null;
             /**
-             * @description Number between -2.0 and 2.0. Positive values penalize new tokens based on their existing frequency in the text so far, decreasing the model's likelihood to repeat the same line verbatim.
-             *
-             *     [See more information about frequency and presence penalties.](/docs/guides/text-generation/parameter-details)
+             * @description Number between -2.0 and 2.0. Positive values penalize new tokens based on
+             *     their existing frequency in the text so far, decreasing the model's
+             *     likelihood to repeat the same line verbatim.
              *
              * @default 0
              */
@@ -2388,11 +2817,18 @@ export interface components {
              * @description Deprecated in favor of `tool_choice`.
              *
              *     Controls which (if any) function is called by the model.
-             *     `none` means the model will not call a function and instead generates a message.
-             *     `auto` means the model can pick between generating a message or calling a function.
-             *     Specifying a particular function via `{"name": "my_function"}` forces the model to call that function.
              *
-             *     `none` is the default when no functions are present. `auto` is the default if functions are present.
+             *     `none` means the model will not call a function and instead generates a
+             *     message.
+             *
+             *     `auto` means the model can pick between generating a message or calling a
+             *     function.
+             *
+             *     Specifying a particular function via `{"name": "my_function"}` forces the
+             *     model to call that function.
+             *
+             *     `none` is the default when no functions are present. `auto` is the default
+             *     if functions are present.
              *
              */
             function_call?: ("none" | "auto") | components["schemas"]["ChatCompletionFunctionCallOption"];
@@ -2407,7 +2843,12 @@ export interface components {
             /**
              * @description Modify the likelihood of specified tokens appearing in the completion.
              *
-             *     Accepts a JSON object that maps tokens (specified by their token ID in the tokenizer) to an associated bias value from -100 to 100. Mathematically, the bias is added to the logits generated by the model prior to sampling. The exact effect will vary per model, but values between -1 and 1 should decrease or increase likelihood of selection; values like -100 or 100 should result in a ban or exclusive selection of the relevant token.
+             *     Accepts a JSON object that maps tokens (specified by their token ID in the
+             *     tokenizer) to an associated bias value from -100 to 100. Mathematically,
+             *     the bias is added to the logits generated by the model prior to sampling.
+             *     The exact effect will vary per model, but values between -1 and 1 should
+             *     decrease or increase likelihood of selection; values like -100 or 100
+             *     should result in a ban or exclusive selection of the relevant token.
              *
              * @default null
              */
@@ -2415,7 +2856,10 @@ export interface components {
                 [key: string]: number;
             } | null;
             /**
-             * @description Whether to return log probabilities of the output tokens or not. If true, returns the log probabilities of each output token returned in the `content` of `message`.
+             * @description Whether to return log probabilities of the output tokens or not. If true,
+             *     returns the log probabilities of each output token returned in the
+             *     `content` of `message`.
+             *
              * @default false
              */
             logprobs: boolean | null;
@@ -2424,9 +2868,12 @@ export interface components {
             max_completion_tokens?: number | null;
             /**
              * @deprecated
-             * @description The maximum number of [tokens](/tokenizer) that can be generated in the chat completion. This value can be used to control [costs](https://openai.com/api/pricing/) for text generated via API.
+             * @description The maximum number of [tokens](/tokenizer) that can be generated in the
+             *     chat completion. This value can be used to control
+             *     [costs](https://openai.com/api/pricing/) for text generated via API.
              *
-             *     This value is now deprecated in favor of `max_completion_tokens`, and is not compatible with [o1 series models](/docs/guides/reasoning).
+             *     This value is now deprecated in favor of `max_completion_tokens`, and is
+             *     not compatible with [o1 series models](/docs/guides/reasoning).
              *
              */
             max_tokens?: number | null;
@@ -2436,18 +2883,13 @@ export interface components {
              *     [images](/docs/guides/vision), and [audio](/docs/guides/audio).
              *      */
             messages: components["schemas"]["ChatCompletionRequestMessage"][];
-            /** @description Developer-defined tags and values used for filtering completions
-             *     in the [dashboard](https://platform.openai.com/chat-completions).
-             *      */
-            metadata?: {
-                [key: string]: string;
-            } | null;
+            metadata?: components["schemas"]["Metadata"];
             modalities?: components["schemas"]["ChatCompletionModalities"];
             /**
-             * @description ID of the model to use. See the [model endpoint compatibility](/docs/models/model-endpoint-compatibility) table for details on which models work with the Chat API.
+             * @description ID of the model to use. See the [model endpoint compatibility](/docs/models#model-endpoint-compatibility) table for details on which models work with the Chat API.
              * @example gpt-4o
              */
-            model: string | ("o1-preview" | "o1-preview-2024-09-12" | "o1-mini" | "o1-mini-2024-09-12" | "gpt-4o" | "gpt-4o-2024-08-06" | "gpt-4o-2024-05-13" | "gpt-4o-2024-08-06" | "gpt-4o-realtime-preview" | "gpt-4o-realtime-preview-2024-10-01" | "gpt-4o-audio-preview" | "gpt-4o-audio-preview-2024-10-01" | "chatgpt-4o-latest" | "gpt-4o-mini" | "gpt-4o-mini-2024-07-18" | "gpt-4-turbo" | "gpt-4-turbo-2024-04-09" | "gpt-4-0125-preview" | "gpt-4-turbo-preview" | "gpt-4-1106-preview" | "gpt-4-vision-preview" | "gpt-4" | "gpt-4-0314" | "gpt-4-0613" | "gpt-4-32k" | "gpt-4-32k-0314" | "gpt-4-32k-0613" | "gpt-3.5-turbo" | "gpt-3.5-turbo-16k" | "gpt-3.5-turbo-0301" | "gpt-3.5-turbo-0613" | "gpt-3.5-turbo-1106" | "gpt-3.5-turbo-0125" | "gpt-3.5-turbo-16k-0613");
+            model: string | ("o3-mini" | "o3-mini-2025-01-31" | "o1" | "o1-2024-12-17" | "o1-preview" | "o1-preview-2024-09-12" | "o1-mini" | "o1-mini-2024-09-12" | "gpt-4o" | "gpt-4o-2024-11-20" | "gpt-4o-2024-08-06" | "gpt-4o-2024-05-13" | "gpt-4o-audio-preview" | "gpt-4o-audio-preview-2024-10-01" | "gpt-4o-audio-preview-2024-12-17" | "gpt-4o-mini-audio-preview" | "gpt-4o-mini-audio-preview-2024-12-17" | "chatgpt-4o-latest" | "gpt-4o-mini" | "gpt-4o-mini-2024-07-18" | "gpt-4-turbo" | "gpt-4-turbo-2024-04-09" | "gpt-4-0125-preview" | "gpt-4-turbo-preview" | "gpt-4-1106-preview" | "gpt-4-vision-preview" | "gpt-4" | "gpt-4-0314" | "gpt-4-0613" | "gpt-4-32k" | "gpt-4-32k-0314" | "gpt-4-32k-0613" | "gpt-3.5-turbo" | "gpt-3.5-turbo-16k" | "gpt-3.5-turbo-0301" | "gpt-3.5-turbo-0613" | "gpt-3.5-turbo-1106" | "gpt-3.5-turbo-0125" | "gpt-3.5-turbo-16k-0613");
             /**
              * @description How many chat completion choices to generate for each input message. Note that you will be charged based on the number of generated tokens across all of the choices. Keep `n` as `1` to minimize costs.
              * @default 1
@@ -2455,36 +2897,66 @@ export interface components {
              */
             n: number;
             parallel_tool_calls?: components["schemas"]["ParallelToolCalls"];
+            /** @description Configuration for a [Predicted Output](/docs/guides/predicted-outputs),
+             *     which can greatly improve response times when large parts of the model
+             *     response are known ahead of time. This is most common when you are
+             *     regenerating a file with only minor changes to most of the content.
+             *      */
+            prediction?: components["schemas"]["PredictionContent"] | null;
             /**
-             * @description Number between -2.0 and 2.0. Positive values penalize new tokens based on whether they appear in the text so far, increasing the model's likelihood to talk about new topics.
-             *
-             *     [See more information about frequency and presence penalties.](/docs/guides/text-generation/parameter-details)
+             * @description Number between -2.0 and 2.0. Positive values penalize new tokens based on
+             *     whether they appear in the text so far, increasing the model's likelihood
+             *     to talk about new topics.
              *
              * @default 0
              */
             presence_penalty: number | null;
-            /** @description An object specifying the format that the model must output. Compatible with [GPT-4o](/docs/models/gpt-4o), [GPT-4o mini](/docs/models/gpt-4o-mini), [GPT-4 Turbo](/docs/models/gpt-4-and-gpt-4-turbo) and all GPT-3.5 Turbo models newer than `gpt-3.5-turbo-1106`.
+            /**
+             * @description **o1 models only**
              *
-             *     Setting to `{ "type": "json_schema", "json_schema": {...} }` enables Structured Outputs which ensures the model will match your supplied JSON schema. Learn more in the [Structured Outputs guide](/docs/guides/structured-outputs).
+             *     Constrains effort on reasoning for
+             *     [reasoning models](https://platform.openai.com/docs/guides/reasoning).
+             *     Currently supported values are `low`, `medium`, and `high`. Reducing
+             *     reasoning effort can result in faster responses and fewer tokens used
+             *     on reasoning in a response.
              *
-             *     Setting to `{ "type": "json_object" }` enables JSON mode, which ensures the message the model generates is valid JSON.
+             * @default medium
+             * @enum {string}
+             */
+            reasoning_effort: "low" | "medium" | "high";
+            /** @description An object specifying the format that the model must output.
              *
-             *     **Important:** when using JSON mode, you **must** also instruct the model to produce JSON yourself via a system or user message. Without this, the model may generate an unending stream of whitespace until the generation reaches the token limit, resulting in a long-running and seemingly "stuck" request. Also note that the message content may be partially cut off if `finish_reason="length"`, which indicates the generation exceeded `max_tokens` or the conversation exceeded the max context length.
+             *     Setting to `{ "type": "json_schema", "json_schema": {...} }` enables
+             *     Structured Outputs which ensures the model will match your supplied JSON
+             *     schema. Learn more in the [Structured Outputs
+             *     guide](/docs/guides/structured-outputs).
+             *
+             *     Setting to `{ "type": "json_object" }` enables JSON mode, which ensures
+             *     the message the model generates is valid JSON.
+             *
+             *     **Important:** when using JSON mode, you **must** also instruct the model
+             *     to produce JSON yourself via a system or user message. Without this, the
+             *     model may generate an unending stream of whitespace until the generation
+             *     reaches the token limit, resulting in a long-running and seemingly "stuck"
+             *     request. Also note that the message content may be partially cut off if
+             *     `finish_reason="length"`, which indicates the generation exceeded
+             *     `max_tokens` or the conversation exceeded the max context length.
              *      */
             response_format?: components["schemas"]["ResponseFormatText"] | components["schemas"]["ResponseFormatJsonObject"] | components["schemas"]["ResponseFormatJsonSchema"];
-            /** @description This feature is in Beta.
+            /**
+             * Format: int64
+             * @description This feature is in Beta.
              *     If specified, our system will make a best effort to sample deterministically, such that repeated requests with the same `seed` and parameters should return the same result.
              *     Determinism is not guaranteed, and you should refer to the `system_fingerprint` response parameter to monitor changes in the backend.
-             *      */
+             *
+             */
             seed?: number | null;
             /**
              * @description Specifies the latency tier to use for processing the request. This parameter is relevant for customers subscribed to the scale tier service:
              *       - If set to 'auto', and the Project is Scale tier enabled, the system will utilize scale tier credits until they are exhausted.
-             *       - If set to 'auto', and the Project is not Scale tier enabled, the request will be processed using the default service tier with a lower uptime SLA and no latency guarentee.
-             *       - If set to 'default', the request will be processed using the default service tier with a lower uptime SLA and no latency guarentee.
+             *       - If set to 'auto', and the Project is not Scale tier enabled, the request will be processed using the default service tier with a lower uptime SLA and no latency guarantee.
+             *       - If set to 'default', the request will be processed using the default service tier with a lower uptime SLA and no latency guarantee.
              *       - When not set, the default behavior is 'auto'.
-             *
-             *       When this parameter is set, the response body will include the `service_tier` utilized.
              *
              * @default auto
              * @enum {string|null}
@@ -2497,8 +2969,9 @@ export interface components {
              */
             stop: (string | null) | string[];
             /**
-             * @description Whether or not to store the output of this chat completion request
-             *     for use in our [model distillation](/docs/guides/distillation) or [evals](/docs/guides/evals) products.
+             * @description Whether or not to store the output of this chat completion request for
+             *     use in our [model distillation](/docs/guides/distillation) or
+             *     [evals](/docs/guides/evals) products.
              *
              * @default false
              */
@@ -2512,7 +2985,6 @@ export interface components {
             stream_options?: components["schemas"]["ChatCompletionStreamOptions"];
             /**
              * @description What sampling temperature to use, between 0 and 2. Higher values like 0.8 will make the output more random, while lower values like 0.2 will make it more focused and deterministic.
-             *
              *     We generally recommend altering this or `top_p` but not both.
              *
              * @default 1
@@ -2523,10 +2995,16 @@ export interface components {
             /** @description A list of tools the model may call. Currently, only functions are supported as a tool. Use this to provide a list of functions the model may generate JSON inputs for. A max of 128 functions are supported.
              *      */
             tools?: components["schemas"]["ChatCompletionTool"][];
-            /** @description An integer between 0 and 20 specifying the number of most likely tokens to return at each token position, each with an associated log probability. `logprobs` must be set to `true` if this parameter is used. */
+            /** @description An integer between 0 and 20 specifying the number of most likely tokens to
+             *     return at each token position, each with an associated log probability.
+             *     `logprobs` must be set to `true` if this parameter is used.
+             *      */
             top_logprobs?: number | null;
             /**
-             * @description An alternative to sampling with temperature, called nucleus sampling, where the model considers the results of the tokens with top_p probability mass. So 0.1 means only the tokens comprising the top 10% probability mass are considered.
+             * @description An alternative to sampling with temperature, called nucleus sampling,
+             *     where the model considers the results of the tokens with top_p probability
+             *     mass. So 0.1 means only the tokens comprising the top 10% probability mass
+             *     are considered.
              *
              *     We generally recommend altering this or `temperature` but not both.
              *
@@ -2535,7 +3013,7 @@ export interface components {
              */
             top_p: number;
             /**
-             * @description A unique identifier representing your end-user, which can help OpenAI to monitor and detect abuse. [Learn more](/docs/guides/safety-best-practices/end-user-ids).
+             * @description A unique identifier representing your end-user, which can help OpenAI to monitor and detect abuse. [Learn more](/docs/guides/safety-best-practices#end-user-ids).
              *
              * @example user-1234
              */
@@ -2583,7 +3061,7 @@ export interface components {
              */
             object: "chat.completion";
             /**
-             * @description The service tier used for processing the request. This field is only included if the `service_tier` parameter is specified in the request.
+             * @description The service tier used for processing the request.
              * @example scale
              * @enum {string|null}
              */
@@ -2639,7 +3117,7 @@ export interface components {
              */
             object: "chat.completion.chunk";
             /**
-             * @description The service tier used for processing the request. This field is only included if the `service_tier` parameter is specified in the request.
+             * @description The service tier used for processing the request.
              * @example scale
              * @enum {string|null}
              */
@@ -2651,7 +3129,7 @@ export interface components {
             /** @description An optional field that will only be present when you set `stream_options: {"include_usage": true}` in your request.
              *     When present, it contains a null value except for the last chunk which contains the token usage statistics for the entire request.
              *      */
-            usage?: {
+            usage?: ({
                 /** @description Number of tokens in the generated completion. */
                 completion_tokens: number;
                 /** @description Number of tokens in the prompt. */
@@ -2660,7 +3138,7 @@ export interface components {
                 total_tokens: number;
             } & {
                 [key: string]: unknown;
-            };
+            }) | null;
         } & {
             [key: string]: unknown;
         };
@@ -2684,7 +3162,7 @@ export interface components {
             /**
              * @description Number between -2.0 and 2.0. Positive values penalize new tokens based on their existing frequency in the text so far, decreasing the model's likelihood to repeat the same line verbatim.
              *
-             *     [See more information about frequency and presence penalties.](/docs/guides/text-generation/parameter-details)
+             *     [See more information about frequency and presence penalties.](/docs/guides/text-generation)
              *
              * @default 0
              */
@@ -2718,7 +3196,7 @@ export interface components {
              * @example 16
              */
             max_tokens: number;
-            /** @description ID of the model to use. You can use the [List models](/docs/api-reference/models/list) API to see all of your available models, or see our [Model overview](/docs/models/overview) for descriptions of them.
+            /** @description ID of the model to use. You can use the [List models](/docs/api-reference/models/list) API to see all of your available models, or see our [Model overview](/docs/models) for descriptions of them.
              *      */
             model: string | ("gpt-3.5-turbo-instruct" | "davinci-002" | "babbage-002");
             /**
@@ -2733,7 +3211,7 @@ export interface components {
             /**
              * @description Number between -2.0 and 2.0. Positive values penalize new tokens based on whether they appear in the text so far, increasing the model's likelihood to talk about new topics.
              *
-             *     [See more information about frequency and presence penalties.](/docs/guides/text-generation/parameter-details)
+             *     [See more information about frequency and presence penalties.](/docs/guides/text-generation)
              *
              * @default 0
              */
@@ -2746,10 +3224,13 @@ export interface components {
              * @default <|endoftext|>
              */
             prompt: string | string[] | number[] | number[][];
-            /** @description If specified, our system will make a best effort to sample deterministically, such that repeated requests with the same `seed` and parameters should return the same result.
+            /**
+             * Format: int64
+             * @description If specified, our system will make a best effort to sample deterministically, such that repeated requests with the same `seed` and parameters should return the same result.
              *
              *     Determinism is not guaranteed, and you should refer to the `system_fingerprint` response parameter to monitor changes in the backend.
-             *      */
+             *
+             */
             seed?: number | null;
             /**
              * @description Up to 4 sequences where the API will stop generating further tokens. The returned text will not contain the stop sequence.
@@ -2792,7 +3273,7 @@ export interface components {
              */
             top_p: number;
             /**
-             * @description A unique identifier representing your end-user, which can help OpenAI to monitor and detect abuse. [Learn more](/docs/guides/safety-best-practices/end-user-ids).
+             * @description A unique identifier representing your end-user, which can help OpenAI to monitor and detect abuse. [Learn more](/docs/guides/safety-best-practices#end-user-ids).
              *
              * @example user-1234
              */
@@ -2860,19 +3341,19 @@ export interface components {
              */
             encoding_format: "float" | "base64";
             /**
-             * @description Input text to embed, encoded as a string or array of tokens. To embed multiple inputs in a single request, pass an array of strings or array of token arrays. The input must not exceed the max input tokens for the model (8192 tokens for `text-embedding-ada-002`), cannot be an empty string, and any array must be 2048 dimensions or less. [Example Python code](https://cookbook.openai.com/examples/how_to_count_tokens_with_tiktoken) for counting tokens.
+             * @description Input text to embed, encoded as a string or array of tokens. To embed multiple inputs in a single request, pass an array of strings or array of token arrays. The input must not exceed the max input tokens for the model (8192 tokens for `text-embedding-ada-002`), cannot be an empty string, and any array must be 2048 dimensions or less. [Example Python code](https://cookbook.openai.com/examples/how_to_count_tokens_with_tiktoken) for counting tokens. Some models may also impose a limit on total number of tokens summed across inputs.
              *
              * @example The quick brown fox jumped over the lazy dog
              */
             input: string | string[] | number[] | number[][];
             /**
-             * @description ID of the model to use. You can use the [List models](/docs/api-reference/models/list) API to see all of your available models, or see our [Model overview](/docs/models/overview) for descriptions of them.
+             * @description ID of the model to use. You can use the [List models](/docs/api-reference/models/list) API to see all of your available models, or see our [Model overview](/docs/models) for descriptions of them.
              *
              * @example text-embedding-3-small
              */
             model: string | ("text-embedding-ada-002" | "text-embedding-3-small" | "text-embedding-3-large");
             /**
-             * @description A unique identifier representing your end-user, which can help OpenAI to monitor and detect abuse. [Learn more](/docs/guides/safety-best-practices/end-user-ids).
+             * @description A unique identifier representing your end-user, which can help OpenAI to monitor and detect abuse. [Learn more](/docs/guides/safety-best-practices#end-user-ids).
              *
              * @example user-1234
              */
@@ -2921,7 +3402,12 @@ export interface components {
             [key: string]: unknown;
         };
         CreateFineTuningJobRequest: {
-            /** @description The hyperparameters used for the fine-tuning job. */
+            /**
+             * @deprecated
+             * @description The hyperparameters used for the fine-tuning job.
+             *     This value is now deprecated in favor of `method`, and should be passed in under the `method` parameter.
+             *
+             */
             hyperparameters?: {
                 /**
                  * @description Number of examples in each batch. A larger batch size means that model parameters
@@ -2980,9 +3466,10 @@ export interface components {
             } & {
                 [key: string]: unknown;
             })[] | null;
+            method?: components["schemas"]["FineTuneMethod"];
             /**
              * @description The name of the model to fine-tune. You can select one of the
-             *     [supported models](/docs/guides/fine-tuning/which-models-can-be-fine-tuned).
+             *     [supported models](/docs/guides/fine-tuning#which-models-can-be-fine-tuned).
              *
              * @example gpt-4o-mini
              */
@@ -3009,7 +3496,7 @@ export interface components {
              *
              *     Your dataset must be formatted as a JSONL file. Additionally, you must upload your file with the purpose `fine-tune`.
              *
-             *     The contents of the file should differ depending on if the model uses the [chat](/docs/api-reference/fine-tuning/chat-input) or [completions](/docs/api-reference/fine-tuning/completions-input) format.
+             *     The contents of the file should differ depending on if the model uses the [chat](/docs/api-reference/fine-tuning/chat-input), [completions](/docs/api-reference/fine-tuning/completions-input) format, or if the fine-tuning method uses the [preference](/docs/api-reference/fine-tuning/preference-input) format.
              *
              *     See the [fine-tuning guide](/docs/guides/fine-tuning) for more details.
              *
@@ -3077,7 +3564,7 @@ export interface components {
              */
             size: "256x256" | "512x512" | "1024x1024";
             /**
-             * @description A unique identifier representing your end-user, which can help OpenAI to monitor and detect abuse. [Learn more](/docs/guides/safety-best-practices/end-user-ids).
+             * @description A unique identifier representing your end-user, which can help OpenAI to monitor and detect abuse. [Learn more](/docs/guides/safety-best-practices#end-user-ids).
              *
              * @example user-1234
              */
@@ -3132,7 +3619,7 @@ export interface components {
              */
             style: "vivid" | "natural";
             /**
-             * @description A unique identifier representing your end-user, which can help OpenAI to monitor and detect abuse. [Learn more](/docs/guides/safety-best-practices/end-user-ids).
+             * @description A unique identifier representing your end-user, which can help OpenAI to monitor and detect abuse. [Learn more](/docs/guides/safety-best-practices#end-user-ids).
              *
              * @example user-1234
              */
@@ -3173,7 +3660,7 @@ export interface components {
              */
             size: "256x256" | "512x512" | "1024x1024";
             /**
-             * @description A unique identifier representing your end-user, which can help OpenAI to monitor and detect abuse. [Learn more](/docs/guides/safety-best-practices/end-user-ids).
+             * @description A unique identifier representing your end-user, which can help OpenAI to monitor and detect abuse. [Learn more](/docs/guides/safety-best-practices#end-user-ids).
              *
              * @example user-1234
              */
@@ -3192,9 +3679,7 @@ export interface components {
                 [key: string]: unknown;
             })[] | null;
             content: string | (components["schemas"]["MessageContentImageFileObject"] | components["schemas"]["MessageContentImageUrlObject"] | components["schemas"]["MessageRequestContentTextObject"])[];
-            /** @description Set of 16 key-value pairs that can be attached to an object. This can be useful for storing additional information about the object in a structured format. Keys can be a maximum of 64 characters long and values can be a maximum of 512 characters long.
-             *      */
-            metadata?: Record<string, never>;
+            metadata?: components["schemas"]["Metadata"];
             /**
              * @description The role of the entity that is creating the message. Allowed values include:
              *     - `user`: Indicates the message is sent by an actual user and should be used in most cases to represent user-generated messages.
@@ -3246,7 +3731,7 @@ export interface components {
             /**
              * @description The content moderation model you would like to use. Learn more in
              *     [the moderation guide](/docs/guides/moderation), and learn about
-             *     available models [here](/docs/models/moderation).
+             *     available models [here](/docs/models#moderation).
              *
              * @default omni-moderation-latest
              * @example omni-moderation-2024-09-26
@@ -3379,16 +3864,14 @@ export interface components {
             /** @description The maximum number of prompt tokens that may be used over the course of the run. The run will make a best effort to use only the number of prompt tokens specified, across multiple turns of the run. If the run exceeds the number of prompt tokens specified, the run will end with status `incomplete`. See `incomplete_details` for more info.
              *      */
             max_prompt_tokens?: number | null;
-            /** @description Set of 16 key-value pairs that can be attached to an object. This can be useful for storing additional information about the object in a structured format. Keys can be a maximum of 64 characters long and values can be a maximum of 512 characters long.
-             *      */
-            metadata?: Record<string, never>;
+            metadata?: components["schemas"]["Metadata"];
             /**
              * @description The ID of the [Model](/docs/api-reference/models) to be used to execute this run. If a value is provided here, it will override the model associated with the assistant. If not, the model associated with the assistant will be used.
              * @example gpt-4o
              */
-            model?: (string | ("gpt-4o" | "gpt-4o-2024-08-06" | "gpt-4o-2024-05-13" | "gpt-4o-2024-08-06" | "gpt-4o-mini" | "gpt-4o-mini-2024-07-18" | "gpt-4-turbo" | "gpt-4-turbo-2024-04-09" | "gpt-4-0125-preview" | "gpt-4-turbo-preview" | "gpt-4-1106-preview" | "gpt-4-vision-preview" | "gpt-4" | "gpt-4-0314" | "gpt-4-0613" | "gpt-4-32k" | "gpt-4-32k-0314" | "gpt-4-32k-0613" | "gpt-3.5-turbo" | "gpt-3.5-turbo-16k" | "gpt-3.5-turbo-0613" | "gpt-3.5-turbo-1106" | "gpt-3.5-turbo-0125" | "gpt-3.5-turbo-16k-0613")) | null;
+            model?: (string | ("gpt-4o" | "gpt-4o-2024-11-20" | "gpt-4o-2024-08-06" | "gpt-4o-2024-05-13" | "gpt-4o-mini" | "gpt-4o-mini-2024-07-18" | "gpt-4-turbo" | "gpt-4-turbo-2024-04-09" | "gpt-4-0125-preview" | "gpt-4-turbo-preview" | "gpt-4-1106-preview" | "gpt-4-vision-preview" | "gpt-4" | "gpt-4-0314" | "gpt-4-0613" | "gpt-4-32k" | "gpt-4-32k-0314" | "gpt-4-32k-0613" | "gpt-3.5-turbo" | "gpt-3.5-turbo-16k" | "gpt-3.5-turbo-0613" | "gpt-3.5-turbo-1106" | "gpt-3.5-turbo-0125" | "gpt-3.5-turbo-16k-0613")) | null;
             parallel_tool_calls?: components["schemas"]["ParallelToolCalls"];
-            response_format?: components["schemas"]["AssistantsApiResponseFormatOption"];
+            response_format?: components["schemas"]["AssistantsApiResponseFormatOption"] & unknown;
             /** @description If `true`, returns a stream of events that happen during the Run as server-sent events, terminating when the Run enters a terminal state with a `data: [DONE]` message.
              *      */
             stream?: boolean | null;
@@ -3399,7 +3882,7 @@ export interface components {
              * @example 1
              */
             temperature: number;
-            tool_choice?: components["schemas"]["AssistantsApiToolChoiceOption"];
+            tool_choice?: components["schemas"]["AssistantsApiToolChoiceOption"] & unknown;
             /** @description Override the tools the assistant can use for this run. This is useful for modifying the behavior on a per-run basis. */
             tools?: (components["schemas"]["AssistantToolsCode"] | components["schemas"]["AssistantToolsFileSearch"] | components["schemas"]["AssistantToolsFunction"])[] | null;
             /**
@@ -3411,14 +3894,14 @@ export interface components {
              * @example 1
              */
             top_p: number;
-            truncation_strategy?: components["schemas"]["TruncationObject"];
+            truncation_strategy?: components["schemas"]["TruncationObject"] & unknown;
         } & {
             [key: string]: unknown;
         };
         CreateSpeechRequest: {
             /** @description The text to generate audio for. The maximum length is 4096 characters. */
             input: string;
-            /** @description One of the available [TTS models](/docs/models/tts): `tts-1` or `tts-1-hd`
+            /** @description One of the available [TTS models](/docs/models#tts): `tts-1` or `tts-1-hd`
              *      */
             model: string | ("tts-1" | "tts-1-hd");
             /**
@@ -3433,10 +3916,10 @@ export interface components {
              */
             speed: number;
             /**
-             * @description The voice to use when generating the audio. Supported voices are `alloy`, `echo`, `fable`, `onyx`, `nova`, and `shimmer`. Previews of the voices are available in the [Text to speech guide](/docs/guides/text-to-speech/voice-options).
+             * @description The voice to use when generating the audio. Supported voices are `alloy`, `ash`, `coral`, `echo`, `fable`, `onyx`, `nova`, `sage` and `shimmer`. Previews of the voices are available in the [Text to speech guide](/docs/guides/text-to-speech#voice-options).
              * @enum {string}
              */
-            voice: "alloy" | "echo" | "fable" | "onyx" | "nova" | "shimmer";
+            voice: "alloy" | "ash" | "coral" | "echo" | "fable" | "onyx" | "nova" | "sage" | "shimmer";
         } & {
             [key: string]: unknown;
         };
@@ -3451,16 +3934,14 @@ export interface components {
             /** @description The maximum number of prompt tokens that may be used over the course of the run. The run will make a best effort to use only the number of prompt tokens specified, across multiple turns of the run. If the run exceeds the number of prompt tokens specified, the run will end with status `incomplete`. See `incomplete_details` for more info.
              *      */
             max_prompt_tokens?: number | null;
-            /** @description Set of 16 key-value pairs that can be attached to an object. This can be useful for storing additional information about the object in a structured format. Keys can be a maximum of 64 characters long and values can be a maximum of 512 characters long.
-             *      */
-            metadata?: Record<string, never>;
+            metadata?: components["schemas"]["Metadata"];
             /**
              * @description The ID of the [Model](/docs/api-reference/models) to be used to execute this run. If a value is provided here, it will override the model associated with the assistant. If not, the model associated with the assistant will be used.
              * @example gpt-4o
              */
-            model?: (string | ("gpt-4o" | "gpt-4o-2024-08-06" | "gpt-4o-2024-05-13" | "gpt-4o-2024-08-06" | "gpt-4o-mini" | "gpt-4o-mini-2024-07-18" | "gpt-4-turbo" | "gpt-4-turbo-2024-04-09" | "gpt-4-0125-preview" | "gpt-4-turbo-preview" | "gpt-4-1106-preview" | "gpt-4-vision-preview" | "gpt-4" | "gpt-4-0314" | "gpt-4-0613" | "gpt-4-32k" | "gpt-4-32k-0314" | "gpt-4-32k-0613" | "gpt-3.5-turbo" | "gpt-3.5-turbo-16k" | "gpt-3.5-turbo-0613" | "gpt-3.5-turbo-1106" | "gpt-3.5-turbo-0125" | "gpt-3.5-turbo-16k-0613")) | null;
+            model?: (string | ("gpt-4o" | "gpt-4o-2024-11-20" | "gpt-4o-2024-08-06" | "gpt-4o-2024-05-13" | "gpt-4o-mini" | "gpt-4o-mini-2024-07-18" | "gpt-4-turbo" | "gpt-4-turbo-2024-04-09" | "gpt-4-0125-preview" | "gpt-4-turbo-preview" | "gpt-4-1106-preview" | "gpt-4-vision-preview" | "gpt-4" | "gpt-4-0314" | "gpt-4-0613" | "gpt-4-32k" | "gpt-4-32k-0314" | "gpt-4-32k-0613" | "gpt-3.5-turbo" | "gpt-3.5-turbo-16k" | "gpt-3.5-turbo-0613" | "gpt-3.5-turbo-1106" | "gpt-3.5-turbo-0125" | "gpt-3.5-turbo-16k-0613")) | null;
             parallel_tool_calls?: components["schemas"]["ParallelToolCalls"];
-            response_format?: components["schemas"]["AssistantsApiResponseFormatOption"];
+            response_format?: components["schemas"]["AssistantsApiResponseFormatOption"] & unknown;
             /** @description If `true`, returns a stream of events that happen during the Run as server-sent events, terminating when the Run enters a terminal state with a `data: [DONE]` message.
              *      */
             stream?: boolean | null;
@@ -3471,9 +3952,8 @@ export interface components {
              * @example 1
              */
             temperature: number;
-            /** @description If no thread is provided, an empty thread will be created. */
             thread?: components["schemas"]["CreateThreadRequest"];
-            tool_choice?: components["schemas"]["AssistantsApiToolChoiceOption"];
+            tool_choice?: components["schemas"]["AssistantsApiToolChoiceOption"] & unknown;
             /** @description A set of resources that are used by the assistant's tools. The resources are specific to the type of tool. For example, the `code_interpreter` tool requires a list of file IDs, while the `file_search` tool requires a list of vector store IDs.
              *      */
             tool_resources?: ({
@@ -3508,16 +3988,17 @@ export interface components {
              * @example 1
              */
             top_p: number;
-            truncation_strategy?: components["schemas"]["TruncationObject"];
+            truncation_strategy?: components["schemas"]["TruncationObject"] & unknown;
         } & {
             [key: string]: unknown;
         };
+        /** @description Options to create a new thread. If no thread is provided when running a
+         *     request, an empty thread will be created.
+         *      */
         CreateThreadRequest: {
             /** @description A list of [messages](/docs/api-reference/messages) to start the thread with. */
             messages?: components["schemas"]["CreateMessageRequest"][];
-            /** @description Set of 16 key-value pairs that can be attached to an object. This can be useful for storing additional information about the object in a structured format. Keys can be a maximum of 64 characters long and values can be a maximum of 512 characters long.
-             *      */
-            metadata?: Record<string, never>;
+            metadata?: components["schemas"]["Metadata"];
             /** @description A set of resources that are made available to the assistant's tools in this thread. The resources are specific to the type of tool. For example, the `code_interpreter` tool requires a list of file IDs, while the `file_search` tool requires a list of vector store IDs.
              *      */
             tool_resources?: ({
@@ -3570,9 +4051,7 @@ export interface components {
                         /** @description A list of [file](/docs/api-reference/files) IDs to add to the vector store. There can be a maximum of 10000 files in a vector store.
                          *      */
                         file_ids?: string[];
-                        /** @description Set of 16 key-value pairs that can be attached to a vector store. This can be useful for storing additional information about the vector store in a structured format. Keys can be a maximum of 64 characters long and values can be a maximum of 512 characters long.
-                         *      */
-                        metadata?: Record<string, never>;
+                        metadata?: components["schemas"]["Metadata"];
                     } & {
                         [key: string]: unknown;
                     })[];
@@ -3592,7 +4071,7 @@ export interface components {
              *
              */
             file: string;
-            /** @description The language of the input audio. Supplying the input language in [ISO-639-1](https://en.wikipedia.org/wiki/List_of_ISO_639-1_codes) format will improve accuracy and latency.
+            /** @description The language of the input audio. Supplying the input language in [ISO-639-1](https://en.wikipedia.org/wiki/List_of_ISO_639-1_codes) (e.g. `en`) format will improve accuracy and latency.
              *      */
             language?: string;
             /**
@@ -3601,7 +4080,7 @@ export interface components {
              * @example whisper-1
              */
             model: string | "whisper-1";
-            /** @description An optional text to guide the model's style or continue a previous audio segment. The [prompt](/docs/guides/speech-to-text/prompting) should match the audio language.
+            /** @description An optional text to guide the model's style or continue a previous audio segment. The [prompt](/docs/guides/speech-to-text#prompting) should match the audio language.
              *      */
             prompt?: string;
             response_format?: components["schemas"]["AudioResponseFormat"];
@@ -3632,7 +4111,7 @@ export interface components {
         /** @description Represents a verbose json transcription response returned by model, based on the provided input. */
         CreateTranscriptionResponseVerboseJson: {
             /** @description The duration of the input audio. */
-            duration: string;
+            duration: number;
             /** @description The language of the input audio. */
             language: string;
             /** @description Segments of the transcribed text and their corresponding details. */
@@ -3657,7 +4136,7 @@ export interface components {
              * @example whisper-1
              */
             model: string | "whisper-1";
-            /** @description An optional text to guide the model's style or continue a previous audio segment. The [prompt](/docs/guides/speech-to-text/prompting) should be in English.
+            /** @description An optional text to guide the model's style or continue a previous audio segment. The [prompt](/docs/guides/speech-to-text#prompting) should be in English.
              *      */
             prompt?: string;
             response_format?: components["schemas"]["AudioResponseFormat"];
@@ -3677,7 +4156,7 @@ export interface components {
         };
         CreateTranslationResponseVerboseJson: {
             /** @description The duration of the input audio. */
-            duration: string;
+            duration: number;
             /** @description The language of the output translation (always `english`). */
             language: string;
             /** @description Segments of the translated text and their corresponding details. */
@@ -3730,9 +4209,7 @@ export interface components {
             expires_after?: components["schemas"]["VectorStoreExpirationAfter"];
             /** @description A list of [File](/docs/api-reference/files) IDs that the vector store should use. Useful for tools like `file_search` that can access files. */
             file_ids?: string[];
-            /** @description Set of 16 key-value pairs that can be attached to an object. This can be useful for storing additional information about the object in a structured format. Keys can be a maximum of 64 characters long and values can be a maximum of 512 characters long.
-             *      */
-            metadata?: Record<string, never>;
+            metadata?: components["schemas"]["Metadata"];
             /** @description The name of the vector store. */
             name?: string;
         } & {
@@ -3832,7 +4309,7 @@ export interface components {
         } & {
             [key: string]: unknown;
         };
-        /** @description Occurs when an [error](/docs/guides/error-codes/api-errors) occurs. This can happen due to an internal server error or a timeout. */
+        /** @description Occurs when an [error](/docs/guides/error-codes#api-errors) occurs. This can happen due to an internal server error or a timeout. */
         ErrorEvent: {
             data: components["schemas"]["Error"];
             /** @enum {string} */
@@ -3849,7 +4326,7 @@ export interface components {
          * File search tool call ranking options
          * @description The ranking options for the file search. If not specified, the file search tool will use the `auto` ranker and a score_threshold of 0.
          *
-         *     See the [file search tool documentation](/docs/assistants/tools/file-search/customizing-file-search-settings) for more information.
+         *     See the [file search tool documentation](/docs/assistants/tools/file-search#customizing-file-search-settings) for more information.
          *
          */
         FileSearchRankingOptions: {
@@ -3872,8 +4349,8 @@ export interface components {
         } & {
             [key: string]: unknown;
         }) & WithRequired<components["schemas"]["ChatCompletionRequestAssistantMessage"], "role">;
-        /** @description The per-line training example of a fine-tuning input file for chat models */
-        FinetuneChatRequestInput: {
+        /** @description The per-line training example of a fine-tuning input file for chat models using the supervised method. */
+        FineTuneChatRequestInput: {
             /**
              * @deprecated
              * @description A list of functions the model may generate JSON inputs for.
@@ -3887,11 +4364,102 @@ export interface components {
             [key: string]: unknown;
         };
         /** @description The per-line training example of a fine-tuning input file for completions models */
-        FinetuneCompletionRequestInput: {
+        FineTuneCompletionRequestInput: {
             /** @description The desired completion for this training example. */
             completion?: string;
             /** @description The input prompt for this training example. */
             prompt?: string;
+        } & {
+            [key: string]: unknown;
+        };
+        /** @description Configuration for the DPO fine-tuning method. */
+        FineTuneDPOMethod: {
+            /** @description The hyperparameters used for the fine-tuning job. */
+            hyperparameters?: {
+                /**
+                 * @description Number of examples in each batch. A larger batch size means that model parameters are updated less frequently, but with lower variance.
+                 *
+                 * @default auto
+                 */
+                batch_size?: "auto" | number;
+                /**
+                 * @description The beta value for the DPO method. A higher beta value will increase the weight of the penalty between the policy and reference model.
+                 *
+                 * @default auto
+                 */
+                beta?: "auto" | number;
+                /**
+                 * @description Scaling factor for the learning rate. A smaller learning rate may be useful to avoid overfitting.
+                 *
+                 * @default auto
+                 */
+                learning_rate_multiplier?: "auto" | number;
+                /**
+                 * @description The number of epochs to train the model for. An epoch refers to one full cycle through the training dataset.
+                 *
+                 * @default auto
+                 */
+                n_epochs?: "auto" | number;
+            } & {
+                [key: string]: unknown;
+            };
+        } & {
+            [key: string]: unknown;
+        };
+        /** @description The method used for fine-tuning. */
+        FineTuneMethod: {
+            dpo?: components["schemas"]["FineTuneDPOMethod"];
+            supervised?: components["schemas"]["FineTuneSupervisedMethod"];
+            /**
+             * @description The type of method. Is either `supervised` or `dpo`.
+             * @enum {string}
+             */
+            type?: "supervised" | "dpo";
+        } & {
+            [key: string]: unknown;
+        };
+        /** @description The per-line training example of a fine-tuning input file for chat models using the dpo method. */
+        FineTunePreferenceRequestInput: {
+            input?: {
+                messages?: (components["schemas"]["ChatCompletionRequestSystemMessage"] | components["schemas"]["ChatCompletionRequestUserMessage"] | components["schemas"]["FineTuneChatCompletionRequestAssistantMessage"] | components["schemas"]["ChatCompletionRequestToolMessage"] | components["schemas"]["ChatCompletionRequestFunctionMessage"])[];
+                parallel_tool_calls?: components["schemas"]["ParallelToolCalls"];
+                /** @description A list of tools the model may generate JSON inputs for. */
+                tools?: components["schemas"]["ChatCompletionTool"][];
+            } & {
+                [key: string]: unknown;
+            };
+            /** @description The non-preferred completion message for the output. */
+            non_preferred_completion?: components["schemas"]["ChatCompletionRequestAssistantMessage"][];
+            /** @description The preferred completion message for the output. */
+            preferred_completion?: components["schemas"]["ChatCompletionRequestAssistantMessage"][];
+        } & {
+            [key: string]: unknown;
+        };
+        /** @description Configuration for the supervised fine-tuning method. */
+        FineTuneSupervisedMethod: {
+            /** @description The hyperparameters used for the fine-tuning job. */
+            hyperparameters?: {
+                /**
+                 * @description Number of examples in each batch. A larger batch size means that model parameters are updated less frequently, but with lower variance.
+                 *
+                 * @default auto
+                 */
+                batch_size?: "auto" | number;
+                /**
+                 * @description Scaling factor for the learning rate. A smaller learning rate may be useful to avoid overfitting.
+                 *
+                 * @default auto
+                 */
+                learning_rate_multiplier?: "auto" | number;
+                /**
+                 * @description The number of epochs to train the model for. An epoch refers to one full cycle through the training dataset.
+                 *
+                 * @default auto
+                 */
+                n_epochs?: "auto" | number;
+            } & {
+                [key: string]: unknown;
+            };
         } & {
             [key: string]: unknown;
         };
@@ -3955,14 +4523,29 @@ export interface components {
             fine_tuned_model: string | null;
             /** @description The Unix timestamp (in seconds) for when the fine-tuning job was finished. The value will be null if the fine-tuning job is still running. */
             finished_at: number | null;
-            /** @description The hyperparameters used for the fine-tuning job. See the [fine-tuning guide](/docs/guides/fine-tuning) for more details. */
+            /** @description The hyperparameters used for the fine-tuning job. This value will only be returned when running `supervised` jobs. */
             hyperparameters: {
                 /**
-                 * @description The number of epochs to train the model for. An epoch refers to one full cycle through the training dataset.
-                 *     "auto" decides the optimal number of epochs based on the size of the dataset. If setting the number manually, we support any number between 1 and 50 epochs.
+                 * @description Number of examples in each batch. A larger batch size means that model parameters
+                 *     are updated less frequently, but with lower variance.
+                 *
                  * @default auto
                  */
-                n_epochs: "auto" | number;
+                batch_size?: "auto" | number;
+                /**
+                 * @description Scaling factor for the learning rate. A smaller learning rate may be useful to avoid
+                 *     overfitting.
+                 *
+                 * @default auto
+                 */
+                learning_rate_multiplier?: "auto" | number;
+                /**
+                 * @description The number of epochs to train the model for. An epoch refers to one full cycle
+                 *     through the training dataset.
+                 *
+                 * @default auto
+                 */
+                n_epochs?: "auto" | number;
             } & {
                 [key: string]: unknown;
             };
@@ -3970,6 +4553,7 @@ export interface components {
             id: string;
             /** @description A list of integrations to enable for this fine-tuning job. */
             integrations?: components["schemas"]["FineTuningIntegration"][] | null;
+            method?: components["schemas"]["FineTuneMethod"];
             /** @description The base model that is being fine-tuned. */
             model: string;
             /**
@@ -4035,13 +4619,29 @@ export interface components {
         };
         /** @description Fine-tuning job event object */
         FineTuningJobEvent: {
+            /** @description The Unix timestamp (in seconds) for when the fine-tuning job was created. */
             created_at: number;
+            /** @description The data associated with the event. */
+            data?: Record<string, never>;
+            /** @description The object identifier. */
             id: string;
-            /** @enum {string} */
+            /**
+             * @description The log level of the event.
+             * @enum {string}
+             */
             level: "info" | "warn" | "error";
+            /** @description The message of the event. */
             message: string;
-            /** @enum {string} */
+            /**
+             * @description The object type, which is always "fine_tuning.job.event".
+             * @enum {string}
+             */
             object: "fine_tuning.job.event";
+            /**
+             * @description The type of event.
+             * @enum {string}
+             */
+            type?: "message" | "metrics";
         } & {
             [key: string]: unknown;
         };
@@ -4099,6 +4699,18 @@ export interface components {
              * @enum {string}
              */
             object: "organization.invite";
+            /** @description The projects that were granted membership upon acceptance of the invite. */
+            projects?: ({
+                /** @description Project's public ID */
+                id?: string;
+                /**
+                 * @description Project membership role
+                 * @enum {string}
+                 */
+                role?: "member" | "owner";
+            } & {
+                [key: string]: unknown;
+            })[];
             /**
              * @description `owner` or `reader`
              * @enum {string}
@@ -4142,6 +4754,18 @@ export interface components {
         InviteRequest: {
             /** @description Send an email to this address */
             email: string;
+            /** @description An array of projects to which membership is granted at the same time the org invite is accepted. If omitted, the user will be invited to the default project for compatibility with legacy behavior. */
+            projects?: ({
+                /** @description Project's public ID */
+                id: string;
+                /**
+                 * @description Project membership role
+                 * @enum {string}
+                 */
+                role: "member" | "owner";
+            } & {
+                [key: string]: unknown;
+            })[];
             /**
              * @description `owner` or `reader`
              * @enum {string}
@@ -4189,8 +4813,14 @@ export interface components {
         };
         ListFilesResponse: {
             data: components["schemas"]["OpenAIFile"][];
-            /** @enum {string} */
-            object: "list";
+            /** @example file-abc123 */
+            first_id: string;
+            /** @example false */
+            has_more: boolean;
+            /** @example file-abc456 */
+            last_id: string;
+            /** @example list */
+            object: string;
         } & {
             [key: string]: unknown;
         };
@@ -4645,9 +5275,7 @@ export interface components {
             } & {
                 [key: string]: unknown;
             }) | null;
-            /** @description Set of 16 key-value pairs that can be attached to an object. This can be useful for storing additional information about the object in a structured format. Keys can be a maximum of 64 characters long and values can be a maximum of 512 characters long.
-             *      */
-            metadata: Record<string, never>;
+            metadata: components["schemas"]["Metadata"];
             /**
              * @description The object type, which is always `thread.message`.
              * @enum {string}
@@ -4716,6 +5344,16 @@ export interface components {
         } & {
             [key: string]: unknown;
         });
+        /** @description Set of 16 key-value pairs that can be attached to an object. This can be
+         *     useful for storing additional information about the object in a structured
+         *     format, and querying for objects via API or the dashboard.
+         *
+         *     Keys are strings with a maximum length of 64 characters. Values are strings
+         *     with a maximum length of 512 characters.
+         *      */
+        Metadata: {
+            [key: string]: string;
+        } | null;
         /**
          * Model
          * @description Describes an OpenAI model offering that can be used with the API.
@@ -4742,16 +5380,14 @@ export interface components {
             /** @description The system instructions that the assistant uses. The maximum length is 256,000 characters.
              *      */
             instructions?: string | null;
-            /** @description Set of 16 key-value pairs that can be attached to an object. This can be useful for storing additional information about the object in a structured format. Keys can be a maximum of 64 characters long and values can be a maximum of 512 characters long.
-             *      */
-            metadata?: Record<string, never>;
-            /** @description ID of the model to use. You can use the [List models](/docs/api-reference/models/list) API to see all of your available models, or see our [Model overview](/docs/models/overview) for descriptions of them.
+            metadata?: components["schemas"]["Metadata"];
+            /** @description ID of the model to use. You can use the [List models](/docs/api-reference/models/list) API to see all of your available models, or see our [Model overview](/docs/models) for descriptions of them.
              *      */
             model?: string;
             /** @description The name of the assistant. The maximum length is 256 characters.
              *      */
             name?: string | null;
-            response_format?: components["schemas"]["AssistantsApiResponseFormatOption"];
+            response_format?: components["schemas"]["AssistantsApiResponseFormatOption"] & unknown;
             /**
              * @description What sampling temperature to use, between 0 and 2. Higher values like 0.8 will make the output more random, while lower values like 0.2 will make it more focused and deterministic.
              *
@@ -4801,23 +5437,17 @@ export interface components {
             [key: string]: unknown;
         };
         ModifyMessageRequest: {
-            /** @description Set of 16 key-value pairs that can be attached to an object. This can be useful for storing additional information about the object in a structured format. Keys can be a maximum of 64 characters long and values can be a maximum of 512 characters long.
-             *      */
-            metadata?: Record<string, never>;
+            metadata?: components["schemas"]["Metadata"];
         } & {
             [key: string]: unknown;
         };
         ModifyRunRequest: {
-            /** @description Set of 16 key-value pairs that can be attached to an object. This can be useful for storing additional information about the object in a structured format. Keys can be a maximum of 64 characters long and values can be a maximum of 512 characters long.
-             *      */
-            metadata?: Record<string, never>;
+            metadata?: components["schemas"]["Metadata"];
         } & {
             [key: string]: unknown;
         };
         ModifyThreadRequest: {
-            /** @description Set of 16 key-value pairs that can be attached to an object. This can be useful for storing additional information about the object in a structured format. Keys can be a maximum of 64 characters long and values can be a maximum of 512 characters long.
-             *      */
-            metadata?: Record<string, never>;
+            metadata?: components["schemas"]["Metadata"];
             /** @description A set of resources that are made available to the assistant's tools in this thread. The resources are specific to the type of tool. For example, the `code_interpreter` tool requires a list of file IDs, while the `file_search` tool requires a list of vector store IDs.
              *      */
             tool_resources?: ({
@@ -4895,10 +5525,32 @@ export interface components {
             [key: string]: unknown;
         };
         /**
-         * @description Whether to enable [parallel function calling](/docs/guides/function-calling/parallel-function-calling) during tool use.
+         * @description Whether to enable [parallel function calling](/docs/guides/function-calling#configuring-parallel-function-calling) during tool use.
          * @default true
          */
         ParallelToolCalls: boolean;
+        /**
+         * Static Content
+         * @description Static predicted output content, such as the content of a text file that is
+         *     being regenerated.
+         *
+         */
+        PredictionContent: {
+            /** @description The content that should be matched when generating a model response.
+             *     If generated tokens would match this content, the entire model response
+             *     can be returned much more quickly.
+             *      */
+            content: string | components["schemas"]["ChatCompletionRequestMessageContentPartText"][];
+            /**
+             * @description The type of the predicted content you want to provide. This type is
+             *     currently always `content`.
+             *
+             * @enum {string}
+             */
+            type: "content";
+        } & {
+            [key: string]: unknown;
+        };
         /** @description Represents an individual project. */
         Project: {
             /** @description The Unix timestamp (in seconds) of when the project was archived or `null`. */
@@ -4982,6 +5634,58 @@ export interface components {
             last_id: string;
             /** @enum {string} */
             object: "list";
+        } & {
+            [key: string]: unknown;
+        };
+        /** @description Represents a project rate limit config. */
+        ProjectRateLimit: {
+            /** @description The maximum batch input tokens per day. Only present for relevant models. */
+            batch_1_day_max_input_tokens?: number;
+            /** @description The identifier, which can be referenced in API endpoints. */
+            id: string;
+            /** @description The maximum audio megabytes per minute. Only present for relevant models. */
+            max_audio_megabytes_per_1_minute?: number;
+            /** @description The maximum images per minute. Only present for relevant models. */
+            max_images_per_1_minute?: number;
+            /** @description The maximum requests per day. Only present for relevant models. */
+            max_requests_per_1_day?: number;
+            /** @description The maximum requests per minute. */
+            max_requests_per_1_minute: number;
+            /** @description The maximum tokens per minute. */
+            max_tokens_per_1_minute: number;
+            /** @description The model this rate limit applies to. */
+            model: string;
+            /**
+             * @description The object type, which is always `project.rate_limit`
+             * @enum {string}
+             */
+            object: "project.rate_limit";
+        } & {
+            [key: string]: unknown;
+        };
+        ProjectRateLimitListResponse: {
+            data: components["schemas"]["ProjectRateLimit"][];
+            first_id: string;
+            has_more: boolean;
+            last_id: string;
+            /** @enum {string} */
+            object: "list";
+        } & {
+            [key: string]: unknown;
+        };
+        ProjectRateLimitUpdateRequest: {
+            /** @description The maximum batch input tokens per day. Only relevant for certain models. */
+            batch_1_day_max_input_tokens?: number;
+            /** @description The maximum audio megabytes per minute. Only relevant for certain models. */
+            max_audio_megabytes_per_1_minute?: number;
+            /** @description The maximum images per minute. Only relevant for certain models. */
+            max_images_per_1_minute?: number;
+            /** @description The maximum requests per day. Only relevant for certain models. */
+            max_requests_per_1_day?: number;
+            /** @description The maximum requests per minute. */
+            max_requests_per_1_minute?: number;
+            /** @description The maximum tokens per minute. */
+            max_tokens_per_1_minute?: number;
         } & {
             [key: string]: unknown;
         };
@@ -5124,311 +5828,696 @@ export interface components {
         } & {
             [key: string]: unknown;
         };
-        /** @description Send this event when adding an item to the conversation. */
+        /** @description Add a new Item to the Conversation's context, including messages, function
+         *     calls, and function call responses. This event can be used both to populate a
+         *     "history" of the conversation and to add new items mid-stream, but has the
+         *     current limitation that it cannot populate assistant audio messages.
+         *
+         *     If successful, the server will respond with a `conversation.item.created`
+         *     event, otherwise an `error` event will be sent.
+         *      */
         RealtimeClientEventConversationItemCreate: {
             /** @description Optional client-generated ID used to identify this event. */
             event_id?: string;
-            /** @description The item to add to the conversation. */
-            item: {
-                /** @description The arguments of the function call (for "function_call" items). */
-                arguments?: string;
-                /** @description The ID of the function call (for "function_call" items). */
-                call_id?: string;
-                /** @description The content of the message. */
-                content?: ({
-                    /** @description Base64-encoded audio bytes. */
-                    audio?: string;
-                    /** @description The text content. */
-                    text?: string;
-                    /** @description The transcript of the audio. */
-                    transcript?: string;
-                    /** @description The content type ("input_text", "input_audio", "text", "audio"). */
-                    type?: string;
-                } & {
-                    [key: string]: unknown;
-                })[];
-                /** @description The unique ID of the item. */
-                id?: string;
-                /** @description The name of the function being called (for "function_call" items). */
-                name?: string;
-                /** @description The output of the function call (for "function_call_output" items). */
-                output?: string;
-                /** @description The role of the message sender ("user", "assistant", "system"). */
-                role?: string;
-                /** @description The status of the item ("completed", "in_progress", "incomplete"). */
-                status?: string;
-                /** @description The type of the item ("message", "function_call", "function_call_output"). */
-                type?: string;
-            } & {
-                [key: string]: unknown;
-            };
-            /** @description The ID of the preceding item after which the new item will be inserted. */
+            item: components["schemas"]["RealtimeConversationItem"];
+            /** @description The ID of the preceding item after which the new item will be inserted.
+             *     If not set, the new item will be appended to the end of the conversation.
+             *     If set to `root`, the new item will be added to the beginning of the conversation.
+             *     If set to an existing ID, it allows an item to be inserted mid-conversation. If the
+             *     ID cannot be found, an error will be returned and the item will not be added.
+             *      */
             previous_item_id?: string;
-            /** @description The event type, must be "conversation.item.create". */
-            type: string;
+            /**
+             * @description The event type, must be `conversation.item.create`.
+             * @enum {string}
+             */
+            type: "conversation.item.create";
         } & {
             [key: string]: unknown;
         };
-        /** @description Send this event when you want to remove any item from the conversation history. */
+        /** @description Send this event when you want to remove any item from the conversation
+         *     history. The server will respond with a `conversation.item.deleted` event,
+         *     unless the item does not exist in the conversation history, in which case the
+         *     server will respond with an error.
+         *      */
         RealtimeClientEventConversationItemDelete: {
             /** @description Optional client-generated ID used to identify this event. */
             event_id?: string;
             /** @description The ID of the item to delete. */
             item_id: string;
-            /** @description The event type, must be "conversation.item.delete". */
-            type: string;
+            /**
+             * @description The event type, must be `conversation.item.delete`.
+             * @enum {string}
+             */
+            type: "conversation.item.delete";
         } & {
             [key: string]: unknown;
         };
-        /** @description Send this event when you want to truncate a previous assistant message’s audio. */
+        /** @description Send this event to truncate a previous assistant message’s audio. The server
+         *     will produce audio faster than realtime, so this event is useful when the user
+         *     interrupts to truncate audio that has already been sent to the client but not
+         *     yet played. This will synchronize the server's understanding of the audio with
+         *     the client's playback.
+         *
+         *     Truncating audio will delete the server-side text transcript to ensure there
+         *     is not text in the context that hasn't been heard by the user.
+         *
+         *     If successful, the server will respond with a `conversation.item.truncated`
+         *     event.
+         *      */
         RealtimeClientEventConversationItemTruncate: {
-            /** @description Inclusive duration up to which audio is truncated, in milliseconds. */
+            /** @description Inclusive duration up to which audio is truncated, in milliseconds. If
+             *     the audio_end_ms is greater than the actual audio duration, the server
+             *     will respond with an error.
+             *      */
             audio_end_ms: number;
-            /** @description The index of the content part to truncate. */
+            /** @description The index of the content part to truncate. Set this to 0. */
             content_index: number;
             /** @description Optional client-generated ID used to identify this event. */
             event_id?: string;
-            /** @description The ID of the assistant message item to truncate. */
+            /** @description The ID of the assistant message item to truncate. Only assistant message
+             *     items can be truncated.
+             *      */
             item_id: string;
-            /** @description The event type, must be "conversation.item.truncate". */
-            type: string;
+            /**
+             * @description The event type, must be `conversation.item.truncate`.
+             * @enum {string}
+             */
+            type: "conversation.item.truncate";
         } & {
             [key: string]: unknown;
         };
-        /** @description Send this event to append audio bytes to the input audio buffer. */
+        /** @description Send this event to append audio bytes to the input audio buffer. The audio
+         *     buffer is temporary storage you can write to and later commit. In Server VAD
+         *     mode, the audio buffer is used to detect speech and the server will decide
+         *     when to commit. When Server VAD is disabled, you must commit the audio buffer
+         *     manually.
+         *
+         *     The client may choose how much audio to place in each event up to a maximum
+         *     of 15 MiB, for example streaming smaller chunks from the client may allow the
+         *     VAD to be more responsive. Unlike made other client events, the server will
+         *     not send a confirmation response to this event.
+         *      */
         RealtimeClientEventInputAudioBufferAppend: {
-            /** @description Base64-encoded audio bytes. */
+            /** @description Base64-encoded audio bytes. This must be in the format specified by the
+             *     `input_audio_format` field in the session configuration.
+             *      */
             audio: string;
             /** @description Optional client-generated ID used to identify this event. */
             event_id?: string;
-            /** @description The event type, must be "input_audio_buffer.append". */
-            type: string;
+            /**
+             * @description The event type, must be `input_audio_buffer.append`.
+             * @enum {string}
+             */
+            type: "input_audio_buffer.append";
         } & {
             [key: string]: unknown;
         };
-        /** @description Send this event to clear the audio bytes in the buffer. */
+        /** @description Send this event to clear the audio bytes in the buffer. The server will
+         *     respond with an `input_audio_buffer.cleared` event.
+         *      */
         RealtimeClientEventInputAudioBufferClear: {
             /** @description Optional client-generated ID used to identify this event. */
             event_id?: string;
-            /** @description The event type, must be "input_audio_buffer.clear". */
-            type: string;
+            /**
+             * @description The event type, must be `input_audio_buffer.clear`.
+             * @enum {string}
+             */
+            type: "input_audio_buffer.clear";
         } & {
             [key: string]: unknown;
         };
-        /** @description Send this event to commit audio bytes to a user message. */
+        /** @description Send this event to commit the user input audio buffer, which will create a
+         *     new user message item in the conversation. This event will produce an error
+         *     if the input audio buffer is empty. When in Server VAD mode, the client does
+         *     not need to send this event, the server will commit the audio buffer
+         *     automatically.
+         *
+         *     Committing the input audio buffer will trigger input audio transcription
+         *     (if enabled in session configuration), but it will not create a response
+         *     from the model. The server will respond with an `input_audio_buffer.committed`
+         *     event.
+         *      */
         RealtimeClientEventInputAudioBufferCommit: {
             /** @description Optional client-generated ID used to identify this event. */
             event_id?: string;
-            /** @description The event type, must be "input_audio_buffer.commit". */
-            type: string;
+            /**
+             * @description The event type, must be `input_audio_buffer.commit`.
+             * @enum {string}
+             */
+            type: "input_audio_buffer.commit";
         } & {
             [key: string]: unknown;
         };
-        /** @description Send this event to cancel an in-progress response. */
+        /** @description Send this event to cancel an in-progress response. The server will respond
+         *     with a `response.cancelled` event or an error if there is no response to
+         *     cancel.
+         *      */
         RealtimeClientEventResponseCancel: {
             /** @description Optional client-generated ID used to identify this event. */
             event_id?: string;
-            /** @description The event type, must be "response.cancel". */
-            type: string;
+            /** @description A specific response ID to cancel - if not provided, will cancel an
+             *     in-progress response in the default conversation.
+             *      */
+            response_id?: string;
+            /**
+             * @description The event type, must be `response.cancel`.
+             * @enum {string}
+             */
+            type: "response.cancel";
         } & {
             [key: string]: unknown;
         };
-        /** @description Send this event to trigger a response generation. */
+        /** @description This event instructs the server to create a Response, which means triggering
+         *     model inference. When in Server VAD mode, the server will create Responses
+         *     automatically.
+         *
+         *     A Response will include at least one Item, and may have two, in which case
+         *     the second will be a function call. These Items will be appended to the
+         *     conversation history.
+         *
+         *     The server will respond with a `response.created` event, events for Items
+         *     and content created, and finally a `response.done` event to indicate the
+         *     Response is complete.
+         *
+         *     The `response.create` event includes inference configuration like
+         *     `instructions`, and `temperature`. These fields will override the Session's
+         *     configuration for this Response only.
+         *      */
         RealtimeClientEventResponseCreate: {
             /** @description Optional client-generated ID used to identify this event. */
             event_id?: string;
-            /** @description Configuration for the response. */
-            response: {
-                /** @description Instructions for the model. */
-                instructions?: string;
-                /** @description Maximum number of output tokens for a single assistant response, inclusive of tool calls. Provide an integer between 1 and 4096 to limit output tokens, or "inf" for the maximum available tokens for a given model. Defaults to "inf". */
-                max_output_tokens?: number | "inf";
-                /** @description The modalities for the response. */
-                modalities?: string[];
-                /** @description The format of output audio. */
-                output_audio_format?: string;
-                /** @description Sampling temperature. */
-                temperature?: number;
-                /** @description How the model chooses tools. */
-                tool_choice?: string;
-                /** @description Tools (functions) available to the model. */
-                tools?: ({
-                    /** @description The description of the function. */
-                    description?: string;
-                    /** @description The name of the function. */
-                    name?: string;
-                    /** @description Parameters of the function in JSON Schema. */
-                    parameters?: Record<string, never>;
-                    /** @description The type of the tool. */
-                    type?: string;
-                } & {
-                    [key: string]: unknown;
-                })[];
-                /** @description The voice the model uses to respond - one of `alloy`, `echo`, or `shimmer`. */
-                voice?: string;
-            } & {
-                [key: string]: unknown;
-            };
-            /** @description The event type, must be "response.create". */
-            type: string;
+            response?: components["schemas"]["RealtimeResponseCreateParams"];
+            /**
+             * @description The event type, must be `response.create`.
+             * @enum {string}
+             */
+            type: "response.create";
         } & {
             [key: string]: unknown;
         };
-        /** @description Send this event to update the session’s default configuration. */
+        /** @description Send this event to update the session’s default configuration. The client may
+         *     send this event at any time to update the session configuration, and any
+         *     field may be updated at any time, except for "voice". The server will respond
+         *     with a `session.updated` event that shows the full effective configuration.
+         *     Only fields that are present are updated, thus the correct way to clear a
+         *     field like "instructions" is to pass an empty string.
+         *      */
         RealtimeClientEventSessionUpdate: {
             /** @description Optional client-generated ID used to identify this event. */
             event_id?: string;
-            /** @description Session configuration to update. */
-            session: {
-                /** @description The format of input audio. Options are "pcm16", "g711_ulaw", or "g711_alaw". */
-                input_audio_format?: string;
-                /** @description Configuration for input audio transcription. Can be set to `null` to turn off. */
-                input_audio_transcription?: {
-                    /** @description The model to use for transcription (e.g., "whisper-1"). */
-                    model?: string;
-                } & {
-                    [key: string]: unknown;
-                };
-                /** @description The default system instructions prepended to model calls. */
-                instructions?: string;
-                /** @description Maximum number of output tokens for a single assistant response, inclusive of tool calls. Provide an integer between 1 and 4096 to limit output tokens, or "inf" for the maximum available tokens for a given model. Defaults to "inf". */
-                max_output_tokens?: number | "inf";
-                /** @description The set of modalities the model can respond with. To disable audio, set this to ["text"]. */
-                modalities?: string[];
-                /** @description The format of output audio. Options are "pcm16", "g711_ulaw", or "g711_alaw". */
-                output_audio_format?: string;
-                /** @description Sampling temperature for the model. */
-                temperature?: number;
-                /** @description How the model chooses tools. Options are "auto", "none", "required", or specify a function. */
-                tool_choice?: string;
-                /** @description Tools (functions) available to the model. */
-                tools?: ({
-                    /** @description The description of the function. */
-                    description?: string;
-                    /** @description The name of the function. */
-                    name?: string;
-                    /** @description Parameters of the function in JSON Schema. */
-                    parameters?: Record<string, never>;
-                    /** @description The type of the tool, e.g., "function". */
-                    type?: string;
-                } & {
-                    [key: string]: unknown;
-                })[];
-                /** @description Configuration for turn detection. Can be set to `null` to turn off. */
-                turn_detection?: {
-                    /** @description Amount of audio to include before speech starts (in milliseconds). */
-                    prefix_padding_ms?: number;
-                    /** @description Duration of silence to detect speech stop (in milliseconds). */
-                    silence_duration_ms?: number;
-                    /** @description Activation threshold for VAD (0.0 to 1.0). */
-                    threshold?: number;
-                    /** @description Type of turn detection, only "server_vad" is currently supported. */
-                    type?: string;
-                } & {
-                    [key: string]: unknown;
-                };
-                /** @description The voice the model uses to respond - one of `alloy`, `echo`, or  `shimmer`. Cannot be changed once the model has responded with audio  at least once. */
-                voice?: string;
-            } & {
-                [key: string]: unknown;
-            };
-            /** @description The event type, must be "session.update". */
-            type: string;
+            session: components["schemas"]["RealtimeSessionCreateRequest"];
+            /**
+             * @description The event type, must be `session.update`.
+             * @enum {string}
+             */
+            type: "session.update";
         } & {
             [key: string]: unknown;
         };
-        /** @description Returned when a conversation is created. Emitted right after session creation. */
+        /** @description The item to add to the conversation. */
+        RealtimeConversationItem: {
+            /** @description The arguments of the function call (for `function_call` items).
+             *      */
+            arguments?: string;
+            /** @description The ID of the function call (for `function_call` and
+             *     `function_call_output` items). If passed on a `function_call_output`
+             *     item, the server will check that a `function_call` item with the same
+             *     ID exists in the conversation history.
+             *      */
+            call_id?: string;
+            /** @description The content of the message, applicable for `message` items.
+             *     - Message items of role `system` support only `input_text` content
+             *     - Message items of role `user` support `input_text` and `input_audio`
+             *       content
+             *     - Message items of role `assistant` support `text` content.
+             *      */
+            content?: ({
+                /** @description Base64-encoded audio bytes, used for `input_audio` content type.
+                 *      */
+                audio?: string;
+                /** @description ID of a previous conversation item to reference (for `item_reference`
+                 *     content types in `response.create` events). These can reference both
+                 *     client and server created items.
+                 *      */
+                id?: string;
+                /** @description The text content, used for `input_text` and `text` content types.
+                 *      */
+                text?: string;
+                /** @description The transcript of the audio, used for `input_audio` content type.
+                 *      */
+                transcript?: string;
+                /**
+                 * @description The content type (`input_text`, `input_audio`, `item_reference`, `text`).
+                 *
+                 * @enum {string}
+                 */
+                type?: "input_audio" | "input_text" | "item_reference" | "text";
+            } & {
+                [key: string]: unknown;
+            })[];
+            /** @description The unique ID of the item, this can be generated by the client to help
+             *     manage server-side context, but is not required because the server will
+             *     generate one if not provided.
+             *      */
+            id?: string;
+            /** @description The name of the function being called (for `function_call` items).
+             *      */
+            name?: string;
+            /**
+             * @description Identifier for the API object being returned - always `realtime.item`.
+             *
+             * @enum {string}
+             */
+            object?: "realtime.item";
+            /** @description The output of the function call (for `function_call_output` items).
+             *      */
+            output?: string;
+            /**
+             * @description The role of the message sender (`user`, `assistant`, `system`), only
+             *     applicable for `message` items.
+             *
+             * @enum {string}
+             */
+            role?: "user" | "assistant" | "system";
+            /**
+             * @description The status of the item (`completed`, `incomplete`). These have no effect
+             *     on the conversation, but are accepted for consistency with the
+             *     `conversation.item.created` event.
+             *
+             * @enum {string}
+             */
+            status?: "completed" | "incomplete";
+            /**
+             * @description The type of the item (`message`, `function_call`, `function_call_output`).
+             *
+             * @enum {string}
+             */
+            type?: "message" | "function_call" | "function_call_output";
+        } & {
+            [key: string]: unknown;
+        };
+        /** @description The item to add to the conversation. */
+        RealtimeConversationItemWithReference: {
+            /** @description The arguments of the function call (for `function_call` items).
+             *      */
+            arguments?: string;
+            /** @description The ID of the function call (for `function_call` and
+             *     `function_call_output` items). If passed on a `function_call_output`
+             *     item, the server will check that a `function_call` item with the same
+             *     ID exists in the conversation history.
+             *      */
+            call_id?: string;
+            /** @description The content of the message, applicable for `message` items.
+             *     - Message items of role `system` support only `input_text` content
+             *     - Message items of role `user` support `input_text` and `input_audio`
+             *       content
+             *     - Message items of role `assistant` support `text` content.
+             *      */
+            content?: ({
+                /** @description Base64-encoded audio bytes, used for `input_audio` content type.
+                 *      */
+                audio?: string;
+                /** @description ID of a previous conversation item to reference (for `item_reference`
+                 *     content types in `response.create` events). These can reference both
+                 *     client and server created items.
+                 *      */
+                id?: string;
+                /** @description The text content, used for `input_text` and `text` content types.
+                 *      */
+                text?: string;
+                /** @description The transcript of the audio, used for `input_audio` content type.
+                 *      */
+                transcript?: string;
+                /**
+                 * @description The content type (`input_text`, `input_audio`, `item_reference`, `text`).
+                 *
+                 * @enum {string}
+                 */
+                type?: "input_audio" | "input_text" | "item_reference" | "text";
+            } & {
+                [key: string]: unknown;
+            })[];
+            /** @description For an item of type (`message` | `function_call` | `function_call_output`)
+             *     this field allows the client to assign the unique ID of the item. It is
+             *     not required because the server will generate one if not provided.
+             *
+             *     For an item of type `item_reference`, this field is required and is a
+             *     reference to any item that has previously existed in the conversation.
+             *      */
+            id?: string;
+            /** @description The name of the function being called (for `function_call` items).
+             *      */
+            name?: string;
+            /**
+             * @description Identifier for the API object being returned - always `realtime.item`.
+             *
+             * @enum {string}
+             */
+            object?: "realtime.item";
+            /** @description The output of the function call (for `function_call_output` items).
+             *      */
+            output?: string;
+            /**
+             * @description The role of the message sender (`user`, `assistant`, `system`), only
+             *     applicable for `message` items.
+             *
+             * @enum {string}
+             */
+            role?: "user" | "assistant" | "system";
+            /**
+             * @description The status of the item (`completed`, `incomplete`). These have no effect
+             *     on the conversation, but are accepted for consistency with the
+             *     `conversation.item.created` event.
+             *
+             * @enum {string}
+             */
+            status?: "completed" | "incomplete";
+            /**
+             * @description The type of the item (`message`, `function_call`, `function_call_output`, `item_reference`).
+             *
+             * @enum {string}
+             */
+            type?: "message" | "function_call" | "function_call_output";
+        } & {
+            [key: string]: unknown;
+        };
+        /** @description The response resource. */
+        RealtimeResponse: {
+            /** @description Which conversation the response is added to, determined by the `conversation`
+             *     field in the `response.create` event. If `auto`, the response will be added to
+             *     the default conversation and the value of `conversation_id` will be an id like
+             *     `conv_1234`. If `none`, the response will not be added to any conversation and
+             *     the value of `conversation_id` will be `null`. If responses are being triggered
+             *     by server VAD, the response will be added to the default conversation, thus
+             *     the `conversation_id` will be an id like `conv_1234`.
+             *      */
+            conversation_id?: string;
+            /** @description The unique ID of the response. */
+            id?: string;
+            /** @description Maximum number of output tokens for a single assistant response,
+             *     inclusive of tool calls, that was used in this response.
+             *      */
+            max_output_tokens?: number | "inf";
+            metadata?: components["schemas"]["Metadata"];
+            /** @description The set of modalities the model used to respond. If there are multiple modalities,
+             *     the model will pick one, for example if `modalities` is `["text", "audio"]`, the model
+             *     could be responding in either text or audio.
+             *      */
+            modalities?: ("text" | "audio")[];
+            /**
+             * @description The object type, must be `realtime.response`.
+             * @enum {string}
+             */
+            object?: "realtime.response";
+            /** @description The list of output items generated by the response. */
+            output?: components["schemas"]["RealtimeConversationItem"][];
+            /**
+             * @description The format of output audio. Options are `pcm16`, `g711_ulaw`, or `g711_alaw`.
+             *
+             * @enum {string}
+             */
+            output_audio_format?: "pcm16" | "g711_ulaw" | "g711_alaw";
+            /**
+             * @description The final status of the response (`completed`, `cancelled`, `failed`, or
+             *     `incomplete`).
+             *
+             * @enum {string}
+             */
+            status?: "completed" | "cancelled" | "failed" | "incomplete";
+            /** @description Additional details about the status. */
+            status_details?: {
+                /** @description A description of the error that caused the response to fail,
+                 *     populated when the `status` is `failed`.
+                 *      */
+                error?: {
+                    /** @description Error code, if any. */
+                    code?: string;
+                    /** @description The type of error. */
+                    type?: string;
+                } & {
+                    [key: string]: unknown;
+                };
+                /**
+                 * @description The reason the Response did not complete. For a `cancelled` Response,
+                 *     one of `turn_detected` (the server VAD detected a new start of speech)
+                 *     or `client_cancelled` (the client sent a cancel event). For an
+                 *     `incomplete` Response, one of `max_output_tokens` or `content_filter`
+                 *     (the server-side safety filter activated and cut off the response).
+                 *
+                 * @enum {string}
+                 */
+                reason?: "turn_detected" | "client_cancelled" | "max_output_tokens" | "content_filter";
+                /**
+                 * @description The type of error that caused the response to fail, corresponding
+                 *     with the `status` field (`completed`, `cancelled`, `incomplete`,
+                 *     `failed`).
+                 *
+                 * @enum {string}
+                 */
+                type?: "completed" | "cancelled" | "failed" | "incomplete";
+            } & {
+                [key: string]: unknown;
+            };
+            /** @description Sampling temperature for the model, limited to [0.6, 1.2]. Defaults to 0.8.
+             *      */
+            temperature?: number;
+            /** @description Usage statistics for the Response, this will correspond to billing. A
+             *     Realtime API session will maintain a conversation context and append new
+             *     Items to the Conversation, thus output from previous turns (text and
+             *     audio tokens) will become the input for later turns.
+             *      */
+            usage?: {
+                /** @description Details about the input tokens used in the Response. */
+                input_token_details?: {
+                    /** @description The number of audio tokens used in the Response. */
+                    audio_tokens?: number;
+                    /** @description The number of cached tokens used in the Response. */
+                    cached_tokens?: number;
+                    /** @description The number of text tokens used in the Response. */
+                    text_tokens?: number;
+                } & {
+                    [key: string]: unknown;
+                };
+                /** @description The number of input tokens used in the Response, including text and
+                 *     audio tokens.
+                 *      */
+                input_tokens?: number;
+                /** @description Details about the output tokens used in the Response. */
+                output_token_details?: {
+                    /** @description The number of audio tokens used in the Response. */
+                    audio_tokens?: number;
+                    /** @description The number of text tokens used in the Response. */
+                    text_tokens?: number;
+                } & {
+                    [key: string]: unknown;
+                };
+                /** @description The number of output tokens sent in the Response, including text and
+                 *     audio tokens.
+                 *      */
+                output_tokens?: number;
+                /** @description The total number of tokens in the Response including input and output
+                 *     text and audio tokens.
+                 *      */
+                total_tokens?: number;
+            } & {
+                [key: string]: unknown;
+            };
+            /**
+             * @description The voice the model used to respond.
+             *     Current voice options are `alloy`, `ash`, `ballad`, `coral`, `echo` `sage`,
+             *     `shimmer` and `verse`.
+             *
+             * @enum {string}
+             */
+            voice?: "alloy" | "ash" | "ballad" | "coral" | "echo" | "sage" | "shimmer" | "verse";
+        } & {
+            [key: string]: unknown;
+        };
+        /** @description Create a new Realtime response with these parameters */
+        RealtimeResponseCreateParams: {
+            /** @description Controls which conversation the response is added to. Currently supports
+             *     `auto` and `none`, with `auto` as the default value. The `auto` value
+             *     means that the contents of the response will be added to the default
+             *     conversation. Set this to `none` to create an out-of-band response which
+             *     will not add items to default conversation.
+             *      */
+            conversation?: string | ("auto" | "none");
+            /** @description Input items to include in the prompt for the model. Using this field
+             *     creates a new context for this Response instead of using the default
+             *     conversation. An empty array `[]` will clear the context for this Response.
+             *     Note that this can include references to items from the default conversation.
+             *      */
+            input?: components["schemas"]["RealtimeConversationItemWithReference"][];
+            /** @description The default system instructions (i.e. system message) prepended to model
+             *     calls. This field allows the client to guide the model on desired
+             *     responses. The model can be instructed on response content and format,
+             *     (e.g. "be extremely succinct", "act friendly", "here are examples of good
+             *     responses") and on audio behavior (e.g. "talk quickly", "inject emotion
+             *     into your voice", "laugh frequently"). The instructions are not guaranteed
+             *     to be followed by the model, but they provide guidance to the model on the
+             *     desired behavior.
+             *
+             *     Note that the server sets default instructions which will be used if this
+             *     field is not set and are visible in the `session.created` event at the
+             *     start of the session.
+             *      */
+            instructions?: string;
+            /** @description Maximum number of output tokens for a single assistant response,
+             *     inclusive of tool calls. Provide an integer between 1 and 4096 to
+             *     limit output tokens, or `inf` for the maximum available tokens for a
+             *     given model. Defaults to `inf`.
+             *      */
+            max_response_output_tokens?: number | "inf";
+            metadata?: components["schemas"]["Metadata"];
+            /** @description The set of modalities the model can respond with. To disable audio,
+             *     set this to ["text"].
+             *      */
+            modalities?: ("text" | "audio")[];
+            /**
+             * @description The format of output audio. Options are `pcm16`, `g711_ulaw`, or `g711_alaw`.
+             *
+             * @enum {string}
+             */
+            output_audio_format?: "pcm16" | "g711_ulaw" | "g711_alaw";
+            /** @description Sampling temperature for the model, limited to [0.6, 1.2]. Defaults to 0.8.
+             *      */
+            temperature?: number;
+            /** @description How the model chooses tools. Options are `auto`, `none`, `required`, or
+             *     specify a function, like `{"type": "function", "function": {"name": "my_function"}}`.
+             *      */
+            tool_choice?: string;
+            /** @description Tools (functions) available to the model. */
+            tools?: ({
+                /** @description The description of the function, including guidance on when and how
+                 *     to call it, and guidance about what to tell the user when calling
+                 *     (if anything).
+                 *      */
+                description?: string;
+                /** @description The name of the function. */
+                name?: string;
+                /** @description Parameters of the function in JSON Schema. */
+                parameters?: Record<string, never>;
+                /**
+                 * @description The type of the tool, i.e. `function`.
+                 * @enum {string}
+                 */
+                type?: "function";
+            } & {
+                [key: string]: unknown;
+            })[];
+            /**
+             * @description The voice the model uses to respond. Voice cannot be changed during the
+             *     session once the model has responded with audio at least once. Current
+             *     voice options are `alloy`, `ash`, `ballad`, `coral`, `echo` `sage`,
+             *     `shimmer` and `verse`.
+             *
+             * @enum {string}
+             */
+            voice?: "alloy" | "ash" | "ballad" | "coral" | "echo" | "sage" | "shimmer" | "verse";
+        } & {
+            [key: string]: unknown;
+        };
+        /** @description Returned when a conversation is created. Emitted right after session creation.
+         *      */
         RealtimeServerEventConversationCreated: {
             /** @description The conversation resource. */
             conversation: {
                 /** @description The unique ID of the conversation. */
                 id?: string;
-                /** @description The object type, must be "realtime.conversation". */
+                /** @description The object type, must be `realtime.conversation`. */
                 object?: string;
             } & {
                 [key: string]: unknown;
             };
             /** @description The unique ID of the server event. */
             event_id: string;
-            /** @description The event type, must be "conversation.created". */
-            type: string;
+            /**
+             * @description The event type, must be `conversation.created`.
+             * @enum {string}
+             */
+            type: "conversation.created";
         } & {
             [key: string]: unknown;
         };
-        /** @description Returned when a conversation item is created. */
+        /** @description Returned when a conversation item is created. There are several scenarios that
+         *     produce this event:
+         *       - The server is generating a Response, which if successful will produce
+         *         either one or two Items, which will be of type `message`
+         *         (role `assistant`) or type `function_call`.
+         *       - The input audio buffer has been committed, either by the client or the
+         *         server (in `server_vad` mode). The server will take the content of the
+         *         input audio buffer and add it to a new user message Item.
+         *       - The client has sent a `conversation.item.create` event to add a new Item
+         *         to the Conversation.
+         *      */
         RealtimeServerEventConversationItemCreated: {
             /** @description The unique ID of the server event. */
             event_id: string;
-            /** @description The item that was created. */
-            item: {
-                /** @description The arguments of the function call. */
-                arguments?: string;
-                /** @description The ID of the function call (for "function_call" items). */
-                call_id?: string;
-                /** @description The content of the item. */
-                content?: ({
-                    /** @description Base64-encoded audio data. */
-                    audio?: string;
-                    /** @description The text content. */
-                    text?: string;
-                    /** @description The transcript of the audio. */
-                    transcript?: string;
-                    /** @description The content type ("text", "audio", "input_text", "input_audio"). */
-                    type?: string;
-                } & {
-                    [key: string]: unknown;
-                })[];
-                /** @description The unique ID of the item. */
-                id?: string;
-                /** @description The name of the function being called. */
-                name?: string;
-                /** @description The object type, must be "realtime.item". */
-                object?: string;
-                /** @description The output of the function call (for "function_call_output" items). */
-                output?: string;
-                /** @description The role associated with the item ("user", "assistant", "system"). */
-                role?: string;
-                /** @description The status of the item ("completed", "in_progress", "incomplete"). */
-                status?: string;
-                /** @description The type of the item ("message", "function_call", "function_call_output"). */
-                type?: string;
-            } & {
-                [key: string]: unknown;
-            };
-            /** @description The ID of the preceding item. */
+            item: components["schemas"]["RealtimeConversationItem"];
+            /** @description The ID of the preceding item in the Conversation context, allows the
+             *     client to understand the order of the conversation.
+             *      */
             previous_item_id: string;
-            /** @description The event type, must be "conversation.item.created". */
-            type: string;
+            /**
+             * @description The event type, must be `conversation.item.created`.
+             * @enum {string}
+             */
+            type: "conversation.item.created";
         } & {
             [key: string]: unknown;
         };
-        /** @description Returned when an item in the conversation is deleted. */
+        /** @description Returned when an item in the conversation is deleted by the client with a
+         *     `conversation.item.delete` event. This event is used to synchronize the
+         *     server's understanding of the conversation history with the client's view.
+         *      */
         RealtimeServerEventConversationItemDeleted: {
             /** @description The unique ID of the server event. */
             event_id: string;
             /** @description The ID of the item that was deleted. */
             item_id: string;
-            /** @description The event type, must be "conversation.item.deleted". */
-            type: string;
+            /**
+             * @description The event type, must be `conversation.item.deleted`.
+             * @enum {string}
+             */
+            type: "conversation.item.deleted";
         } & {
             [key: string]: unknown;
         };
-        /** @description Returned when input audio transcription is enabled and a transcription succeeds. */
+        /** @description This event is the output of audio transcription for user audio written to the
+         *     user audio buffer. Transcription begins when the input audio buffer is
+         *     committed by the client or server (in `server_vad` mode). Transcription runs
+         *     asynchronously with Response creation, so this event may come before or after
+         *     the Response events.
+         *
+         *     Realtime API models accept audio natively, and thus input transcription is a
+         *     separate process run on a separate ASR (Automatic Speech Recognition) model,
+         *     currently always `whisper-1`. Thus the transcript may diverge somewhat from
+         *     the model's interpretation, and should be treated as a rough guide.
+         *      */
         RealtimeServerEventConversationItemInputAudioTranscriptionCompleted: {
             /** @description The index of the content part containing the audio. */
             content_index: number;
             /** @description The unique ID of the server event. */
             event_id: string;
-            /** @description The ID of the user message item. */
+            /** @description The ID of the user message item containing the audio. */
             item_id: string;
             /** @description The transcribed text. */
             transcript: string;
-            /** @description The event type, must be "conversation.item.input_audio_transcription.completed". */
-            type: string;
+            /**
+             * @description The event type, must be
+             *     `conversation.item.input_audio_transcription.completed`.
+             *
+             * @enum {string}
+             */
+            type: "conversation.item.input_audio_transcription.completed";
         } & {
             [key: string]: unknown;
         };
-        /** @description Returned when input audio transcription is configured, and a transcription request for a user message failed. */
+        /** @description Returned when input audio transcription is configured, and a transcription
+         *     request for a user message failed. These events are separate from other
+         *     `error` events so that the client can identify the related Item.
+         *      */
         RealtimeServerEventConversationItemInputAudioTranscriptionFailed: {
             /** @description The index of the content part containing the audio. */
             content_index: number;
@@ -5449,14 +6538,26 @@ export interface components {
             event_id: string;
             /** @description The ID of the user message item. */
             item_id: string;
-            /** @description The event type, must be "conversation.item.input_audio_transcription.failed". */
-            type: string;
+            /**
+             * @description The event type, must be
+             *     `conversation.item.input_audio_transcription.failed`.
+             *
+             * @enum {string}
+             */
+            type: "conversation.item.input_audio_transcription.failed";
         } & {
             [key: string]: unknown;
         };
-        /** @description Returned when an earlier assistant audio message item is truncated by the client. */
+        /** @description Returned when an earlier assistant audio message item is truncated by the
+         *     client with a `conversation.item.truncate` event. This event is used to
+         *     synchronize the server's understanding of the audio with the client's playback.
+         *
+         *     This action will truncate the audio and remove the server-side text transcript
+         *     to ensure there is no text in the context that hasn't been heard by the user.
+         *      */
         RealtimeServerEventConversationItemTruncated: {
-            /** @description The duration up to which the audio was truncated, in milliseconds. */
+            /** @description The duration up to which the audio was truncated, in milliseconds.
+             *      */
             audio_end_ms: number;
             /** @description The index of the content part that was truncated. */
             content_index: number;
@@ -5464,84 +6565,139 @@ export interface components {
             event_id: string;
             /** @description The ID of the assistant message item that was truncated. */
             item_id: string;
-            /** @description The event type, must be "conversation.item.truncated". */
-            type: string;
+            /**
+             * @description The event type, must be `conversation.item.truncated`.
+             * @enum {string}
+             */
+            type: "conversation.item.truncated";
         } & {
             [key: string]: unknown;
         };
-        /** @description Returned when an error occurs. */
+        /** @description Returned when an error occurs, which could be a client problem or a server
+         *     problem. Most errors are recoverable and the session will stay open, we
+         *     recommend to implementors to monitor and log error messages by default.
+         *      */
         RealtimeServerEventError: {
             /** @description Details of the error. */
             error: {
                 /** @description Error code, if any. */
-                code?: string;
-                /** @description The event_id of the client event that caused the error, if applicable. */
-                event_id?: string;
+                code?: string | null;
+                /** @description The event_id of the client event that caused the error, if applicable.
+                 *      */
+                event_id?: string | null;
                 /** @description A human-readable error message. */
-                message?: string;
+                message: string;
                 /** @description Parameter related to the error, if any. */
-                param?: string;
-                /** @description The type of error (e.g., "invalid_request_error", "server_error"). */
-                type?: string;
+                param?: string | null;
+                /** @description The type of error (e.g., "invalid_request_error", "server_error").
+                 *      */
+                type: string;
             } & {
                 [key: string]: unknown;
             };
             /** @description The unique ID of the server event. */
             event_id: string;
-            /** @description The event type, must be "error". */
-            type: string;
+            /**
+             * @description The event type, must be `error`.
+             * @enum {string}
+             */
+            type: "error";
         } & {
             [key: string]: unknown;
         };
-        /** @description Returned when the input audio buffer is cleared by the client. */
+        /** @description Returned when the input audio buffer is cleared by the client with a
+         *     `input_audio_buffer.clear` event.
+         *      */
         RealtimeServerEventInputAudioBufferCleared: {
             /** @description The unique ID of the server event. */
             event_id: string;
-            /** @description The event type, must be "input_audio_buffer.cleared". */
-            type: string;
+            /**
+             * @description The event type, must be `input_audio_buffer.cleared`.
+             * @enum {string}
+             */
+            type: "input_audio_buffer.cleared";
         } & {
             [key: string]: unknown;
         };
-        /** @description Returned when an input audio buffer is committed, either by the client or automatically in server VAD mode. */
+        /** @description Returned when an input audio buffer is committed, either by the client or
+         *     automatically in server VAD mode. The `item_id` property is the ID of the user
+         *     message item that will be created, thus a `conversation.item.created` event
+         *     will also be sent to the client.
+         *      */
         RealtimeServerEventInputAudioBufferCommitted: {
             /** @description The unique ID of the server event. */
             event_id: string;
             /** @description The ID of the user message item that will be created. */
             item_id: string;
-            /** @description The ID of the preceding item after which the new item will be inserted. */
+            /** @description The ID of the preceding item after which the new item will be inserted.
+             *      */
             previous_item_id: string;
-            /** @description The event type, must be "input_audio_buffer.committed". */
-            type: string;
+            /**
+             * @description The event type, must be `input_audio_buffer.committed`.
+             * @enum {string}
+             */
+            type: "input_audio_buffer.committed";
         } & {
             [key: string]: unknown;
         };
-        /** @description Returned in server turn detection mode when speech is detected. */
+        /** @description Sent by the server when in `server_vad` mode to indicate that speech has been
+         *     detected in the audio buffer. This can happen any time audio is added to the
+         *     buffer (unless speech is already detected). The client may want to use this
+         *     event to interrupt audio playback or provide visual feedback to the user.
+         *
+         *     The client should expect to receive a `input_audio_buffer.speech_stopped` event
+         *     when speech stops. The `item_id` property is the ID of the user message item
+         *     that will be created when speech stops and will also be included in the
+         *     `input_audio_buffer.speech_stopped` event (unless the client manually commits
+         *     the audio buffer during VAD activation).
+         *      */
         RealtimeServerEventInputAudioBufferSpeechStarted: {
-            /** @description Milliseconds since the session started when speech was detected. */
+            /** @description Milliseconds from the start of all audio written to the buffer during the
+             *     session when speech was first detected. This will correspond to the
+             *     beginning of audio sent to the model, and thus includes the
+             *     `prefix_padding_ms` configured in the Session.
+             *      */
             audio_start_ms: number;
             /** @description The unique ID of the server event. */
             event_id: string;
-            /** @description The ID of the user message item that will be created when speech stops. */
+            /** @description The ID of the user message item that will be created when speech stops.
+             *      */
             item_id: string;
-            /** @description The event type, must be "input_audio_buffer.speech_started". */
-            type: string;
+            /**
+             * @description The event type, must be `input_audio_buffer.speech_started`.
+             * @enum {string}
+             */
+            type: "input_audio_buffer.speech_started";
         } & {
             [key: string]: unknown;
         };
-        /** @description Returned in server turn detection mode when speech stops. */
+        /** @description Returned in `server_vad` mode when the server detects the end of speech in
+         *     the audio buffer. The server will also send an `conversation.item.created`
+         *     event with the user message item that is created from the audio buffer.
+         *      */
         RealtimeServerEventInputAudioBufferSpeechStopped: {
-            /** @description Milliseconds since the session started when speech stopped. */
+            /** @description Milliseconds since the session started when speech stopped. This will
+             *     correspond to the end of audio sent to the model, and thus includes the
+             *     `min_silence_duration_ms` configured in the Session.
+             *      */
             audio_end_ms: number;
             /** @description The unique ID of the server event. */
             event_id: string;
             /** @description The ID of the user message item that will be created. */
             item_id: string;
-            /** @description The event type, must be "input_audio_buffer.speech_stopped". */
-            type: string;
+            /**
+             * @description The event type, must be `input_audio_buffer.speech_stopped`.
+             * @enum {string}
+             */
+            type: "input_audio_buffer.speech_stopped";
         } & {
             [key: string]: unknown;
         };
-        /** @description Emitted after every "response.done" event to indicate the updated rate limits. */
+        /** @description Emitted at the beginning of a Response to indicate the updated rate limits.
+         *     When a Response is created some tokens will be "reserved" for the output
+         *     tokens, the rate limits shown here reflect that reservation, which is then
+         *     adjusted accordingly once the Response is completed.
+         *      */
         RealtimeServerEventRateLimitsUpdated: {
             /** @description The unique ID of the server event. */
             event_id: string;
@@ -5549,8 +6705,12 @@ export interface components {
             rate_limits: ({
                 /** @description The maximum allowed value for the rate limit. */
                 limit?: number;
-                /** @description The name of the rate limit ("requests", "tokens", "input_tokens", "output_tokens"). */
-                name?: string;
+                /**
+                 * @description The name of the rate limit (`requests`, `tokens`).
+                 *
+                 * @enum {string}
+                 */
+                name?: "requests" | "tokens";
                 /** @description The remaining value before the limit is reached. */
                 remaining?: number;
                 /** @description Seconds until the rate limit resets. */
@@ -5558,8 +6718,11 @@ export interface components {
             } & {
                 [key: string]: unknown;
             })[];
-            /** @description The event type, must be "rate_limits.updated". */
-            type: string;
+            /**
+             * @description The event type, must be `rate_limits.updated`.
+             * @enum {string}
+             */
+            type: "rate_limits.updated";
         } & {
             [key: string]: unknown;
         };
@@ -5577,12 +6740,17 @@ export interface components {
             output_index: number;
             /** @description The ID of the response. */
             response_id: string;
-            /** @description The event type, must be "response.audio.delta". */
-            type: string;
+            /**
+             * @description The event type, must be `response.audio.delta`.
+             * @enum {string}
+             */
+            type: "response.audio.delta";
         } & {
             [key: string]: unknown;
         };
-        /** @description Returned when the model-generated audio is done. Also emitted when a Response is interrupted, incomplete, or cancelled. */
+        /** @description Returned when the model-generated audio is done. Also emitted when a Response
+         *     is interrupted, incomplete, or cancelled.
+         *      */
         RealtimeServerEventResponseAudioDone: {
             /** @description The index of the content part in the item's content array. */
             content_index: number;
@@ -5594,12 +6762,16 @@ export interface components {
             output_index: number;
             /** @description The ID of the response. */
             response_id: string;
-            /** @description The event type, must be "response.audio.done". */
-            type: string;
+            /**
+             * @description The event type, must be `response.audio.done`.
+             * @enum {string}
+             */
+            type: "response.audio.done";
         } & {
             [key: string]: unknown;
         };
-        /** @description Returned when the model-generated transcription of audio output is updated. */
+        /** @description Returned when the model-generated transcription of audio output is updated.
+         *      */
         RealtimeServerEventResponseAudioTranscriptDelta: {
             /** @description The index of the content part in the item's content array. */
             content_index: number;
@@ -5613,12 +6785,18 @@ export interface components {
             output_index: number;
             /** @description The ID of the response. */
             response_id: string;
-            /** @description The event type, must be "response.audio_transcript.delta". */
-            type: string;
+            /**
+             * @description The event type, must be `response.audio_transcript.delta`.
+             * @enum {string}
+             */
+            type: "response.audio_transcript.delta";
         } & {
             [key: string]: unknown;
         };
-        /** @description Returned when the model-generated transcription of audio output is done streaming. Also emitted when a Response is interrupted, incomplete, or cancelled. */
+        /** @description Returned when the model-generated transcription of audio output is done
+         *     streaming. Also emitted when a Response is interrupted, incomplete, or
+         *     cancelled.
+         *      */
         RealtimeServerEventResponseAudioTranscriptDone: {
             /** @description The index of the content part in the item's content array. */
             content_index: number;
@@ -5632,12 +6810,17 @@ export interface components {
             response_id: string;
             /** @description The final transcript of the audio. */
             transcript: string;
-            /** @description The event type, must be "response.audio_transcript.done". */
-            type: string;
+            /**
+             * @description The event type, must be `response.audio_transcript.done`.
+             * @enum {string}
+             */
+            type: "response.audio_transcript.done";
         } & {
             [key: string]: unknown;
         };
-        /** @description Returned when a new content part is added to an assistant message item during response generation. */
+        /** @description Returned when a new content part is added to an assistant message item during
+         *     response generation.
+         *      */
         RealtimeServerEventResponseContentPartAdded: {
             /** @description The index of the content part in the item's content array. */
             content_index: number;
@@ -5655,19 +6838,27 @@ export interface components {
                 text?: string;
                 /** @description The transcript of the audio (if type is "audio"). */
                 transcript?: string;
-                /** @description The content type ("text", "audio"). */
-                type?: string;
+                /**
+                 * @description The content type ("text", "audio").
+                 * @enum {string}
+                 */
+                type?: "audio" | "text";
             } & {
                 [key: string]: unknown;
             };
             /** @description The ID of the response. */
             response_id: string;
-            /** @description The event type, must be "response.content_part.added". */
-            type: string;
+            /**
+             * @description The event type, must be `response.content_part.added`.
+             * @enum {string}
+             */
+            type: "response.content_part.added";
         } & {
             [key: string]: unknown;
         };
-        /** @description Returned when a content part is done streaming in an assistant message item. Also emitted when a Response is interrupted, incomplete, or cancelled. */
+        /** @description Returned when a content part is done streaming in an assistant message item.
+         *     Also emitted when a Response is interrupted, incomplete, or cancelled.
+         *      */
         RealtimeServerEventResponseContentPartDone: {
             /** @description The index of the content part in the item's content array. */
             content_index: number;
@@ -5685,71 +6876,57 @@ export interface components {
                 text?: string;
                 /** @description The transcript of the audio (if type is "audio"). */
                 transcript?: string;
-                /** @description The content type ("text", "audio"). */
-                type?: string;
+                /**
+                 * @description The content type ("text", "audio").
+                 * @enum {string}
+                 */
+                type?: "audio" | "text";
             } & {
                 [key: string]: unknown;
             };
             /** @description The ID of the response. */
             response_id: string;
-            /** @description The event type, must be "response.content_part.done". */
-            type: string;
+            /**
+             * @description The event type, must be `response.content_part.done`.
+             * @enum {string}
+             */
+            type: "response.content_part.done";
         } & {
             [key: string]: unknown;
         };
-        /** @description Returned when a new Response is created. The first event of response creation, where the response is in an initial state of "in_progress". */
+        /** @description Returned when a new Response is created. The first event of response creation,
+         *     where the response is in an initial state of `in_progress`.
+         *      */
         RealtimeServerEventResponseCreated: {
             /** @description The unique ID of the server event. */
             event_id: string;
-            /** @description The response resource. */
-            response: {
-                /** @description The unique ID of the response. */
-                id?: string;
-                /** @description The object type, must be "realtime.response". */
-                object?: string;
-                /** @description The list of output items generated by the response. */
-                output?: Record<string, never>[];
-                /** @description The status of the response ("in_progress"). */
-                status?: string;
-                /** @description Additional details about the status. */
-                status_details?: Record<string, never>;
-                /** @description Usage statistics for the response. */
-                usage?: Record<string, never>;
-            } & {
-                [key: string]: unknown;
-            };
-            /** @description The event type, must be "response.created". */
-            type: string;
+            response: components["schemas"]["RealtimeResponse"];
+            /**
+             * @description The event type, must be `response.created`.
+             * @enum {string}
+             */
+            type: "response.created";
         } & {
             [key: string]: unknown;
         };
-        /** @description Returned when a Response is done streaming. Always emitted, no matter the final state. */
+        /** @description Returned when a Response is done streaming. Always emitted, no matter the
+         *     final state. The Response object included in the `response.done` event will
+         *     include all output Items in the Response but will omit the raw audio data.
+         *      */
         RealtimeServerEventResponseDone: {
             /** @description The unique ID of the server event. */
             event_id: string;
-            /** @description The response resource. */
-            response: {
-                /** @description The unique ID of the response. */
-                id?: string;
-                /** @description The object type, must be "realtime.response". */
-                object?: string;
-                /** @description The list of output items generated by the response. */
-                output?: Record<string, never>[];
-                /** @description The final status of the response ("completed", "cancelled", "failed", "incomplete"). */
-                status?: string;
-                /** @description Additional details about the status. */
-                status_details?: Record<string, never>;
-                /** @description Usage statistics for the response. */
-                usage?: Record<string, never>;
-            } & {
-                [key: string]: unknown;
-            };
-            /** @description The event type, must be "response.done". */
-            type: string;
+            response: components["schemas"]["RealtimeResponse"];
+            /**
+             * @description The event type, must be `response.done`.
+             * @enum {string}
+             */
+            type: "response.done";
         } & {
             [key: string]: unknown;
         };
-        /** @description Returned when the model-generated function call arguments are updated. */
+        /** @description Returned when the model-generated function call arguments are updated.
+         *      */
         RealtimeServerEventResponseFunctionCallArgumentsDelta: {
             /** @description The ID of the function call. */
             call_id: string;
@@ -5763,12 +6940,18 @@ export interface components {
             output_index: number;
             /** @description The ID of the response. */
             response_id: string;
-            /** @description The event type, must be "response.function_call_arguments.delta". */
-            type: string;
+            /**
+             * @description The event type, must be `response.function_call_arguments.delta`.
+             *
+             * @enum {string}
+             */
+            type: "response.function_call_arguments.delta";
         } & {
             [key: string]: unknown;
         };
-        /** @description Returned when the model-generated function call arguments are done streaming. Also emitted when a Response is interrupted, incomplete, or cancelled. */
+        /** @description Returned when the model-generated function call arguments are done streaming.
+         *     Also emitted when a Response is interrupted, incomplete, or cancelled.
+         *      */
         RealtimeServerEventResponseFunctionCallArgumentsDone: {
             /** @description The final arguments as a JSON string. */
             arguments: string;
@@ -5782,90 +6965,48 @@ export interface components {
             output_index: number;
             /** @description The ID of the response. */
             response_id: string;
-            /** @description The event type, must be "response.function_call_arguments.done". */
-            type: string;
+            /**
+             * @description The event type, must be `response.function_call_arguments.done`.
+             *
+             * @enum {string}
+             */
+            type: "response.function_call_arguments.done";
         } & {
             [key: string]: unknown;
         };
-        /** @description Returned when a new Item is created during response generation. */
+        /** @description Returned when a new Item is created during Response generation. */
         RealtimeServerEventResponseOutputItemAdded: {
             /** @description The unique ID of the server event. */
             event_id: string;
-            /** @description The item that was added. */
-            item: {
-                /** @description The content of the item. */
-                content?: ({
-                    /** @description Base64-encoded audio data. */
-                    audio?: string;
-                    /** @description The text content. */
-                    text?: string;
-                    /** @description The transcript of the audio. */
-                    transcript?: string;
-                    /** @description The content type ("text", "audio"). */
-                    type?: string;
-                } & {
-                    [key: string]: unknown;
-                })[];
-                /** @description The unique ID of the item. */
-                id?: string;
-                /** @description The object type, must be "realtime.item". */
-                object?: string;
-                /** @description The role associated with the item ("assistant"). */
-                role?: string;
-                /** @description The status of the item ("in_progress", "completed"). */
-                status?: string;
-                /** @description The type of the item ("message", "function_call", "function_call_output"). */
-                type?: string;
-            } & {
-                [key: string]: unknown;
-            };
-            /** @description The index of the output item in the response. */
+            item: components["schemas"]["RealtimeConversationItem"];
+            /** @description The index of the output item in the Response. */
             output_index: number;
-            /** @description The ID of the response to which the item belongs. */
+            /** @description The ID of the Response to which the item belongs. */
             response_id: string;
-            /** @description The event type, must be "response.output_item.added". */
-            type: string;
+            /**
+             * @description The event type, must be `response.output_item.added`.
+             * @enum {string}
+             */
+            type: "response.output_item.added";
         } & {
             [key: string]: unknown;
         };
-        /** @description Returned when an Item is done streaming. Also emitted when a Response is interrupted, incomplete, or cancelled. */
+        /** @description Returned when an Item is done streaming. Also emitted when a Response is
+         *     interrupted, incomplete, or cancelled.
+         *      */
         RealtimeServerEventResponseOutputItemDone: {
             /** @description The unique ID of the server event. */
             event_id: string;
-            /** @description The completed item. */
-            item: {
-                /** @description The content of the item. */
-                content?: ({
-                    /** @description Base64-encoded audio data. */
-                    audio?: string;
-                    /** @description The text content. */
-                    text?: string;
-                    /** @description The transcript of the audio. */
-                    transcript?: string;
-                    /** @description The content type ("text", "audio"). */
-                    type?: string;
-                } & {
-                    [key: string]: unknown;
-                })[];
-                /** @description The unique ID of the item. */
-                id?: string;
-                /** @description The object type, must be "realtime.item". */
-                object?: string;
-                /** @description The role associated with the item ("assistant"). */
-                role?: string;
-                /** @description The final status of the item ("completed", "incomplete"). */
-                status?: string;
-                /** @description The type of the item ("message", "function_call", "function_call_output"). */
-                type?: string;
-            } & {
-                [key: string]: unknown;
-            };
-            /** @description The index of the output item in the response. */
+            item: components["schemas"]["RealtimeConversationItem"];
+            /** @description The index of the output item in the Response. */
             output_index: number;
-            /** @description The ID of the response to which the item belongs. */
+            /** @description The ID of the Response to which the item belongs. */
             response_id: string;
-            /** @description The event type, must be "response.output_item.done". */
-            type: string;
+            /**
+             * @description The event type, must be `response.output_item.done`.
+             * @enum {string}
+             */
+            type: "response.output_item.done";
         } & {
             [key: string]: unknown;
         };
@@ -5883,12 +7024,17 @@ export interface components {
             output_index: number;
             /** @description The ID of the response. */
             response_id: string;
-            /** @description The event type, must be "response.text.delta". */
-            type: string;
+            /**
+             * @description The event type, must be `response.text.delta`.
+             * @enum {string}
+             */
+            type: "response.text.delta";
         } & {
             [key: string]: unknown;
         };
-        /** @description Returned when the text value of a "text" content part is done streaming. Also emitted when a Response is interrupted, incomplete, or cancelled. */
+        /** @description Returned when the text value of a "text" content part is done streaming. Also
+         *     emitted when a Response is interrupted, incomplete, or cancelled.
+         *      */
         RealtimeServerEventResponseTextDone: {
             /** @description The index of the content part in the item's content array. */
             content_index: number;
@@ -5902,150 +7048,431 @@ export interface components {
             response_id: string;
             /** @description The final text content. */
             text: string;
-            /** @description The event type, must be "response.text.done". */
-            type: string;
+            /**
+             * @description The event type, must be `response.text.done`.
+             * @enum {string}
+             */
+            type: "response.text.done";
         } & {
             [key: string]: unknown;
         };
-        /** @description Returned when a session is created. Emitted automatically when a new connection is established. */
+        /** @description Returned when a Session is created. Emitted automatically when a new
+         *     connection is established as the first server event. This event will contain
+         *     the default Session configuration.
+         *      */
         RealtimeServerEventSessionCreated: {
             /** @description The unique ID of the server event. */
             event_id: string;
-            /** @description The session resource. */
-            session: {
-                /** @description The unique ID of the session. */
-                id?: string;
-                /** @description The format of input audio. */
-                input_audio_format?: string;
-                /** @description Configuration for input audio transcription. */
-                input_audio_transcription?: {
-                    /** @description Whether input audio transcription is enabled. */
-                    enabled?: boolean;
-                    /** @description The model used for transcription. */
-                    model?: string;
-                } & {
-                    [key: string]: unknown;
-                };
-                /** @description The default system instructions. */
-                instructions?: string;
-                /** @description Maximum number of output tokens. */
-                max_output_tokens?: number | "inf";
-                /** @description The set of modalities the model can respond with. */
-                modalities?: string[];
-                /** @description The default model used for this session. */
-                model?: string;
-                /** @description The object type, must be "realtime.session". */
-                object?: string;
-                /** @description The format of output audio. */
-                output_audio_format?: string;
-                /** @description Sampling temperature. */
-                temperature?: number;
-                /** @description How the model chooses tools. */
-                tool_choice?: string;
-                /** @description Tools (functions) available to the model. */
-                tools?: ({
-                    /** @description The description of the function. */
-                    description?: string;
-                    /** @description The name of the function. */
-                    name?: string;
-                    /** @description Parameters of the function in JSON Schema. */
-                    parameters?: Record<string, never>;
-                    /** @description The type of the tool. */
-                    type?: string;
-                } & {
-                    [key: string]: unknown;
-                })[];
-                /** @description Configuration for turn detection. */
-                turn_detection?: {
-                    /** @description Audio included before speech starts (in milliseconds). */
-                    prefix_padding_ms?: number;
-                    /** @description Duration of silence to detect speech stop (in milliseconds). */
-                    silence_duration_ms?: number;
-                    /** @description Activation threshold for VAD. */
-                    threshold?: number;
-                    /** @description The type of turn detection ("server_vad" or "none"). */
-                    type?: string;
-                } & {
-                    [key: string]: unknown;
-                };
-                /** @description The voice the model uses to respond - one of `alloy`, `echo`, or `shimmer`. */
-                voice?: string;
-            } & {
-                [key: string]: unknown;
-            };
-            /** @description The event type, must be "session.created". */
-            type: string;
+            session: components["schemas"]["RealtimeSession"];
+            /**
+             * @description The event type, must be `session.created`.
+             * @enum {string}
+             */
+            type: "session.created";
         } & {
             [key: string]: unknown;
         };
-        /** @description Returned when a session is updated. */
+        /** @description Returned when a session is updated with a `session.update` event, unless
+         *     there is an error.
+         *      */
         RealtimeServerEventSessionUpdated: {
             /** @description The unique ID of the server event. */
             event_id: string;
-            /** @description The updated session resource. */
-            session: {
-                /** @description The unique ID of the session. */
-                id?: string;
-                /** @description The format of input audio. */
-                input_audio_format?: string;
-                /** @description Configuration for input audio transcription. */
-                input_audio_transcription?: {
-                    /** @description Whether input audio transcription is enabled. */
-                    enabled?: boolean;
-                    /** @description The model used for transcription. */
-                    model?: string;
-                } & {
-                    [key: string]: unknown;
-                };
-                /** @description The default system instructions. */
-                instructions?: string;
-                /** @description Maximum number of output tokens. */
-                max_output_tokens?: number | "inf";
-                /** @description The set of modalities the model can respond with. */
-                modalities?: string[];
-                /** @description The default model used for this session. */
+            session: components["schemas"]["RealtimeSession"];
+            /**
+             * @description The event type, must be `session.updated`.
+             * @enum {string}
+             */
+            type: "session.updated";
+        } & {
+            [key: string]: unknown;
+        };
+        /** @description Realtime session object configuration. */
+        RealtimeSession: {
+            /** @description Unique identifier for the session object.
+             *      */
+            id?: string;
+            /**
+             * @description The format of input audio. Options are `pcm16`, `g711_ulaw`, or `g711_alaw`.
+             *     For `pcm16`, input audio must be 16-bit PCM at a 24kHz sample rate,
+             *     single channel (mono), and little-endian byte order.
+             *
+             * @enum {string}
+             */
+            input_audio_format?: "pcm16" | "g711_ulaw" | "g711_alaw";
+            /** @description Configuration for input audio transcription, defaults to off and can be
+             *     set to `null` to turn off once on. Input audio transcription is not native
+             *     to the model, since the model consumes audio directly. Transcription runs
+             *     asynchronously through Whisper and should be treated as rough guidance
+             *     rather than the representation understood by the model.
+             *      */
+            input_audio_transcription?: {
+                /** @description The model to use for transcription, `whisper-1` is the only currently
+                 *     supported model.
+                 *      */
                 model?: string;
-                /** @description The object type, must be "realtime.session". */
-                object?: string;
-                /** @description The format of output audio. */
-                output_audio_format?: string;
-                /** @description Sampling temperature. */
-                temperature?: number;
-                /** @description How the model chooses tools. */
-                tool_choice?: string;
-                /** @description Tools (functions) available to the model. */
-                tools?: ({
-                    /** @description The description of the function. */
-                    description?: string;
-                    /** @description The name of the function. */
-                    name?: string;
-                    /** @description Parameters of the function in JSON Schema. */
-                    parameters?: Record<string, never>;
-                    /** @description The type of the tool. */
-                    type?: string;
-                } & {
-                    [key: string]: unknown;
-                })[];
-                /** @description Configuration for turn detection. */
-                turn_detection?: {
-                    /** @description Audio included before speech starts (in milliseconds). */
-                    prefix_padding_ms?: number;
-                    /** @description Duration of silence to detect speech stop (in milliseconds). */
-                    silence_duration_ms?: number;
-                    /** @description Activation threshold for VAD. */
-                    threshold?: number;
-                    /** @description The type of turn detection ("server_vad" or "none"). */
-                    type?: string;
-                } & {
-                    [key: string]: unknown;
-                };
-                /** @description The voice the model uses to respond - one of `alloy`, `echo`, or `shimmer`. */
-                voice?: string;
             } & {
                 [key: string]: unknown;
             };
-            /** @description The event type, must be "session.updated". */
-            type: string;
+            /** @description The default system instructions (i.e. system message) prepended to model
+             *     calls. This field allows the client to guide the model on desired
+             *     responses. The model can be instructed on response content and format,
+             *     (e.g. "be extremely succinct", "act friendly", "here are examples of good
+             *     responses") and on audio behavior (e.g. "talk quickly", "inject emotion
+             *     into your voice", "laugh frequently"). The instructions are not guaranteed
+             *     to be followed by the model, but they provide guidance to the model on the
+             *     desired behavior.
+             *
+             *     Note that the server sets default instructions which will be used if this
+             *     field is not set and are visible in the `session.created` event at the
+             *     start of the session.
+             *      */
+            instructions?: string;
+            /** @description Maximum number of output tokens for a single assistant response,
+             *     inclusive of tool calls. Provide an integer between 1 and 4096 to
+             *     limit output tokens, or `inf` for the maximum available tokens for a
+             *     given model. Defaults to `inf`.
+             *      */
+            max_response_output_tokens?: number | "inf";
+            /** @description The set of modalities the model can respond with. To disable audio,
+             *     set this to ["text"].
+             *      */
+            modalities?: unknown;
+            /** @description The Realtime model used for this session.
+             *      */
+            model?: string | ("gpt-4o-realtime-preview" | "gpt-4o-realtime-preview-2024-10-01" | "gpt-4o-realtime-preview-2024-12-17" | "gpt-4o-mini-realtime-preview" | "gpt-4o-mini-realtime-preview-2024-12-17");
+            /**
+             * @description The format of output audio. Options are `pcm16`, `g711_ulaw`, or `g711_alaw`.
+             *     For `pcm16`, output audio is sampled at a rate of 24kHz.
+             *
+             * @enum {string}
+             */
+            output_audio_format?: "pcm16" | "g711_ulaw" | "g711_alaw";
+            /** @description Sampling temperature for the model, limited to [0.6, 1.2]. Defaults to 0.8.
+             *      */
+            temperature?: number;
+            /** @description How the model chooses tools. Options are `auto`, `none`, `required`, or
+             *     specify a function.
+             *      */
+            tool_choice?: string;
+            /** @description Tools (functions) available to the model. */
+            tools?: ({
+                /** @description The description of the function, including guidance on when and how
+                 *     to call it, and guidance about what to tell the user when calling
+                 *     (if anything).
+                 *      */
+                description?: string;
+                /** @description The name of the function. */
+                name?: string;
+                /** @description Parameters of the function in JSON Schema. */
+                parameters?: Record<string, never>;
+                /**
+                 * @description The type of the tool, i.e. `function`.
+                 * @enum {string}
+                 */
+                type?: "function";
+            } & {
+                [key: string]: unknown;
+            })[];
+            /** @description Configuration for turn detection. Can be set to `null` to turn off. Server
+             *     VAD means that the model will detect the start and end of speech based on
+             *     audio volume and respond at the end of user speech.
+             *      */
+            turn_detection?: ({
+                /** @description Amount of audio to include before the VAD detected speech (in
+                 *     milliseconds). Defaults to 300ms.
+                 *      */
+                prefix_padding_ms?: number;
+                /** @description Duration of silence to detect speech stop (in milliseconds). Defaults
+                 *     to 500ms. With shorter values the model will respond more quickly,
+                 *     but may jump in on short pauses from the user.
+                 *      */
+                silence_duration_ms?: number;
+                /** @description Activation threshold for VAD (0.0 to 1.0), this defaults to 0.5. A
+                 *     higher threshold will require louder audio to activate the model, and
+                 *     thus might perform better in noisy environments.
+                 *      */
+                threshold?: number;
+                /**
+                 * @description Type of turn detection, only `server_vad` is currently supported.
+                 *
+                 * @enum {string}
+                 */
+                type?: "server_vad";
+            } & {
+                [key: string]: unknown;
+            }) | null;
+            /**
+             * @description The voice the model uses to respond. Voice cannot be changed during the
+             *     session once the model has responded with audio at least once. Current
+             *     voice options are `alloy`, `ash`, `ballad`, `coral`, `echo` `sage`,
+             *     `shimmer` and `verse`.
+             *
+             * @enum {string}
+             */
+            voice?: "alloy" | "ash" | "ballad" | "coral" | "echo" | "sage" | "shimmer" | "verse";
+        } & {
+            [key: string]: unknown;
+        };
+        /** @description Realtime session object configuration. */
+        RealtimeSessionCreateRequest: {
+            /**
+             * @description The format of input audio. Options are `pcm16`, `g711_ulaw`, or `g711_alaw`.
+             *     For `pcm16`, input audio must be 16-bit PCM at a 24kHz sample rate,
+             *     single channel (mono), and little-endian byte order.
+             *
+             * @enum {string}
+             */
+            input_audio_format?: "pcm16" | "g711_ulaw" | "g711_alaw";
+            /** @description Configuration for input audio transcription, defaults to off and can be  set to `null` to turn off once on. Input audio transcription is not native to the model, since the model consumes audio directly. Transcription runs  asynchronously through [OpenAI Whisper transcription](https://platform.openai.com/docs/api-reference/audio/createTranscription) and should be treated as rough guidance rather than the representation understood by the model. The client can optionally set the language and prompt for transcription, these fields will be passed to the Whisper API.
+             *      */
+            input_audio_transcription?: {
+                /** @description The language of the input audio. Supplying the input language in
+                 *     [ISO-639-1](https://en.wikipedia.org/wiki/List_of_ISO_639-1_codes) (e.g. `en`) format
+                 *     will improve accuracy and latency.
+                 *      */
+                language?: string;
+                /** @description The model to use for transcription, `whisper-1` is the only currently
+                 *     supported model.
+                 *      */
+                model?: string;
+                /** @description An optional text to guide the model's style or continue a previous audio
+                 *     segment. The [prompt](/docs/guides/speech-to-text#prompting) should match
+                 *     the audio language.
+                 *      */
+                prompt?: string;
+            } & {
+                [key: string]: unknown;
+            };
+            /** @description The default system instructions (i.e. system message) prepended to model
+             *     calls. This field allows the client to guide the model on desired
+             *     responses. The model can be instructed on response content and format,
+             *     (e.g. "be extremely succinct", "act friendly", "here are examples of good
+             *     responses") and on audio behavior (e.g. "talk quickly", "inject emotion
+             *     into your voice", "laugh frequently"). The instructions are not guaranteed
+             *     to be followed by the model, but they provide guidance to the model on the
+             *     desired behavior.
+             *
+             *     Note that the server sets default instructions which will be used if this
+             *     field is not set and are visible in the `session.created` event at the
+             *     start of the session.
+             *      */
+            instructions?: string;
+            /** @description Maximum number of output tokens for a single assistant response,
+             *     inclusive of tool calls. Provide an integer between 1 and 4096 to
+             *     limit output tokens, or `inf` for the maximum available tokens for a
+             *     given model. Defaults to `inf`.
+             *      */
+            max_response_output_tokens?: number | "inf";
+            /** @description The set of modalities the model can respond with. To disable audio,
+             *     set this to ["text"].
+             *      */
+            modalities?: unknown;
+            /**
+             * @description The Realtime model used for this session.
+             *
+             * @enum {string}
+             */
+            model?: "gpt-4o-realtime-preview" | "gpt-4o-realtime-preview-2024-10-01" | "gpt-4o-realtime-preview-2024-12-17" | "gpt-4o-mini-realtime-preview" | "gpt-4o-mini-realtime-preview-2024-12-17";
+            /**
+             * @description The format of output audio. Options are `pcm16`, `g711_ulaw`, or `g711_alaw`.
+             *     For `pcm16`, output audio is sampled at a rate of 24kHz.
+             *
+             * @enum {string}
+             */
+            output_audio_format?: "pcm16" | "g711_ulaw" | "g711_alaw";
+            /** @description Sampling temperature for the model, limited to [0.6, 1.2]. Defaults to 0.8.
+             *      */
+            temperature?: number;
+            /** @description How the model chooses tools. Options are `auto`, `none`, `required`, or
+             *     specify a function.
+             *      */
+            tool_choice?: string;
+            /** @description Tools (functions) available to the model. */
+            tools?: ({
+                /** @description The description of the function, including guidance on when and how
+                 *     to call it, and guidance about what to tell the user when calling
+                 *     (if anything).
+                 *      */
+                description?: string;
+                /** @description The name of the function. */
+                name?: string;
+                /** @description Parameters of the function in JSON Schema. */
+                parameters?: Record<string, never>;
+                /**
+                 * @description The type of the tool, i.e. `function`.
+                 * @enum {string}
+                 */
+                type?: "function";
+            } & {
+                [key: string]: unknown;
+            })[];
+            /** @description Configuration for turn detection. Can be set to `null` to turn off. Server
+             *     VAD means that the model will detect the start and end of speech based on
+             *     audio volume and respond at the end of user speech.
+             *      */
+            turn_detection?: {
+                /**
+                 * @description Whether or not to automatically generate a response when VAD is
+                 *     enabled. `true` by default.
+                 *
+                 * @default true
+                 */
+                create_response: boolean;
+                /** @description Amount of audio to include before the VAD detected speech (in
+                 *     milliseconds). Defaults to 300ms.
+                 *      */
+                prefix_padding_ms?: number;
+                /** @description Duration of silence to detect speech stop (in milliseconds). Defaults
+                 *     to 500ms. With shorter values the model will respond more quickly,
+                 *     but may jump in on short pauses from the user.
+                 *      */
+                silence_duration_ms?: number;
+                /** @description Activation threshold for VAD (0.0 to 1.0), this defaults to 0.5. A
+                 *     higher threshold will require louder audio to activate the model, and
+                 *     thus might perform better in noisy environments.
+                 *      */
+                threshold?: number;
+                /** @description Type of turn detection, only `server_vad` is currently supported.
+                 *      */
+                type?: string;
+            } & {
+                [key: string]: unknown;
+            };
+            /**
+             * @description The voice the model uses to respond. Voice cannot be changed during the
+             *     session once the model has responded with audio at least once. Current
+             *     voice options are `alloy`, `ash`, `ballad`, `coral`, `echo` `sage`,
+             *     `shimmer` and `verse`.
+             *
+             * @enum {string}
+             */
+            voice?: "alloy" | "ash" | "ballad" | "coral" | "echo" | "sage" | "shimmer" | "verse";
+        } & {
+            [key: string]: unknown;
+        };
+        /** @description A new Realtime session configuration, with an ephermeral key. Default TTL
+         *     for keys is one minute.
+         *      */
+        RealtimeSessionCreateResponse: {
+            /** @description Ephemeral key returned by the API. */
+            client_secret: {
+                /** @description Timestamp for when the token expires. Currently, all tokens expire
+                 *     after one minute.
+                 *      */
+                expires_at: number;
+                /** @description Ephemeral key usable in client environments to authenticate connections
+                 *     to the Realtime API. Use this in client-side environments rather than
+                 *     a standard API token, which should only be used server-side.
+                 *      */
+                value: string;
+            } & {
+                [key: string]: unknown;
+            };
+            /** @description The format of input audio. Options are `pcm16`, `g711_ulaw`, or `g711_alaw`.
+             *      */
+            input_audio_format?: string;
+            /** @description Configuration for input audio transcription, defaults to off and can be
+             *     set to `null` to turn off once on. Input audio transcription is not native
+             *     to the model, since the model consumes audio directly. Transcription runs
+             *     asynchronously through Whisper and should be treated as rough guidance
+             *     rather than the representation understood by the model.
+             *      */
+            input_audio_transcription?: {
+                /** @description The model to use for transcription, `whisper-1` is the only currently
+                 *     supported model.
+                 *      */
+                model?: string;
+            } & {
+                [key: string]: unknown;
+            };
+            /** @description The default system instructions (i.e. system message) prepended to model
+             *     calls. This field allows the client to guide the model on desired
+             *     responses. The model can be instructed on response content and format,
+             *     (e.g. "be extremely succinct", "act friendly", "here are examples of good
+             *     responses") and on audio behavior (e.g. "talk quickly", "inject emotion
+             *     into your voice", "laugh frequently"). The instructions are not guaranteed
+             *     to be followed by the model, but they provide guidance to the model on the
+             *     desired behavior.
+             *
+             *     Note that the server sets default instructions which will be used if this
+             *     field is not set and are visible in the `session.created` event at the
+             *     start of the session.
+             *      */
+            instructions?: string;
+            /** @description Maximum number of output tokens for a single assistant response,
+             *     inclusive of tool calls. Provide an integer between 1 and 4096 to
+             *     limit output tokens, or `inf` for the maximum available tokens for a
+             *     given model. Defaults to `inf`.
+             *      */
+            max_response_output_tokens?: number | "inf";
+            /** @description The set of modalities the model can respond with. To disable audio,
+             *     set this to ["text"].
+             *      */
+            modalities?: unknown;
+            /** @description The format of output audio. Options are `pcm16`, `g711_ulaw`, or `g711_alaw`.
+             *      */
+            output_audio_format?: string;
+            /** @description Sampling temperature for the model, limited to [0.6, 1.2]. Defaults to 0.8.
+             *      */
+            temperature?: number;
+            /** @description How the model chooses tools. Options are `auto`, `none`, `required`, or
+             *     specify a function.
+             *      */
+            tool_choice?: string;
+            /** @description Tools (functions) available to the model. */
+            tools?: ({
+                /** @description The description of the function, including guidance on when and how
+                 *     to call it, and guidance about what to tell the user when calling
+                 *     (if anything).
+                 *      */
+                description?: string;
+                /** @description The name of the function. */
+                name?: string;
+                /** @description Parameters of the function in JSON Schema. */
+                parameters?: Record<string, never>;
+                /**
+                 * @description The type of the tool, i.e. `function`.
+                 * @enum {string}
+                 */
+                type?: "function";
+            } & {
+                [key: string]: unknown;
+            })[];
+            /** @description Configuration for turn detection. Can be set to `null` to turn off. Server
+             *     VAD means that the model will detect the start and end of speech based on
+             *     audio volume and respond at the end of user speech.
+             *      */
+            turn_detection?: {
+                /** @description Amount of audio to include before the VAD detected speech (in
+                 *     milliseconds). Defaults to 300ms.
+                 *      */
+                prefix_padding_ms?: number;
+                /** @description Duration of silence to detect speech stop (in milliseconds). Defaults
+                 *     to 500ms. With shorter values the model will respond more quickly,
+                 *     but may jump in on short pauses from the user.
+                 *      */
+                silence_duration_ms?: number;
+                /** @description Activation threshold for VAD (0.0 to 1.0), this defaults to 0.5. A
+                 *     higher threshold will require louder audio to activate the model, and
+                 *     thus might perform better in noisy environments.
+                 *      */
+                threshold?: number;
+                /** @description Type of turn detection, only `server_vad` is currently supported.
+                 *      */
+                type?: string;
+            } & {
+                [key: string]: unknown;
+            };
+            /**
+             * @description The voice the model uses to respond. Voice cannot be changed during the
+             *     session once the model has responded with audio at least once. Current
+             *     voice options are `alloy`, `ash`, `ballad`, `coral`, `echo` `sage`,
+             *     `shimmer` and `verse`.
+             *
+             * @enum {string}
+             */
+            voice?: "alloy" | "ash" | "ballad" | "coral" | "echo" | "sage" | "shimmer" | "verse";
         } & {
             [key: string]: unknown;
         };
@@ -6154,9 +7581,7 @@ export interface components {
             /** @description The maximum number of prompt tokens specified to have been used over the course of the run.
              *      */
             max_prompt_tokens: number | null;
-            /** @description Set of 16 key-value pairs that can be attached to an object. This can be useful for storing additional information about the object in a structured format. Keys can be a maximum of 64 characters long and values can be a maximum of 512 characters long.
-             *      */
-            metadata: Record<string, never>;
+            metadata: components["schemas"]["Metadata"];
             /** @description The model that the [assistant](/docs/api-reference/assistants) used for this run. */
             model: string;
             /**
@@ -6182,7 +7607,7 @@ export interface components {
             } & {
                 [key: string]: unknown;
             }) | null;
-            response_format: components["schemas"]["AssistantsApiResponseFormatOption"];
+            response_format: components["schemas"]["AssistantsApiResponseFormatOption"] & unknown;
             /** @description The Unix timestamp (in seconds) for when the run was started. */
             started_at: number | null;
             /**
@@ -6194,7 +7619,7 @@ export interface components {
             temperature?: number | null;
             /** @description The ID of the [thread](/docs/api-reference/threads) that was executed on as a part of this run. */
             thread_id: string;
-            tool_choice: components["schemas"]["AssistantsApiToolChoiceOption"];
+            tool_choice: components["schemas"]["AssistantsApiToolChoiceOption"] & unknown;
             /**
              * @description The list of tools that the [assistant](/docs/api-reference/assistants) used for this run.
              * @default []
@@ -6202,7 +7627,7 @@ export interface components {
             tools: (components["schemas"]["AssistantToolsCode"] | components["schemas"]["AssistantToolsFileSearch"] | components["schemas"]["AssistantToolsFunction"])[];
             /** @description The nucleus sampling value used for this run. If not set, defaults to 1. */
             top_p?: number | null;
-            truncation_strategy: components["schemas"]["TruncationObject"];
+            truncation_strategy: components["schemas"]["TruncationObject"] & unknown;
             usage: components["schemas"]["RunCompletionUsage"];
         } & {
             [key: string]: unknown;
@@ -6584,9 +8009,7 @@ export interface components {
             } & {
                 [key: string]: unknown;
             }) | null;
-            /** @description Set of 16 key-value pairs that can be attached to an object. This can be useful for storing additional information about the object in a structured format. Keys can be a maximum of 64 characters long and values can be a maximum of 512 characters long.
-             *      */
-            metadata: Record<string, never>;
+            metadata: components["schemas"]["Metadata"];
             /**
              * @description The object type, which is always `thread.run.step`.
              * @enum {string}
@@ -6795,9 +8218,7 @@ export interface components {
             created_at: number;
             /** @description The identifier, which can be referenced in API endpoints. */
             id: string;
-            /** @description Set of 16 key-value pairs that can be attached to an object. This can be useful for storing additional information about the object in a structured format. Keys can be a maximum of 64 characters long and values can be a maximum of 512 characters long.
-             *      */
-            metadata: Record<string, never>;
+            metadata: components["schemas"]["Metadata"];
             /**
              * @description The object type, which is always `thread`.
              * @enum {string}
@@ -6912,10 +8333,8 @@ export interface components {
             [key: string]: unknown;
         };
         UpdateVectorStoreRequest: {
-            expires_after?: components["schemas"]["VectorStoreExpirationAfter"];
-            /** @description Set of 16 key-value pairs that can be attached to an object. This can be useful for storing additional information about the object in a structured format. Keys can be a maximum of 64 characters long and values can be a maximum of 512 characters long.
-             *      */
-            metadata?: Record<string, never>;
+            expires_after?: components["schemas"]["VectorStoreExpirationAfter"] & unknown;
+            metadata?: components["schemas"]["Metadata"];
             /** @description The name of the vector store. */
             name?: string | null;
         } & {
@@ -6933,8 +8352,7 @@ export interface components {
             created_at: number;
             /** @description The Unix timestamp (in seconds) for when the Upload was created. */
             expires_at: number;
-            /** @description The ready File object after the Upload is completed. */
-            file?: components["schemas"]["OpenAIFile"];
+            file?: components["schemas"]["OpenAIFile"] & unknown;
             /** @description The name of the file to be uploaded. */
             filename: string;
             /** @description The Upload unique identifier, which can be referenced in API endpoints. */
@@ -6971,6 +8389,174 @@ export interface components {
             object: "upload.part";
             /** @description The ID of the Upload object that this Part was added to. */
             upload_id: string;
+        } & {
+            [key: string]: unknown;
+        };
+        /** @description The aggregated audio speeches usage details of the specific time bucket. */
+        UsageAudioSpeechesResult: {
+            /** @description When `group_by=api_key_id`, this field provides the API key ID of the grouped usage result. */
+            api_key_id?: string | null;
+            /** @description The number of characters processed. */
+            characters: number;
+            /** @description When `group_by=model`, this field provides the model name of the grouped usage result. */
+            model?: string | null;
+            /** @description The count of requests made to the model. */
+            num_model_requests: number;
+            /** @enum {string} */
+            object: "organization.usage.audio_speeches.result";
+            /** @description When `group_by=project_id`, this field provides the project ID of the grouped usage result. */
+            project_id?: string | null;
+            /** @description When `group_by=user_id`, this field provides the user ID of the grouped usage result. */
+            user_id?: string | null;
+        } & {
+            [key: string]: unknown;
+        };
+        /** @description The aggregated audio transcriptions usage details of the specific time bucket. */
+        UsageAudioTranscriptionsResult: {
+            /** @description When `group_by=api_key_id`, this field provides the API key ID of the grouped usage result. */
+            api_key_id?: string | null;
+            /** @description When `group_by=model`, this field provides the model name of the grouped usage result. */
+            model?: string | null;
+            /** @description The count of requests made to the model. */
+            num_model_requests: number;
+            /** @enum {string} */
+            object: "organization.usage.audio_transcriptions.result";
+            /** @description When `group_by=project_id`, this field provides the project ID of the grouped usage result. */
+            project_id?: string | null;
+            /** @description The number of seconds processed. */
+            seconds: number;
+            /** @description When `group_by=user_id`, this field provides the user ID of the grouped usage result. */
+            user_id?: string | null;
+        } & {
+            [key: string]: unknown;
+        };
+        /** @description The aggregated code interpreter sessions usage details of the specific time bucket. */
+        UsageCodeInterpreterSessionsResult: {
+            /** @enum {string} */
+            object: "organization.usage.code_interpreter_sessions.result";
+            /** @description When `group_by=project_id`, this field provides the project ID of the grouped usage result. */
+            project_id?: string | null;
+            /** @description The number of code interpreter sessions. */
+            sessions: number;
+        } & {
+            [key: string]: unknown;
+        };
+        /** @description The aggregated completions usage details of the specific time bucket. */
+        UsageCompletionsResult: {
+            /** @description When `group_by=api_key_id`, this field provides the API key ID of the grouped usage result. */
+            api_key_id?: string | null;
+            /** @description When `group_by=batch`, this field tells whether the grouped usage result is batch or not. */
+            batch?: boolean | null;
+            /** @description The aggregated number of audio input tokens used, including cached tokens. */
+            input_audio_tokens?: number;
+            /** @description The aggregated number of text input tokens that has been cached from previous requests. For customers subscribe to scale tier, this includes scale tier tokens. */
+            input_cached_tokens?: number;
+            /** @description The aggregated number of text input tokens used, including cached tokens. For customers subscribe to scale tier, this includes scale tier tokens. */
+            input_tokens: number;
+            /** @description When `group_by=model`, this field provides the model name of the grouped usage result. */
+            model?: string | null;
+            /** @description The count of requests made to the model. */
+            num_model_requests: number;
+            /** @enum {string} */
+            object: "organization.usage.completions.result";
+            /** @description The aggregated number of audio output tokens used. */
+            output_audio_tokens?: number;
+            /** @description The aggregated number of text output tokens used. For customers subscribe to scale tier, this includes scale tier tokens. */
+            output_tokens: number;
+            /** @description When `group_by=project_id`, this field provides the project ID of the grouped usage result. */
+            project_id?: string | null;
+            /** @description When `group_by=user_id`, this field provides the user ID of the grouped usage result. */
+            user_id?: string | null;
+        } & {
+            [key: string]: unknown;
+        };
+        /** @description The aggregated embeddings usage details of the specific time bucket. */
+        UsageEmbeddingsResult: {
+            /** @description When `group_by=api_key_id`, this field provides the API key ID of the grouped usage result. */
+            api_key_id?: string | null;
+            /** @description The aggregated number of input tokens used. */
+            input_tokens: number;
+            /** @description When `group_by=model`, this field provides the model name of the grouped usage result. */
+            model?: string | null;
+            /** @description The count of requests made to the model. */
+            num_model_requests: number;
+            /** @enum {string} */
+            object: "organization.usage.embeddings.result";
+            /** @description When `group_by=project_id`, this field provides the project ID of the grouped usage result. */
+            project_id?: string | null;
+            /** @description When `group_by=user_id`, this field provides the user ID of the grouped usage result. */
+            user_id?: string | null;
+        } & {
+            [key: string]: unknown;
+        };
+        /** @description The aggregated images usage details of the specific time bucket. */
+        UsageImagesResult: {
+            /** @description When `group_by=api_key_id`, this field provides the API key ID of the grouped usage result. */
+            api_key_id?: string | null;
+            /** @description The number of images processed. */
+            images: number;
+            /** @description When `group_by=model`, this field provides the model name of the grouped usage result. */
+            model?: string | null;
+            /** @description The count of requests made to the model. */
+            num_model_requests: number;
+            /** @enum {string} */
+            object: "organization.usage.images.result";
+            /** @description When `group_by=project_id`, this field provides the project ID of the grouped usage result. */
+            project_id?: string | null;
+            /** @description When `group_by=size`, this field provides the image size of the grouped usage result. */
+            size?: string | null;
+            /** @description When `group_by=source`, this field provides the source of the grouped usage result, possible values are `image.generation`, `image.edit`, `image.variation`. */
+            source?: string | null;
+            /** @description When `group_by=user_id`, this field provides the user ID of the grouped usage result. */
+            user_id?: string | null;
+        } & {
+            [key: string]: unknown;
+        };
+        /** @description The aggregated moderations usage details of the specific time bucket. */
+        UsageModerationsResult: {
+            /** @description When `group_by=api_key_id`, this field provides the API key ID of the grouped usage result. */
+            api_key_id?: string | null;
+            /** @description The aggregated number of input tokens used. */
+            input_tokens: number;
+            /** @description When `group_by=model`, this field provides the model name of the grouped usage result. */
+            model?: string | null;
+            /** @description The count of requests made to the model. */
+            num_model_requests: number;
+            /** @enum {string} */
+            object: "organization.usage.moderations.result";
+            /** @description When `group_by=project_id`, this field provides the project ID of the grouped usage result. */
+            project_id?: string | null;
+            /** @description When `group_by=user_id`, this field provides the user ID of the grouped usage result. */
+            user_id?: string | null;
+        } & {
+            [key: string]: unknown;
+        };
+        UsageResponse: {
+            data: components["schemas"]["UsageTimeBucket"][];
+            has_more: boolean;
+            next_page: string;
+            /** @enum {string} */
+            object: "page";
+        } & {
+            [key: string]: unknown;
+        };
+        UsageTimeBucket: {
+            end_time: number;
+            /** @enum {string} */
+            object: "bucket";
+            result: (components["schemas"]["UsageCompletionsResult"] | components["schemas"]["UsageEmbeddingsResult"] | components["schemas"]["UsageModerationsResult"] | components["schemas"]["UsageImagesResult"] | components["schemas"]["UsageAudioSpeechesResult"] | components["schemas"]["UsageAudioTranscriptionsResult"] | components["schemas"]["UsageVectorStoresResult"] | components["schemas"]["UsageCodeInterpreterSessionsResult"] | components["schemas"]["CostsResult"])[];
+            start_time: number;
+        } & {
+            [key: string]: unknown;
+        };
+        /** @description The aggregated vector stores usage details of the specific time bucket. */
+        UsageVectorStoresResult: {
+            /** @enum {string} */
+            object: "organization.usage.vector_stores.result";
+            /** @description When `group_by=project_id`, this field provides the project ID of the grouped usage result. */
+            project_id?: string | null;
+            /** @description The vector stores usage in bytes. */
+            usage_bytes: number;
         } & {
             [key: string]: unknown;
         };
@@ -7145,9 +8731,7 @@ export interface components {
             id: string;
             /** @description The Unix timestamp (in seconds) for when the vector store was last active. */
             last_active_at: number | null;
-            /** @description Set of 16 key-value pairs that can be attached to an object. This can be useful for storing additional information about the object in a structured format. Keys can be a maximum of 64 characters long and values can be a maximum of 512 characters long.
-             *      */
-            metadata: Record<string, never>;
+            metadata: components["schemas"]["Metadata"];
             /** @description The name of the vector store. */
             name: string;
             /**
@@ -7180,7 +8764,7 @@ export interface operations {
                 /** @description A cursor for use in pagination. `after` is an object ID that defines your place in the list. For instance, if you make a list request and receive 100 objects, ending with obj_foo, your subsequent call can include after=obj_foo in order to fetch the next page of the list.
                  *      */
                 after?: string;
-                /** @description A cursor for use in pagination. `before` is an object ID that defines your place in the list. For instance, if you make a list request and receive 100 objects, ending with obj_foo, your subsequent call can include before=obj_foo in order to fetch the previous page of the list.
+                /** @description A cursor for use in pagination. `before` is an object ID that defines your place in the list. For instance, if you make a list request and receive 100 objects, starting with obj_foo, your subsequent call can include before=obj_foo in order to fetch the previous page of the list.
                  *      */
                 before?: string;
                 /** @description A limit on the number of objects to be returned. Limit can range between 1 and 100, and the default is 20.
@@ -7429,13 +9013,10 @@ export interface operations {
                      *
                      *     See [upload file](/docs/api-reference/files/create) for how to upload a file.
                      *
-                     *     Your input file must be formatted as a [JSONL file](/docs/api-reference/batch/request-input), and must be uploaded with the purpose `batch`. The file can contain up to 50,000 requests, and can be up to 100 MB in size.
+                     *     Your input file must be formatted as a [JSONL file](/docs/api-reference/batch/request-input), and must be uploaded with the purpose `batch`. The file can contain up to 50,000 requests, and can be up to 200 MB in size.
                      *      */
                     input_file_id: string;
-                    /** @description Optional custom metadata for the batch. */
-                    metadata?: {
-                        [key: string]: string;
-                    } | null;
+                    metadata?: components["schemas"]["Metadata"];
                 } & {
                     [key: string]: unknown;
                 };
@@ -7519,6 +9100,7 @@ export interface operations {
                 };
                 content: {
                     "application/json": components["schemas"]["CreateChatCompletionResponse"];
+                    "text/event-stream": components["schemas"]["CreateChatCompletionStreamResponse"];
                 };
             };
         };
@@ -7574,6 +9156,15 @@ export interface operations {
     listFiles: {
         parameters: {
             query?: {
+                /** @description A cursor for use in pagination. `after` is an object ID that defines your place in the list. For instance, if you make a list request and receive 100 objects, ending with obj_foo, your subsequent call can include after=obj_foo in order to fetch the next page of the list.
+                 *      */
+                after?: string;
+                /** @description A limit on the number of objects to be returned. Limit can range between 1 and 10,000, and the default is 10,000.
+                 *      */
+                limit?: number;
+                /** @description Sort order by the `created_at` timestamp of the objects. `asc` for ascending order and `desc` for descending order.
+                 *      */
+                order?: "asc" | "desc";
                 /** @description Only return files with the given purpose. */
                 purpose?: string;
             };
@@ -8004,6 +9595,112 @@ export interface operations {
             };
         };
     };
+    "admin-api-keys-list": {
+        parameters: {
+            query?: {
+                after?: string | null;
+                limit?: number;
+                order?: "asc" | "desc";
+            };
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description A list of organization API keys. */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiKeyList"];
+                };
+            };
+        };
+    };
+    "admin-api-keys-create": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": {
+                    /** @example New Admin Key */
+                    name: string;
+                } & {
+                    [key: string]: unknown;
+                };
+            };
+        };
+        responses: {
+            /** @description The newly created admin API key. */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["AdminApiKey"];
+                };
+            };
+        };
+    };
+    "admin-api-keys-get": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                key_id: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Details of the requested API key. */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["AdminApiKey"];
+                };
+            };
+        };
+    };
+    "admin-api-keys-delete": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                key_id: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Confirmation that the API key was deleted. */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        /** @example true */
+                        deleted?: boolean;
+                        /** @example key_abc */
+                        id?: string;
+                        /** @example organization.admin_api_key.deleted */
+                        object?: string;
+                    } & {
+                        [key: string]: unknown;
+                    };
+                };
+            };
+        };
+    };
     "list-audit-logs": {
         parameters: {
             query?: {
@@ -8014,7 +9711,7 @@ export interface operations {
                 /** @description A cursor for use in pagination. `after` is an object ID that defines your place in the list. For instance, if you make a list request and receive 100 objects, ending with obj_foo, your subsequent call can include after=obj_foo in order to fetch the next page of the list.
                  *      */
                 after?: string;
-                /** @description A cursor for use in pagination. `before` is an object ID that defines your place in the list. For instance, if you make a list request and receive 100 objects, ending with obj_foo, your subsequent call can include before=obj_foo in order to fetch the previous page of the list.
+                /** @description A cursor for use in pagination. `before` is an object ID that defines your place in the list. For instance, if you make a list request and receive 100 objects, starting with obj_foo, your subsequent call can include before=obj_foo in order to fetch the previous page of the list.
                  *      */
                 before?: string;
                 /** @description Return only events whose `effective_at` (Unix seconds) is in this range. */
@@ -8053,6 +9750,42 @@ export interface operations {
                 };
                 content: {
                     "application/json": components["schemas"]["ListAuditLogsResponse"];
+                };
+            };
+        };
+    };
+    "usage-costs": {
+        parameters: {
+            query: {
+                /** @description Width of each time bucket in response. Currently only `1d` is supported, default to `1d`. */
+                bucket_width?: "1d";
+                /** @description End time (Unix seconds) of the query time range, exclusive. */
+                end_time?: number;
+                /** @description Group the costs by the specified fields. Support fields include `project_id`, `line_item` and any combination of them. */
+                group_by?: ("project_id" | "line_item")[];
+                /** @description A limit on the number of buckets to be returned. Limit can range between 1 and 180, and the default is 7.
+                 *      */
+                limit?: number;
+                /** @description A cursor for use in pagination. Corresponding to the `next_page` field from the previous response. */
+                page?: string;
+                /** @description Return only costs for these projects. */
+                project_ids?: string[];
+                /** @description Start time (Unix seconds) of the query time range, inclusive. */
+                start_time: number;
+            };
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Costs data retrieved successfully. */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["UsageResponse"];
                 };
             };
         };
@@ -8381,6 +10114,78 @@ export interface operations {
             };
         };
     };
+    "list-project-rate-limits": {
+        parameters: {
+            query?: {
+                /** @description A cursor for use in pagination. `after` is an object ID that defines your place in the list. For instance, if you make a list request and receive 100 objects, ending with obj_foo, your subsequent call can include after=obj_foo in order to fetch the next page of the list.
+                 *      */
+                after?: string;
+                /** @description A cursor for use in pagination. `before` is an object ID that defines your place in the list. For instance, if you make a list request and receive 100 objects, beginning with obj_foo, your subsequent call can include before=obj_foo in order to fetch the previous page of the list.
+                 *      */
+                before?: string;
+                /** @description A limit on the number of objects to be returned. The default is 100.
+                 *      */
+                limit?: number;
+            };
+            header?: never;
+            path: {
+                /** @description The ID of the project. */
+                project_id: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Project rate limits listed successfully. */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ProjectRateLimitListResponse"];
+                };
+            };
+        };
+    };
+    "update-project-rate-limits": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                /** @description The ID of the project. */
+                project_id: string;
+                /** @description The ID of the rate limit. */
+                rate_limit_id: string;
+            };
+            cookie?: never;
+        };
+        /** @description The project rate limit update request payload. */
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["ProjectRateLimitUpdateRequest"];
+            };
+        };
+        responses: {
+            /** @description Project rate limit updated successfully. */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ProjectRateLimit"];
+                };
+            };
+            /** @description Error response for various conditions. */
+            400: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponse"];
+                };
+            };
+        };
+    };
     "list-project-service-accounts": {
         parameters: {
             query?: {
@@ -8681,12 +10486,369 @@ export interface operations {
             };
         };
     };
+    "usage-audio-speeches": {
+        parameters: {
+            query: {
+                /** @description Return only usage for these API keys. */
+                api_key_ids?: string[];
+                /** @description Width of each time bucket in response. Currently `1m`, `1h` and `1d` are supported, default to `1d`. */
+                bucket_width?: "1m" | "1h" | "1d";
+                /** @description End time (Unix seconds) of the query time range, exclusive. */
+                end_time?: number;
+                /** @description Group the usage data by the specified fields. Support fields include `project_id`, `user_id`, `api_key_id`, `model` or any combination of them. */
+                group_by?: ("project_id" | "user_id" | "api_key_id" | "model")[];
+                /** @description Specifies the number of buckets to return.
+                 *     - `bucket_width=1d`: default: 7, max: 31
+                 *     - `bucket_width=1h`: default: 24, max: 168
+                 *     - `bucket_width=1m`: default: 60, max: 1440
+                 *      */
+                limit?: number;
+                /** @description Return only usage for these models. */
+                models?: string[];
+                /** @description A cursor for use in pagination. Corresponding to the `next_page` field from the previous response. */
+                page?: string;
+                /** @description Return only usage for these projects. */
+                project_ids?: string[];
+                /** @description Start time (Unix seconds) of the query time range, inclusive. */
+                start_time: number;
+                /** @description Return only usage for these users. */
+                user_ids?: string[];
+            };
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Usage data retrieved successfully. */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["UsageResponse"];
+                };
+            };
+        };
+    };
+    "usage-audio-transcriptions": {
+        parameters: {
+            query: {
+                /** @description Return only usage for these API keys. */
+                api_key_ids?: string[];
+                /** @description Width of each time bucket in response. Currently `1m`, `1h` and `1d` are supported, default to `1d`. */
+                bucket_width?: "1m" | "1h" | "1d";
+                /** @description End time (Unix seconds) of the query time range, exclusive. */
+                end_time?: number;
+                /** @description Group the usage data by the specified fields. Support fields include `project_id`, `user_id`, `api_key_id`, `model` or any combination of them. */
+                group_by?: ("project_id" | "user_id" | "api_key_id" | "model")[];
+                /** @description Specifies the number of buckets to return.
+                 *     - `bucket_width=1d`: default: 7, max: 31
+                 *     - `bucket_width=1h`: default: 24, max: 168
+                 *     - `bucket_width=1m`: default: 60, max: 1440
+                 *      */
+                limit?: number;
+                /** @description Return only usage for these models. */
+                models?: string[];
+                /** @description A cursor for use in pagination. Corresponding to the `next_page` field from the previous response. */
+                page?: string;
+                /** @description Return only usage for these projects. */
+                project_ids?: string[];
+                /** @description Start time (Unix seconds) of the query time range, inclusive. */
+                start_time: number;
+                /** @description Return only usage for these users. */
+                user_ids?: string[];
+            };
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Usage data retrieved successfully. */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["UsageResponse"];
+                };
+            };
+        };
+    };
+    "usage-code-interpreter-sessions": {
+        parameters: {
+            query: {
+                /** @description Width of each time bucket in response. Currently `1m`, `1h` and `1d` are supported, default to `1d`. */
+                bucket_width?: "1m" | "1h" | "1d";
+                /** @description End time (Unix seconds) of the query time range, exclusive. */
+                end_time?: number;
+                /** @description Group the usage data by the specified fields. Support fields include `project_id`. */
+                group_by?: "project_id"[];
+                /** @description Specifies the number of buckets to return.
+                 *     - `bucket_width=1d`: default: 7, max: 31
+                 *     - `bucket_width=1h`: default: 24, max: 168
+                 *     - `bucket_width=1m`: default: 60, max: 1440
+                 *      */
+                limit?: number;
+                /** @description A cursor for use in pagination. Corresponding to the `next_page` field from the previous response. */
+                page?: string;
+                /** @description Return only usage for these projects. */
+                project_ids?: string[];
+                /** @description Start time (Unix seconds) of the query time range, inclusive. */
+                start_time: number;
+            };
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Usage data retrieved successfully. */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["UsageResponse"];
+                };
+            };
+        };
+    };
+    "usage-completions": {
+        parameters: {
+            query: {
+                /** @description Return only usage for these API keys. */
+                api_key_ids?: string[];
+                /** @description If `true`, return batch jobs only. If `false`, return non-batch jobs only. By default, return both.
+                 *      */
+                batch?: boolean;
+                /** @description Width of each time bucket in response. Currently `1m`, `1h` and `1d` are supported, default to `1d`. */
+                bucket_width?: "1m" | "1h" | "1d";
+                /** @description End time (Unix seconds) of the query time range, exclusive. */
+                end_time?: number;
+                /** @description Group the usage data by the specified fields. Support fields include `project_id`, `user_id`, `api_key_id`, `model`, `batch` or any combination of them. */
+                group_by?: ("project_id" | "user_id" | "api_key_id" | "model" | "batch")[];
+                /** @description Specifies the number of buckets to return.
+                 *     - `bucket_width=1d`: default: 7, max: 31
+                 *     - `bucket_width=1h`: default: 24, max: 168
+                 *     - `bucket_width=1m`: default: 60, max: 1440
+                 *      */
+                limit?: number;
+                /** @description Return only usage for these models. */
+                models?: string[];
+                /** @description A cursor for use in pagination. Corresponding to the `next_page` field from the previous response. */
+                page?: string;
+                /** @description Return only usage for these projects. */
+                project_ids?: string[];
+                /** @description Start time (Unix seconds) of the query time range, inclusive. */
+                start_time: number;
+                /** @description Return only usage for these users. */
+                user_ids?: string[];
+            };
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Usage data retrieved successfully. */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["UsageResponse"];
+                };
+            };
+        };
+    };
+    "usage-embeddings": {
+        parameters: {
+            query: {
+                /** @description Return only usage for these API keys. */
+                api_key_ids?: string[];
+                /** @description Width of each time bucket in response. Currently `1m`, `1h` and `1d` are supported, default to `1d`. */
+                bucket_width?: "1m" | "1h" | "1d";
+                /** @description End time (Unix seconds) of the query time range, exclusive. */
+                end_time?: number;
+                /** @description Group the usage data by the specified fields. Support fields include `project_id`, `user_id`, `api_key_id`, `model` or any combination of them. */
+                group_by?: ("project_id" | "user_id" | "api_key_id" | "model")[];
+                /** @description Specifies the number of buckets to return.
+                 *     - `bucket_width=1d`: default: 7, max: 31
+                 *     - `bucket_width=1h`: default: 24, max: 168
+                 *     - `bucket_width=1m`: default: 60, max: 1440
+                 *      */
+                limit?: number;
+                /** @description Return only usage for these models. */
+                models?: string[];
+                /** @description A cursor for use in pagination. Corresponding to the `next_page` field from the previous response. */
+                page?: string;
+                /** @description Return only usage for these projects. */
+                project_ids?: string[];
+                /** @description Start time (Unix seconds) of the query time range, inclusive. */
+                start_time: number;
+                /** @description Return only usage for these users. */
+                user_ids?: string[];
+            };
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Usage data retrieved successfully. */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["UsageResponse"];
+                };
+            };
+        };
+    };
+    "usage-images": {
+        parameters: {
+            query: {
+                /** @description Return only usage for these API keys. */
+                api_key_ids?: string[];
+                /** @description Width of each time bucket in response. Currently `1m`, `1h` and `1d` are supported, default to `1d`. */
+                bucket_width?: "1m" | "1h" | "1d";
+                /** @description End time (Unix seconds) of the query time range, exclusive. */
+                end_time?: number;
+                /** @description Group the usage data by the specified fields. Support fields include `project_id`, `user_id`, `api_key_id`, `model`, `size`, `source` or any combination of them. */
+                group_by?: ("project_id" | "user_id" | "api_key_id" | "model" | "size" | "source")[];
+                /** @description Specifies the number of buckets to return.
+                 *     - `bucket_width=1d`: default: 7, max: 31
+                 *     - `bucket_width=1h`: default: 24, max: 168
+                 *     - `bucket_width=1m`: default: 60, max: 1440
+                 *      */
+                limit?: number;
+                /** @description Return only usage for these models. */
+                models?: string[];
+                /** @description A cursor for use in pagination. Corresponding to the `next_page` field from the previous response. */
+                page?: string;
+                /** @description Return only usage for these projects. */
+                project_ids?: string[];
+                /** @description Return only usages for these image sizes. Possible values are `256x256`, `512x512`, `1024x1024`, `1792x1792`, `1024x1792` or any combination of them. */
+                sizes?: ("256x256" | "512x512" | "1024x1024" | "1792x1792" | "1024x1792")[];
+                /** @description Return only usages for these sources. Possible values are `image.generation`, `image.edit`, `image.variation` or any combination of them. */
+                sources?: ("image.generation" | "image.edit" | "image.variation")[];
+                /** @description Start time (Unix seconds) of the query time range, inclusive. */
+                start_time: number;
+                /** @description Return only usage for these users. */
+                user_ids?: string[];
+            };
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Usage data retrieved successfully. */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["UsageResponse"];
+                };
+            };
+        };
+    };
+    "usage-moderations": {
+        parameters: {
+            query: {
+                /** @description Return only usage for these API keys. */
+                api_key_ids?: string[];
+                /** @description Width of each time bucket in response. Currently `1m`, `1h` and `1d` are supported, default to `1d`. */
+                bucket_width?: "1m" | "1h" | "1d";
+                /** @description End time (Unix seconds) of the query time range, exclusive. */
+                end_time?: number;
+                /** @description Group the usage data by the specified fields. Support fields include `project_id`, `user_id`, `api_key_id`, `model` or any combination of them. */
+                group_by?: ("project_id" | "user_id" | "api_key_id" | "model")[];
+                /** @description Specifies the number of buckets to return.
+                 *     - `bucket_width=1d`: default: 7, max: 31
+                 *     - `bucket_width=1h`: default: 24, max: 168
+                 *     - `bucket_width=1m`: default: 60, max: 1440
+                 *      */
+                limit?: number;
+                /** @description Return only usage for these models. */
+                models?: string[];
+                /** @description A cursor for use in pagination. Corresponding to the `next_page` field from the previous response. */
+                page?: string;
+                /** @description Return only usage for these projects. */
+                project_ids?: string[];
+                /** @description Start time (Unix seconds) of the query time range, inclusive. */
+                start_time: number;
+                /** @description Return only usage for these users. */
+                user_ids?: string[];
+            };
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Usage data retrieved successfully. */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["UsageResponse"];
+                };
+            };
+        };
+    };
+    "usage-vector-stores": {
+        parameters: {
+            query: {
+                /** @description Width of each time bucket in response. Currently `1m`, `1h` and `1d` are supported, default to `1d`. */
+                bucket_width?: "1m" | "1h" | "1d";
+                /** @description End time (Unix seconds) of the query time range, exclusive. */
+                end_time?: number;
+                /** @description Group the usage data by the specified fields. Support fields include `project_id`. */
+                group_by?: "project_id"[];
+                /** @description Specifies the number of buckets to return.
+                 *     - `bucket_width=1d`: default: 7, max: 31
+                 *     - `bucket_width=1h`: default: 24, max: 168
+                 *     - `bucket_width=1m`: default: 60, max: 1440
+                 *      */
+                limit?: number;
+                /** @description A cursor for use in pagination. Corresponding to the `next_page` field from the previous response. */
+                page?: string;
+                /** @description Return only usage for these projects. */
+                project_ids?: string[];
+                /** @description Start time (Unix seconds) of the query time range, inclusive. */
+                start_time: number;
+            };
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Usage data retrieved successfully. */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["UsageResponse"];
+                };
+            };
+        };
+    };
     "list-users": {
         parameters: {
             query?: {
                 /** @description A cursor for use in pagination. `after` is an object ID that defines your place in the list. For instance, if you make a list request and receive 100 objects, ending with obj_foo, your subsequent call can include after=obj_foo in order to fetch the next page of the list.
                  *      */
                 after?: string;
+                /** @description Filter by the email address of users. */
+                emails?: string[];
                 /** @description A limit on the number of objects to be returned. Limit can range between 1 and 100, and the default is 20.
                  *      */
                 limit?: number;
@@ -8778,6 +10940,31 @@ export interface operations {
                 };
                 content: {
                     "application/json": components["schemas"]["UserDeleteResponse"];
+                };
+            };
+        };
+    };
+    "create-realtime-session": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** @description Create an ephemeral API key with the given session configuration. */
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["RealtimeSessionCreateRequest"];
+            };
+        };
+        responses: {
+            /** @description Session created successfully. */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["RealtimeSessionCreateResponse"];
                 };
             };
         };
@@ -8885,7 +11072,7 @@ export interface operations {
                 /** @description A cursor for use in pagination. `after` is an object ID that defines your place in the list. For instance, if you make a list request and receive 100 objects, ending with obj_foo, your subsequent call can include after=obj_foo in order to fetch the next page of the list.
                  *      */
                 after?: string;
-                /** @description A cursor for use in pagination. `before` is an object ID that defines your place in the list. For instance, if you make a list request and receive 100 objects, ending with obj_foo, your subsequent call can include before=obj_foo in order to fetch the previous page of the list.
+                /** @description A cursor for use in pagination. `before` is an object ID that defines your place in the list. For instance, if you make a list request and receive 100 objects, starting with obj_foo, your subsequent call can include before=obj_foo in order to fetch the previous page of the list.
                  *      */
                 before?: string;
                 /** @description A limit on the number of objects to be returned. Limit can range between 1 and 100, and the default is 20.
@@ -9030,7 +11217,7 @@ export interface operations {
                 /** @description A cursor for use in pagination. `after` is an object ID that defines your place in the list. For instance, if you make a list request and receive 100 objects, ending with obj_foo, your subsequent call can include after=obj_foo in order to fetch the next page of the list.
                  *      */
                 after?: string;
-                /** @description A cursor for use in pagination. `before` is an object ID that defines your place in the list. For instance, if you make a list request and receive 100 objects, ending with obj_foo, your subsequent call can include before=obj_foo in order to fetch the previous page of the list.
+                /** @description A cursor for use in pagination. `before` is an object ID that defines your place in the list. For instance, if you make a list request and receive 100 objects, starting with obj_foo, your subsequent call can include before=obj_foo in order to fetch the previous page of the list.
                  *      */
                 before?: string;
                 /** @description A limit on the number of objects to be returned. Limit can range between 1 and 100, and the default is 20.
@@ -9065,7 +11252,7 @@ export interface operations {
             query?: {
                 /** @description A list of additional fields to include in the response. Currently the only supported value is `step_details.tool_calls[*].file_search.results[*].content` to fetch the file search result content.
                  *
-                 *     See the [file search tool documentation](/docs/assistants/tools/file-search/customizing-file-search-settings) for more information.
+                 *     See the [file search tool documentation](/docs/assistants/tools/file-search#customizing-file-search-settings) for more information.
                  *      */
                 "include[]"?: "step_details.tool_calls[*].file_search.results[*].content"[];
             };
@@ -9178,12 +11365,12 @@ export interface operations {
                 /** @description A cursor for use in pagination. `after` is an object ID that defines your place in the list. For instance, if you make a list request and receive 100 objects, ending with obj_foo, your subsequent call can include after=obj_foo in order to fetch the next page of the list.
                  *      */
                 after?: string;
-                /** @description A cursor for use in pagination. `before` is an object ID that defines your place in the list. For instance, if you make a list request and receive 100 objects, ending with obj_foo, your subsequent call can include before=obj_foo in order to fetch the previous page of the list.
+                /** @description A cursor for use in pagination. `before` is an object ID that defines your place in the list. For instance, if you make a list request and receive 100 objects, starting with obj_foo, your subsequent call can include before=obj_foo in order to fetch the previous page of the list.
                  *      */
                 before?: string;
                 /** @description A list of additional fields to include in the response. Currently the only supported value is `step_details.tool_calls[*].file_search.results[*].content` to fetch the file search result content.
                  *
-                 *     See the [file search tool documentation](/docs/assistants/tools/file-search/customizing-file-search-settings) for more information.
+                 *     See the [file search tool documentation](/docs/assistants/tools/file-search#customizing-file-search-settings) for more information.
                  *      */
                 "include[]"?: "step_details.tool_calls[*].file_search.results[*].content"[];
                 /** @description A limit on the number of objects to be returned. Limit can range between 1 and 100, and the default is 20.
@@ -9220,7 +11407,7 @@ export interface operations {
             query?: {
                 /** @description A list of additional fields to include in the response. Currently the only supported value is `step_details.tool_calls[*].file_search.results[*].content` to fetch the file search result content.
                  *
-                 *     See the [file search tool documentation](/docs/assistants/tools/file-search/customizing-file-search-settings) for more information.
+                 *     See the [file search tool documentation](/docs/assistants/tools/file-search#customizing-file-search-settings) for more information.
                  *      */
                 "include[]"?: "step_details.tool_calls[*].file_search.results[*].content"[];
             };
@@ -9411,7 +11598,7 @@ export interface operations {
                 /** @description A cursor for use in pagination. `after` is an object ID that defines your place in the list. For instance, if you make a list request and receive 100 objects, ending with obj_foo, your subsequent call can include after=obj_foo in order to fetch the next page of the list.
                  *      */
                 after?: string;
-                /** @description A cursor for use in pagination. `before` is an object ID that defines your place in the list. For instance, if you make a list request and receive 100 objects, ending with obj_foo, your subsequent call can include before=obj_foo in order to fetch the previous page of the list.
+                /** @description A cursor for use in pagination. `before` is an object ID that defines your place in the list. For instance, if you make a list request and receive 100 objects, starting with obj_foo, your subsequent call can include before=obj_foo in order to fetch the previous page of the list.
                  *      */
                 before?: string;
                 /** @description A limit on the number of objects to be returned. Limit can range between 1 and 100, and the default is 20.
@@ -9619,7 +11806,7 @@ export interface operations {
                 /** @description A cursor for use in pagination. `after` is an object ID that defines your place in the list. For instance, if you make a list request and receive 100 objects, ending with obj_foo, your subsequent call can include after=obj_foo in order to fetch the next page of the list.
                  *      */
                 after?: string;
-                /** @description A cursor for use in pagination. `before` is an object ID that defines your place in the list. For instance, if you make a list request and receive 100 objects, ending with obj_foo, your subsequent call can include before=obj_foo in order to fetch the previous page of the list.
+                /** @description A cursor for use in pagination. `before` is an object ID that defines your place in the list. For instance, if you make a list request and receive 100 objects, starting with obj_foo, your subsequent call can include before=obj_foo in order to fetch the previous page of the list.
                  *      */
                 before?: string;
                 /** @description Filter by file status. One of `in_progress`, `completed`, `failed`, `cancelled`. */
@@ -9659,7 +11846,7 @@ export interface operations {
                 /** @description A cursor for use in pagination. `after` is an object ID that defines your place in the list. For instance, if you make a list request and receive 100 objects, ending with obj_foo, your subsequent call can include after=obj_foo in order to fetch the next page of the list.
                  *      */
                 after?: string;
-                /** @description A cursor for use in pagination. `before` is an object ID that defines your place in the list. For instance, if you make a list request and receive 100 objects, ending with obj_foo, your subsequent call can include before=obj_foo in order to fetch the previous page of the list.
+                /** @description A cursor for use in pagination. `before` is an object ID that defines your place in the list. For instance, if you make a list request and receive 100 objects, starting with obj_foo, your subsequent call can include before=obj_foo in order to fetch the previous page of the list.
                  *      */
                 before?: string;
                 /** @description Filter by file status. One of `in_progress`, `completed`, `failed`, `cancelled`. */

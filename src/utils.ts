@@ -83,7 +83,7 @@ export function genModel(req: OpenAI.Chat.ChatCompletionCreateParams): [GeminiMo
   const generateContentRequest: GenerateContentRequest = {
     contents: openAiMessageToGeminiMessage(req.messages),
     generationConfig: {
-      maxOutputTokens: req.max_tokens ?? undefined,
+      maxOutputTokens: req.max_completion_tokens ?? undefined,
       temperature: req.temperature ?? undefined,
       topP: req.top_p ?? undefined,
       responseMimeType: responseMimeType,

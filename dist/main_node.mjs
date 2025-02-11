@@ -1,4 +1,4 @@
-// node_modules/.deno/@hono+node-server@1.13.7/node_modules/@hono/node-server/dist/index.mjs
+// node_modules/.deno/@hono+node-server@1.13.8/node_modules/@hono/node-server/dist/index.mjs
 import { createServer as createServerHTTP } from "http";
 import { Http2ServerRequest } from "http2";
 import { Readable } from "stream";
@@ -54,7 +54,16 @@ var newRequestFromIncoming = (method, url, incoming, abortController) => {
     return req;
   }
   if (!(method === "GET" || method === "HEAD")) {
-    init.body = Readable.toWeb(incoming);
+    if ("rawBody" in incoming && incoming.rawBody instanceof Buffer) {
+      init.body = new ReadableStream({
+        start(controller) {
+          controller.enqueue(incoming.rawBody);
+          controller.close();
+        }
+      });
+    } else {
+      init.body = Readable.toWeb(incoming);
+    }
   }
   return new Request2(url, init);
 };
@@ -391,10 +400,14 @@ var getRequestListener = (fetchCallback, options = {}) => {
     try {
       req = newRequest(incoming, options.hostname);
       outgoing.on("close", () => {
+        const abortController = req[abortControllerKey];
+        if (!abortController) {
+          return;
+        }
         if (incoming.errored) {
-          req[getAbortController]().abort(incoming.errored.toString());
+          req[abortControllerKey].abort(incoming.errored.toString());
         } else if (!outgoing.writableFinished) {
-          req[getAbortController]().abort("Client connection prematurely closed.");
+          req[abortControllerKey].abort("Client connection prematurely closed.");
         }
       });
       res = fetchCallback(req, { incoming, outgoing });
@@ -554,7 +567,7 @@ function genModel(req) {
   const generateContentRequest = {
     contents: openAiMessageToGeminiMessage(req.messages),
     generationConfig: {
-      maxOutputTokens: req.max_tokens ?? void 0,
+      maxOutputTokens: req.max_completion_tokens ?? void 0,
       temperature: req.temperature ?? void 0,
       topP: req.top_p ?? void 0,
       responseMimeType,

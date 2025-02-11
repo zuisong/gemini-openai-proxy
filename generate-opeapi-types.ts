@@ -11,7 +11,7 @@ const openapis = [
   },
   {
     data: await fetch(
-      "https://github.com/zuisong/googleapis-openapi/raw/refs/heads/main/googleapis/generativelanguage/v1beta/generativelanguage-api-openapi_v3.json",
+      "https://github.com/zuisong/googleapis-openapi/raw/refs/heads/main/googleapis/generativelanguage/v1alpha/generativelanguage-api-openapi_v3.json",
     ).then((res) => res.text()),
     path: "./src/generated-types/gemini-types.ts",
   },
