@@ -1590,6 +1590,8 @@ export interface components {
          *     integrate the Assistants API with streaming.
          *      */
         AssistantStreamEvent: components["schemas"]["ThreadStreamEvent"] | components["schemas"]["RunStreamEvent"] | components["schemas"]["RunStepStreamEvent"] | components["schemas"]["MessageStreamEvent"] | components["schemas"]["ErrorEvent"] | components["schemas"]["DoneEvent"];
+        /** @enum {string} */
+        AssistantSupportedModels: "o3-mini" | "o3-mini-2025-01-31" | "o1" | "o1-2024-12-17" | "gpt-4o" | "gpt-4o-2024-11-20" | "gpt-4o-2024-08-06" | "gpt-4o-2024-05-13" | "gpt-4o-mini" | "gpt-4o-mini-2024-07-18" | "gpt-4-turbo" | "gpt-4-turbo-2024-04-09" | "gpt-4-0125-preview" | "gpt-4-turbo-preview" | "gpt-4-1106-preview" | "gpt-4-vision-preview" | "gpt-4" | "gpt-4-0314" | "gpt-4-0613" | "gpt-4-32k" | "gpt-4-32k-0314" | "gpt-4-32k-0613" | "gpt-3.5-turbo" | "gpt-3.5-turbo-16k" | "gpt-3.5-turbo-0613" | "gpt-3.5-turbo-1106" | "gpt-3.5-turbo-0125" | "gpt-3.5-turbo-16k-0613";
         /** Code interpreter tool */
         AssistantToolsCode: {
             /**
@@ -2653,10 +2655,11 @@ export interface components {
              *
              * @example gpt-4o
              */
-            model: string | ("gpt-4o" | "gpt-4o-2024-11-20" | "gpt-4o-2024-08-06" | "gpt-4o-2024-05-13" | "gpt-4o-mini" | "gpt-4o-mini-2024-07-18" | "gpt-4-turbo" | "gpt-4-turbo-2024-04-09" | "gpt-4-0125-preview" | "gpt-4-turbo-preview" | "gpt-4-1106-preview" | "gpt-4-vision-preview" | "gpt-4" | "gpt-4-0314" | "gpt-4-0613" | "gpt-4-32k" | "gpt-4-32k-0314" | "gpt-4-32k-0613" | "gpt-3.5-turbo" | "gpt-3.5-turbo-16k" | "gpt-3.5-turbo-0613" | "gpt-3.5-turbo-1106" | "gpt-3.5-turbo-0125" | "gpt-3.5-turbo-16k-0613");
+            model: string | components["schemas"]["AssistantSupportedModels"];
             /** @description The name of the assistant. The maximum length is 256 characters.
              *      */
             name?: string | null;
+            reasoning_effort?: components["schemas"]["ReasoningEffort"];
             response_format?: components["schemas"]["AssistantsApiResponseFormatOption"] & unknown;
             /**
              * @description What sampling temperature to use, between 0 and 2. Higher values like 0.8 will make the output more random, while lower values like 0.2 will make it more focused and deterministic.
@@ -2911,19 +2914,7 @@ export interface components {
              * @default 0
              */
             presence_penalty: number | null;
-            /**
-             * @description **o1 models only**
-             *
-             *     Constrains effort on reasoning for
-             *     [reasoning models](https://platform.openai.com/docs/guides/reasoning).
-             *     Currently supported values are `low`, `medium`, and `high`. Reducing
-             *     reasoning effort can result in faster responses and fewer tokens used
-             *     on reasoning in a response.
-             *
-             * @default medium
-             * @enum {string}
-             */
-            reasoning_effort: "low" | "medium" | "high";
+            reasoning_effort?: components["schemas"]["ReasoningEffort"];
             /** @description An object specifying the format that the model must output.
              *
              *     Setting to `{ "type": "json_schema", "json_schema": {...} }` enables
@@ -3759,9 +3750,9 @@ export interface components {
                     /** @description Hateful content that also includes violence or serious harm towards the targeted group based on race, gender, ethnicity, religion, nationality, sexual orientation, disability status, or caste. */
                     "hate/threatening": boolean;
                     /** @description Content that includes instructions or advice that facilitate the planning or execution of wrongdoing, or that gives advice or instruction on how to commit illicit acts. For example, "how to shoplift" would fit this category. */
-                    illicit: boolean;
+                    illicit: boolean | null;
                     /** @description Content that includes instructions or advice that facilitate the planning or execution of wrongdoing that also includes violence, or that gives advice or instruction on the procurement of any weapon. */
-                    "illicit/violent": boolean;
+                    "illicit/violent": boolean | null;
                     /** @description Content that promotes, encourages, or depicts acts of self-harm, such as suicide, cutting, and eating disorders. */
                     "self-harm": boolean;
                     /** @description Content that encourages performing acts of self-harm, such as suicide, cutting, and eating disorders, or that gives instructions or advice on how to commit such acts. */
@@ -3869,8 +3860,9 @@ export interface components {
              * @description The ID of the [Model](/docs/api-reference/models) to be used to execute this run. If a value is provided here, it will override the model associated with the assistant. If not, the model associated with the assistant will be used.
              * @example gpt-4o
              */
-            model?: (string | ("gpt-4o" | "gpt-4o-2024-11-20" | "gpt-4o-2024-08-06" | "gpt-4o-2024-05-13" | "gpt-4o-mini" | "gpt-4o-mini-2024-07-18" | "gpt-4-turbo" | "gpt-4-turbo-2024-04-09" | "gpt-4-0125-preview" | "gpt-4-turbo-preview" | "gpt-4-1106-preview" | "gpt-4-vision-preview" | "gpt-4" | "gpt-4-0314" | "gpt-4-0613" | "gpt-4-32k" | "gpt-4-32k-0314" | "gpt-4-32k-0613" | "gpt-3.5-turbo" | "gpt-3.5-turbo-16k" | "gpt-3.5-turbo-0613" | "gpt-3.5-turbo-1106" | "gpt-3.5-turbo-0125" | "gpt-3.5-turbo-16k-0613")) | null;
+            model?: (string | components["schemas"]["AssistantSupportedModels"]) | null;
             parallel_tool_calls?: components["schemas"]["ParallelToolCalls"];
+            reasoning_effort?: components["schemas"]["ReasoningEffort"];
             response_format?: components["schemas"]["AssistantsApiResponseFormatOption"] & unknown;
             /** @description If `true`, returns a stream of events that happen during the Run as server-sent events, terminating when the Run enters a terminal state with a `data: [DONE]` message.
              *      */
@@ -4836,6 +4828,7 @@ export interface components {
         };
         ListFineTuningJobEventsResponse: {
             data: components["schemas"]["FineTuningJobEvent"][];
+            has_more: boolean;
             /** @enum {string} */
             object: "list";
         } & {
@@ -5383,10 +5376,11 @@ export interface components {
             metadata?: components["schemas"]["Metadata"];
             /** @description ID of the model to use. You can use the [List models](/docs/api-reference/models/list) API to see all of your available models, or see our [Model overview](/docs/models) for descriptions of them.
              *      */
-            model?: string;
+            model?: string | components["schemas"]["AssistantSupportedModels"];
             /** @description The name of the assistant. The maximum length is 256 characters.
              *      */
             name?: string | null;
+            reasoning_effort?: components["schemas"]["ReasoningEffort"];
             response_format?: components["schemas"]["AssistantsApiResponseFormatOption"] & unknown;
             /**
              * @description What sampling temperature to use, between 0 and 2. Higher values like 0.8 will make the output more random, while lower values like 0.2 will make it more focused and deterministic.
@@ -7476,6 +7470,19 @@ export interface components {
         } & {
             [key: string]: unknown;
         };
+        /**
+         * @description **o1 and o3-mini models only**
+         *
+         *     Constrains effort on reasoning for
+         *     [reasoning models](https://platform.openai.com/docs/guides/reasoning).
+         *     Currently supported values are `low`, `medium`, and `high`. Reducing
+         *     reasoning effort can result in faster responses and fewer tokens used
+         *     on reasoning in a response.
+         *
+         * @default medium
+         * @enum {string|null}
+         */
+        ReasoningEffort: "low" | "medium" | "high";
         ResponseFormatJsonObject: {
             /**
              * @description The type of response format being defined: `json_object`
@@ -8432,12 +8439,12 @@ export interface components {
         };
         /** @description The aggregated code interpreter sessions usage details of the specific time bucket. */
         UsageCodeInterpreterSessionsResult: {
+            /** @description The number of code interpreter sessions. */
+            num_sessions?: number;
             /** @enum {string} */
             object: "organization.usage.code_interpreter_sessions.result";
             /** @description When `group_by=project_id`, this field provides the project ID of the grouped usage result. */
             project_id?: string | null;
-            /** @description The number of code interpreter sessions. */
-            sessions: number;
         } & {
             [key: string]: unknown;
         };

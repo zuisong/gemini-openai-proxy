@@ -2038,7 +2038,7 @@ export interface components {
         GenerationConfig: {
             /**
              * Format: int32
-             * @description Optional. Number of generated responses to return. Currently, this value can only be set to 1. If unset, this will default to 1.
+             * @description Optional. Number of generated responses to return. If unset, this will default to 1. Please note that this doesn't work for previous generation models (Gemini 1.0 family)
              */
             candidateCount?: number;
             /** @description Optional. Enables enhanced civic answers. It may not be available for all models. */
@@ -2644,7 +2644,7 @@ export interface components {
             description?: string;
             /** @description Optional. Possible values of the element of Type.STRING with enum format. For example we can define an Enum Direction as : {type:STRING, format:enum, enum:["EAST", NORTH", "SOUTH", "WEST"]} */
             enum?: string[];
-            /** @description Optional. The format of the data. This is used only for primitive datatypes. Supported formats: for NUMBER type: float, double for INTEGER type: int32, int64 for STRING type: enum */
+            /** @description Optional. The format of the data. This is used only for primitive datatypes. Supported formats: for NUMBER type: float, double for INTEGER type: int32, int64 for STRING type: enum, date-time */
             format?: string;
             /** @description Optional. Schema of the elements of Type.ARRAY. */
             items?: components["schemas"]["Schema"];
@@ -3013,6 +3013,13 @@ export interface components {
             promptTokenCount?: number;
             /** @description Output only. List of modalities that were processed in the request input. */
             readonly promptTokensDetails?: components["schemas"]["ModalityTokenCount"][];
+            /**
+             * Format: int32
+             * @description Output only. Number of tokens present in tool-use prompt(s).
+             */
+            readonly toolUsePromptTokenCount?: number;
+            /** @description Output only. List of modalities that were processed for tool-use request inputs. */
+            readonly toolUsePromptTokensDetails?: components["schemas"]["ModalityTokenCount"][];
             /**
              * Format: int32
              * @description Total token count for the generation request (prompt + response candidates).

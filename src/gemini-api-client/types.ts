@@ -14,6 +14,8 @@ export type FinishReason = Candidate["finishReason"]
 
 export type Part = components["schemas"]["Part"]
 
+export type JsonSchema = components["schemas"]["Schema"]
+
 export type EmbedContentRequest = components["schemas"]["EmbedContentRequest"]
 
 export type EmbedContentResponse = components["schemas"]["EmbedContentResponse"]

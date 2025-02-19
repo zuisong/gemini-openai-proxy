@@ -1,4 +1,4 @@
-import type { Content, GenerateContentRequest, Part } from "./gemini-api-client/types.ts"
+import type { Content, GenerateContentRequest, JsonSchema, Part } from "./gemini-api-client/types.ts"
 import type { Any } from "./log.ts"
 import type { OpenAI } from "./types.ts"
 
@@ -78,7 +78,23 @@ export function genModel(req: OpenAI.Chat.ChatCompletionCreateParams): [GeminiMo
 
   functions = functions.concat((req.functions ?? []).map((it) => ({ strict: null, ...it })))
 
-  const responseMimeType = req.response_format?.type === "json_object" ? "application/json" : "text/plain"
+  let responseMimeType: string | undefined
+  let responseSchema: JsonSchema | undefined
+
+  switch (req.response_format?.type) {
+    case "json_object":
+      responseMimeType = "application/json"
+      break
+    case "json_schema":
+      responseMimeType = "application/json"
+      responseSchema = req.response_format.json_schema.schema
+      break
+    case "text":
+      responseMimeType = "text/plain"
+      break
+    default:
+      break
+  }
 
   const generateContentRequest: GenerateContentRequest = {
     contents: openAiMessageToGeminiMessage(req.messages),
@@ -87,6 +103,7 @@ export function genModel(req: OpenAI.Chat.ChatCompletionCreateParams): [GeminiMo
       temperature: req.temperature ?? undefined,
       topP: req.top_p ?? undefined,
       responseMimeType: responseMimeType,
+      responseSchema: responseSchema,
       thinkingConfig: !model.isThinkingModel()
         ? undefined
         : {
