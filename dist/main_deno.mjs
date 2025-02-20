@@ -105,22 +105,18 @@ function genModel(req) {
   const model = GeminiModel.modelMapping(req.model);
   let functions = req.tools?.filter((it) => it.type === "function")?.map((it) => it.function) ?? [];
   functions = functions.concat((req.functions ?? []).map((it) => ({ strict: null, ...it })));
-  let responseMimeType;
-  let responseSchema;
-  switch (req.response_format?.type) {
-    case "json_object":
-      responseMimeType = "application/json";
-      break;
-    case "json_schema":
-      responseMimeType = "application/json";
-      responseSchema = req.response_format.json_schema.schema;
-      break;
-    case "text":
-      responseMimeType = "text/plain";
-      break;
-    default:
-      break;
-  }
+  const [responseMimeType, responseSchema] = (() => {
+    switch (req.response_format?.type) {
+      case "json_object":
+        return ["application/json", void 0];
+      case "json_schema":
+        return ["application/json", req.response_format.json_schema.schema];
+      case "text":
+        return ["text/plain", void 0];
+      default:
+        return [void 0, void 0];
+    }
+  })();
   const generateContentRequest = {
     contents: openAiMessageToGeminiMessage(req.messages),
     generationConfig: {

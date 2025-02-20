@@ -78,23 +78,18 @@ export function genModel(req: OpenAI.Chat.ChatCompletionCreateParams): [GeminiMo
 
   functions = functions.concat((req.functions ?? []).map((it) => ({ strict: null, ...it })))
 
-  let responseMimeType: string | undefined
-  let responseSchema: JsonSchema | undefined
-
-  switch (req.response_format?.type) {
-    case "json_object":
-      responseMimeType = "application/json"
-      break
-    case "json_schema":
-      responseMimeType = "application/json"
-      responseSchema = req.response_format.json_schema.schema
-      break
-    case "text":
-      responseMimeType = "text/plain"
-      break
-    default:
-      break
-  }
+  const [responseMimeType, responseSchema] = (() => {
+    switch (req.response_format?.type) {
+      case "json_object":
+        return ["application/json", undefined]
+      case "json_schema":
+        return ["application/json", req.response_format.json_schema.schema satisfies JsonSchema | undefined]
+      case "text":
+        return ["text/plain", undefined]
+      default:
+        return [undefined, undefined]
+    }
+  })()
 
   const generateContentRequest: GenerateContentRequest = {
     contents: openAiMessageToGeminiMessage(req.messages),
