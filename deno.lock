@@ -8,6 +8,7 @@
     "jsr:@std/internal@^1.0.5": "1.0.5",
     "jsr:@std/path@^1.0.8": "1.0.8",
     "jsr:@std/testing@*": "1.0.9",
+    "jsr:@std/yaml@*": "1.0.5",
     "npm:@hono/node-server@1.13.8": "1.13.8_hono@4.6.20",
     "npm:@total-typescript/ts-reset@0.6.1": "0.6.1",
     "npm:@types/node@*": "22.5.4",
@@ -47,6 +48,9 @@
         "jsr:@std/assert@^1.0.10",
         "jsr:@std/internal"
       ]
+    },
+    "@std/yaml@1.0.5": {
+      "integrity": "71ba3d334305ee2149391931508b2c293a8490f94a337eef3a09cade1a2a2742"
     }
   },
   "npm": {
@@ -185,6 +189,7 @@
   },
   "redirects": {
     "https://esm.sh/buffer-from@^1.0.0?target=denonext": "https://esm.sh/buffer-from@1.1.2?target=denonext",
+    "https://esm.sh/openapi-format?bundle": "https://esm.sh/openapi-format@1.25.0?bundle",
     "https://esm.sh/source-map-support?target=denonext": "https://esm.sh/source-map-support@0.5.21?target=denonext",
     "https://esm.sh/source-map@^0.6.0?target=denonext": "https://esm.sh/source-map@0.6.1?target=denonext",
     "https://esm.sh/typescript@^5.x?target=denonext": "https://esm.sh/typescript@5.7.3?target=denonext"
@@ -192,6 +197,8 @@
   "remote": {
     "https://esm.sh/buffer-from@1.1.2/denonext/buffer-from.mjs": "dafdfaf9205bdc33bcde4f4a22014fa78b325c07e25d3f0316c8a609076ec2ad",
     "https://esm.sh/buffer-from@1.1.2?target=denonext": "0333d3eb82fde733d4b26ae6558a3b7fca98fd7192fc2ffb1c0714522199e02e",
+    "https://esm.sh/openapi-format@1.25.0/denonext/openapi-format.bundle.mjs": "15addc0b5a4142eb4197dc177f8d294ce7680de34940e38996ac4e5b7cb6a70e",
+    "https://esm.sh/openapi-format@1.25.0?bundle": "434701331f33915c59194ac5ff5645f16e72cdb53bb10d93535d10914eae6f6b",
     "https://esm.sh/openapi-typescript@7.5.2/denonext/openapi-typescript.bundle.mjs": "1691103e90126d3e06b4e38f01dec18c3daada6c3224f6ebba9e7f8504a639f6",
     "https://esm.sh/openapi-typescript@7.5.2?bundle": "5da6396c09ad02e83bd73054127a1eba3abd872ad768ef5ec916a06a8100e2c0",
     "https://esm.sh/source-map-support@0.5.21/denonext/source-map-support.mjs": "07b16eadac43d9ab36c92c0860425b2e07844575fe7c3a19fa0e5c5118d38951",

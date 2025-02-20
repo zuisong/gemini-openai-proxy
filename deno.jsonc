@@ -3,6 +3,9 @@
   "lock": {
     "frozen": false
   },
+  "imports": {
+    "openapi-format": "https://esm.sh/openapi-format?bundle"
+  },
   "nodeModulesDir": "auto",
   "fmt": {
     "exclude": ["*"]

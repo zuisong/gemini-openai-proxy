@@ -11,15 +11,15 @@ describe("openai to gemini test", () => {
   describe("success test", () => {
     const fetchMocker = new MockFetch()
 
-    for (const [openaiModel, geminiModel] of Object.entries({
-      "gpt-3.5-turbo": "gemini-1.5-flash-8b-latest",
-      "gpt-4": "gemini-1.5-pro-latest",
-      "gpt-4o": "gemini-1.5-flash-latest",
-      "gpt-4o-mini": "gemini-1.5-flash-8b-latest",
-      "gpt-4-vision-preview": "gemini-1.5-flash-latest",
-      "gpt-4-turbo": "gemini-1.5-pro-latest",
-      "gpt-4-turbo-preview": "gemini-2.0-flash-exp",
-    })) {
+    for (const [openaiModel, geminiModel] of [
+      ["gpt-3.5-turbo", "gemini-1.5-flash-8b-latest"],
+      ["gpt-4", "gemini-1.5-pro-latest"],
+      ["gpt-4o", "gemini-1.5-flash-latest"],
+      ["gpt-4o-mini", "gemini-1.5-flash-8b-latest"],
+      ["gpt-4-vision-preview", "gemini-1.5-flash-latest"],
+      ["gpt-4-turbo", "gemini-1.5-pro-latest"],
+      ["gpt-4-turbo-preview", "gemini-2.0-flash-exp"],
+    ]) {
       beforeEach(() => {
         fetchMocker.mock(
           (req) => req.url.includes(`generativelanguage.googleapis.com/v1beta/models/${geminiModel}:generateContent`),
