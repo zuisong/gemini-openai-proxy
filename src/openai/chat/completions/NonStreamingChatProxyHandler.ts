@@ -39,7 +39,7 @@ export async function nonStreamingChatProxyHandler(
         id: "chatcmpl-abc123",
         object: "chat.completion",
         created: Math.floor(Date.now() / 1000),
-        model: req.model,
+        model: model.model,
         choices: [
           {
             message: { role: "assistant", content: content, refusal: null },
@@ -55,7 +55,7 @@ export async function nonStreamingChatProxyHandler(
       id: "chatcmpl-abc123",
       object: "chat.completion",
       created: Math.floor(Date.now() / 1000),
-      model: req.model,
+      model: model.model,
       choices: [
         {
           message: {

@@ -137,8 +137,9 @@ export type KnownGeminiModel =
 export type API_VERSION = "v1beta" | "v1" | "v1alpha"
 
 export class GeminiModel {
-  static modelMapping(model: string): GeminiModel {
-    const modelName: GeminiModelName | KnownGeminiModel = ModelMapping[model] ?? GeminiModel.defaultModel(model)
+  static modelMapping(model: string | undefined): GeminiModel {
+    const modelName: GeminiModelName | KnownGeminiModel =
+      ModelMapping[model ?? ""] ?? GeminiModel.defaultModel(model ?? "")
     return new GeminiModel(modelName)
   }
   public readonly model: GeminiModelName

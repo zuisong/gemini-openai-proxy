@@ -271,10 +271,10 @@ export interface components {
              */
             outputDimensionality?: number;
             /**
-             * @description Optional. Optional task type for which the embeddings will be used. Can only be set for `models/embedding-001`.
+             * @description Optional. Optional task type for which the embeddings will be used. Not supported on earlier models (`models/embedding-001`).
              * @enum {string}
              */
-            taskType?: "TASK_TYPE_UNSPECIFIED" | "RETRIEVAL_QUERY" | "RETRIEVAL_DOCUMENT" | "SEMANTIC_SIMILARITY" | "CLASSIFICATION" | "CLUSTERING" | "QUESTION_ANSWERING" | "FACT_VERIFICATION";
+            taskType?: "TASK_TYPE_UNSPECIFIED" | "RETRIEVAL_QUERY" | "RETRIEVAL_DOCUMENT" | "SEMANTIC_SIMILARITY" | "CLASSIFICATION" | "CLUSTERING" | "QUESTION_ANSWERING" | "FACT_VERIFICATION" | "CODE_RETRIEVAL_QUERY";
             /** @description Optional. An optional title for the text. Only applicable when TaskType is `RETRIEVAL_DOCUMENT`. Note: Specifying a `title` for `RETRIEVAL_DOCUMENT` provides better quality embeddings for retrieval. */
             title?: string;
         } & {
@@ -404,7 +404,7 @@ export interface components {
             enableEnhancedCivicAnswers?: boolean;
             /**
              * Format: float
-             * @description Optional. Frequency penalty applied to the next token's logprobs, multiplied by the number of times each token has been seen in the respponse so far. A positive penalty will discourage the use of tokens that have already been used, proportional to the number of times the token has been used: The more a token is used, the more dificult it is for the model to use that token again increasing the vocabulary of responses. Caution: A _negative_ penalty will encourage the model to reuse tokens proportional to the number of times the token has been used. Small negative values will reduce the vocabulary of a response. Larger negative values will cause the model to start repeating a common token until it hits the max_output_tokens limit.
+             * @description Optional. Frequency penalty applied to the next token's logprobs, multiplied by the number of times each token has been seen in the respponse so far. A positive penalty will discourage the use of tokens that have already been used, proportional to the number of times the token has been used: The more a token is used, the more difficult it is for the model to use that token again increasing the vocabulary of responses. Caution: A _negative_ penalty will encourage the model to reuse tokens proportional to the number of times the token has been used. Small negative values will reduce the vocabulary of a response. Larger negative values will cause the model to start repeating a common token until it hits the max_output_tokens limit.
              */
             frequencyPenalty?: number;
             /**
@@ -696,6 +696,8 @@ export interface components {
         };
         /** @description The `Schema` object allows the definition of input and output data types. These types can be objects, but also primitives and arrays. Represents a select subset of an [OpenAPI 3.0 schema object](https://spec.openapis.org/oas/v3.0.3#schema). */
         Schema: {
+            /** @description Optional. The value should be validated against any (one or more) of the subschemas in the list. */
+            anyOf?: components["schemas"]["Schema"][];
             /** @description Optional. A brief description of the parameter. This could contain examples of use. Parameter description may be formatted as Markdown. */
             description?: string;
             /** @description Optional. Possible values of the element of Type.STRING with enum format. For example we can define an Enum Direction as : {type:STRING, format:enum, enum:["EAST", NORTH", "SOUTH", "WEST"]} */
@@ -705,10 +707,20 @@ export interface components {
             /** @description Optional. Schema of the elements of Type.ARRAY. */
             items?: components["schemas"]["Schema"];
             /**
+             * Format: double
+             * @description Optional. Maximum value of the Type.INTEGER and Type.NUMBER
+             */
+            maximum?: number;
+            /**
              * Format: int64
              * @description Optional. Maximum number of the elements for Type.ARRAY.
              */
             maxItems?: string;
+            /**
+             * Format: double
+             * @description Optional. SCHEMA FIELDS FOR TYPE INTEGER and NUMBER Minimum value of the Type.INTEGER and Type.NUMBER
+             */
+            minimum?: number;
             /**
              * Format: int64
              * @description Optional. Minimum number of the elements for Type.ARRAY.
@@ -724,6 +736,8 @@ export interface components {
             propertyOrdering?: string[];
             /** @description Optional. Required properties of Type.OBJECT. */
             required?: string[];
+            /** @description Optional. The title of the schema. */
+            title?: string;
             /**
              * @description Required. Data type.
              * @enum {string}
@@ -1002,6 +1016,11 @@ export interface components {
             promptTokenCount?: number;
             /** @description Output only. List of modalities that were processed in the request input. */
             readonly promptTokensDetails?: components["schemas"]["ModalityTokenCount"][];
+            /**
+             * Format: int32
+             * @description Output only. Number of tokens of thoughts for thinking models.
+             */
+            readonly thoughtsTokenCount?: number;
             /**
              * Format: int32
              * @description Output only. Number of tokens present in tool-use prompt(s).

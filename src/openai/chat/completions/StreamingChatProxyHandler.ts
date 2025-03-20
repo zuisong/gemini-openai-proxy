@@ -18,16 +18,16 @@ export function streamingChatProxyHandler(
         for await (const it of generateContent("streamGenerateContent", apiParam, model, geminiReq)) {
           log?.debug("streamGenerateContent resp", it)
           const data = resultHelper(it)
-          yield genStreamResp({ model: req.model, content: data, stop: false })
+          yield genStreamResp({ model: model.model, content: data, stop: false })
         }
       } catch (error) {
         yield genStreamResp({
-          model: req.model,
+          model: model.model,
           content: error?.message ?? error.toString(),
           stop: true,
         })
       }
-      yield genStreamResp({ model: req.model, content: "", stop: true })
+      yield genStreamResp({ model: model.model, content: "", stop: true })
       yield "[DONE]"
       return undefined
     })(),

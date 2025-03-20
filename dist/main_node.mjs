@@ -1,4 +1,4 @@
-// node_modules/.deno/@hono+node-server@1.13.8/node_modules/@hono/node-server/dist/index.mjs
+// node_modules/.deno/@hono+node-server@1.14.0/node_modules/@hono/node-server/dist/index.mjs
 import { createServer as createServerHTTP } from "http";
 import { Http2ServerRequest } from "http2";
 import { Readable } from "stream";
@@ -126,13 +126,34 @@ Object.setPrototypeOf(requestPrototype, Request2.prototype);
 var newRequest = (incoming, defaultHostname) => {
   const req = Object.create(requestPrototype);
   req[incomingKey] = incoming;
+  const incomingUrl = incoming.url || "";
+  if (incomingUrl[0] !== "/" && // short-circuit for performance. most requests are relative URL.
+  (incomingUrl.startsWith("http://") || incomingUrl.startsWith("https://"))) {
+    if (incoming instanceof Http2ServerRequest) {
+      throw new RequestError("Absolute URL for :path is not allowed in HTTP/2");
+    }
+    try {
+      const url2 = new URL(incomingUrl);
+      req[urlKey] = url2.href;
+    } catch (e2) {
+      throw new RequestError("Invalid absolute URL", { cause: e2 });
+    }
+    return req;
+  }
   const host = (incoming instanceof Http2ServerRequest ? incoming.authority : incoming.headers.host) || defaultHostname;
   if (!host) {
     throw new RequestError("Missing host header");
   }
-  const url = new URL(
-    `${incoming instanceof Http2ServerRequest || incoming.socket && incoming.socket.encrypted ? "https" : "http"}://${host}${incoming.url}`
-  );
+  let scheme;
+  if (incoming instanceof Http2ServerRequest) {
+    scheme = incoming.scheme;
+    if (!(scheme === "http" || scheme === "https")) {
+      throw new RequestError("Unsupported scheme");
+    }
+  } else {
+    scheme = incoming.socket && incoming.socket.encrypted ? "https" : "http";
+  }
+  const url = new URL(`${scheme}://${host}${incomingUrl}`);
   if (url.hostname.length !== host.length && url.hostname !== host.replace(/:\d+$/, "")) {
     throw new RequestError("Invalid host header");
   }
@@ -457,43 +478,72 @@ var serve = (options, listeningListener) => {
 };
 
 // node_modules/.deno/itty-router@5.0.18/node_modules/itty-router/Router.mjs
-var r = ({ base: r2 = "", routes: e2 = [], ...a } = {}) => ({ __proto__: new Proxy({}, { get: (a2, t, o, c) => (a3, ...l) => e2.push([t.toUpperCase?.(), RegExp(`^${(c = (r2 + a3).replace(/\/+(\/|$)/g, "$1")).replace(/(\/?\.?):(\w+)\+/g, "($1(?<$2>*))").replace(/(\/?\.?):(\w+)/g, "($1(?<$2>[^$1/]+?))").replace(/\./g, "\\.").replace(/(\/?)\*/g, "($1.*)?")}/*$`), l, c]) && o }), routes: e2, ...a, async fetch(r3, ...t) {
-  let o, c, l = new URL(r3.url), p = r3.query = { __proto__: null };
-  for (let [r4, e3] of l.searchParams) p[r4] = p[r4] ? [].concat(p[r4], e3) : e3;
-  r: try {
-    for (let e3 of a.before || []) if (null != (o = await e3(r3.proxy ?? r3, ...t))) break r;
-    e: for (let [a2, p2, f, h] of e2) if ((a2 == r3.method || "ALL" == a2) && (c = l.pathname.match(p2))) {
-      r3.params = c.groups || {}, r3.route = h;
-      for (let e3 of f) if (null != (o = await e3(r3.proxy ?? r3, ...t))) break e;
+var r = ({
+  base: r2 = "",
+  routes: e2 = [],
+  ...a
+} = {}) => ({
+  __proto__: new Proxy({}, { get: (a2, t, o, c) => (a3, ...l) => e2.push([t.toUpperCase?.(), RegExp(`^${(c = (r2 + a3).replace(/\/+(\/|$)/g, "$1")).replace(/(\/?\.?):(\w+)\+/g, "($1(?<$2>*))").replace(/(\/?\.?):(\w+)/g, "($1(?<$2>[^$1/]+?))").replace(/\./g, "\\.").replace(/(\/?)\*/g, "($1.*)?")}/*$`), l, c]) && o }),
+  routes: e2,
+  ...a,
+  async fetch(r3, ...t) {
+    let o, c, l = new URL(r3.url), p = r3.query = { __proto__: null };
+    for (let [r4, e3] of l.searchParams) p[r4] = p[r4] ? [].concat(p[r4], e3) : e3;
+    r: try {
+      for (let e3 of a.before || []) if (null != (o = await e3(r3.proxy ?? r3, ...t))) break r;
+      e: for (let [a2, p2, f, h] of e2) if ((a2 == r3.method || "ALL" == a2) && (c = l.pathname.match(p2))) {
+        r3.params = c.groups || {}, r3.route = h;
+        for (let e3 of f) if (null != (o = await e3(r3.proxy ?? r3, ...t))) break e;
+      }
+    } catch (e3) {
+      if (!a.catch) throw e3;
+      o = await a.catch(e3, r3.proxy ?? r3, ...t);
     }
-  } catch (e3) {
-    if (!a.catch) throw e3;
-    o = await a.catch(e3, r3.proxy ?? r3, ...t);
+    try {
+      for (let e3 of a.finally || []) o = await e3(o, r3.proxy ?? r3, ...t) ?? o;
+    } catch (e3) {
+      if (!a.catch) throw e3;
+      o = await a.catch(e3, r3.proxy ?? r3, ...t);
+    }
+    return o;
   }
-  try {
-    for (let e3 of a.finally || []) o = await e3(o, r3.proxy ?? r3, ...t) ?? o;
-  } catch (e3) {
-    if (!a.catch) throw e3;
-    o = await a.catch(e3, r3.proxy ?? r3, ...t);
-  }
-  return o;
-} });
+});
 
 // node_modules/.deno/itty-router@5.0.18/node_modules/itty-router/cors.mjs
 var e = (e2 = {}) => {
-  const { origin: o = "*", credentials: s = false, allowMethods: c = "*", allowHeaders: r2, exposeHeaders: n, maxAge: t } = e2, a = (e3) => {
+  const {
+    origin: o = "*",
+    credentials: s = false,
+    allowMethods: c = "*",
+    allowHeaders: r2,
+    exposeHeaders: n,
+    maxAge: t
+  } = e2, a = (e3) => {
     const c2 = e3?.headers.get("origin");
     return true === o ? c2 : o instanceof RegExp ? o.test(c2) ? c2 : void 0 : Array.isArray(o) ? o.includes(c2) ? c2 : void 0 : o instanceof Function ? o(c2) : "*" == o && s ? c2 : o;
   }, l = (e3, o2) => {
     for (const [s2, c2] of Object.entries(o2)) c2 && e3.headers.append(s2, c2);
     return e3;
   };
-  return { corsify: (e3, o2) => e3?.headers?.get("access-control-allow-origin") || 101 == e3.status ? e3 : l(e3.clone(), { "access-control-allow-origin": a(o2), "access-control-allow-credentials": s }), preflight: (e3) => {
-    if ("OPTIONS" == e3.method) {
-      const o2 = new Response(null, { status: 204 });
-      return l(o2, { "access-control-allow-origin": a(e3), "access-control-allow-methods": c?.join?.(",") ?? c, "access-control-expose-headers": n?.join?.(",") ?? n, "access-control-allow-headers": r2?.join?.(",") ?? r2 ?? e3.headers.get("access-control-request-headers"), "access-control-max-age": t, "access-control-allow-credentials": s });
+  return {
+    corsify: (e3, o2) => e3?.headers?.get("access-control-allow-origin") || 101 == e3.status ? e3 : l(e3.clone(), {
+      "access-control-allow-origin": a(o2),
+      "access-control-allow-credentials": s
+    }),
+    preflight: (e3) => {
+      if ("OPTIONS" == e3.method) {
+        const o2 = new Response(null, { status: 204 });
+        return l(o2, {
+          "access-control-allow-origin": a(e3),
+          "access-control-allow-methods": c?.join?.(",") ?? c,
+          "access-control-expose-headers": n?.join?.(",") ?? n,
+          "access-control-allow-headers": r2?.join?.(",") ?? r2 ?? e3.headers.get("access-control-request-headers"),
+          "access-control-max-age": t,
+          "access-control-allow-credentials": s
+        });
+      }
     }
-  } };
+  };
 };
 
 // src/gemini-proxy.ts
@@ -606,7 +656,7 @@ function genModel(req) {
 }
 var GeminiModel = class _GeminiModel {
   static modelMapping(model) {
-    const modelName = ModelMapping[model] ?? _GeminiModel.defaultModel(model);
+    const modelName = ModelMapping[model ?? ""] ?? _GeminiModel.defaultModel(model ?? "");
     return new _GeminiModel(modelName);
   }
   model;
@@ -710,18 +760,19 @@ var Logger = class {
   }
 };
 
-// node_modules/.deno/eventsource-parser@3.0.0/node_modules/eventsource-parser/dist/index.js
-var __defProp = Object.defineProperty;
-var __defNormalProp = (obj, key, value) => key in obj ? __defProp(obj, key, { enumerable: true, configurable: true, writable: true, value }) : obj[key] = value;
-var __publicField = (obj, key, value) => __defNormalProp(obj, typeof key != "symbol" ? key + "" : key, value);
+// node_modules/.deno/eventsource-parser@3.0.1/node_modules/eventsource-parser/dist/index.js
 var ParseError = class extends Error {
   constructor(message, options) {
-    super(message), __publicField(this, "type"), __publicField(this, "field"), __publicField(this, "value"), __publicField(this, "line"), this.name = "ParseError", this.type = options.type, this.field = options.field, this.value = options.value, this.line = options.line;
+    super(message), this.name = "ParseError", this.type = options.type, this.field = options.field, this.value = options.value, this.line = options.line;
   }
 };
 function noop(_arg) {
 }
 function createParser(callbacks) {
+  if (typeof callbacks == "function")
+    throw new TypeError(
+      "`callbacks` must be an object, got a function instead. Did you mean `{onEvent: fn}`?"
+    );
   const { onEvent = noop, onError = noop, onRetry = noop, onComment } = callbacks;
   let incompleteLine = "", isFirstChunk = true, id, data = "", eventType = "";
   function feed(newChunk) {
@@ -789,24 +840,30 @@ function createParser(callbacks) {
     }), id = void 0, data = "", eventType = "";
   }
   function reset(options = {}) {
-    incompleteLine && options.consume && parseLine(incompleteLine), id = void 0, data = "", eventType = "", incompleteLine = "";
+    incompleteLine && options.consume && parseLine(incompleteLine), isFirstChunk = true, id = void 0, data = "", eventType = "", incompleteLine = "";
   }
   return { feed, reset };
 }
 function splitLines(chunk) {
   const lines = [];
-  let incompleteLine = "";
-  const totalLength = chunk.length;
-  for (let i = 0; i < totalLength; i++) {
-    const char = chunk[i];
-    char === "\r" && chunk[i + 1] === `
-` ? (lines.push(incompleteLine), incompleteLine = "", i++) : char === "\r" || char === `
-` ? (lines.push(incompleteLine), incompleteLine = "") : incompleteLine += char;
+  let incompleteLine = "", searchIndex = 0;
+  for (; searchIndex < chunk.length; ) {
+    const crIndex = chunk.indexOf("\r", searchIndex), lfIndex = chunk.indexOf(`
+`, searchIndex);
+    let lineEnd = -1;
+    if (crIndex !== -1 && lfIndex !== -1 ? lineEnd = Math.min(crIndex, lfIndex) : crIndex !== -1 ? lineEnd = crIndex : lfIndex !== -1 && (lineEnd = lfIndex), lineEnd === -1) {
+      incompleteLine = chunk.slice(searchIndex);
+      break;
+    } else {
+      const line = chunk.slice(searchIndex, lineEnd);
+      lines.push(line), searchIndex = lineEnd + 1, chunk[searchIndex - 1] === "\r" && chunk[searchIndex] === `
+` && searchIndex++;
+    }
   }
   return [lines, incompleteLine];
 }
 
-// node_modules/.deno/eventsource-parser@3.0.0/node_modules/eventsource-parser/dist/stream.js
+// node_modules/.deno/eventsource-parser@3.0.1/node_modules/eventsource-parser/dist/stream.js
 var EventSourceParserStream = class extends TransformStream {
   constructor({ onError, onRetry, onComment } = {}) {
     let parser;
@@ -1007,7 +1064,7 @@ async function nonStreamingChatProxyHandler(req, apiParam, log) {
         id: "chatcmpl-abc123",
         object: "chat.completion",
         created: Math.floor(Date.now() / 1e3),
-        model: req.model,
+        model: model.model,
         choices: [
           {
             message: { role: "assistant", content, refusal: null },
@@ -1022,7 +1079,7 @@ async function nonStreamingChatProxyHandler(req, apiParam, log) {
       id: "chatcmpl-abc123",
       object: "chat.completion",
       created: Math.floor(Date.now() / 1e3),
-      model: req.model,
+      model: model.model,
       choices: [
         {
           message: {
@@ -1054,16 +1111,16 @@ function streamingChatProxyHandler(req, apiParam, log) {
         for await (const it of generateContent("streamGenerateContent", apiParam, model, geminiReq)) {
           log?.debug("streamGenerateContent resp", it);
           const data = resultHelper(it);
-          yield genStreamResp({ model: req.model, content: data, stop: false });
+          yield genStreamResp({ model: model.model, content: data, stop: false });
         }
       } catch (error) {
         yield genStreamResp({
-          model: req.model,
+          model: model.model,
           content: error?.message ?? error.toString(),
           stop: true
         });
       }
-      yield genStreamResp({ model: req.model, content: "", stop: true });
+      yield genStreamResp({ model: model.model, content: "", stop: true });
       yield "[DONE]";
       return void 0;
     }()

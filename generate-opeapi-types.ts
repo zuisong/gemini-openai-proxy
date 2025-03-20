@@ -1,7 +1,7 @@
 #!/usr/bin/env -S deno run --allow-net  --allow-write=./src/generated-types --allow-read=./src/generated-types --allow-read=.  --no-prompt --allow-env
 import { emptyDirSync } from "jsr:@std/fs"
 import { parse as parseYaml } from "jsr:@std/yaml"
-import openapiTS, { astToString } from "https://esm.sh/openapi-typescript@7.5.2?bundle"
+import openapiTS, { astToString } from "https://esm.sh/openapi-typescript@7.6.1?bundle"
 
 // @ts-types="https://unpkg.com/openapi-format@1.25.0/types/openapi-format.d.ts"
 import { openapiFilter } from "openapi-format"
