@@ -1,4 +1,4 @@
-import { generateContent } from "../gemini-api-client/gemini-api-client.ts"
+import { embedContent } from "../gemini-api-client/gemini-api-client.ts"
 import type { EmbedContentRequest } from "../gemini-api-client/types.ts"
 import type { OpenAI } from "../types.ts"
 import { GeminiModel, getToken } from "../utils.ts"
@@ -24,12 +24,7 @@ export async function embeddingProxyHandler(rawReq: Request): Promise<Response> 
   let geminiResp: number[] | undefined = []
 
   try {
-    for await (const it of generateContent(
-      "embedContent",
-      apiParam,
-      new GeminiModel("text-embedding-004"),
-      embedContentRequest,
-    )) {
+    for await (const it of embedContent(apiParam, new GeminiModel("text-embedding-004"), embedContentRequest)) {
       const data = it.embedding?.values
       geminiResp = data
       break

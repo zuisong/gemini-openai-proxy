@@ -1,4 +1,4 @@
-import { generateContent } from "../../../gemini-api-client/gemini-api-client.ts"
+import { streamGenerateContent } from "../../../gemini-api-client/gemini-api-client.ts"
 import { resultHelper } from "../../../gemini-api-client/response-helper.ts"
 import type { FunctionCall } from "../../../gemini-api-client/types.ts"
 import type { Logger } from "../../../log.ts"
@@ -15,10 +15,14 @@ export function streamingChatProxyHandler(
   return sseResponse(
     (async function* () {
       try {
-        for await (const it of generateContent("streamGenerateContent", apiParam, model, geminiReq)) {
+        for await (const it of streamGenerateContent(apiParam, model, geminiReq)) {
           log?.debug("streamGenerateContent resp", it)
           const data = resultHelper(it)
-          yield genStreamResp({ model: model.model, content: data, stop: false })
+          yield genStreamResp({
+            model: model.model,
+            content: data,
+            stop: false,
+          })
         }
       } catch (error) {
         yield genStreamResp({

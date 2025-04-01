@@ -478,72 +478,43 @@ var serve = (options, listeningListener) => {
 };
 
 // node_modules/.deno/itty-router@5.0.18/node_modules/itty-router/Router.mjs
-var r = ({
-  base: r2 = "",
-  routes: e2 = [],
-  ...a
-} = {}) => ({
-  __proto__: new Proxy({}, { get: (a2, t, o, c) => (a3, ...l) => e2.push([t.toUpperCase?.(), RegExp(`^${(c = (r2 + a3).replace(/\/+(\/|$)/g, "$1")).replace(/(\/?\.?):(\w+)\+/g, "($1(?<$2>*))").replace(/(\/?\.?):(\w+)/g, "($1(?<$2>[^$1/]+?))").replace(/\./g, "\\.").replace(/(\/?)\*/g, "($1.*)?")}/*$`), l, c]) && o }),
-  routes: e2,
-  ...a,
-  async fetch(r3, ...t) {
-    let o, c, l = new URL(r3.url), p = r3.query = { __proto__: null };
-    for (let [r4, e3] of l.searchParams) p[r4] = p[r4] ? [].concat(p[r4], e3) : e3;
-    r: try {
-      for (let e3 of a.before || []) if (null != (o = await e3(r3.proxy ?? r3, ...t))) break r;
-      e: for (let [a2, p2, f, h] of e2) if ((a2 == r3.method || "ALL" == a2) && (c = l.pathname.match(p2))) {
-        r3.params = c.groups || {}, r3.route = h;
-        for (let e3 of f) if (null != (o = await e3(r3.proxy ?? r3, ...t))) break e;
-      }
-    } catch (e3) {
-      if (!a.catch) throw e3;
-      o = await a.catch(e3, r3.proxy ?? r3, ...t);
+var r = ({ base: r2 = "", routes: e2 = [], ...a } = {}) => ({ __proto__: new Proxy({}, { get: (a2, t, o, c) => (a3, ...l) => e2.push([t.toUpperCase?.(), RegExp(`^${(c = (r2 + a3).replace(/\/+(\/|$)/g, "$1")).replace(/(\/?\.?):(\w+)\+/g, "($1(?<$2>*))").replace(/(\/?\.?):(\w+)/g, "($1(?<$2>[^$1/]+?))").replace(/\./g, "\\.").replace(/(\/?)\*/g, "($1.*)?")}/*$`), l, c]) && o }), routes: e2, ...a, async fetch(r3, ...t) {
+  let o, c, l = new URL(r3.url), p = r3.query = { __proto__: null };
+  for (let [r4, e3] of l.searchParams) p[r4] = p[r4] ? [].concat(p[r4], e3) : e3;
+  r: try {
+    for (let e3 of a.before || []) if (null != (o = await e3(r3.proxy ?? r3, ...t))) break r;
+    e: for (let [a2, p2, f, h] of e2) if ((a2 == r3.method || "ALL" == a2) && (c = l.pathname.match(p2))) {
+      r3.params = c.groups || {}, r3.route = h;
+      for (let e3 of f) if (null != (o = await e3(r3.proxy ?? r3, ...t))) break e;
     }
-    try {
-      for (let e3 of a.finally || []) o = await e3(o, r3.proxy ?? r3, ...t) ?? o;
-    } catch (e3) {
-      if (!a.catch) throw e3;
-      o = await a.catch(e3, r3.proxy ?? r3, ...t);
-    }
-    return o;
+  } catch (e3) {
+    if (!a.catch) throw e3;
+    o = await a.catch(e3, r3.proxy ?? r3, ...t);
   }
-});
+  try {
+    for (let e3 of a.finally || []) o = await e3(o, r3.proxy ?? r3, ...t) ?? o;
+  } catch (e3) {
+    if (!a.catch) throw e3;
+    o = await a.catch(e3, r3.proxy ?? r3, ...t);
+  }
+  return o;
+} });
 
 // node_modules/.deno/itty-router@5.0.18/node_modules/itty-router/cors.mjs
 var e = (e2 = {}) => {
-  const {
-    origin: o = "*",
-    credentials: s = false,
-    allowMethods: c = "*",
-    allowHeaders: r2,
-    exposeHeaders: n,
-    maxAge: t
-  } = e2, a = (e3) => {
+  const { origin: o = "*", credentials: s = false, allowMethods: c = "*", allowHeaders: r2, exposeHeaders: n, maxAge: t } = e2, a = (e3) => {
     const c2 = e3?.headers.get("origin");
     return true === o ? c2 : o instanceof RegExp ? o.test(c2) ? c2 : void 0 : Array.isArray(o) ? o.includes(c2) ? c2 : void 0 : o instanceof Function ? o(c2) : "*" == o && s ? c2 : o;
   }, l = (e3, o2) => {
     for (const [s2, c2] of Object.entries(o2)) c2 && e3.headers.append(s2, c2);
     return e3;
   };
-  return {
-    corsify: (e3, o2) => e3?.headers?.get("access-control-allow-origin") || 101 == e3.status ? e3 : l(e3.clone(), {
-      "access-control-allow-origin": a(o2),
-      "access-control-allow-credentials": s
-    }),
-    preflight: (e3) => {
-      if ("OPTIONS" == e3.method) {
-        const o2 = new Response(null, { status: 204 });
-        return l(o2, {
-          "access-control-allow-origin": a(e3),
-          "access-control-allow-methods": c?.join?.(",") ?? c,
-          "access-control-expose-headers": n?.join?.(",") ?? n,
-          "access-control-allow-headers": r2?.join?.(",") ?? r2 ?? e3.headers.get("access-control-request-headers"),
-          "access-control-max-age": t,
-          "access-control-allow-credentials": s
-        });
-      }
+  return { corsify: (e3, o2) => e3?.headers?.get("access-control-allow-origin") || 101 == e3.status ? e3 : l(e3.clone(), { "access-control-allow-origin": a(o2), "access-control-allow-credentials": s }), preflight: (e3) => {
+    if ("OPTIONS" == e3.method) {
+      const o2 = new Response(null, { status: 204 });
+      return l(o2, { "access-control-allow-origin": a(e3), "access-control-allow-methods": c?.join?.(",") ?? c, "access-control-expose-headers": n?.join?.(",") ?? n, "access-control-allow-headers": r2?.join?.(",") ?? r2 ?? e3.headers.get("access-control-request-headers"), "access-control-max-age": t, "access-control-allow-credentials": s });
     }
-  };
+  } };
 };
 
 // src/gemini-proxy.ts
@@ -902,9 +873,27 @@ var GoogleGenerativeAIResponseError = class extends GoogleGenerativeAIError {
 };
 
 // src/gemini-api-client/gemini-api-client.ts
-async function* generateContent(task, apiParam, model, params, requestOptions) {
-  const url = new RequestUrl(model, task, true, apiParam);
-  const response = await makeRequest(url, JSON.stringify(params), requestOptions);
+async function* streamGenerateContent(apiParam, model, params, requestOptions) {
+  const response = await makeRequest(
+    toURL({ model, task: "streamGenerateContent", stream: true, apiParam }),
+    JSON.stringify(params),
+    requestOptions
+  );
+  const body = response.body;
+  if (body == null) {
+    return;
+  }
+  for await (const event of body.pipeThrough(new TextDecoderStream()).pipeThrough(new EventSourceParserStream())) {
+    const responseJson = JSON.parse(event.data);
+    yield responseJson;
+  }
+}
+async function* embedContent(apiParam, model, params, requestOptions) {
+  const response = await makeRequest(
+    toURL({ model, task: "embedContent", stream: true, apiParam }),
+    JSON.stringify(params),
+    requestOptions
+  );
   const body = response.body;
   if (body == null) {
     return;
@@ -917,7 +906,7 @@ async function* generateContent(task, apiParam, model, params, requestOptions) {
 async function makeRequest(url, body, requestOptions) {
   let response;
   try {
-    response = await fetch(url.toURL(), {
+    response = await fetch(url, {
       ...buildFetchOptions(requestOptions),
       method: "POST",
       headers: {
@@ -945,28 +934,21 @@ async function makeRequest(url, body, requestOptions) {
   }
   return response;
 }
-var RequestUrl = class {
-  model;
-  task;
-  stream;
-  apiParam;
-  constructor(model, task, stream, apiParam) {
-    this.model = model;
-    this.task = task;
-    this.stream = stream;
-    this.apiParam = apiParam;
+function toURL({
+  model,
+  task,
+  stream,
+  apiParam
+}) {
+  const BASE_URL = "https://generativelanguage.googleapis.com";
+  const api_version = model.apiVersion();
+  const url = new URL(`${BASE_URL}/${api_version}/models/${model}:${task}`);
+  url.searchParams.append("key", apiParam.apikey);
+  if (stream) {
+    url.searchParams.append("alt", "sse");
   }
-  toURL() {
-    const api_version = this.model.apiVersion();
-    const url = new URL(`${BASE_URL}/${api_version}/models/${this.model}:${this.task}`);
-    url.searchParams.append("key", this.apiParam.apikey);
-    if (this.stream) {
-      url.searchParams.append("alt", "sse");
-    }
-    return url;
-  }
-};
-var BASE_URL = "https://generativelanguage.googleapis.com";
+  return url;
+}
 function buildFetchOptions(requestOptions) {
   const fetchOptions = {};
   if (requestOptions?.timeout) {
@@ -1042,7 +1024,7 @@ async function nonStreamingChatProxyHandler(req, apiParam, log) {
   const [model, geminiReq] = genModel(req);
   let geminiResp = "";
   try {
-    for await (const it of generateContent("streamGenerateContent", apiParam, model, geminiReq)) {
+    for await (const it of streamGenerateContent(apiParam, model, geminiReq)) {
       const data = resultHelper(it);
       if (typeof data === "string") {
         geminiResp += data;
@@ -1108,10 +1090,14 @@ function streamingChatProxyHandler(req, apiParam, log) {
   return sseResponse(
     async function* () {
       try {
-        for await (const it of generateContent("streamGenerateContent", apiParam, model, geminiReq)) {
+        for await (const it of streamGenerateContent(apiParam, model, geminiReq)) {
           log?.debug("streamGenerateContent resp", it);
           const data = resultHelper(it);
-          yield genStreamResp({ model: model.model, content: data, stop: false });
+          yield genStreamResp({
+            model: model.model,
+            content: data,
+            stop: false
+          });
         }
       } catch (error) {
         yield genStreamResp({
@@ -1228,12 +1214,7 @@ async function embeddingProxyHandler(rawReq) {
   log?.warn("request", embedContentRequest);
   let geminiResp = [];
   try {
-    for await (const it of generateContent(
-      "embedContent",
-      apiParam,
-      new GeminiModel("text-embedding-004"),
-      embedContentRequest
-    )) {
+    for await (const it of embedContent(apiParam, new GeminiModel("text-embedding-004"), embedContentRequest)) {
       const data = it.embedding?.values;
       geminiResp = data;
       break;

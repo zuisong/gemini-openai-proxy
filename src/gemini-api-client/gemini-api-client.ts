@@ -11,10 +11,6 @@ import type {
 } from "./types.ts"
 
 interface Task {
-  generateContent: {
-    request: GenerateContentRequest
-    response: GenerateContentResponse
-  }
   streamGenerateContent: {
     request: GenerateContentRequest
     response: GenerateContentResponse
@@ -25,30 +21,54 @@ interface Task {
   }
 }
 
-export async function* generateContent<T extends keyof Task>(
-  task: T,
+export async function* streamGenerateContent(
   apiParam: ApiParam,
   model: GeminiModel,
-  params: Task[T]["request"],
+  params: Task["streamGenerateContent"]["request"],
   requestOptions?: RequestOptions,
 ) {
-  const url = new RequestUrl(model, task, true, apiParam)
-  const response = await makeRequest(url, JSON.stringify(params), requestOptions)
+  const response = await makeRequest(
+    toURL({ model, task: "streamGenerateContent", stream: true, apiParam }),
+    JSON.stringify(params),
+    requestOptions,
+  )
   const body = response.body
   if (body == null) {
     return
   }
 
   for await (const event of body.pipeThrough(new TextDecoderStream()).pipeThrough(new EventSourceParserStream())) {
-    const responseJson = JSON.parse(event.data) as Task[T]["response"]
+    const responseJson = JSON.parse(event.data) as Task["streamGenerateContent"]["response"]
     yield responseJson
   }
 }
 
-async function makeRequest(url: RequestUrl, body: string, requestOptions?: RequestOptions): Promise<Response> {
+export async function* embedContent(
+  apiParam: ApiParam,
+  model: GeminiModel,
+  params: Task["embedContent"]["request"],
+  requestOptions?: RequestOptions,
+) {
+  const response = await makeRequest(
+    toURL({ model, task: "embedContent", stream: true, apiParam }),
+    JSON.stringify(params),
+    requestOptions,
+  )
+  const body = response.body
+  if (body == null) {
+    return
+  }
+
+  for await (const event of body.pipeThrough(new TextDecoderStream()).pipeThrough(new EventSourceParserStream())) {
+    const responseJson = JSON.parse(event.data) as Task["embedContent"]["response"]
+    yield responseJson
+  }
+}
+
+async function makeRequest(url: URL, body: string, requestOptions?: RequestOptions): Promise<Response> {
   let response: Response
   try {
-    response = await fetch(url.toURL(), {
+    response = await fetch(url, {
       ...buildFetchOptions(requestOptions),
       method: "POST",
       headers: {
@@ -78,30 +98,21 @@ async function makeRequest(url: RequestUrl, body: string, requestOptions?: Reque
   return response
 }
 
-export class RequestUrl {
-  public model: GeminiModel
-  public task: keyof Task
-  public stream: boolean
-  public apiParam: ApiParam
-  constructor(model: GeminiModel, task: keyof Task, stream: boolean, apiParam: ApiParam) {
-    this.model = model
-    this.task = task
-    this.stream = stream
-    this.apiParam = apiParam
+function toURL({
+  model,
+  task,
+  stream,
+  apiParam,
+}: { model: GeminiModel; task: keyof Task; stream: boolean; apiParam: ApiParam }) {
+  const BASE_URL = "https://generativelanguage.googleapis.com"
+  const api_version = model.apiVersion()
+  const url = new URL(`${BASE_URL}/${api_version}/models/${model}:${task}`)
+  url.searchParams.append("key", apiParam.apikey)
+  if (stream) {
+    url.searchParams.append("alt", "sse")
   }
-
-  toURL(): URL {
-    const api_version = this.model.apiVersion()
-    const url = new URL(`${BASE_URL}/${api_version}/models/${this.model}:${this.task}`)
-    url.searchParams.append("key", this.apiParam.apikey)
-    if (this.stream) {
-      url.searchParams.append("alt", "sse")
-    }
-    return url
-  }
+  return url
 }
-
-const BASE_URL = "https://generativelanguage.googleapis.com"
 
 /**
  * Generates the request options to be passed to the fetch API.
