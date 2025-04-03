@@ -409,9 +409,9 @@ async function* streamGenerateContent(apiParam, model, params, requestOptions) {
     yield responseJson;
   }
 }
-async function* embedContent(apiParam, model, params, requestOptions) {
+async function embedContent(apiParam, model, params, requestOptions) {
   const response = await makeRequest(
-    toURL({ model, task: "embedContent", stream: true, apiParam }),
+    toURL({ model, task: "embedContent", stream: false, apiParam }),
     JSON.stringify(params),
     requestOptions
   );
@@ -419,10 +419,8 @@ async function* embedContent(apiParam, model, params, requestOptions) {
   if (body == null) {
     return;
   }
-  for await (const event of body.pipeThrough(new TextDecoderStream()).pipeThrough(new EventSourceParserStream())) {
-    const responseJson = JSON.parse(event.data);
-    yield responseJson;
-  }
+  const responseJson = await response.json();
+  return responseJson;
 }
 async function makeRequest(url, body, requestOptions) {
   let response;
@@ -735,11 +733,9 @@ async function embeddingProxyHandler(rawReq) {
   log?.warn("request", embedContentRequest);
   let geminiResp = [];
   try {
-    for await (const it of embedContent(apiParam, new GeminiModel("text-embedding-004"), embedContentRequest)) {
-      const data = it.embedding?.values;
-      geminiResp = data;
-      break;
-    }
+    const it = await embedContent(apiParam, new GeminiModel("text-embedding-004"), embedContentRequest);
+    const data = it?.embedding?.values;
+    geminiResp = data;
   } catch (err) {
     log?.error(req);
     log?.error(err?.message ?? err.toString());

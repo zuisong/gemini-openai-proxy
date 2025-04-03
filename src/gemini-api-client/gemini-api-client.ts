@@ -43,14 +43,14 @@ export async function* streamGenerateContent(
   }
 }
 
-export async function* embedContent(
+export async function embedContent(
   apiParam: ApiParam,
   model: GeminiModel,
   params: Task["embedContent"]["request"],
   requestOptions?: RequestOptions,
 ) {
   const response = await makeRequest(
-    toURL({ model, task: "embedContent", stream: true, apiParam }),
+    toURL({ model, task: "embedContent", stream: false, apiParam }),
     JSON.stringify(params),
     requestOptions,
   )
@@ -59,10 +59,8 @@ export async function* embedContent(
     return
   }
 
-  for await (const event of body.pipeThrough(new TextDecoderStream()).pipeThrough(new EventSourceParserStream())) {
-    const responseJson = JSON.parse(event.data) as Task["embedContent"]["response"]
-    yield responseJson
-  }
+  const responseJson = (await response.json()) as Task["embedContent"]["response"]
+  return responseJson
 }
 
 async function makeRequest(url: URL, body: string, requestOptions?: RequestOptions): Promise<Response> {
@@ -103,7 +101,12 @@ function toURL({
   task,
   stream,
   apiParam,
-}: { model: GeminiModel; task: keyof Task; stream: boolean; apiParam: ApiParam }) {
+}: {
+  model: GeminiModel
+  task: keyof Task
+  stream: boolean
+  apiParam: ApiParam
+}) {
   const BASE_URL = "https://generativelanguage.googleapis.com"
   const api_version = model.apiVersion()
   const url = new URL(`${BASE_URL}/${api_version}/models/${model}:${task}`)
