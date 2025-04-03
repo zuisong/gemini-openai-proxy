@@ -30,7 +30,7 @@ const app = Router<IRequest, Any[], Response>({
 app.get("/", hello)
 app.post("/v1/chat/completions", chatProxyHandler)
 app.post("/v1/embeddings", embeddingProxyHandler)
-app.get("/v1/models", () => Response.json(models()))
+app.get("/v1/models", async (req) => Response.json(await models(req)))
 app.get("/v1/models/:model", (c) => Response.json(modelDetail(c.params.model)))
 app.post("/:model_version/models/:model_and_action", geminiProxy)
 app.all("*", () => new Response("Page Not Found", { status: 404 }))

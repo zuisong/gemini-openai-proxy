@@ -4,8 +4,18 @@ import { app } from "../src/app.ts"
 
 import { modelData } from "../src/openai/models.ts"
 import type { OpenAI } from "../src/types.ts"
+import { MockFetch } from "./mock-fetch.ts"
+
+const fetchMocker = new MockFetch()
 
 bdd.describe("openai model api test", () => {
+  bdd.beforeEach(() => {
+    fetchMocker.mock(
+      (req) => req.url.includes(`generativelanguage.googleapis.com/v1beta/models`),
+      () => Response.json({ data: modelData }),
+    )
+  })
+
   bdd.it("models test", async () => {
     const res = await app.fetch(
       new Request("http://127.0.0.1/v1/models", {

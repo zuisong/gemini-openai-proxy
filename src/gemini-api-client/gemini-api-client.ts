@@ -21,6 +21,12 @@ interface Task {
   }
 }
 
+export async function listModels(apiParam: ApiParam | null) {
+  const url = new URL(`${BASE_URL}/v1beta/models`)
+  url.searchParams.append("key", apiParam?.apikey ?? "")
+  const resp = await makeRequest(url, undefined, undefined, "GET")
+  return (await resp.json()) as components["schemas"]["ListModelsResponse"]
+}
 export async function* streamGenerateContent(
   apiParam: ApiParam,
   model: GeminiModel,
@@ -63,12 +69,17 @@ export async function embedContent(
   return responseJson
 }
 
-async function makeRequest(url: URL, body: string, requestOptions?: RequestOptions): Promise<Response> {
+async function makeRequest(
+  url: URL,
+  body: string | undefined,
+  requestOptions?: RequestOptions,
+  requestMethod = "POST",
+): Promise<Response> {
   let response: Response
   try {
     response = await fetch(url, {
       ...buildFetchOptions(requestOptions),
-      method: "POST",
+      method: requestMethod,
       headers: {
         "Content-Type": "application/json",
       },
@@ -96,6 +107,8 @@ async function makeRequest(url: URL, body: string, requestOptions?: RequestOptio
   return response
 }
 
+const BASE_URL = "https://generativelanguage.googleapis.com"
+
 function toURL({
   model,
   task,
@@ -107,7 +120,6 @@ function toURL({
   stream: boolean
   apiParam: ApiParam
 }) {
-  const BASE_URL = "https://generativelanguage.googleapis.com"
   const api_version = model.apiVersion()
   const url = new URL(`${BASE_URL}/${api_version}/models/${model}:${task}`)
   url.searchParams.append("key", apiParam.apikey)

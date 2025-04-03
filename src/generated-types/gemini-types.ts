@@ -79,6 +79,46 @@ export interface paths {
         patch?: never;
         trace?: never;
     };
+    "/v1alpha/models": {
+        parameters: {
+            query?: {
+                /** @description V1 error format. */
+                "$.xgafv"?: components["parameters"]["_.xgafv"];
+                /** @description OAuth access token. */
+                access_token?: components["parameters"]["access_token"];
+                /** @description Data format for response. */
+                alt?: components["parameters"]["alt"];
+                /** @description JSONP */
+                callback?: components["parameters"]["callback"];
+                /** @description Selector specifying which fields to include in a partial response. */
+                fields?: components["parameters"]["fields"];
+                /** @description API key. Your API key identifies your project and provides you with API access, quota, and reports. Required unless you provide an OAuth 2.0 token. */
+                key?: components["parameters"]["key"];
+                /** @description OAuth 2.0 token for the current user. */
+                oauth_token?: components["parameters"]["oauth_token"];
+                /** @description Returns response with indentations and line breaks. */
+                prettyPrint?: components["parameters"]["prettyPrint"];
+                /** @description Available to use for quota purposes for server-side applications. Can be any arbitrary string assigned to a user, but should not exceed 40 characters. */
+                quotaUser?: components["parameters"]["quotaUser"];
+                /** @description Upload protocol for media (e.g. "raw", "multipart"). */
+                upload_protocol?: components["parameters"]["upload_protocol"];
+                /** @description Legacy upload protocol for media (e.g. "media", "multipart"). */
+                uploadType?: components["parameters"]["uploadType"];
+            };
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** @description Lists the [`Model`s](https://ai.google.dev/gemini-api/docs/models/gemini) available through the Gemini API. */
+        get: operations["generativelanguage.models.list"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
     "/v1alpha/tunedModels": {
         parameters: {
             query?: {
@@ -329,7 +369,7 @@ export interface components {
              * @description Optional. Specifies the mode in which function calling should execute. If unspecified, the default value will be set to AUTO.
              * @enum {string}
              */
-            mode?: "MODE_UNSPECIFIED" | "AUTO" | "ANY" | "NONE";
+            mode?: "MODE_UNSPECIFIED" | "AUTO" | "ANY" | "NONE" | "VALIDATED";
         } & {
             [key: string]: unknown;
         };
@@ -552,6 +592,15 @@ export interface components {
         } & {
             [key: string]: unknown;
         };
+        /** @description Response from `ListModel` containing a paginated list of Models. */
+        ListModelsResponse: {
+            /** @description The returned Models. */
+            models?: components["schemas"]["Model"][];
+            /** @description A token, which can be sent as `page_token` to retrieve the next page. If this field is omitted, there are no more pages. */
+            nextPageToken?: string;
+        } & {
+            [key: string]: unknown;
+        };
         /** @description Logprobs Result */
         LogprobsResult: {
             /** @description Length = total number of decoding steps. The chosen candidates may or may not be in top_candidates. */
@@ -590,6 +639,53 @@ export interface components {
              * @description Number of tokens.
              */
             tokenCount?: number;
+        } & {
+            [key: string]: unknown;
+        };
+        /** @description Information about a Generative Language Model. */
+        Model: {
+            /** @description Required. The name of the base model, pass this to the generation request. Examples: * `gemini-1.5-flash` */
+            baseModelId?: string;
+            /** @description A short description of the model. */
+            description?: string;
+            /** @description The human-readable name of the model. E.g. "Gemini 1.5 Flash". The name can be up to 128 characters long and can consist of any UTF-8 characters. */
+            displayName?: string;
+            /**
+             * Format: int32
+             * @description Maximum number of input tokens allowed for this model.
+             */
+            inputTokenLimit?: number;
+            /**
+             * Format: float
+             * @description The maximum temperature this model can use.
+             */
+            maxTemperature?: number;
+            /** @description Required. The resource name of the `Model`. Refer to [Model variants](https://ai.google.dev/gemini-api/docs/models/gemini#model-variations) for all allowed values. Format: `models/{model}` with a `{model}` naming convention of: * "{base_model_id}-{version}" Examples: * `models/gemini-1.5-flash-001` */
+            name?: string;
+            /**
+             * Format: int32
+             * @description Maximum number of output tokens available for this model.
+             */
+            outputTokenLimit?: number;
+            /** @description The model's supported generation methods. The corresponding API method names are defined as Pascal case strings, such as `generateMessage` and `generateContent`. */
+            supportedGenerationMethods?: string[];
+            /**
+             * Format: float
+             * @description Controls the randomness of the output. Values can range over `[0.0,max_temperature]`, inclusive. A higher value will produce responses that are more varied, while a value closer to `0.0` will typically result in less surprising responses from the model. This value specifies default to be used by the backend while making the call to the model.
+             */
+            temperature?: number;
+            /**
+             * Format: int32
+             * @description For Top-k sampling. Top-k sampling considers the set of `top_k` most probable tokens. This value specifies default to be used by the backend while making the call to the model. If empty, indicates the model doesn't use top-k sampling, and `top_k` isn't allowed as a generation parameter.
+             */
+            topK?: number;
+            /**
+             * Format: float
+             * @description For [Nucleus sampling](https://ai.google.dev/gemini-api/docs/prompting-strategies#top-p). Nucleus sampling considers the smallest set of tokens whose probability sum is at least `top_p`. This value specifies default to be used by the backend while making the call to the model.
+             */
+            topP?: number;
+            /** @description Required. The version number of the model. This represents the major version (`1.0` or `1.5`) */
+            version?: string;
         } & {
             [key: string]: unknown;
         };
@@ -742,7 +838,7 @@ export interface components {
              * @description Required. Data type.
              * @enum {string}
              */
-            type?: "TYPE_UNSPECIFIED" | "STRING" | "NUMBER" | "INTEGER" | "BOOLEAN" | "ARRAY" | "OBJECT";
+            type?: "TYPE_UNSPECIFIED" | "STRING" | "NUMBER" | "INTEGER" | "BOOLEAN" | "ARRAY" | "OBJECT" | "NULL";
         } & {
             [key: string]: unknown;
         };
@@ -791,7 +887,9 @@ export interface components {
         };
         /** @description The speech generation config. */
         SpeechConfig: {
-            /** @description The configuration for the speaker to use. */
+            /** @description Optional. Language code (in BCP 47 format, e.g. "en-US") for speech synthesis. Valid values are: de-DE, en-AU, en-GB, en-IN, es-US, fr-FR, hi-IN, pt-BR, ar-XA, es-ES, fr-CA, id-ID, it-IT, ja-JP, tr-TR, vi-VN, bn-IN, gu-IN, kn-IN, ml-IN, mr-IN, ta-IN, te-IN, nl-NL, ko-KR, cmn-CN, pl-PL, ru-RU, and th-TH. */
+            languageCode?: string;
+            /** @description The configuration in case of single-voice output. */
             voiceConfig?: components["schemas"]["VoiceConfig"];
         } & {
             [key: string]: unknown;
@@ -816,6 +914,11 @@ export interface components {
         ThinkingConfig: {
             /** @description Indicates whether to include thoughts in the response. If true, thoughts are returned only when available. */
             includeThoughts?: boolean;
+            /**
+             * Format: int32
+             * @description The number of thoughts tokens that the model should generate.
+             */
+            thinkingBudget?: number;
         } & {
             [key: string]: unknown;
         };
@@ -1180,6 +1283,53 @@ export interface operations {
                 };
                 content: {
                     "application/json": components["schemas"]["GenerateContentResponse"];
+                };
+            };
+        };
+    };
+    "generativelanguage.models.list": {
+        parameters: {
+            query?: {
+                /** @description V1 error format. */
+                "$.xgafv"?: components["parameters"]["_.xgafv"];
+                /** @description OAuth access token. */
+                access_token?: components["parameters"]["access_token"];
+                /** @description Data format for response. */
+                alt?: components["parameters"]["alt"];
+                /** @description JSONP */
+                callback?: components["parameters"]["callback"];
+                /** @description Selector specifying which fields to include in a partial response. */
+                fields?: components["parameters"]["fields"];
+                /** @description API key. Your API key identifies your project and provides you with API access, quota, and reports. Required unless you provide an OAuth 2.0 token. */
+                key?: components["parameters"]["key"];
+                /** @description OAuth 2.0 token for the current user. */
+                oauth_token?: components["parameters"]["oauth_token"];
+                /** @description The maximum number of `Models` to return (per page). If unspecified, 50 models will be returned per page. This method returns at most 1000 models per page, even if you pass a larger page_size. */
+                pageSize?: number;
+                /** @description A page token, received from a previous `ListModels` call. Provide the `page_token` returned by one request as an argument to the next request to retrieve the next page. When paginating, all other parameters provided to `ListModels` must match the call that provided the page token. */
+                pageToken?: string;
+                /** @description Returns response with indentations and line breaks. */
+                prettyPrint?: components["parameters"]["prettyPrint"];
+                /** @description Available to use for quota purposes for server-side applications. Can be any arbitrary string assigned to a user, but should not exceed 40 characters. */
+                quotaUser?: components["parameters"]["quotaUser"];
+                /** @description Upload protocol for media (e.g. "raw", "multipart"). */
+                upload_protocol?: components["parameters"]["upload_protocol"];
+                /** @description Legacy upload protocol for media (e.g. "media", "multipart"). */
+                uploadType?: components["parameters"]["uploadType"];
+            };
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Successful response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ListModelsResponse"];
                 };
             };
         };

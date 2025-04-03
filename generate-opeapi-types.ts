@@ -37,6 +37,7 @@ for (const { path, data } of openapis) {
         "generativelanguage.tunedModels.streamGenerateContent",
         "generativelanguage.models.embedContent",
         "generativelanguage.tunedModels.create",
+        "generativelanguage.models.list",
       ],
       unusedComponents: ["schemas"],
       preserveEmptyObjects: false,

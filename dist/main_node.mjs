@@ -1,4 +1,4 @@
-// node_modules/.deno/@hono+node-server@1.14.0/node_modules/@hono/node-server/dist/index.mjs
+// node_modules/.deno/@hono+node-server@1.14.1/node_modules/@hono/node-server/dist/index.mjs
 import { createServer as createServerHTTP } from "http";
 import { Http2ServerRequest } from "http2";
 import { Readable } from "stream";
@@ -452,7 +452,7 @@ var getRequestListener = (fetchCallback, options = {}) => {
       }
     }
     try {
-      return responseViaResponseObject(res, outgoing, options);
+      return await responseViaResponseObject(res, outgoing, options);
     } catch (e2) {
       return handleResponseError(e2, outgoing);
     }
@@ -873,6 +873,12 @@ var GoogleGenerativeAIResponseError = class extends GoogleGenerativeAIError {
 };
 
 // src/gemini-api-client/gemini-api-client.ts
+async function listModels(apiParam) {
+  const url = new URL(BASE_URL + "/v1beta/models");
+  url.searchParams.append("key", apiParam?.apikey ?? "");
+  const resp = await makeRequest(url, void 0, void 0, "GET");
+  return await resp.json();
+}
 async function* streamGenerateContent(apiParam, model, params, requestOptions) {
   const response = await makeRequest(
     toURL({ model, task: "streamGenerateContent", stream: true, apiParam }),
@@ -901,12 +907,12 @@ async function embedContent(apiParam, model, params, requestOptions) {
   const responseJson = await response.json();
   return responseJson;
 }
-async function makeRequest(url, body, requestOptions) {
+async function makeRequest(url, body, requestOptions, requestMethod = "POST") {
   let response;
   try {
     response = await fetch(url, {
       ...buildFetchOptions(requestOptions),
-      method: "POST",
+      method: requestMethod,
       headers: {
         "Content-Type": "application/json"
       },
@@ -932,13 +938,13 @@ async function makeRequest(url, body, requestOptions) {
   }
   return response;
 }
+var BASE_URL = "https://generativelanguage.googleapis.com";
 function toURL({
   model,
   task,
   stream,
   apiParam
 }) {
-  const BASE_URL = "https://generativelanguage.googleapis.com";
   const api_version = model.apiVersion();
   const url = new URL(`${BASE_URL}/${api_version}/models/${model}:${task}`);
   url.searchParams.append("key", apiParam.apikey);
@@ -1247,11 +1253,9 @@ var modelData = Object.keys(ModelMapping).map((model) => ({
   owned_by: "openai",
   id: model
 }));
-var models = () => {
-  return {
-    object: "list",
-    data: modelData
-  };
+var models = async (req) => {
+  const apiParam = getToken(req.headers);
+  return await listModels(apiParam);
 };
 var modelDetail = (model) => {
   return modelData.find((it) => it.id === model);
@@ -1277,7 +1281,7 @@ var app = r({
 app.get("/", hello);
 app.post("/v1/chat/completions", chatProxyHandler);
 app.post("/v1/embeddings", embeddingProxyHandler);
-app.get("/v1/models", () => Response.json(models()));
+app.get("/v1/models", async (req) => Response.json(await models(req)));
 app.get("/v1/models/:model", (c) => Response.json(modelDetail(c.params.model)));
 app.post("/:model_version/models/:model_and_action", geminiProxy);
 app.all("*", () => new Response("Page Not Found", { status: 404 }));
