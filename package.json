@@ -24,7 +24,7 @@
   },
   "devDependencies": {
     "@total-typescript/ts-reset": "0.6.1",
-    "esbuild": "0.25.2"
+    "esbuild": "0.25.3"
   },
   "engines": {
     "node": ">=18.0.0",
