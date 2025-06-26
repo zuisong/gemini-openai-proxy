@@ -11,7 +11,7 @@ const fetchMocker = new MockFetch()
 bdd.describe("openai model api test", () => {
   bdd.beforeEach(() => {
     fetchMocker.mock(
-      (req) => req.url.includes(`generativelanguage.googleapis.com/v1beta/models`),
+      (req) => req.url.includes(`generativelanguage.googleapis.com/v1beta/openai/models`),
       () => Response.json({ data: modelData }),
     )
   })

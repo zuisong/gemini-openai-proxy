@@ -22,9 +22,10 @@ interface Task {
 }
 
 export async function listModels(apiParam: ApiParam | null) {
-  const url = new URL(`${BASE_URL}/v1beta/models`)
-  url.searchParams.append("key", apiParam?.apikey ?? "")
-  const resp = await makeRequest(url, undefined, undefined, "GET")
+  const url = new URL(`${BASE_URL}/v1beta/openai/models`)
+  const resp = await makeRequest(url, undefined, undefined, "GET", {
+    Authorization: `Bearer ${apiParam?.apikey ?? ""}`,
+  })
   return (await resp.json()) as components["schemas"]["ListModelsResponse"]
 }
 export async function* streamGenerateContent(
@@ -74,6 +75,7 @@ async function makeRequest(
   body: string | undefined,
   requestOptions?: RequestOptions,
   requestMethod = "POST",
+  headers: Record<string, string> = {},
 ): Promise<Response> {
   let response: Response
   try {
@@ -82,6 +84,7 @@ async function makeRequest(
       method: requestMethod,
       headers: {
         "Content-Type": "application/json",
+        ...headers,
       },
       body,
     })
