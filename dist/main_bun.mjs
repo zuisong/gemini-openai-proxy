@@ -466,9 +466,10 @@ var GoogleGenerativeAIResponseError = class extends GoogleGenerativeAIError {
 
 // src/gemini-api-client/gemini-api-client.ts
 async function listModels(apiParam) {
-  const url = new URL(`${BASE_URL}/v1beta/models`);
-  url.searchParams.append("key", apiParam?.apikey ?? "");
-  const resp = await makeRequest(url, void 0, void 0, "GET");
+  const url = new URL(`${BASE_URL}/v1beta/openai/models`);
+  const resp = await makeRequest(url, void 0, void 0, "GET", {
+    Authorization: `Bearer ${apiParam?.apikey ?? ""}`
+  });
   return await resp.json();
 }
 async function* streamGenerateContent(apiParam, model, params, requestOptions) {
@@ -501,14 +502,15 @@ async function embedContent(apiParam, model, params, requestOptions) {
   const responseJson = await response.json();
   return responseJson;
 }
-async function makeRequest(url, body, requestOptions, requestMethod = "POST") {
+async function makeRequest(url, body, requestOptions, requestMethod = "POST", headers = {}) {
   let response;
   try {
     response = await fetch(url, {
       ...buildFetchOptions(requestOptions),
       method: requestMethod,
       headers: {
-        "Content-Type": "application/json"
+        "Content-Type": "application/json",
+        ...headers
       },
       body
     });
