@@ -34,7 +34,7 @@ jobs:
         uses: denoland/setup-deno@v2
 
       - name: Run test
-        run: deno task test-cov
+        run: deno task test:deno
 
       - name: Run build
         run: deno task build:deno

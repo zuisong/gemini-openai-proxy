@@ -91,20 +91,14 @@ curl -s http://localhost:8000/v1/chat/completions \
 
 ### [Cloudflare Workers](https://workers.cloudflare.com)
 
-> build command `npm run build:cf_worker`
-
 Copy [`main_cloudflare-workers.mjs`](./dist/main_cloudflare-workers.mjs) to
 `cloudflare-workers`
 
 ### [Deno Deploy](https://deno.com/deploy)
 
-> build command `npm run build:deno`
-
 Copy [`main_deno.mjs`](./dist/main_deno.mjs) to `deno deploy`
 
 ### [Vercel](https://vercel.com)
-
-> build command `npm run build:cf_worker`
 
 [![Deploy with Vercel](https://vercel.com/button)](https://vercel.com/new/clone?repository-url=https://github.com/zuisong/gemini-openai-proxy&repository-name=gemini-openai-proxy)
 
@@ -126,13 +120,13 @@ deno task start:deno
 ### node
 
 ```shell
-npm install && npm run start:node
+node dist/main_node.mjs
 ```
 
 ### bun
 
 ```shell
-bun run start:bun
+bun dist/main_bun.mjs
 ```
 
 ### docker

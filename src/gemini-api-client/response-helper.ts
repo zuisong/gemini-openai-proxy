@@ -1,6 +1,5 @@
 import { GoogleGenerativeAIResponseError } from "./errors.ts"
-import type { FunctionCall } from "./types.ts"
-import type { Candidate, FinishReason, GenerateContentResponse } from "./types.ts"
+import type { Candidate, FinishReason, FunctionCall, GenerateContentResponse } from "./types.ts"
 
 /**
  * Adds convenience helper methods to a response object, including stream

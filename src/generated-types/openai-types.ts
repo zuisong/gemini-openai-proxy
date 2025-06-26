@@ -633,9 +633,9 @@ export interface components {
                  *
                  * @enum {string}
                  */
-                format: "wav" | "mp3" | "flac" | "opus" | "pcm16";
+                format: "wav" | "aac" | "mp3" | "flac" | "opus" | "pcm16";
                 /** @description The voice the model uses to respond. Supported voices are
-                 *     `alloy`, `ash`, `ballad`, `coral`, `echo`, `sage`, and `shimmer`.
+                 *     `alloy`, `ash`, `ballad`, `coral`, `echo`, `fable`, `nova`, `onyx`, `sage`, and `shimmer`.
                  *      */
                 voice: components["schemas"]["VoiceIdsShared"];
             } & {
@@ -710,7 +710,7 @@ export interface components {
              *     [costs](https://openai.com/api/pricing/) for text generated via API.
              *
              *     This value is now deprecated in favor of `max_completion_tokens`, and is
-             *     not compatible with [o1 series models](/docs/guides/reasoning).
+             *     not compatible with [o-series models](/docs/guides/reasoning).
              *
              */
             max_tokens?: number | null;
@@ -721,7 +721,7 @@ export interface components {
              *      */
             messages: components["schemas"]["ChatCompletionRequestMessage"][];
             modalities?: components["schemas"]["ResponseModalities"];
-            /** @description Model ID used to generate the response, like `gpt-4o` or `o1`. OpenAI
+            /** @description Model ID used to generate the response, like `gpt-4o` or `o3`. OpenAI
              *     offers a wide range of models with different capabilities, performance
              *     characteristics, and price points. Refer to the [model guide](/docs/models)
              *     to browse and compare available models.
@@ -761,28 +761,11 @@ export interface components {
              *     is preferred for models that support it.
              *      */
             response_format?: components["schemas"]["ResponseFormatText"] | components["schemas"]["ResponseFormatJsonSchema"] | components["schemas"]["ResponseFormatJsonObject"];
-            /**
-             * Format: int64
-             * @description This feature is in Beta.
+            /** @description This feature is in Beta.
              *     If specified, our system will make a best effort to sample deterministically, such that repeated requests with the same `seed` and parameters should return the same result.
              *     Determinism is not guaranteed, and you should refer to the `system_fingerprint` response parameter to monitor changes in the backend.
-             *
-             */
+             *      */
             seed?: number | null;
-            /**
-             * @description Specifies the latency tier to use for processing the request. This parameter is relevant for customers subscribed to the scale tier service:
-             *       - If set to 'auto', and the Project is Scale tier enabled, the system
-             *         will utilize scale tier credits until they are exhausted.
-             *       - If set to 'auto', and the Project is not Scale tier enabled, the request will be processed using the default service tier with a lower uptime SLA and no latency guarentee.
-             *       - If set to 'default', the request will be processed using the default service tier with a lower uptime SLA and no latency guarentee.
-             *       - When not set, the default behavior is 'auto'.
-             *
-             *       When this parameter is set, the response body will include the `service_tier` utilized.
-             *
-             * @default auto
-             * @enum {string|null}
-             */
-            service_tier: "auto" | "default";
             stop?: components["schemas"]["StopConfiguration"];
             /**
              * @description Whether or not to store the output of this chat completion request for
@@ -878,12 +861,7 @@ export interface components {
              * @enum {string}
              */
             object: "chat.completion";
-            /**
-             * @description The service tier used for processing the request.
-             * @example scale
-             * @enum {string|null}
-             */
-            service_tier?: "scale" | "default" | null;
+            service_tier?: components["schemas"]["ServiceTier"];
             /** @description This fingerprint represents the backend configuration that the model runs with.
              *
              *     Can be used in conjunction with the `seed` request parameter to understand when backend changes have been made that might impact determinism.
@@ -937,12 +915,7 @@ export interface components {
              * @enum {string}
              */
             object: "chat.completion.chunk";
-            /**
-             * @description The service tier used for processing the request.
-             * @example scale
-             * @enum {string|null}
-             */
-            service_tier?: "scale" | "default" | null;
+            service_tier?: components["schemas"]["ServiceTier"];
             /** @description This fingerprint represents the backend configuration that the model runs with.
              *     Can be used in conjunction with the `seed` request parameter to understand when backend changes have been made that might impact determinism.
              *      */
@@ -972,7 +945,7 @@ export interface components {
              */
             encoding_format: "float" | "base64";
             /**
-             * @description Input text to embed, encoded as a string or array of tokens. To embed multiple inputs in a single request, pass an array of strings or array of token arrays. The input must not exceed the max input tokens for the model (8192 tokens for `text-embedding-ada-002`), cannot be an empty string, and any array must be 2048 dimensions or less. [Example Python code](https://cookbook.openai.com/examples/how_to_count_tokens_with_tiktoken) for counting tokens. Some models may also impose a limit on total number of tokens summed across inputs.
+             * @description Input text to embed, encoded as a string or array of tokens. To embed multiple inputs in a single request, pass an array of strings or array of token arrays. The input must not exceed the max input tokens for the model (8192 tokens for all embedding models), cannot be an empty string, and any array must be 2048 dimensions or less. [Example Python code](https://cookbook.openai.com/examples/how_to_count_tokens_with_tiktoken) for counting tokens. In addition to the per-input token limit, all embedding  models enforce a maximum of 300,000 tokens summed across all inputs in a  single request.
              *
              * @example The quick brown fox jumped over the lazy dog
              */
@@ -1088,9 +1061,10 @@ export interface components {
             [key: string]: unknown;
         };
         /** @example gpt-4o */
-        ModelIdsShared: string | ("o3-mini" | "o3-mini-2025-01-31" | "o1" | "o1-2024-12-17" | "o1-preview" | "o1-preview-2024-09-12" | "o1-mini" | "o1-mini-2024-09-12" | "gpt-4o" | "gpt-4o-2024-11-20" | "gpt-4o-2024-08-06" | "gpt-4o-2024-05-13" | "gpt-4o-audio-preview" | "gpt-4o-audio-preview-2024-10-01" | "gpt-4o-audio-preview-2024-12-17" | "gpt-4o-mini-audio-preview" | "gpt-4o-mini-audio-preview-2024-12-17" | "gpt-4o-search-preview" | "gpt-4o-mini-search-preview" | "gpt-4o-search-preview-2025-03-11" | "gpt-4o-mini-search-preview-2025-03-11" | "chatgpt-4o-latest" | "gpt-4o-mini" | "gpt-4o-mini-2024-07-18" | "gpt-4-turbo" | "gpt-4-turbo-2024-04-09" | "gpt-4-0125-preview" | "gpt-4-turbo-preview" | "gpt-4-1106-preview" | "gpt-4-vision-preview" | "gpt-4" | "gpt-4-0314" | "gpt-4-0613" | "gpt-4-32k" | "gpt-4-32k-0314" | "gpt-4-32k-0613" | "gpt-3.5-turbo" | "gpt-3.5-turbo-16k" | "gpt-3.5-turbo-0301" | "gpt-3.5-turbo-0613" | "gpt-3.5-turbo-1106" | "gpt-3.5-turbo-0125" | "gpt-3.5-turbo-16k-0613");
+        ModelIdsShared: string | ("gpt-4.1" | "gpt-4.1-mini" | "gpt-4.1-nano" | "gpt-4.1-2025-04-14" | "gpt-4.1-mini-2025-04-14" | "gpt-4.1-nano-2025-04-14" | "o4-mini" | "o4-mini-2025-04-16" | "o3" | "o3-2025-04-16" | "o3-mini" | "o3-mini-2025-01-31" | "o1" | "o1-2024-12-17" | "o1-preview" | "o1-preview-2024-09-12" | "o1-mini" | "o1-mini-2024-09-12" | "gpt-4o" | "gpt-4o-2024-11-20" | "gpt-4o-2024-08-06" | "gpt-4o-2024-05-13" | "gpt-4o-audio-preview" | "gpt-4o-audio-preview-2024-10-01" | "gpt-4o-audio-preview-2024-12-17" | "gpt-4o-audio-preview-2025-06-03" | "gpt-4o-mini-audio-preview" | "gpt-4o-mini-audio-preview-2024-12-17" | "gpt-4o-search-preview" | "gpt-4o-mini-search-preview" | "gpt-4o-search-preview-2025-03-11" | "gpt-4o-mini-search-preview-2025-03-11" | "chatgpt-4o-latest" | "codex-mini-latest" | "gpt-4o-mini" | "gpt-4o-mini-2024-07-18" | "gpt-4-turbo" | "gpt-4-turbo-2024-04-09" | "gpt-4-0125-preview" | "gpt-4-turbo-preview" | "gpt-4-1106-preview" | "gpt-4-vision-preview" | "gpt-4" | "gpt-4-0314" | "gpt-4-0613" | "gpt-4-32k" | "gpt-4-32k-0314" | "gpt-4-32k-0613" | "gpt-3.5-turbo" | "gpt-3.5-turbo-16k" | "gpt-3.5-turbo-0301" | "gpt-3.5-turbo-0613" | "gpt-3.5-turbo-1106" | "gpt-3.5-turbo-0125" | "gpt-3.5-turbo-16k-0613");
         ModelResponseProperties: {
             metadata?: components["schemas"]["Metadata"];
+            service_tier?: components["schemas"]["ServiceTier"];
             /**
              * @description What sampling temperature to use, between 0 and 2. Higher values like 0.8 will make the output more random, while lower values like 0.2 will make it more focused and deterministic.
              *     We generally recommend altering this or `top_p` but not both.
@@ -1112,7 +1086,8 @@ export interface components {
              */
             top_p: number;
             /**
-             * @description A unique identifier representing your end-user, which can help OpenAI to monitor and detect abuse. [Learn more](/docs/guides/safety-best-practices#end-user-ids).
+             * @description A stable identifier for your end-users.
+             *     Used to boost cache hit rates by better bucketing similar requests and  to help OpenAI detect and prevent abuse. [Learn more](/docs/guides/safety-best-practices#end-user-ids).
              *
              * @example user-1234
              */
@@ -1256,7 +1231,24 @@ export interface components {
          *      */
         ResponseModalities: ("text" | "audio")[] | null;
         /**
-         * @description Up to 4 sequences where the API will stop generating further tokens. The
+         * @description Specifies the latency tier to use for processing the request. This parameter is relevant for customers subscribed to the scale tier service:
+         *       - If set to 'auto', and the Project is Scale tier enabled, the system
+         *         will utilize scale tier credits until they are exhausted.
+         *       - If set to 'auto', and the Project is not Scale tier enabled, the request will be processed using the default service tier with a lower uptime SLA and no latency guarantee.
+         *       - If set to 'default', the request will be processed using the default service tier with a lower uptime SLA and no latency guarantee.
+         *       - If set to 'flex', the request will be processed with the Flex Processing service tier. [Learn more](/docs/guides/flex-processing).
+         *       - When not set, the default behavior is 'auto'.
+         *
+         *       When this parameter is set, the response body will include the `service_tier` utilized.
+         *
+         * @default auto
+         * @enum {string|null}
+         */
+        ServiceTier: "auto" | "default" | "flex" | "scale";
+        /**
+         * @description Not supported with latest reasoning models `o3` and `o4-mini`.
+         *
+         *     Up to 4 sequences where the API will stop generating further tokens. The
          *     returned text will not contain the stop sequence.
          *
          * @default null

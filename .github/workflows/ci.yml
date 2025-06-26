@@ -71,4 +71,4 @@ jobs:
       - name: Setup Deno
         uses: denoland/setup-deno@v2
       - name: Run test
-        run: deno task test-cov
+        run: deno task test:deno

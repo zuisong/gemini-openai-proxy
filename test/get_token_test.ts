@@ -1,6 +1,6 @@
 import { assertEquals } from "jsr:@std/assert"
-import { getToken } from "../src/utils.ts"
 import type { ApiParam } from "../src/utils.ts"
+import { getToken } from "../src/utils.ts"
 
 Deno.test("get token_test", () => {
   function checkToken(rec: Record<string, string>, res: ApiParam | null) {

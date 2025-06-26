@@ -1,6 +1,6 @@
-import type { IRequest } from "itty-router"
-import { Router } from "itty-router/Router"
+import type { IRequest } from "itty-router/"
 import { cors } from "itty-router/cors"
+import { Router } from "itty-router/Router"
 import { geminiProxy } from "./gemini-proxy.ts"
 import { hello } from "./hello.ts"
 import { type Any, Logger } from "./log.ts"

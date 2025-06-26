@@ -218,6 +218,8 @@ export interface components {
              * @description Output only. Token count for this candidate.
              */
             readonly tokenCount?: number;
+            /** @description Output only. Metadata related to url context retrieval tool. */
+            readonly urlContextMetadata?: components["schemas"]["UrlContextMetadata"];
         } & {
             [key: string]: unknown;
         };
@@ -375,14 +377,23 @@ export interface components {
         };
         /** @description Structured representation of a function declaration as defined by the [OpenAPI 3.03 specification](https://spec.openapis.org/oas/v3.0.3). Included in this declaration are the function name and parameters. This FunctionDeclaration is a representation of a block of code that can be used as a `Tool` by the model and executed by the client. */
         FunctionDeclaration: {
+            /**
+             * @description Optional. Specifies the function Behavior. Currently only supported by the BidiGenerateContent method.
+             * @enum {string}
+             */
+            behavior?: "UNSPECIFIED" | "BLOCKING" | "NON_BLOCKING";
             /** @description Required. A brief description of the function. */
             description?: string;
             /** @description Required. The name of the function. Must be a-z, A-Z, 0-9, or contain underscores and dashes, with a maximum length of 63. */
             name?: string;
             /** @description Optional. Describes the parameters to this function. Reflects the Open API 3.03 Parameter Object string Key: the name of the parameter. Parameter names are case sensitive. Schema Value: the Schema defining the type used for the parameter. */
             parameters?: components["schemas"]["Schema"];
+            /** @description Optional. Describes the parameters to the function in JSON Schema format. The schema must describe an object where the properties are the parameters to the function. For example: ``` { "type": "object", "properties": { "name": { "type": "string" }, "age": { "type": "integer" } }, "additionalProperties": false, "required": ["name", "age"], "propertyOrdering": ["name", "age"] } ``` This field is mutually exclusive with `parameters`. */
+            parametersJsonSchema?: unknown;
             /** @description Optional. Describes the output from this function in JSON Schema format. Reflects the Open API 3.03 Response Object. The Schema defines the type used for the response value of the function. */
             response?: components["schemas"]["Schema"];
+            /** @description Optional. Describes the output from this function in JSON Schema format. The value specified by the schema is the response value of the function. This field is mutually exclusive with `response`. */
+            responseJsonSchema?: unknown;
         } & {
             [key: string]: unknown;
         };
@@ -396,10 +407,17 @@ export interface components {
             response?: {
                 [key: string]: unknown;
             };
+            /**
+             * @description Optional. Specifies how the response should be scheduled in the conversation. Only applicable to NON_BLOCKING function calls, is ignored otherwise. Defaults to WHEN_IDLE.
+             * @enum {string}
+             */
+            scheduling?: "SCHEDULING_UNSPECIFIED" | "SILENT" | "WHEN_IDLE" | "INTERRUPT";
+            /** @description Optional. Signals that function call continues, and more responses will be returned, turning the function call into a generator. Is only applicable to NON_BLOCKING function calls, is ignored otherwise. If set to false, future responses will not be considered. It is allowed to return empty `response` with `will_continue=False` to signal that the function call is finished. This may still trigger the model generation. To avoid triggering the generation and finish the function call, additionally set `scheduling` to `SILENT`. */
+            willContinue?: boolean;
         } & {
             [key: string]: unknown;
         };
-        /** @description Request to generate a completion from the model. */
+        /** @description Request to generate a completion from the model. NEXT ID: 14 */
         GenerateContentRequest: {
             /** @description Optional. The name of the content [cached](https://ai.google.dev/gemini-api/docs/caching) to use as context to serve the prediction. Format: `cachedContents/{cachedContent}` */
             cachedContent?: string;
@@ -428,6 +446,8 @@ export interface components {
             readonly modelVersion?: string;
             /** @description Returns the prompt's feedback related to the content filters. */
             promptFeedback?: components["schemas"]["PromptFeedback"];
+            /** @description Output only. response_id is used to identify each response. */
+            readonly responseId?: string;
             /** @description Output only. Metadata on the generation requests' token usage. */
             readonly usageMetadata?: components["schemas"]["UsageMetadata"];
         } & {
@@ -440,6 +460,8 @@ export interface components {
              * @description Optional. Number of generated responses to return. If unset, this will default to 1. Please note that this doesn't work for previous generation models (Gemini 1.0 family)
              */
             candidateCount?: number;
+            /** @description Optional. If enabled, the model will detect emotions and adapt its responses accordingly. */
+            enableAffectiveDialog?: boolean;
             /** @description Optional. Enables enhanced civic answers. It may not be available for all models. */
             enableEnhancedCivicAnswers?: boolean;
             /**
@@ -467,6 +489,8 @@ export interface components {
              * @description Optional. Presence penalty applied to the next token's logprobs if the token has already been seen in the response. This penalty is binary on/off and not dependant on the number of times the token is used (after the first). Use frequency_penalty for a penalty that increases with each use. A positive penalty will discourage the use of tokens that have already been used in the response, increasing the vocabulary. A negative penalty will encourage the use of tokens that have already been used in the response, decreasing the vocabulary.
              */
             presencePenalty?: number;
+            /** @description Optional. Output schema of the generated response. This is an alternative to `response_schema` that accepts [JSON Schema](https://json-schema.org/). If set, `response_schema` must be omitted, but `response_mime_type` is required. While the full JSON Schema may be sent, not all features are supported. Specifically, only the following properties are supported: - `$id` - `$defs` - `$ref` - `$anchor` - `type` - `format` - `title` - `description` - `enum` (for strings and numbers) - `items` - `prefixItems` - `minItems` - `maxItems` - `minimum` - `maximum` - `anyOf` - `oneOf` (interpreted the same as `anyOf`) - `properties` - `additionalProperties` - `required` The non-standard `propertyOrdering` property may also be set. Cyclic references are unrolled to a limited degree and, as such, may only be used within non-required properties. (Nullable properties are not sufficient.) If `$ref` is set on a sub-schema, no other properties, except for than those starting as a `$`, may be set. */
+            responseJsonSchema?: unknown;
             /** @description Optional. If true, export the logprobs results in response. */
             responseLogprobs?: boolean;
             /** @description Optional. MIME type of the generated candidate text. Supported MIME types are: `text/plain`: (default) Text output. `application/json`: JSON response in the response candidates. `text/x.enum`: ENUM as a string response in the response candidates. Refer to the [docs](https://ai.google.dev/gemini-api/docs/prompting_with_media#plain_text_formats) for a list of all supported text MIME types. */
@@ -505,7 +529,12 @@ export interface components {
             [key: string]: unknown;
         };
         /** @description GoogleSearch tool type. Tool to support Google Search in Model. Powered by Google. */
-        GoogleSearch: Record<string, never>;
+        GoogleSearch: {
+            /** @description Optional. Filter search results to a specific time range. If customers set a start time, they must set an end time (and vice versa). */
+            timeRangeFilter?: components["schemas"]["Interval"];
+        } & {
+            [key: string]: unknown;
+        };
         /** @description Tool to retrieve public web data for grounding, powered by Google. */
         GoogleSearchRetrieval: {
             /** @description Specifies the dynamic retrieval configuration for the given source. */
@@ -589,6 +618,21 @@ export interface components {
              * @description Optional. Immutable. The learning rate multiplier is used to calculate a final learning_rate based on the default (recommended) value. Actual learning rate := learning_rate_multiplier * default learning rate Default learning rate is dependent on base model and dataset size. If not set, a default of 1.0 will be used.
              */
             learningRateMultiplier?: number;
+        } & {
+            [key: string]: unknown;
+        };
+        /** @description Represents a time interval, encoded as a Timestamp start (inclusive) and a Timestamp end (exclusive). The start must be less than or equal to the end. When the start equals the end, the interval is empty (matches no time). When both start and end are unspecified, the interval matches any time. */
+        Interval: {
+            /**
+             * Format: google-datetime
+             * @description Optional. Exclusive end of the interval. If specified, a Timestamp matching this interval will have to be before the end.
+             */
+            endTime?: string;
+            /**
+             * Format: google-datetime
+             * @description Optional. Inclusive start of the interval. If specified, a Timestamp matching this interval will have to be the same or after the start.
+             */
+            startTime?: string;
         } & {
             [key: string]: unknown;
         };
@@ -689,6 +733,13 @@ export interface components {
         } & {
             [key: string]: unknown;
         };
+        /** @description The configuration for the multi-speaker setup. */
+        MultiSpeakerVoiceConfig: {
+            /** @description Required. All the enabled speaker voices. */
+            speakerVoiceConfigs?: components["schemas"]["SpeakerVoiceConfig"][];
+        } & {
+            [key: string]: unknown;
+        };
         /** @description This resource represents a long-running operation that is the result of a network API call. */
         Operation: {
             /** @description If the value is `false`, it means the operation is still in progress. If `true`, the operation is completed, and either `error` or `response` is available. */
@@ -726,6 +777,13 @@ export interface components {
             text?: string;
             /** @description Optional. Indicates if the part is thought from the model. */
             thought?: boolean;
+            /**
+             * Format: byte
+             * @description Optional. An opaque signature for the thought so it can be reused in subsequent requests.
+             */
+            thoughtSignature?: string;
+            /** @description Optional. Video metadata. The metadata should only be specified while the video data is presented in inline_data or file_data. */
+            videoMetadata?: components["schemas"]["VideoMetadata"];
         } & {
             [key: string]: unknown;
         };
@@ -798,6 +856,8 @@ export interface components {
             description?: string;
             /** @description Optional. Possible values of the element of Type.STRING with enum format. For example we can define an Enum Direction as : {type:STRING, format:enum, enum:["EAST", NORTH", "SOUTH", "WEST"]} */
             enum?: string[];
+            /** @description Optional. Example of the object. Will only populated when the object is the root. */
+            example?: unknown;
             /** @description Optional. The format of the data. This is used only for primitive datatypes. Supported formats: for NUMBER type: float, double for INTEGER type: int32, int64 for STRING type: enum, date-time */
             format?: string;
             /** @description Optional. Schema of the elements of Type.ARRAY. */
@@ -813,6 +873,16 @@ export interface components {
              */
             maxItems?: string;
             /**
+             * Format: int64
+             * @description Optional. Maximum length of the Type.STRING
+             */
+            maxLength?: string;
+            /**
+             * Format: int64
+             * @description Optional. Maximum number of the properties for Type.OBJECT.
+             */
+            maxProperties?: string;
+            /**
              * Format: double
              * @description Optional. SCHEMA FIELDS FOR TYPE INTEGER and NUMBER Minimum value of the Type.INTEGER and Type.NUMBER
              */
@@ -822,8 +892,20 @@ export interface components {
              * @description Optional. Minimum number of the elements for Type.ARRAY.
              */
             minItems?: string;
+            /**
+             * Format: int64
+             * @description Optional. SCHEMA FIELDS FOR TYPE STRING Minimum length of the Type.STRING
+             */
+            minLength?: string;
+            /**
+             * Format: int64
+             * @description Optional. Minimum number of the properties for Type.OBJECT.
+             */
+            minProperties?: string;
             /** @description Optional. Indicates if the value may be null. */
             nullable?: boolean;
+            /** @description Optional. Pattern of the Type.STRING to restrict a string to a regular expression. */
+            pattern?: string;
             /** @description Optional. Properties of Type.OBJECT. */
             properties?: {
                 [key: string]: components["schemas"]["Schema"];
@@ -885,10 +967,21 @@ export interface components {
         } & {
             [key: string]: unknown;
         };
+        /** @description The configuration for a single speaker in a multi speaker setup. */
+        SpeakerVoiceConfig: {
+            /** @description Required. The name of the speaker to use. Should be the same as in the prompt. */
+            speaker?: string;
+            /** @description Required. The configuration for the voice to use. */
+            voiceConfig?: components["schemas"]["VoiceConfig"];
+        } & {
+            [key: string]: unknown;
+        };
         /** @description The speech generation config. */
         SpeechConfig: {
-            /** @description Optional. Language code (in BCP 47 format, e.g. "en-US") for speech synthesis. Valid values are: de-DE, en-AU, en-GB, en-IN, es-US, fr-FR, hi-IN, pt-BR, ar-XA, es-ES, fr-CA, id-ID, it-IT, ja-JP, tr-TR, vi-VN, bn-IN, gu-IN, kn-IN, ml-IN, mr-IN, ta-IN, te-IN, nl-NL, ko-KR, cmn-CN, pl-PL, ru-RU, and th-TH. */
+            /** @description Optional. Language code (in BCP 47 format, e.g. "en-US") for speech synthesis. Valid values are: de-DE, en-AU, en-GB, en-IN, en-US, es-US, fr-FR, hi-IN, pt-BR, ar-XA, es-ES, fr-CA, id-ID, it-IT, ja-JP, tr-TR, vi-VN, bn-IN, gu-IN, kn-IN, ml-IN, mr-IN, ta-IN, te-IN, nl-NL, ko-KR, cmn-CN, pl-PL, ru-RU, and th-TH. */
             languageCode?: string;
+            /** @description Optional. The configuration for the multi-speaker setup. It is mutually exclusive with the voice_config field. */
+            multiSpeakerVoiceConfig?: components["schemas"]["MultiSpeakerVoiceConfig"];
             /** @description The configuration in case of single-voice output. */
             voiceConfig?: components["schemas"]["VoiceConfig"];
         } & {
@@ -932,6 +1025,8 @@ export interface components {
             googleSearch?: components["schemas"]["GoogleSearch"];
             /** @description Optional. Retrieval tool that is powered by Google search. */
             googleSearchRetrieval?: components["schemas"]["GoogleSearchRetrieval"];
+            /** @description Optional. Tool to support URL context retrieval. */
+            urlContext?: components["schemas"]["UrlContext"];
         } & {
             [key: string]: unknown;
         };
@@ -1096,6 +1191,27 @@ export interface components {
         } & {
             [key: string]: unknown;
         };
+        /** @description Tool to support URL context retrieval. */
+        UrlContext: Record<string, never>;
+        /** @description Metadata related to url context retrieval tool. */
+        UrlContextMetadata: {
+            /** @description List of url context. */
+            urlMetadata?: components["schemas"]["UrlMetadata"][];
+        } & {
+            [key: string]: unknown;
+        };
+        /** @description Context of the a single url retrieval. */
+        UrlMetadata: {
+            /** @description Retrieved url by the tool. */
+            retrievedUrl?: string;
+            /**
+             * @description Status of the url retrieval.
+             * @enum {string}
+             */
+            urlRetrievalStatus?: "URL_RETRIEVAL_STATUS_UNSPECIFIED" | "URL_RETRIEVAL_STATUS_SUCCESS" | "URL_RETRIEVAL_STATUS_ERROR";
+        } & {
+            [key: string]: unknown;
+        };
         /** @description Metadata on the generation request's token usage. */
         UsageMetadata: {
             /**
@@ -1136,6 +1252,26 @@ export interface components {
              * @description Total token count for the generation request (prompt + response candidates).
              */
             totalTokenCount?: number;
+        } & {
+            [key: string]: unknown;
+        };
+        /** @description Metadata describes the input video content. */
+        VideoMetadata: {
+            /**
+             * Format: google-duration
+             * @description Optional. The end offset of the video.
+             */
+            endOffset?: string;
+            /**
+             * Format: double
+             * @description Optional. The frame rate of the video sent to the model. If not specified, the default value will be 1.0. The fps range is (0.0, 24.0].
+             */
+            fps?: number;
+            /**
+             * Format: google-duration
+             * @description Optional. The start offset of the video.
+             */
+            startOffset?: string;
         } & {
             [key: string]: unknown;
         };

@@ -1,6 +1,6 @@
 import { listModels } from "../gemini-api-client/gemini-api-client.ts"
 import type { OpenAI } from "../types.ts"
-import { ModelMapping, getToken } from "../utils.ts"
+import { getToken, ModelMapping } from "../utils.ts"
 export const modelData: OpenAI.Models.Model[] = Object.keys(ModelMapping).map((model) => ({
   created: 1677610602,
   object: "model",
