@@ -1,27 +1,4 @@
-// node_modules/.deno/itty-router@5.0.18/node_modules/itty-router/Router.mjs
-var r = ({ base: r2 = "", routes: e2 = [], ...a } = {}) => ({ __proto__: new Proxy({}, { get: (a2, t, o, c) => (a3, ...l) => e2.push([t.toUpperCase?.(), RegExp(`^${(c = (r2 + a3).replace(/\/+(\/|$)/g, "$1")).replace(/(\/?\.?):(\w+)\+/g, "($1(?<$2>*))").replace(/(\/?\.?):(\w+)/g, "($1(?<$2>[^$1/]+?))").replace(/\./g, "\\.").replace(/(\/?)\*/g, "($1.*)?")}/*$`), l, c]) && o }), routes: e2, ...a, async fetch(r3, ...t) {
-  let o, c, l = new URL(r3.url), p = r3.query = { __proto__: null };
-  for (let [r4, e3] of l.searchParams) p[r4] = p[r4] ? [].concat(p[r4], e3) : e3;
-  r: try {
-    for (let e3 of a.before || []) if (null != (o = await e3(r3.proxy ?? r3, ...t))) break r;
-    e: for (let [a2, p2, f, h] of e2) if ((a2 == r3.method || "ALL" == a2) && (c = l.pathname.match(p2))) {
-      r3.params = c.groups || {}, r3.route = h;
-      for (let e3 of f) if (null != (o = await e3(r3.proxy ?? r3, ...t))) break e;
-    }
-  } catch (e3) {
-    if (!a.catch) throw e3;
-    o = await a.catch(e3, r3.proxy ?? r3, ...t);
-  }
-  try {
-    for (let e3 of a.finally || []) o = await e3(o, r3.proxy ?? r3, ...t) ?? o;
-  } catch (e3) {
-    if (!a.catch) throw e3;
-    o = await a.catch(e3, r3.proxy ?? r3, ...t);
-  }
-  return o;
-} });
-
-// node_modules/.deno/itty-router@5.0.18/node_modules/itty-router/cors.mjs
+// ../../../.cache/deno/npm/registry.npmjs.org/itty-router/5.0.18/cors.mjs
 var e = (e2 = {}) => {
   const { origin: o = "*", credentials: s = false, allowMethods: c = "*", allowHeaders: r2, exposeHeaders: n, maxAge: t } = e2, a = (e3) => {
     const c2 = e3?.headers.get("origin");
@@ -30,13 +7,65 @@ var e = (e2 = {}) => {
     for (const [s2, c2] of Object.entries(o2)) c2 && e3.headers.append(s2, c2);
     return e3;
   };
-  return { corsify: (e3, o2) => e3?.headers?.get("access-control-allow-origin") || 101 == e3.status ? e3 : l(e3.clone(), { "access-control-allow-origin": a(o2), "access-control-allow-credentials": s }), preflight: (e3) => {
-    if ("OPTIONS" == e3.method) {
-      const o2 = new Response(null, { status: 204 });
-      return l(o2, { "access-control-allow-origin": a(e3), "access-control-allow-methods": c?.join?.(",") ?? c, "access-control-expose-headers": n?.join?.(",") ?? n, "access-control-allow-headers": r2?.join?.(",") ?? r2 ?? e3.headers.get("access-control-request-headers"), "access-control-max-age": t, "access-control-allow-credentials": s });
+  return {
+    corsify: (e3, o2) => e3?.headers?.get("access-control-allow-origin") || 101 == e3.status ? e3 : l(e3.clone(), {
+      "access-control-allow-origin": a(o2),
+      "access-control-allow-credentials": s
+    }),
+    preflight: (e3) => {
+      if ("OPTIONS" == e3.method) {
+        const o2 = new Response(null, {
+          status: 204
+        });
+        return l(o2, {
+          "access-control-allow-origin": a(e3),
+          "access-control-allow-methods": c?.join?.(",") ?? c,
+          "access-control-expose-headers": n?.join?.(",") ?? n,
+          "access-control-allow-headers": r2?.join?.(",") ?? r2 ?? e3.headers.get("access-control-request-headers"),
+          "access-control-max-age": t,
+          "access-control-allow-credentials": s
+        });
+      }
     }
-  } };
+  };
 };
+
+// ../../../.cache/deno/npm/registry.npmjs.org/itty-router/5.0.18/Router.mjs
+var r = ({ base: r2 = "", routes: e2 = [], ...a } = {}) => ({
+  __proto__: new Proxy({}, {
+    get: (a2, t, o, c) => (a3, ...l) => e2.push([
+      t.toUpperCase?.(),
+      RegExp(`^${(c = (r2 + a3).replace(/\/+(\/|$)/g, "$1")).replace(/(\/?\.?):(\w+)\+/g, "($1(?<$2>*))").replace(/(\/?\.?):(\w+)/g, "($1(?<$2>[^$1/]+?))").replace(/\./g, "\\.").replace(/(\/?)\*/g, "($1.*)?")}/*$`),
+      l,
+      c
+    ]) && o
+  }),
+  routes: e2,
+  ...a,
+  async fetch(r3, ...t) {
+    let o, c, l = new URL(r3.url), p = r3.query = {
+      __proto__: null
+    };
+    for (let [r4, e3] of l.searchParams) p[r4] = p[r4] ? [].concat(p[r4], e3) : e3;
+    r: try {
+      for (let e3 of a.before || []) if (null != (o = await e3(r3.proxy ?? r3, ...t))) break r;
+      e: for (let [a2, p2, f, h] of e2) if ((a2 == r3.method || "ALL" == a2) && (c = l.pathname.match(p2))) {
+        r3.params = c.groups || {}, r3.route = h;
+        for (let e3 of f) if (null != (o = await e3(r3.proxy ?? r3, ...t))) break e;
+      }
+    } catch (e3) {
+      if (!a.catch) throw e3;
+      o = await a.catch(e3, r3.proxy ?? r3, ...t);
+    }
+    try {
+      for (let e3 of a.finally || []) o = await e3(o, r3.proxy ?? r3, ...t) ?? o;
+    } catch (e3) {
+      if (!a.catch) throw e3;
+      o = await a.catch(e3, r3.proxy ?? r3, ...t);
+    }
+    return o;
+  }
+});
 
 // src/gemini-proxy.ts
 async function geminiProxy(rawReq) {
@@ -71,7 +100,9 @@ function getToken(headers) {
 }
 function parseBase64(base64) {
   if (!base64.startsWith("data:")) {
-    return { text: "" };
+    return {
+      text: ""
+    };
   }
   const [m, data, ..._arr] = base64.split(",");
   const mimeType = m.match(/:(?<mime>.*?);/)?.groups?.mime ?? "img/png";
@@ -88,33 +119,65 @@ function openAiMessageToGeminiMessage(messages) {
       return [
         {
           role: "user",
-          parts: typeof content !== "string" ? content : [{ text: content }]
+          parts: typeof content !== "string" ? content : [
+            {
+              text: content
+            }
+          ]
         }
       ];
     }
-    const parts = content == null || typeof content === "string" ? [{ text: content?.toString() ?? "" }] : content.map((item) => {
-      if (item.type === "text") return { text: item.text };
+    const parts = content == null || typeof content === "string" ? [
+      {
+        text: content?.toString() ?? ""
+      }
+    ] : content.map((item) => {
+      if (item.type === "text") return {
+        text: item.text
+      };
       if (item.type === "image_url") return parseBase64(item.image_url.url);
-      return { text: "OK" };
+      return {
+        text: "OK"
+      };
     });
-    return [{ role: "user" === role ? "user" : "model", parts }];
+    return [
+      {
+        role: "user" === role ? "user" : "model",
+        parts
+      }
+    ];
   });
   return result;
 }
 function genModel(req) {
   const model = GeminiModel.modelMapping(req.model);
   let functions = req.tools?.filter((it) => it.type === "function")?.map((it) => it.function) ?? [];
-  functions = functions.concat((req.functions ?? []).map((it) => ({ strict: null, ...it })));
+  functions = functions.concat((req.functions ?? []).map((it) => ({
+    strict: null,
+    ...it
+  })));
   const [responseMimeType, responseSchema] = (() => {
     switch (req.response_format?.type) {
       case "json_object":
-        return ["application/json", void 0];
+        return [
+          "application/json",
+          void 0
+        ];
       case "json_schema":
-        return ["application/json", req.response_format.json_schema.schema];
+        return [
+          "application/json",
+          req.response_format.json_schema.schema
+        ];
       case "text":
-        return ["text/plain", void 0];
+        return [
+          "text/plain",
+          void 0
+        ];
       default:
-        return [void 0, void 0];
+        return [
+          void 0,
+          void 0
+        ];
     }
   })();
   const generateContentRequest = {
@@ -144,7 +207,10 @@ function genModel(req) {
       threshold: "BLOCK_NONE"
     }))
   };
-  return [model, generateContentRequest];
+  return [
+    model,
+    generateContentRequest
+  ];
 }
 var GeminiModel = class _GeminiModel {
   static modelMapping(model) {
@@ -226,7 +292,12 @@ function hello(req) {
 }
 
 // src/log.ts
-var LEVEL = ["debug", "info", "warn", "error"];
+var LEVEL = [
+  "debug",
+  "info",
+  "warn",
+  "error"
+];
 var Logger = class {
   config;
   debug;
@@ -252,7 +323,7 @@ var Logger = class {
   }
 };
 
-// node_modules/.deno/eventsource-parser@3.0.1/node_modules/eventsource-parser/dist/index.js
+// ../../../.cache/deno/npm/registry.npmjs.org/eventsource-parser/3.0.1/dist/index.js
 var ParseError = class extends Error {
   constructor(message, options) {
     super(message), this.name = "ParseError", this.type = options.type, this.field = options.field, this.value = options.value, this.line = options.line;
@@ -261,16 +332,12 @@ var ParseError = class extends Error {
 function noop(_arg) {
 }
 function createParser(callbacks) {
-  if (typeof callbacks == "function")
-    throw new TypeError(
-      "`callbacks` must be an object, got a function instead. Did you mean `{onEvent: fn}`?"
-    );
+  if (typeof callbacks == "function") throw new TypeError("`callbacks` must be an object, got a function instead. Did you mean `{onEvent: fn}`?");
   const { onEvent = noop, onError = noop, onRetry = noop, onComment } = callbacks;
   let incompleteLine = "", isFirstChunk = true, id, data = "", eventType = "";
   function feed(newChunk) {
     const chunk = isFirstChunk ? newChunk.replace(/^\xEF\xBB\xBF/, "") : newChunk, [complete, incomplete] = splitLines(`${incompleteLine}${chunk}`);
-    for (const line of complete)
-      parseLine(line);
+    for (const line of complete) parseLine(line);
     incompleteLine = incomplete, isFirstChunk = false;
   }
   function parseLine(line) {
@@ -303,21 +370,19 @@ function createParser(callbacks) {
         id = value.includes("\0") ? void 0 : value;
         break;
       case "retry":
-        /^\d+$/.test(value) ? onRetry(parseInt(value, 10)) : onError(
-          new ParseError(`Invalid \`retry\` value: "${value}"`, {
-            type: "invalid-retry",
-            value,
-            line
-          })
-        );
+        /^\d+$/.test(value) ? onRetry(parseInt(value, 10)) : onError(new ParseError(`Invalid \`retry\` value: "${value}"`, {
+          type: "invalid-retry",
+          value,
+          line
+        }));
         break;
       default:
-        onError(
-          new ParseError(
-            `Unknown field "${field.length > 20 ? `${field.slice(0, 20)}\u2026` : field}"`,
-            { type: "unknown-field", field, value, line }
-          )
-        );
+        onError(new ParseError(`Unknown field "${field.length > 20 ? `${field.slice(0, 20)}\u2026` : field}"`, {
+          type: "unknown-field",
+          field,
+          value,
+          line
+        }));
         break;
     }
   }
@@ -334,7 +399,10 @@ function createParser(callbacks) {
   function reset(options = {}) {
     incompleteLine && options.consume && parseLine(incompleteLine), isFirstChunk = true, id = void 0, data = "", eventType = "", incompleteLine = "";
   }
-  return { feed, reset };
+  return {
+    feed,
+    reset
+  };
 }
 function splitLines(chunk) {
   const lines = [];
@@ -352,10 +420,13 @@ function splitLines(chunk) {
 ` && searchIndex++;
     }
   }
-  return [lines, incompleteLine];
+  return [
+    lines,
+    incompleteLine
+  ];
 }
 
-// node_modules/.deno/eventsource-parser@3.0.1/node_modules/eventsource-parser/dist/stream.js
+// ../../../.cache/deno/npm/registry.npmjs.org/eventsource-parser/3.0.1/dist/stream.js
 var EventSourceParserStream = class extends TransformStream {
   constructor({ onError, onRetry, onComment } = {}) {
     let parser;
@@ -395,17 +466,18 @@ var GoogleGenerativeAIResponseError = class extends GoogleGenerativeAIError {
 
 // src/gemini-api-client/gemini-api-client.ts
 async function listModels(apiParam) {
-  const url = new URL(BASE_URL + "/v1beta/models");
+  const url = new URL(`${BASE_URL}/v1beta/models`);
   url.searchParams.append("key", apiParam?.apikey ?? "");
   const resp = await makeRequest(url, void 0, void 0, "GET");
   return await resp.json();
 }
 async function* streamGenerateContent(apiParam, model, params, requestOptions) {
-  const response = await makeRequest(
-    toURL({ model, task: "streamGenerateContent", stream: true, apiParam }),
-    JSON.stringify(params),
-    requestOptions
-  );
+  const response = await makeRequest(toURL({
+    model,
+    task: "streamGenerateContent",
+    stream: true,
+    apiParam
+  }), JSON.stringify(params), requestOptions);
   const body = response.body;
   if (body == null) {
     return;
@@ -416,11 +488,12 @@ async function* streamGenerateContent(apiParam, model, params, requestOptions) {
   }
 }
 async function embedContent(apiParam, model, params, requestOptions) {
-  const response = await makeRequest(
-    toURL({ model, task: "embedContent", stream: false, apiParam }),
-    JSON.stringify(params),
-    requestOptions
-  );
+  const response = await makeRequest(toURL({
+    model,
+    task: "embedContent",
+    stream: false,
+    apiParam
+  }), JSON.stringify(params), requestOptions);
   const body = response.body;
   if (body == null) {
     return;
@@ -460,12 +533,7 @@ async function makeRequest(url, body, requestOptions, requestMethod = "POST") {
   return response;
 }
 var BASE_URL = "https://generativelanguage.googleapis.com";
-function toURL({
-  model,
-  task,
-  stream,
-  apiParam
-}) {
+function toURL({ model, task, stream, apiParam }) {
   const api_version = model.apiVersion();
   const url = new URL(`${BASE_URL}/${api_version}/models/${model}:${task}`);
   url.searchParams.append("key", apiParam.apikey);
@@ -489,23 +557,15 @@ function buildFetchOptions(requestOptions) {
 function resultHelper(response) {
   if (response.candidates && response.candidates.length > 0) {
     if (response.candidates.length > 1) {
-      console.warn(
-        `This response had ${response.candidates.length} candidates. Returning text from the first candidate only. Access response.candidates directly to use the other candidates.`
-      );
+      console.warn(`This response had ${response.candidates.length} candidates. Returning text from the first candidate only. Access response.candidates directly to use the other candidates.`);
     }
     if (hadBadFinishReason(response.candidates[0])) {
-      throw new GoogleGenerativeAIResponseError(
-        `${formatBlockErrorMessage(response)}`,
-        response
-      );
+      throw new GoogleGenerativeAIResponseError(`${formatBlockErrorMessage(response)}`, response);
     }
     return getText(response);
   }
   if (response.promptFeedback) {
-    throw new GoogleGenerativeAIResponseError(
-      `Text not available. ${formatBlockErrorMessage(response)}`,
-      response
-    );
+    throw new GoogleGenerativeAIResponseError(`Text not available. ${formatBlockErrorMessage(response)}`, response);
   }
   return "";
 }
@@ -518,7 +578,10 @@ function getText(response) {
   }
   return "";
 }
-var badFinishReasons = ["RECITATION", "SAFETY"];
+var badFinishReasons = [
+  "RECITATION",
+  "SAFETY"
+];
 function hadBadFinishReason(candidate) {
   return !!candidate.finishReason && badFinishReasons.includes(candidate.finishReason);
 }
@@ -574,7 +637,11 @@ async function nonStreamingChatProxyHandler(req, apiParam, log) {
         model: model.model,
         choices: [
           {
-            message: { role: "assistant", content, refusal: null },
+            message: {
+              role: "assistant",
+              content,
+              refusal: null
+            },
             finish_reason: "stop",
             index: 0,
             logprobs: null
@@ -612,36 +679,34 @@ async function nonStreamingChatProxyHandler(req, apiParam, log) {
 function streamingChatProxyHandler(req, apiParam, log) {
   const [model, geminiReq] = genModel(req);
   log?.debug("streamGenerateContent request", req);
-  return sseResponse(
-    async function* () {
-      try {
-        for await (const it of streamGenerateContent(apiParam, model, geminiReq)) {
-          log?.debug("streamGenerateContent resp", it);
-          const data = resultHelper(it);
-          yield genStreamResp({
-            model: model.model,
-            content: data,
-            stop: false
-          });
-        }
-      } catch (error) {
+  return sseResponse(async function* () {
+    try {
+      for await (const it of streamGenerateContent(apiParam, model, geminiReq)) {
+        log?.debug("streamGenerateContent resp", it);
+        const data = resultHelper(it);
         yield genStreamResp({
           model: model.model,
-          content: error?.message ?? error.toString(),
-          stop: true
+          content: data,
+          stop: false
         });
       }
-      yield genStreamResp({ model: model.model, content: "", stop: true });
-      yield "[DONE]";
-      return void 0;
-    }()
-  );
+    } catch (error) {
+      yield genStreamResp({
+        model: model.model,
+        content: error?.message ?? error.toString(),
+        stop: true
+      });
+    }
+    yield genStreamResp({
+      model: model.model,
+      content: "",
+      stop: true
+    });
+    yield "[DONE]";
+    return void 0;
+  }());
 }
-function genStreamResp({
-  model,
-  content,
-  stop
-}) {
+function genStreamResp({ model, content, stop }) {
   if (typeof content === "string") {
     return {
       id: "chatcmpl-abc123",
@@ -650,7 +715,10 @@ function genStreamResp({
       model,
       choices: [
         {
-          delta: { role: "assistant", content },
+          delta: {
+            role: "assistant",
+            content
+          },
           finish_reason: stop ? "stop" : null,
           index: 0
         }
@@ -664,7 +732,10 @@ function genStreamResp({
     model,
     choices: [
       {
-        delta: { role: "assistant", function_call: content },
+        delta: {
+          role: "assistant",
+          function_call: content
+        },
         finish_reason: stop ? "function_call" : null,
         index: 0
       }
@@ -680,7 +751,9 @@ function sseResponse(dataStream) {
         controller.close();
       } else {
         const data = typeof value === "string" ? value : JSON.stringify(value);
-        controller.enqueue(encoder.encode(toSseMsg({ data })));
+        controller.enqueue(encoder.encode(toSseMsg({
+          data
+        })));
       }
     }
   });
@@ -713,7 +786,9 @@ async function chatProxyHandler(rawReq) {
   const headers = rawReq.headers;
   const apiParam = getToken(headers);
   if (apiParam == null) {
-    return new Response("Unauthorized", { status: 401 });
+    return new Response("Unauthorized", {
+      status: 401
+    });
   }
   if (req.stream !== true) {
     return await nonStreamingChatProxyHandler(req, apiParam, rawReq.logger);
@@ -728,12 +803,18 @@ async function embeddingProxyHandler(rawReq) {
   const headers = rawReq.headers;
   const apiParam = getToken(headers);
   if (apiParam == null) {
-    return new Response("Unauthorized", { status: 401 });
+    return new Response("Unauthorized", {
+      status: 401
+    });
   }
   const embedContentRequest = {
     model: "models/text-embedding-004",
     content: {
-      parts: [req.input].flat().map((it) => ({ text: it.toString() }))
+      parts: [
+        req.input
+      ].flat().map((it) => ({
+        text: it.toString()
+      }))
     }
   };
   log?.warn("request", embedContentRequest);
@@ -783,7 +864,9 @@ var modelDetail = (model) => {
 };
 
 // src/app.ts
-var { preflight, corsify } = e({ allowHeaders: "*" });
+var { preflight, corsify } = e({
+  allowHeaders: "*"
+});
 var app = r({
   before: [
     preflight,
@@ -805,7 +888,9 @@ app.post("/v1/embeddings", embeddingProxyHandler);
 app.get("/v1/models", async (req) => Response.json(await models(req)));
 app.get("/v1/models/:model", (c) => Response.json(modelDetail(c.params.model)));
 app.post("/:model_version/models/:model_and_action", geminiProxy);
-app.all("*", () => new Response("Page Not Found", { status: 404 }));
+app.all("*", () => new Response("Page Not Found", {
+  status: 404
+}));
 
 // main_cloudflare-workers.ts
 var main_cloudflare_workers_default = {
@@ -814,3 +899,4 @@ var main_cloudflare_workers_default = {
 export {
   main_cloudflare_workers_default as default
 };
+//# sourceMappingURL=main_cloudflare-workers.mjs.map
