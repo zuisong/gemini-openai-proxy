@@ -1,5 +1,8 @@
 # changelog
-
+## 0.15.1 (2025-08-30)
+- Update model mapping
+- add openai tts api, implement openai.fm and edge tts
+- fix embedding for lobechat
 ## 0.15.0 (Unreleased)
 
 - ...

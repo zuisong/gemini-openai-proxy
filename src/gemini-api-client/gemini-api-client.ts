@@ -10,6 +10,25 @@ import type {
   RequestOptions,
 } from "./types.ts"
 
+
+// +++ NEW +++
+// Define the request structure for batchEmbedContents
+// It's an array of individual embedContent requests.
+export interface BatchEmbedContentsRequest {
+  requests: EmbedContentRequest[]
+}
+
+// +++ NEW +++
+// Define the response structure for batchEmbedContents
+// It returns a list of embedding objects.
+export interface BatchEmbedContentsResponse {
+  embeddings: {
+    values: number[]
+    // The schema might have other fields like `model`, `statistics`, etc.
+    // You would have to add them here manually.
+  }[]
+}
+
 interface Task {
   streamGenerateContent: {
     request: GenerateContentRequest
@@ -18,6 +37,11 @@ interface Task {
   embedContent: {
     request: EmbedContentRequest
     response: EmbedContentResponse
+  }
+  // +++ NEW +++ Add the new task to our interface
+  batchEmbedContents: {
+    request: BatchEmbedContentsRequest
+    response: BatchEmbedContentsResponse
   }
 }
 
@@ -67,6 +91,26 @@ export async function embedContent(
   }
 
   const responseJson = (await response.json()) as Task["embedContent"]["response"]
+  return responseJson
+}
+
+// +++ NEW +++
+/**
+ * Makes a batch embedding request.
+ */
+export async function batchEmbedContents(
+  apiParam: ApiParam,
+  model: GeminiModel,
+  params: Task["batchEmbedContents"]["request"],
+  requestOptions?: RequestOptions,
+): Promise<Task["batchEmbedContents"]["response"]> {
+  const response = await makeRequest(
+    toURL({ model, task: "batchEmbedContents", stream: false, apiParam }),
+    JSON.stringify(params),
+    requestOptions,
+  )
+
+  const responseJson = (await response.json()) as Task["batchEmbedContents"]["response"]
   return responseJson
 }
 

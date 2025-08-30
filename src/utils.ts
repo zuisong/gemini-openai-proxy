@@ -128,12 +128,18 @@ export function genModel(req: OpenAI.Chat.ChatCompletionCreateParams): [GeminiMo
   return [model, generateContentRequest]
 }
 export type KnownGeminiModel =
+  | "gemini-2.5-pro"
+  | "gemini-2.5-flash"
   | "gemini-1.5-pro-latest"
   | "gemini-1.5-flash-latest"
   | "gemini-1.5-flash-8b-latest"
+  | "gemini-2.0-pro-exp"
   | "gemini-2.0-flash-exp"
+  | "gemma-3-4b-it"
+  | "gemma-3-27b-it"
   | "text-embedding-004"
-
+  | "fmtts"
+const OAI_GEMINI_MAP_DEALFULT_MODEL = "gemma-3-4b-it"
 export type API_VERSION = "v1beta" | "v1" | "v1alpha"
 
 export class GeminiModel {
@@ -163,23 +169,39 @@ export class GeminiModel {
   }
 
   private static defaultModel(m: string): GeminiModelName {
-    if (m.startsWith("gemini")) {
+    if (m.startsWith("gemini") || m.startsWith("gemma")) {
       return m as GeminiModelName
     }
-    return "gemini-1.5-flash-latest"
+    return OAI_GEMINI_MAP_DEALFULT_MODEL
   }
 }
 
-export type GeminiModelName = `gemini${string}` | "text-embedding-004"
-
+export type GeminiModelName = `gemini${string}` | `gemma${string}` | "text-embedding-004"| "embedding-gecko-001" | "gemini-embedding-001" | "embedding-001" | "fmtts"
+//https://platform.openai.com/docs/guides/embeddings/embedding-models
+//https://ai.google.dev/gemini-api/docs/embeddings
 export const ModelMapping: Readonly<Record<string, KnownGeminiModel>> = {
-  "gpt-3.5-turbo": "gemini-1.5-flash-8b-latest",
-  "gpt-4": "gemini-1.5-pro-latest",
-  "gpt-4o": "gemini-1.5-flash-latest",
-  "gpt-4o-mini": "gemini-1.5-flash-8b-latest",
-  "gpt-4-vision-preview": "gemini-1.5-flash-latest",
-  "gpt-4-turbo": "gemini-1.5-pro-latest",
-  "gpt-4-turbo-preview": "gemini-2.0-flash-exp",
+  // Updated with latest models
+  "gpt-3.5-turbo": "gemini-1.5-flash-8b-latest", // ✅ Good match
+  "gpt-4o": "gemini-2.5-flash", // Updated to newer model
+  "gpt-4o-mini": "gemini-1.5-flash-8b-latest", // ✅ Good match
+  "gpt-4": "gemini-2.5-pro", // Updated to newer model
+  "gpt-4-vision-preview": "gemini-2.5-flash", // Better multimodal match
+  "gpt-4-turbo": "gemini-2.5-pro", // Updated to newer model
+  "gpt-4-turbo-preview": "gemini-2.5-pro", // Better capability match
+  "gpt-4.1-nano": "gemini-1.5-flash-8b-latest", // More appropriate for smaller model
+  "gpt-4.1-mini": "gemini-2.5-flash", // Better performance match
+  "gpt-4.1": "gemini-2.5-pro", // Top-tier match
+  "gpt-5-nano": "gemini-1.5-flash-8b-latest", // Conservative mapping
+  "gpt-5-mini": "gemini-2.5-flash", // Performance-focused
+  "gpt-5": "gemini-2.5-pro" , // Best available match
+  
+  // Embeddings remain good
+  "text-embedding-3-small": "text-embedding-004",
+  "text-embedding-3-large": "text-embedding-004", 
+  "text-embedding-ada-002": "text-embedding-004",
+  
+  // TTS mapping
+  "tts-1": "fmtts" // Keep as is if this works for your use case
 }
 
 export function getRuntimeKey() {

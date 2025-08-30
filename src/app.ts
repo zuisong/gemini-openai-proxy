@@ -7,7 +7,7 @@ import { type Any, Logger } from "./log.ts"
 import { chatProxyHandler } from "./openai/chat/completions/ChatProxyHandler.ts"
 import { embeddingProxyHandler } from "./openai/embeddingProxyHandler.ts"
 import { modelDetail, models } from "./openai/models.ts"
-
+import { ttsProxyHandler } from "./openai/audio/speech/TTSProxyHandler.ts"
 const { preflight, corsify } = cors({ allowHeaders: "*" })
 
 const app = Router<IRequest, Any[], Response>({
@@ -29,6 +29,7 @@ const app = Router<IRequest, Any[], Response>({
 
 app.get("/", hello)
 app.post("/v1/chat/completions", chatProxyHandler)
+app.post("/v1/audio/speech", ttsProxyHandler)
 app.post("/v1/embeddings", embeddingProxyHandler)
 app.get("/v1/models", async (req) => Response.json(await models(req)))
 app.get("/v1/models/:model", (c) => Response.json(modelDetail(c.params.model)))
