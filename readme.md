@@ -1,5 +1,12 @@
 # Gemini-OpenAI-Proxy
 
+Bring OpenAI style API with low cost.
+
+- Use Gemini models to complete OpenAI API `chat` and `embedding` calls.
+- Use [openai.fm](https://www.openai.fm) to implement `tts-1` model.
+
+## Introduction
+
 Gemini-OpenAI-Proxy is a proxy software. It is designed to convert OpenAI API
 protocol calls into Google Gemini Pro protocol, so that software using OpenAI
 protocol can use Gemini Pro model without perception.
