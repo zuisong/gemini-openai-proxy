@@ -10,7 +10,6 @@ import type {
   RequestOptions,
 } from "./types.ts"
 
-
 // +++ NEW +++
 // Define the request structure for batchEmbedContents
 // It's an array of individual embedContent requests.

@@ -4,10 +4,11 @@ import { Router } from "itty-router/Router"
 import { geminiProxy } from "./gemini-proxy.ts"
 import { hello } from "./hello.ts"
 import { type Any, Logger } from "./log.ts"
+import { ttsProxyHandler } from "./openai/audio/speech/TTSProxyHandler.ts"
 import { chatProxyHandler } from "./openai/chat/completions/ChatProxyHandler.ts"
 import { embeddingProxyHandler } from "./openai/embeddingProxyHandler.ts"
 import { modelDetail, models } from "./openai/models.ts"
-import { ttsProxyHandler } from "./openai/audio/speech/TTSProxyHandler.ts"
+
 const { preflight, corsify } = cors({ allowHeaders: "*" })
 
 const app = Router<IRequest, Any[], Response>({

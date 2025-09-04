@@ -10,9 +10,9 @@ export const modelData: OpenAI.Models.Model[] = Object.keys(ModelMapping).map((m
 
 export const models = async (req: Request) => {
   const apiParam = getToken(req.headers)
-  var gemini_models = await listModels(apiParam);
+  var gemini_models = await listModels(apiParam)
   var model_list = gemini_models["data"] as Array<any>
-  const finala_model_list=model_list.concat(modelData);
+  const finala_model_list = model_list.concat(modelData)
   return {
     object: "list",
     data: finala_model_list,

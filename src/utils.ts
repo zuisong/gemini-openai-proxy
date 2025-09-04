@@ -176,7 +176,14 @@ export class GeminiModel {
   }
 }
 
-export type GeminiModelName = `gemini${string}` | `gemma${string}` | "text-embedding-004"| "embedding-gecko-001" | "gemini-embedding-001" | "embedding-001" | "fmtts"
+export type GeminiModelName =
+  | `gemini${string}`
+  | `gemma${string}`
+  | "text-embedding-004"
+  | "embedding-gecko-001"
+  | "gemini-embedding-001"
+  | "embedding-001"
+  | "fmtts"
 //https://platform.openai.com/docs/guides/embeddings/embedding-models
 //https://ai.google.dev/gemini-api/docs/embeddings
 export const ModelMapping: Readonly<Record<string, KnownGeminiModel>> = {
@@ -193,15 +200,15 @@ export const ModelMapping: Readonly<Record<string, KnownGeminiModel>> = {
   "gpt-4.1": "gemini-2.5-pro", // Top-tier match
   "gpt-5-nano": "gemini-1.5-flash-8b-latest", // Conservative mapping
   "gpt-5-mini": "gemini-2.5-flash", // Performance-focused
-  "gpt-5": "gemini-2.5-pro" , // Best available match
-  
+  "gpt-5": "gemini-2.5-pro", // Best available match
+
   // Embeddings remain good
   "text-embedding-3-small": "text-embedding-004",
-  "text-embedding-3-large": "text-embedding-004", 
+  "text-embedding-3-large": "text-embedding-004",
   "text-embedding-ada-002": "text-embedding-004",
-  
+
   // TTS mapping
-  "tts-1": "fmtts" // Keep as is if this works for your use case
+  "tts-1": "fmtts", // Keep as is if this works for your use case
 }
 
 export function getRuntimeKey() {

@@ -1,9 +1,7 @@
-import { embedContent } from "../gemini-api-client/gemini-api-client.ts"
-import type { EmbedContentRequest } from "../gemini-api-client/types.ts"
+import type { BatchEmbedContentsRequest } from "../gemini-api-client/gemini-api-client.ts"
+import { batchEmbedContents } from "../gemini-api-client/gemini-api-client.ts"
 import type { OpenAI } from "../types.ts"
 import { GeminiModel, getToken } from "../utils.ts"
-import { batchEmbedContents } from "../gemini-api-client/gemini-api-client.ts"
-import type { BatchEmbedContentsRequest } from "../gemini-api-client/gemini-api-client.ts"
 
 //https://ai.google.dev/gemini-api/docs/embeddings#javascript_1
 //https://ai.google.dev/gemini-api/docs/embeddings#control-embedding-size
@@ -12,7 +10,7 @@ const GEMINI_EMBEDDING_MODEL = "text-embedding-004"
 //"gemini-embedding-001"
 const GEMINI_EMBEDDING_MODEL_OUTPUT_DIM = 768
 // Google API's recommended batch size limit is 100
-const BATCH_SIZE = 100;
+const BATCH_SIZE = 100
 //https://github.com/lobehub/lobe-chat/issues/8482
 //change database can solve this problem
 //alter table embeddings alter column embeddings type vector(768);
@@ -26,39 +24,35 @@ export async function embeddingProxyHandler(rawReq: Request): Promise<Response> 
   }
 
   // batch
-  const inputs = [req.input].flat().map(it => it.toString());
-  const allEmbeddings: number[][] = [];
+  const inputs = [req.input].flat().map((it) => it.toString())
+  const allEmbeddings: number[][] = []
 
-  const modelIdentifier = `models/${GEMINI_EMBEDDING_MODEL}`;
+  const modelIdentifier = `models/${GEMINI_EMBEDDING_MODEL}`
   try {
     // Loop through the inputs in chunks of BATCH_SIZE
     for (let i = 0; i < inputs.length; i += BATCH_SIZE) {
-      const batchInputs = inputs.slice(i, i + BATCH_SIZE);
+      const batchInputs = inputs.slice(i, i + BATCH_SIZE)
 
-      log?.warn(`Processing batch of ${batchInputs.length} inputs... (starting at index ${i})`);
+      log?.warn(`Processing batch of ${batchInputs.length} inputs... (starting at index ${i})`)
 
       // Construct the request payload for batchEmbedContents
       const batchRequest: BatchEmbedContentsRequest = {
         // The `requests` field is an array of individual embedding requests
-        requests: batchInputs.map(text => ({
+        requests: batchInputs.map((text) => ({
           model: modelIdentifier,
           content: {
             parts: [{ text }],
           },
         })),
-      };
+      }
 
       // Call the new, efficient batching function
-      const response = await batchEmbedContents(
-        apiParam,
-        new GeminiModel(GEMINI_EMBEDDING_MODEL),
-        batchRequest
-      );
+      const response = await batchEmbedContents(apiParam, new GeminiModel(GEMINI_EMBEDDING_MODEL), batchRequest)
 
       // The response contains a list of embeddings, in the same order as the requests
       if (response.embeddings) {
-        const embeddingsForBatch = response.embeddings.map(emb => emb.values);
-        allEmbeddings.push(...embeddingsForBatch);
+        const embeddingsForBatch = response.embeddings.map((emb) => emb.values)
+        allEmbeddings.push(...embeddingsForBatch)
       }
     }
 
@@ -67,7 +61,7 @@ export async function embeddingProxyHandler(rawReq: Request): Promise<Response> 
       object: "embedding",
       index: index,
       embedding: embedding,
-    }));
+    }))
 
     const finalResponse: OpenAI.Embeddings.CreateEmbeddingResponse = {
       object: "list",
@@ -77,19 +71,17 @@ export async function embeddingProxyHandler(rawReq: Request): Promise<Response> 
         prompt_tokens: 0, // Note: You would need to implement token counting separately
         total_tokens: 0,
       },
-    };
+    }
 
-    return Response.json(finalResponse);
-
+    return Response.json(finalResponse)
   } catch (err) {
-    log?.error("Request failed:", req);
-    log?.error("Error details:", err?.message ?? err.toString());
+    log?.error("Request failed:", req)
+    log?.error("Error details:", err?.message ?? err.toString())
     return new Response(JSON.stringify({ error: { message: err.message } }), {
       status: 500,
-      headers: { 'Content-Type': 'application/json' }
-    });
+      headers: { "Content-Type": "application/json" },
+    })
   }
-
 
   // batch
   /*

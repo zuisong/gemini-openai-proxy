@@ -1,5 +1,5 @@
 {
-  "$schema": "https://biomejs.dev/schemas/2.0.5/schema.json",
+  "$schema": "https://biomejs.dev/schemas/2.2.2/schema.json",
   "assist": { "actions": { "source": { "organizeImports": "on" } } },
   "linter": {
     "enabled": true,
@@ -41,7 +41,7 @@
     }
   },
   "files": {
-    "includes": ["**", "!node_modules/**", "!dist/**", "!coverage/", "!src/generated-types/*"],
+    "includes": ["**", "!node_modules", "!dist", "!coverage/", "!src/generated-types/*"],
     "ignoreUnknown": true
   }
 }
