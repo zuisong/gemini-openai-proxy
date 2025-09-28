@@ -4,30 +4,35 @@ const DEFAULT_AUDIO_FORMAT = "audio-24khz-48kbitrate-mono-mp3"
 const Edge_TTS_VOICE_URL =
   "https://speech.platform.bing.com/consumer/speech/synthesize/readaloud/voices/list?trustedclienttoken=6A5AA1D4EAFF4E9FB37E23D68491D6F4"
 
-let VOICE_LIST = []
+let VOICE_LIST: string[] = []
 const TOKEN_REFRESH_BEFORE_EXPIRY = 3 * 60
-let tokenInfo: { endpoint: EdgeEndpointParam; token: string; expiredAt: string } = {
+let tokenInfo: {
+  endpoint: EdgeEndpointParam | null
+  token: string | null
+  expiredAt: number | null
+} = {
   endpoint: null,
   token: null,
   expiredAt: null,
 }
 
 let Edge_TTS_ENDPOINT_URL = ""
-let EDGE_ENDPONT: EdgeEndpointParam = null
+let EDGE_ENDPONT2: EdgeEndpointParam | null = null
 interface EdgeEndpointParam {
   t: string
   r: string
 }
 
 interface EdgeEndpointJWTParam {
-  exp: string
+  exp: number
 }
 
 async function getVoice() {
+  const EDGE_ENDPONT = await getEndpoint()
   const response = await fetch(Edge_TTS_VOICE_URL, {
     method: "GET",
     headers: {
-      Authorization: EDGE_ENDPONT.t,
+      Authorization: EDGE_ENDPONT?.t ?? "",
       "Content-Type": "application/ssml+xml",
       "User-Agent":
         "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/127.0.0.0 Safari/537.36 Edg/127.0.0.0",
@@ -36,18 +41,28 @@ async function getVoice() {
   })
 
   const data = await response.json()
-  VOICE_LIST = data.map((v) => v["ShortName"])
+  VOICE_LIST = data.map((v: any) => v["ShortName"])
   const VOICE_LIST_en = VOICE_LIST.filter((x) => x.startsWith("en"))
   const VOICE_LIST_zh = VOICE_LIST.filter((x) => x.startsWith("zh"))
   const VOICE_LIST_ja = VOICE_LIST.filter((x) => x.startsWith("ja"))
   VOICE_LIST = VOICE_LIST_en.concat(VOICE_LIST_zh.concat(VOICE_LIST_ja))
   console.error(VOICE_LIST)
 }
-async function getEndpoint() {
+
+async function getEndpoint(): Promise<EdgeEndpointParam> {
+  if (EDGE_ENDPONT2) {
+    return EDGE_ENDPONT2
+  }
+  EDGE_ENDPONT2 = await getEndpoint2()
+
+  return EDGE_ENDPONT2
+}
+
+async function getEndpoint2(): Promise<EdgeEndpointParam> {
   const now = Date.now() / 1000
 
   if (tokenInfo.token && tokenInfo.expiredAt && now < tokenInfo.expiredAt - TOKEN_REFRESH_BEFORE_EXPIRY) {
-    return tokenInfo.endpoint
+    return tokenInfo.endpoint!
   }
 
   // 获取新token
@@ -92,13 +107,21 @@ async function getEndpoint() {
     // 如果有缓存的token，即使过期也尝试使用
     if (tokenInfo.token) {
       console.log("使用过期的缓存token")
-      return tokenInfo.endpoint
+      return tokenInfo.endpoint!
     }
     throw error
   }
 }
 
-function getSsml(text, voiceName, rate, pitch, volume, style, slien = 0) {
+function getSsml(
+  text: string,
+  voiceName: string,
+  rate?: string,
+  pitch?: string,
+  volume?: string,
+  style?: string,
+  slien = 0,
+) {
   let slien_str = ""
   if (slien > 0) {
     slien_str = `<break time="${slien}ms" />`
@@ -124,11 +147,12 @@ interface EdgeRequestParam {
 }
 
 async function EdgeProxyDownloader(formData: EdgeRequestParam): Promise<Response> {
+  const EDGE_ENDPONT = await getEndpoint()
   try {
     const response = await fetch(Edge_TTS_ENDPOINT_URL, {
       method: "POST",
       headers: {
-        Authorization: EDGE_ENDPONT.t,
+        Authorization: EDGE_ENDPONT?.t ?? "",
         "Content-Type": "application/ssml+xml",
         "User-Agent":
           "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/127.0.0.0 Safari/537.36 Edg/127.0.0.0",
@@ -192,8 +216,8 @@ async function EdgeProxyDownloader(formData: EdgeRequestParam): Promise<Response
 }
 
 export async function EdgeProxyHandler(req: TTSParam): Promise<Response> {
-  EDGE_ENDPONT = await getEndpoint()
-  Edge_TTS_ENDPOINT_URL = `https://${EDGE_ENDPONT.r}.tts.speech.microsoft.com/cognitiveservices/v1`
+  const EDGE_ENDPONT = await getEndpoint()
+  Edge_TTS_ENDPOINT_URL = `https://${EDGE_ENDPONT?.r}.tts.speech.microsoft.com/cognitiveservices/v1`
 
   if (VOICE_LIST.length === 0) {
     await getVoice()
@@ -250,5 +274,3 @@ export async function EdgeProxyHandler(req: TTSParam): Promise<Response> {
 
   return response
 }
-
-await getEndpoint()

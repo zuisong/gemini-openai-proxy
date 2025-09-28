@@ -4,6 +4,7 @@ import { afterEach, beforeEach, describe, it } from "jsr:@std/testing/bdd"
 import { EventSourceParserStream } from "eventsource-parser/stream"
 import { app } from "../src/app.ts"
 import type { OpenAI } from "../src/types.ts"
+import { ModelMapping } from "../src/utils.ts"
 import { MockFetch } from "./mock-fetch.ts"
 import { gemini_ok_resp } from "./test-data.ts"
 
@@ -11,15 +12,7 @@ describe("openai to gemini test", () => {
   describe("success test", () => {
     const fetchMocker = new MockFetch()
 
-    for (const [openaiModel, geminiModel] of [
-      ["gpt-3.5-turbo", "gemini-1.5-flash-8b-latest"],
-      ["gpt-4", "gemini-1.5-pro-latest"],
-      ["gpt-4o", "gemini-1.5-flash-latest"],
-      ["gpt-4o-mini", "gemini-1.5-flash-8b-latest"],
-      ["gpt-4-vision-preview", "gemini-1.5-flash-latest"],
-      ["gpt-4-turbo", "gemini-1.5-pro-latest"],
-      ["gpt-4-turbo-preview", "gemini-2.0-flash-exp"],
-    ]) {
+    for (const [openaiModel, geminiModel] of Object.entries(ModelMapping)) {
       beforeEach(() => {
         fetchMocker.mock(
           (req) => req.url.includes(`generativelanguage.googleapis.com/v1beta/models/${geminiModel}:generateContent`),

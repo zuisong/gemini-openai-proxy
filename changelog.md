@@ -1,18 +1,15 @@
 # changelog
-## 0.15.1 (2025-08-30)
+## 0.15.0 (2025-09-04)
 - Update model mapping
 - add openai tts api, implement openai.fm and edge tts
 - fix embedding for lobechat
-## 0.15.0 (Unreleased)
-
-- ...
 
 ## 0.14.2
 
 - Update model mapping
 
   | Request Model        | Target Gemini Model        |
-  | -------------------- | -------------------------- |
+  |----------------------|----------------------------|
   | gpt-3.5-turbo        | gemini-1.5-flash-8b-latest |
   | gpt-4                | gemini-1.5-pro-latest      |
   | gpt-4o               | gemini-1.5-flash-latest    |
@@ -106,7 +103,7 @@
 
 - Add cloudflare workers support
 - Reduce docker image size
-- Imporve document
+- Improve document
 
 ## 0.4.0(2024-01-17)
 
