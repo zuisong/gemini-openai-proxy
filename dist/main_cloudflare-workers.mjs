@@ -212,6 +212,7 @@ function genModel(req) {
     generateContentRequest
   ];
 }
+var OAI_GEMINI_MAP_DEALFULT_MODEL = "gemma-3-4b-it";
 var GeminiModel = class _GeminiModel {
   static modelMapping(model) {
     const modelName = ModelMapping[model ?? ""] ?? _GeminiModel.defaultModel(model ?? "");
@@ -234,20 +235,33 @@ var GeminiModel = class _GeminiModel {
     return this.model;
   }
   static defaultModel(m) {
-    if (m.startsWith("gemini")) {
+    if (m.startsWith("gemini") || m.startsWith("gemma")) {
       return m;
     }
-    return "gemini-1.5-flash-latest";
+    return OAI_GEMINI_MAP_DEALFULT_MODEL;
   }
 };
 var ModelMapping = {
+  // Updated with latest models
   "gpt-3.5-turbo": "gemini-1.5-flash-8b-latest",
-  "gpt-4": "gemini-1.5-pro-latest",
-  "gpt-4o": "gemini-1.5-flash-latest",
+  "gpt-4o": "gemini-2.5-flash",
   "gpt-4o-mini": "gemini-1.5-flash-8b-latest",
-  "gpt-4-vision-preview": "gemini-1.5-flash-latest",
-  "gpt-4-turbo": "gemini-1.5-pro-latest",
-  "gpt-4-turbo-preview": "gemini-2.0-flash-exp"
+  "gpt-4": "gemini-2.5-pro",
+  "gpt-4-vision-preview": "gemini-2.5-flash",
+  "gpt-4-turbo": "gemini-2.5-pro",
+  "gpt-4-turbo-preview": "gemini-2.5-pro",
+  "gpt-4.1-nano": "gemini-1.5-flash-8b-latest",
+  "gpt-4.1-mini": "gemini-2.5-flash",
+  "gpt-4.1": "gemini-2.5-pro",
+  "gpt-5-nano": "gemini-1.5-flash-8b-latest",
+  "gpt-5-mini": "gemini-2.5-flash",
+  "gpt-5": "gemini-2.5-pro",
+  // Embeddings remain good
+  "text-embedding-3-small": "text-embedding-004",
+  "text-embedding-3-large": "text-embedding-004",
+  "text-embedding-ada-002": "text-embedding-004",
+  // TTS mapping
+  "tts-1": "fmtts"
 };
 function getRuntimeKey() {
   const global = globalThis;
@@ -322,6 +336,421 @@ var Logger = class {
     console[level](`${(/* @__PURE__ */ new Date()).toISOString()} ${level.toUpperCase()}${prefix ? ` ${prefix}` : ""}`, ...data);
   }
 };
+
+// src/openai/audio/speech/utils.ts
+async function hmacSha256(key, data) {
+  const cryptoKey = await crypto.subtle.importKey("raw", key, {
+    name: "HMAC",
+    hash: {
+      name: "SHA-256"
+    }
+  }, false, [
+    "sign"
+  ]);
+  const signature = await crypto.subtle.sign("HMAC", cryptoKey, new TextEncoder().encode(data));
+  return new Uint8Array(signature);
+}
+async function base64ToBytes(base64) {
+  const binaryString = atob(base64);
+  const bytes = new Uint8Array(binaryString.length);
+  for (let i = 0; i < binaryString.length; i++) {
+    bytes[i] = binaryString.charCodeAt(i);
+  }
+  return bytes;
+}
+async function bytesToBase64(bytes) {
+  return btoa(String.fromCharCode.apply(null, Array.from(bytes)));
+}
+function uuid() {
+  return crypto.randomUUID().replace(/-/g, "");
+}
+async function sign(urlStr) {
+  const url = urlStr.split("://")[1];
+  const encodedUrl = encodeURIComponent(url);
+  const uuidStr = uuid();
+  const formattedDate = dateFormat();
+  const bytesToSign = `MSTranslatorAndroidApp${encodedUrl}${formattedDate}${uuidStr}`.toLowerCase();
+  const decode = await base64ToBytes("oik6PdDdMnOXemTbwvMn9de/h9lFnfBaCWbGMMZqqoSaQaqUOqjVGm5NqsmjcBI1x+sS9ugjB55HEJWRiFXYFw==");
+  const signData = await hmacSha256(decode, bytesToSign);
+  const signBase64 = await bytesToBase64(signData);
+  return `MSTranslatorAndroidApp::${signBase64}::${formattedDate}::${uuidStr}`;
+}
+function dateFormat() {
+  const formattedDate = (/* @__PURE__ */ new Date()).toUTCString().replace(/GMT/, "").trim() + " GMT";
+  return formattedDate.toLowerCase();
+}
+function splitAndMerge(str, chunkSize, determin) {
+  const sentences = str.split(determin);
+  const result = [];
+  let currentChunk = [];
+  let currentLength = 0;
+  for (const sentence of sentences) {
+    if (currentLength + sentence.length + (currentChunk.length > 0 ? 1 : 0) <= chunkSize) {
+      currentChunk.push(sentence);
+      currentLength += sentence.length + (currentChunk.length > 1 ? 1 : 0);
+    } else {
+      if (currentChunk.length > 0) {
+        result.push(currentChunk.join(" "));
+      }
+      currentChunk = [
+        sentence
+      ];
+      currentLength = sentence.length;
+    }
+  }
+  if (currentChunk.length > 0) {
+    result.push(currentChunk.join(" "));
+  }
+  return result;
+}
+function makeCORSHeaders() {
+  return {
+    "Access-Control-Allow-Origin": "*",
+    "Access-Control-Allow-Methods": "GET,HEAD,POST,OPTIONS",
+    "Access-Control-Allow-Headers": "Content-Type, x-api-key",
+    "Access-Control-Max-Age": "86400"
+  };
+}
+
+// src/openai/audio/speech/EdgeProxyHandler.ts
+var DEFAULT_AUDIO_FORMAT = "audio-24khz-48kbitrate-mono-mp3";
+var Edge_TTS_VOICE_URL = "https://speech.platform.bing.com/consumer/speech/synthesize/readaloud/voices/list?trustedclienttoken=6A5AA1D4EAFF4E9FB37E23D68491D6F4";
+var VOICE_LIST = [];
+var TOKEN_REFRESH_BEFORE_EXPIRY = 3 * 60;
+var tokenInfo = {
+  endpoint: null,
+  token: null,
+  expiredAt: null
+};
+var Edge_TTS_ENDPOINT_URL = "";
+var EDGE_ENDPONT2 = null;
+async function getVoice() {
+  const EDGE_ENDPONT = await getEndpoint();
+  const response = await fetch(Edge_TTS_VOICE_URL, {
+    method: "GET",
+    headers: {
+      Authorization: EDGE_ENDPONT?.t ?? "",
+      "Content-Type": "application/ssml+xml",
+      "User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/127.0.0.0 Safari/537.36 Edg/127.0.0.0",
+      "X-Microsoft-OutputFormat": DEFAULT_AUDIO_FORMAT
+    }
+  });
+  const data = await response.json();
+  VOICE_LIST = data.map((v) => v["ShortName"]);
+  const VOICE_LIST_en = VOICE_LIST.filter((x) => x.startsWith("en"));
+  const VOICE_LIST_zh = VOICE_LIST.filter((x) => x.startsWith("zh"));
+  const VOICE_LIST_ja = VOICE_LIST.filter((x) => x.startsWith("ja"));
+  VOICE_LIST = VOICE_LIST_en.concat(VOICE_LIST_zh.concat(VOICE_LIST_ja));
+  console.error(VOICE_LIST);
+}
+async function getEndpoint() {
+  if (EDGE_ENDPONT2) {
+    return EDGE_ENDPONT2;
+  }
+  EDGE_ENDPONT2 = await getEndpoint2();
+  return EDGE_ENDPONT2;
+}
+async function getEndpoint2() {
+  const now = Date.now() / 1e3;
+  if (tokenInfo.token && tokenInfo.expiredAt && now < tokenInfo.expiredAt - TOKEN_REFRESH_BEFORE_EXPIRY) {
+    return tokenInfo.endpoint;
+  }
+  const endpointUrl = "https://dev.microsofttranslator.com/apps/endpoint?api-version=1.0";
+  const clientId = crypto.randomUUID().replace(/-/g, "");
+  try {
+    const response = await fetch(endpointUrl, {
+      method: "POST",
+      headers: {
+        "Accept-Language": "zh-Hans",
+        "X-ClientVersion": "4.0.530a 5fe1dc6c",
+        "X-UserId": "0f04d16a175c411e",
+        "X-HomeGeographicRegion": "zh-Hans-CN",
+        "X-ClientTraceId": clientId,
+        "X-MT-Signature": await sign(endpointUrl),
+        "User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/127.0.0.0 Safari/537.36 Edg/127.0.0.0",
+        "Content-Type": "application/json; charset=utf-8",
+        "Content-Length": "0",
+        "Accept-Encoding": "gzip"
+      }
+    });
+    if (!response.ok) {
+      throw new Error(`\u83B7\u53D6endpoint\u5931\u8D25: ${response.status}`);
+    }
+    const data = await response.json();
+    const jwt = data.t.split(".")[1];
+    const decodedJwt = JSON.parse(atob(jwt));
+    tokenInfo = {
+      endpoint: data,
+      token: data.t,
+      expiredAt: decodedJwt.exp
+    };
+    return data;
+  } catch (error) {
+    console.error("\u83B7\u53D6endpoint\u5931\u8D25:", error);
+    if (tokenInfo.token) {
+      console.log("\u4F7F\u7528\u8FC7\u671F\u7684\u7F13\u5B58token");
+      return tokenInfo.endpoint;
+    }
+    throw error;
+  }
+}
+function getSsml(text, voiceName, rate, pitch, volume, style, slien = 0) {
+  let slien_str = "";
+  if (slien > 0) {
+    slien_str = `<break time="${slien}ms" />`;
+  }
+  return `<speak xmlns="http://www.w3.org/2001/10/synthesis" xmlns:mstts="http://www.w3.org/2001/mstts" version="1.0" xml:lang="zh-CN"> 
+                <voice name="${voiceName}"> 
+                    <mstts:express-as style="${style}"  styledegree="2.0" role="default" > 
+                        <prosody rate="${rate}" pitch="${pitch}" volume="${volume}">${text}</prosody> 
+                    </mstts:express-as> 
+                    ${slien_str}
+                </voice> 
+            </speak>`;
+}
+async function EdgeProxyDownloader(formData) {
+  const EDGE_ENDPONT = await getEndpoint();
+  try {
+    const response = await fetch(Edge_TTS_ENDPOINT_URL, {
+      method: "POST",
+      headers: {
+        Authorization: EDGE_ENDPONT?.t ?? "",
+        "Content-Type": "application/ssml+xml",
+        "User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/127.0.0.0 Safari/537.36 Edg/127.0.0.0",
+        "X-Microsoft-OutputFormat": DEFAULT_AUDIO_FORMAT
+      },
+      body: getSsml(formData.text, formData.voiceName, formData.rate, formData.pitch, formData.volume, formData.style, formData.slien)
+    });
+    if (!response.ok) {
+      const errorText = await response.text();
+      console.error("TTS API Error:", {
+        status: response.status,
+        statusText: response.statusText,
+        body: errorText,
+        headers: Object.fromEntries(response.headers.entries())
+      });
+      console.error("TTS formData:", formData);
+      console.error("TTS DEFAULT_AUDIO_FORMAT:", DEFAULT_AUDIO_FORMAT);
+      return new Response(JSON.stringify({
+        error: `TTS API error: ${response.status} ${response.statusText}`,
+        details: errorText
+      }), {
+        status: response.status,
+        headers: {
+          "Content-Type": "application/json"
+        }
+      });
+    }
+    return new Response(response.body, {
+      status: 200,
+      headers: {
+        "Content-Type": response.headers.get("Content-Type") || "audio/mpeg",
+        "Content-Length": response.headers.get("Content-Length") || ""
+      }
+    });
+  } catch (error) {
+    console.error("TTS Handler Error:", error);
+    return new Response(JSON.stringify({
+      error: "Internal server error",
+      message: error instanceof Error ? error.message : "Unknown error"
+    }), {
+      status: 500,
+      headers: {
+        "Content-Type": "application/json"
+      }
+    });
+  }
+}
+async function EdgeProxyHandler(req) {
+  const EDGE_ENDPONT = await getEndpoint();
+  Edge_TTS_ENDPOINT_URL = `https://${EDGE_ENDPONT?.r}.tts.speech.microsoft.com/cognitiveservices/v1`;
+  if (VOICE_LIST.length === 0) {
+    await getVoice();
+  }
+  const maxChunkSize = 4096;
+  const chunks = splitAndMerge(req.input.trim(), maxChunkSize, "\n");
+  const audioChunks = [];
+  while (chunks.length > 0) {
+    try {
+      let voice = req.voice;
+      if (!VOICE_LIST.includes(voice)) {
+        voice = VOICE_LIST[0];
+      }
+      const formData = {
+        text: chunks.shift(),
+        voiceName: voice,
+        rate: "+0%",
+        pitch: "+0Hz",
+        volume: "+0%",
+        style: `general`,
+        slien: 0
+      };
+      const audio_chunk = await (await EdgeProxyDownloader(formData)).blob();
+      audioChunks.push(audio_chunk);
+    } catch (error) {
+      console.error("TTS Handler Error:", error);
+      return new Response(JSON.stringify({
+        error: "Internal server error",
+        message: error instanceof Error ? error.message : "Unknown error"
+      }), {
+        status: 500,
+        headers: {
+          "Content-Type": "application/json"
+        }
+      });
+    }
+  }
+  const concatenatedAudio = new Blob(audioChunks, {
+    type: "audio/mpeg"
+  });
+  const response = new Response(concatenatedAudio, {
+    headers: {
+      "Content-Type": "audio/mpeg",
+      ...makeCORSHeaders()
+    }
+  });
+  return response;
+}
+
+// src/openai/audio/speech/OaiProxyHandler.ts
+var OAI_TTS_ENDPOINT_URL = "https://www.openai.fm/api/generate";
+var DEFAULT_AUDIO_FORMAT2 = "mp3";
+var VOICE_LIST2 = [
+  "alloy",
+  "ash",
+  "ballad",
+  "coral",
+  "echo",
+  "fable",
+  "nova",
+  "onyx",
+  "sage",
+  "shimmer"
+];
+var DEFAULT_PROMPT = `Voice Affect: Calm, composed, and reassuring; project quiet authority and confidence, BBC reporter host accent.
+Tone: Sincere, empathetic, and gently authoritative\u2014express genuine apology while conveying competence.
+Pacing: Steady and moderate; unhurried enough to communicate care, yet efficient enough to demonstrate professionalism.
+Emotion: Genuine empathy and understanding; speak with warmth, especially during apologies ("I'm very sorry for any disruption...").
+Pronunciation: Clear and precise, emphasizing key reassurances ("smoothly," "quickly," "promptly") to reinforce confidence.
+Pauses: Brief pauses after offering assistance or requesting details, highlighting willingness to listen and support.`;
+async function OaiProxyDownloader(formData) {
+  try {
+    const response = await fetch(OAI_TTS_ENDPOINT_URL, {
+      method: "POST",
+      headers: {
+        // "X-ClientVersion": "4.0.530a 5fe1dc6c",
+        // "X-UserId": "0f04d16a175c411e",
+        // "X-ClientTraceId": ClientId,
+        // "X-MT-Signature": Signature,
+        // "X-HomeGeographicRegion": "en-US",
+        "User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/127.0.0.0 Safari/537.36 Edg/127.0.0.0",
+        // KEY CHANGE: Use form content type instead of JSON
+        "Content-Type": "application/x-www-form-urlencoded",
+        Accept: "audio/*",
+        "Accept-Encoding": "gzip, deflate, br"
+      },
+      // KEY CHANGE: Send form data as string, not JSON
+      body: formData.toString()
+    });
+    if (!response.ok) {
+      const errorText = await response.text();
+      console.error("TTS API Error:", {
+        status: response.status,
+        statusText: response.statusText,
+        body: errorText,
+        headers: Object.fromEntries(response.headers.entries())
+      });
+      console.error("TTS formData:", formData);
+      return new Response(JSON.stringify({
+        error: `TTS API error: ${response.status} ${response.statusText}`,
+        details: errorText
+      }), {
+        status: response.status,
+        headers: {
+          "Content-Type": "application/json"
+        }
+      });
+    }
+    return new Response(response.body, {
+      status: 200,
+      headers: {
+        "Content-Type": response.headers.get("Content-Type") || "audio/mpeg",
+        "Content-Length": response.headers.get("Content-Length") || ""
+      }
+    });
+  } catch (error) {
+    console.error("TTS Handler Error:", error);
+    return new Response(JSON.stringify({
+      error: "Internal server error",
+      message: error instanceof Error ? error.message : "Unknown error"
+    }), {
+      status: 500,
+      headers: {
+        "Content-Type": "application/json"
+      }
+    });
+  }
+}
+async function OaiProxyHandler(req) {
+  const maxChunkSize = 4096;
+  const chunks = splitAndMerge(req.input.trim(), maxChunkSize, "\n");
+  const audioChunks = [];
+  while (chunks.length > 0) {
+    try {
+      const generation = crypto.randomUUID().toString();
+      let voice = req.voice;
+      if (!VOICE_LIST2.includes(voice)) {
+        voice = VOICE_LIST2[0];
+      }
+      const formData = new URLSearchParams({
+        input: chunks.shift(),
+        voice,
+        generation,
+        response_format: req.response_format ?? DEFAULT_AUDIO_FORMAT2,
+        prompt: req.instructions ?? DEFAULT_PROMPT
+      });
+      const audio_chunk = await (await OaiProxyDownloader(formData)).blob();
+      audioChunks.push(audio_chunk);
+    } catch (error) {
+      console.error("TTS Handler Error:", error);
+      return new Response(JSON.stringify({
+        error: "Internal server error",
+        message: error instanceof Error ? error.message : "Unknown error"
+      }), {
+        status: 500,
+        headers: {
+          "Content-Type": "application/json"
+        }
+      });
+    }
+  }
+  const concatenatedAudio = new Blob(audioChunks, {
+    type: "audio/mpeg"
+  });
+  const response = new Response(concatenatedAudio, {
+    headers: {
+      "Content-Type": "audio/mpeg",
+      ...makeCORSHeaders()
+    }
+  });
+  return response;
+}
+
+// src/openai/audio/speech/TTSProxyHandler.ts
+async function ttsProxyHandler(rawReq) {
+  const req = await rawReq.json();
+  const headers = rawReq.headers;
+  const apiParam = getToken(headers);
+  if (apiParam == null) {
+    return new Response("Unauthorized", {
+      status: 401
+    });
+  }
+  if (req.model === "tts-1") {
+    return OaiProxyHandler(req);
+  }
+  return EdgeProxyHandler(req);
+}
 
 // ../../../.cache/deno/npm/registry.npmjs.org/eventsource-parser/3.0.1/dist/index.js
 var ParseError = class extends Error {
@@ -488,17 +917,13 @@ async function* streamGenerateContent(apiParam, model, params, requestOptions) {
     yield responseJson;
   }
 }
-async function embedContent(apiParam, model, params, requestOptions) {
+async function batchEmbedContents(apiParam, model, params, requestOptions) {
   const response = await makeRequest(toURL({
     model,
-    task: "embedContent",
+    task: "batchEmbedContents",
     stream: false,
     apiParam
   }), JSON.stringify(params), requestOptions);
-  const body = response.body;
-  if (body == null) {
-    return;
-  }
   const responseJson = await response.json();
   return responseJson;
 }
@@ -799,6 +1224,8 @@ async function chatProxyHandler(rawReq) {
 }
 
 // src/openai/embeddingProxyHandler.ts
+var GEMINI_EMBEDDING_MODEL = "text-embedding-004";
+var BATCH_SIZE = 100;
 async function embeddingProxyHandler(rawReq) {
   const req = await rawReq.json();
   const log = rawReq.logger;
@@ -809,45 +1236,63 @@ async function embeddingProxyHandler(rawReq) {
       status: 401
     });
   }
-  const embedContentRequest = {
-    model: "models/text-embedding-004",
-    content: {
-      parts: [
-        req.input
-      ].flat().map((it) => ({
-        text: it.toString()
-      }))
-    }
-  };
-  log?.warn("request", embedContentRequest);
-  let geminiResp = [];
+  const inputs = [
+    req.input
+  ].flat().map((it) => it.toString());
+  const allEmbeddings = [];
+  const modelIdentifier = `models/${GEMINI_EMBEDDING_MODEL}`;
   try {
-    const it = await embedContent(apiParam, new GeminiModel("text-embedding-004"), embedContentRequest);
-    const data = it?.embedding?.values;
-    geminiResp = data;
-  } catch (err) {
-    log?.error(req);
-    log?.error(err?.message ?? err.toString());
-    geminiResp = err?.message ?? err.toString();
-  }
-  log?.debug(req);
-  log?.debug(geminiResp);
-  const resp = {
-    object: "list",
-    data: [
-      {
-        object: "embedding",
-        index: 0,
-        embedding: geminiResp ?? []
+    for (let i = 0; i < inputs.length; i += BATCH_SIZE) {
+      const batchInputs = inputs.slice(i, i + BATCH_SIZE);
+      log?.warn(`Processing batch of ${batchInputs.length} inputs... (starting at index ${i})`);
+      const batchRequest = {
+        // The `requests` field is an array of individual embedding requests
+        requests: batchInputs.map((text) => ({
+          model: modelIdentifier,
+          content: {
+            parts: [
+              {
+                text
+              }
+            ]
+          }
+        }))
+      };
+      const response = await batchEmbedContents(apiParam, new GeminiModel(GEMINI_EMBEDDING_MODEL), batchRequest);
+      if (response.embeddings) {
+        const embeddingsForBatch = response.embeddings.map((emb) => emb.values);
+        allEmbeddings.push(...embeddingsForBatch);
       }
-    ],
-    model: req.model,
-    usage: {
-      prompt_tokens: 5,
-      total_tokens: 5
     }
-  };
-  return Response.json(resp);
+    const responseData = allEmbeddings.map((embedding, index) => ({
+      object: "embedding",
+      index,
+      embedding
+    }));
+    const finalResponse = {
+      object: "list",
+      data: responseData,
+      model: req.model,
+      usage: {
+        prompt_tokens: 0,
+        total_tokens: 0
+      }
+    };
+    return Response.json(finalResponse);
+  } catch (err) {
+    log?.error("Request failed:", req);
+    log?.error("Error details:", err?.message ?? err.toString());
+    return new Response(JSON.stringify({
+      error: {
+        message: err.message
+      }
+    }), {
+      status: 500,
+      headers: {
+        "Content-Type": "application/json"
+      }
+    });
+  }
 }
 
 // src/openai/models.ts
@@ -859,8 +1304,25 @@ var modelData = Object.keys(ModelMapping).map((model) => ({
 }));
 var models = async (req) => {
   const apiParam = getToken(req.headers);
-  return await listModels(apiParam);
+  const gemini_models = await listModels(apiParam);
+  const model_list = gemini_models["data"];
+  const finala_model_list = model_list.concat(modelData);
+  return {
+    object: "list",
+    data: distinctArrayByKey(finala_model_list, (item) => item.id)
+  };
 };
+function distinctArrayByKey(arr, keySelector) {
+  const seen = /* @__PURE__ */ new Set();
+  return arr.filter((item) => {
+    const value = keySelector(item);
+    if (seen.has(value)) {
+      return false;
+    }
+    seen.add(value);
+    return true;
+  });
+}
 var modelDetail = (model) => {
   return modelData.find((it) => it.id === model);
 };
@@ -886,6 +1348,7 @@ var app = r({
 });
 app.get("/", hello);
 app.post("/v1/chat/completions", chatProxyHandler);
+app.post("/v1/audio/speech", ttsProxyHandler);
 app.post("/v1/embeddings", embeddingProxyHandler);
 app.get("/v1/models", async (req) => Response.json(await models(req)));
 app.get("/v1/models/:model", (c) => Response.json(modelDetail(c.params.model)));
