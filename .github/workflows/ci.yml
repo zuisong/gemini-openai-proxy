@@ -36,7 +36,7 @@ jobs:
           registry: ghcr.io
           username: ${{ github.repository_owner }}
           password: ${{ secrets.GITHUB_TOKEN }}
-      - uses: actions/github-script@v7
+      - uses: actions/github-script@v8
         id: set-tag-name
         with:
           script: return '${{ github.ref_name }}'.toLowerCase().replaceAll(/[/.]/g, '-').trim('-')
